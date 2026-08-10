@@ -14,7 +14,7 @@ import { google } from 'googleapis';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createGoogleAuth } from './google-auth.js';
+import { createGoogleAuth, hasGoogleCredentials } from './google-auth.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -56,10 +56,8 @@ export async function buildAPI() {
   console.log(`📊 Sheet ID: ${SHEET_ID}`);
   console.log(`📁 Output: ${OUTPUT_DIR}`);
 
-  const hasInlineCreds = (process.env.GOOGLE_CREDENTIALS_JSON || '').trim().startsWith('{');
-  const credsFilePath = process.env.GOOGLE_CREDENTIALS_JSON || path.join(__dirname, 'credentials.json');
-  if (!hasInlineCreds && !fs.existsSync(credsFilePath)) {
-    writePlaceholderData(`Không tìm thấy credentials Google (biến GOOGLE_CREDENTIALS_JSON trống và không có file tại ${credsFilePath}).`);
+  if (!hasGoogleCredentials()) {
+    writePlaceholderData('Không tìm thấy Google credentials (GOOGLE_CREDENTIALS_JSON_B64 / GOOGLE_CREDENTIALS_JSON đều trống, không có credentials.json).');
     return;
   }
 

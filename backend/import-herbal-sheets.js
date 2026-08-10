@@ -105,10 +105,10 @@ export async function runImport() {
   const useRuleByFormId = new Map(useRules.map((u) => [u.herb_form_id, u]));
   const safetyByHerbId = new Map();
   for (const s of safetyRules) {
-    if (!s.herb_id) continue;
-    const list = safetyByHerbId.get(s.herb_id) || [];
-    if (s.safety_text_zh) list.push(s.safety_text_zh);
-    safetyByHerbId.set(s.herb_id, list);
+    if (!s.herb_id || !s.safety_text_zh) continue;
+    const set = safetyByHerbId.get(s.herb_id) || new Set();
+    set.add(s.safety_text_zh); // multiple herb_form_ids often repeat the same herb-level caution text
+    safetyByHerbId.set(s.herb_id, set);
   }
 
   const conn = await mysql.createConnection({
@@ -128,7 +128,7 @@ export async function runImport() {
     const profile = profileByHerbId.get(h.herb_id) || {};
     const form = defaultFormByHerbId.get(h.herb_id);
     const useRule = form ? useRuleByFormId.get(form.herb_form_id) : null;
-    const cautions = (safetyByHerbId.get(h.herb_id) || []).join(' ');
+    const cautions = Array.from(safetyByHerbId.get(h.herb_id) || []).join(' ');
 
     const temperature = decodeCodes(profile.temperature_code, TEMPERATURE_LABELS);
     const taste = decodeCodes(profile.taste_codes, TASTE_LABELS);
