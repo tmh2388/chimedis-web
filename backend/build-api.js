@@ -54,7 +54,7 @@ function writePlaceholderData(reason) {
   console.log('✅ Đã ghi dữ liệu placeholder (rỗng). Deploy tiếp tục bình thường.');
 }
 
-async function buildAPI() {
+export async function buildAPI() {
   console.log('🔄 Starting API build from Google Sheets...');
   console.log(`📊 Sheet ID: ${SHEET_ID}`);
   console.log(`📁 Output: ${OUTPUT_DIR}`);
@@ -174,17 +174,19 @@ async function buildAPI() {
   } catch (error) {
     console.error('❌ Build failed:');
     console.error(`   Error: ${error.message}`);
-    
+
     if (error.message.includes('ENOENT')) {
       console.error('\n💡 Tip: credentials.json not found.');
       console.error('   1. Download from Google Cloud Console');
       console.error('   2. Place in backend/ folder');
       console.error('   3. Set GOOGLE_CREDENTIALS_JSON env var if using different path');
     }
-    
-    process.exit(1);
+
+    throw error;
   }
 }
 
-// Run
-buildAPI();
+const isMainModule = process.argv[1] && import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
+  buildAPI().catch(() => process.exit(1));
+}

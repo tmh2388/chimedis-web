@@ -23,12 +23,6 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const CREDENTIALS_PATH = process.env.GOOGLE_CREDENTIALS_JSON || path.join(__dirname, 'credentials.json');
-const SPREADSHEET_ID = process.env.GOOGLE_HERBAL_CORE_SPREADSHEET_ID;
-
-if (!SPREADSHEET_ID) {
-  console.error('❌ Thiếu GOOGLE_HERBAL_CORE_SPREADSHEET_ID (ID file "HVYD Herbal Core DB vX.Y.Z").');
-  process.exit(1);
-}
 
 const auth = new google.auth.GoogleAuth({
   keyFile: CREDENTIALS_PATH,
@@ -77,9 +71,9 @@ function rowsToObjects(values) {
     });
 }
 
-async function readTab(tabName) {
+async function readTab(spreadsheetId, tabName) {
   const res = await sheets.spreadsheets.values.get({
-    spreadsheetId: SPREADSHEET_ID,
+    spreadsheetId,
     range: `${tabName}!A:Z`,
   });
   return rowsToObjects(res.data.values);
@@ -91,15 +85,20 @@ function toDecimal(v) {
   return Number.isNaN(n) ? null : n;
 }
 
-async function main() {
+export async function runImport() {
+  const spreadsheetId = process.env.GOOGLE_HERBAL_CORE_SPREADSHEET_ID;
+  if (!spreadsheetId) {
+    throw new Error('Thiếu GOOGLE_HERBAL_CORE_SPREADSHEET_ID (ID file "HVYD Herbal Core DB vX.Y.Z").');
+  }
+
   console.log('📖 Đang đọc dữ liệu từ Herbal Core DB...');
   const [herbs, categories, profiles, forms, useRules, safetyRules] = await Promise.all([
-    readTab('kb_herbs'),
-    readTab('kb_categories'),
-    readTab('kb_herb_clinical_profiles'),
-    readTab('kb_herb_forms'),
-    readTab('kb_herb_use_rules'),
-    readTab('kb_herb_safety_rules'),
+    readTab(spreadsheetId, 'kb_herbs'),
+    readTab(spreadsheetId, 'kb_categories'),
+    readTab(spreadsheetId, 'kb_herb_clinical_profiles'),
+    readTab(spreadsheetId, 'kb_herb_forms'),
+    readTab(spreadsheetId, 'kb_herb_use_rules'),
+    readTab(spreadsheetId, 'kb_herb_safety_rules'),
   ]);
   console.log(`   herbs=${herbs.length} categories=${categories.length} profiles=${profiles.length} forms=${forms.length} use_rules=${useRules.length} safety_rules=${safetyRules.length}`);
 
@@ -128,7 +127,7 @@ async function main() {
     database: process.env.MYSQL_DATABASE,
   });
 
-  let imported = 0;
+  const rows = [];
   for (const h of herbs) {
     if (h.record_type !== 'CORE') continue; // skip RELATED_HERB duplicates (those live in appendix-style rows)
     if (h.is_active === false || h.is_active === 'FALSE') continue;
@@ -143,12 +142,28 @@ async function main() {
     const taste = decodeCodes(profile.taste_codes, TASTE_LABELS);
     const meridian = decodeCodes(profile.meridian_codes, MERIDIAN_LABELS);
 
-    await conn.execute(
+    rows.push([
+      h.herb_id, h.category_id, cat.chapter_zh || null, cat.section_zh || null,
+      h.name_zh, h.name_zh_traditional, h.name_vi, h.pinyin, h.latin_name,
+      h.medicinal_part, h.source_species,
+      temperature.zh, temperature.vi, taste.zh, taste.vi, meridian.zh, meridian.vi,
+      profile.action_text_zh || null, profile.indication_text_zh || null,
+      useRule ? useRule.preparation_text_zh : null,
+      useRule ? toDecimal(useRule.dose_min_g) : null,
+      useRule ? toDecimal(useRule.dose_max_g) : null,
+      cautions || null,
+      true,
+    ]);
+  }
+
+  console.log(`📝 Đang ghi ${rows.length} vị thuốc vào MySQL (1 lệnh bulk insert)...`);
+  if (rows.length > 0) {
+    await conn.query(
       `INSERT INTO herbs (
          herb_id, category_id, chapter_zh, section_zh, name_zh, name_zh_traditional, name_vi, pinyin, latin_name,
          medicinal_part, source_species, temperature_zh, temperature_vi, taste_zh, taste_vi, meridian_zh, meridian_vi,
          action_text_zh, indication_text_zh, dose_text_zh, dose_min_g, dose_max_g, caution_text_zh, is_active
-       ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+       ) VALUES ?
        ON DUPLICATE KEY UPDATE
          category_id=VALUES(category_id), chapter_zh=VALUES(chapter_zh), section_zh=VALUES(section_zh),
          name_zh=VALUES(name_zh), name_zh_traditional=VALUES(name_zh_traditional), name_vi=VALUES(name_vi),
@@ -158,33 +173,25 @@ async function main() {
          action_text_zh=VALUES(action_text_zh), indication_text_zh=VALUES(indication_text_zh),
          dose_text_zh=VALUES(dose_text_zh), dose_min_g=VALUES(dose_min_g), dose_max_g=VALUES(dose_max_g),
          caution_text_zh=VALUES(caution_text_zh), is_active=VALUES(is_active)`,
-      [
-        h.herb_id, h.category_id, cat.chapter_zh || null, cat.section_zh || null,
-        h.name_zh, h.name_zh_traditional, h.name_vi, h.pinyin, h.latin_name,
-        h.medicinal_part, h.source_species,
-        temperature.zh, temperature.vi, taste.zh, taste.vi, meridian.zh, meridian.vi,
-        profile.action_text_zh || null, profile.indication_text_zh || null,
-        useRule ? useRule.preparation_text_zh : null,
-        useRule ? toDecimal(useRule.dose_min_g) : null,
-        useRule ? toDecimal(useRule.dose_max_g) : null,
-        cautions || null,
-        true,
-      ]
+      [rows]
     );
-    imported += 1;
   }
 
   await conn.execute(
     `INSERT INTO import_log (source_key, domain, spreadsheet_id, row_count) VALUES ('herbal_core_db', 'herb', ?, ?)
      ON DUPLICATE KEY UPDATE spreadsheet_id=VALUES(spreadsheet_id), row_count=VALUES(row_count), imported_at=CURRENT_TIMESTAMP`,
-    [SPREADSHEET_ID, imported]
+    [spreadsheetId, rows.length]
   );
 
   await conn.end();
-  console.log(`\n✨ Hoàn tất: đã import ${imported} vị thuốc vào MySQL.`);
+  console.log(`\n✨ Hoàn tất: đã import ${rows.length} vị thuốc vào MySQL.`);
+  return rows.length;
 }
 
-main().catch((err) => {
-  console.error('❌ Import thất bại:', err);
-  process.exit(1);
-});
+const isMainModule = process.argv[1] && import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
+  runImport().catch((err) => {
+    console.error('❌ Import thất bại:', err);
+    process.exit(1);
+  });
+}

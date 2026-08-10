@@ -3,8 +3,9 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { spawn } from 'child_process';
 import mysql from 'mysql2/promise';
+import { runImport } from './import-herbal-sheets.js';
+import { buildAPI } from './build-api.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -223,41 +224,36 @@ app.get('/api/metadata', (req, res) => {
   }
 });
 
-function runScript(scriptFile, onDone) {
-  const proc = spawn('node', [scriptFile], { cwd: __dirname, stdio: 'pipe' });
-  let output = '';
-  let errorOutput = '';
-  proc.stdout.on('data', (data) => { output += data.toString(); });
-  proc.stderr.on('data', (data) => { errorOutput += data.toString(); });
-  proc.on('close', (code) => onDone(code, output, errorOutput));
-}
-
 /**
  * POST /api/import-herbs-now
  * Trigger a re-sync of the herbal dictionary from Google Sheets into MySQL
- * (with webhook secret)
+ * (with webhook secret). Runs in-process — some managed Node hosts (e.g.
+ * Hostinger's Web App) sandbox child_process.spawn and crash the whole
+ * app when a spawned process errors, so this must not shell out.
  */
-app.post('/api/import-herbs-now', (req, res) => {
+app.post('/api/import-herbs-now', async (req, res) => {
   const secret = req.query.secret || req.body.secret;
 
   if (secret !== WEBHOOK_SECRET) {
     return res.status(403).json({ success: false, error: 'Unauthorized' });
   }
 
-  runScript('import-herbal-sheets.js', (code, output, errorOutput) => {
-    if (code === 0) {
-      res.json({ success: true, message: 'Herb import triggered successfully', output });
-    } else {
-      res.status(500).json({ success: false, error: 'Import failed', output, errorOutput });
-    }
-  });
+  try {
+    const count = await runImport();
+    res.json({ success: true, message: `Herb import completed: ${count} herbs` });
+  } catch (err) {
+    console.error('Herb import failed:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 /**
  * POST /api/build-now
- * Trigger immediate build (with webhook secret)
+ * Trigger an immediate rebuild of the Giải phẫu terms from Google Sheets
+ * (with webhook secret). Runs in-process for the same reason as
+ * /api/import-herbs-now above.
  */
-app.post('/api/build-now', (req, res) => {
+app.post('/api/build-now', async (req, res) => {
   const secret = req.query.secret || req.body.secret;
 
   if (secret !== WEBHOOK_SECRET) {
@@ -267,39 +263,13 @@ app.post('/api/build-now', (req, res) => {
     });
   }
 
-  // Trigger build
-  const build = spawn('node', ['build-api.js'], {
-    cwd: __dirname,
-    stdio: 'pipe',
-  });
-
-  let output = '';
-  let errorOutput = '';
-
-  build.stdout.on('data', (data) => {
-    output += data.toString();
-  });
-
-  build.stderr.on('data', (data) => {
-    errorOutput += data.toString();
-  });
-
-  build.on('close', (code) => {
-    if (code === 0) {
-      res.json({
-        success: true,
-        message: 'Build triggered successfully',
-        output: output,
-      });
-    } else {
-      res.status(500).json({
-        success: false,
-        error: 'Build failed',
-        output: output,
-        errorOutput: errorOutput,
-      });
-    }
-  });
+  try {
+    await buildAPI();
+    res.json({ success: true, message: 'Build completed successfully' });
+  } catch (err) {
+    console.error('Build failed:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 /**
