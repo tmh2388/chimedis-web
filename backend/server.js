@@ -12,13 +12,15 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
 
-const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
+// Frontend static assets live in backend/public/ (synced from ../frontend via
+// `npm run build` locally — see sync-frontend.js) so a deploy that only ships
+// the backend/ directory still serves the PWA.
+const PUBLIC_DIR = path.join(__dirname, 'public');
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(FRONTEND_DIR));
+app.use(express.static(PUBLIC_DIR));
 
 // ===== API ENDPOINTS =====
 
@@ -236,7 +238,7 @@ app.get('/api', (req, res) => {
  * SPA fallback — any other GET request serves the PWA shell
  */
 app.get(/^(?!\/api).*/, (req, res, next) => {
-  res.sendFile(path.join(FRONTEND_DIR, 'index.html'), (err) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'index.html'), (err) => {
     if (err) next(err);
   });
 });
