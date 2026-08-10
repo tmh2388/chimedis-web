@@ -48,7 +48,7 @@ function herbRowToTerm(h) {
     congnang: h.action_text_zh,
     lamsang: h.indication_text_zh,
     nguon: h.source_species,
-    verify: true,
+    verify: false,
     category: 'herb',
     temperature_vi: h.temperature_vi,
     temperature_zh: h.temperature_zh,
