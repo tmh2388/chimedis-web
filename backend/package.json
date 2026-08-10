@@ -8,16 +8,23 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "build": "node sync-frontend.js && node build-api.js",
-    "build:watch": "node --watch build-api.js"
+    "build:watch": "node --watch build-api.js",
+    "import:herbs": "node import-herbal-sheets.js"
   },
-  "keywords": ["chimedis", "api", "google-sheets", "tcm"],
+  "keywords": [
+    "chimedis",
+    "api",
+    "google-sheets",
+    "tcm"
+  ],
   "author": "Hạ Vân Minh",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "googleapis": "^120.0.0",
-    "dotenv": "^16.3.1"
+    "mysql2": "^3.23.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

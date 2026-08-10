@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
+import mysql from 'mysql2/promise';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,6 +12,66 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
+
+// MySQL is optional — herb data (from Google Sheets via import-herbal-sheets.js)
+// only appears in /api/terms once MYSQL_HOST etc. are configured. Without it,
+// /api/terms still works with just the Giải phẫu data from public/data/terms.json.
+const mysqlPool = process.env.MYSQL_HOST
+  ? mysql.createPool({
+      host: process.env.MYSQL_HOST,
+      port: process.env.MYSQL_PORT || 3306,
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
+      database: process.env.MYSQL_DATABASE,
+      connectionLimit: 5,
+    })
+  : null;
+
+/**
+ * Maps a `herbs` MySQL row into the same shape /api/terms already returns
+ * for Giải phẫu, so the frontend's existing list/search code works
+ * unchanged. Herb-specific fields (taste, meridian, dose...) ride along
+ * for the detail view to use.
+ */
+function herbRowToTerm(h) {
+  return {
+    id: h.herb_id,
+    hz: h.name_zh,
+    hz_traditional: h.name_zh_traditional,
+    py: h.pinyin,
+    vi: h.name_vi,
+    en: h.latin_name,
+    group1: 'Dược liệu',
+    group2: h.section_zh || h.chapter_zh,
+    vitri: h.medicinal_part,
+    congnang: h.action_text_zh,
+    lamsang: h.indication_text_zh,
+    nguon: h.source_species,
+    verify: true,
+    category: 'herb',
+    temperature_vi: h.temperature_vi,
+    temperature_zh: h.temperature_zh,
+    taste_vi: h.taste_vi,
+    taste_zh: h.taste_zh,
+    meridian_vi: h.meridian_vi,
+    meridian_zh: h.meridian_zh,
+    dose_text: h.dose_text_zh,
+    dose_min_g: h.dose_min_g,
+    dose_max_g: h.dose_max_g,
+    caution: h.caution_text_zh,
+  };
+}
+
+async function getHerbTerms() {
+  if (!mysqlPool) return [];
+  try {
+    const [rows] = await mysqlPool.query('SELECT * FROM herbs WHERE is_active = TRUE');
+    return rows.map(herbRowToTerm);
+  } catch (err) {
+    console.error('⚠️  Không đọc được dữ liệu dược liệu từ MySQL:', err.message);
+    return [];
+  }
+}
 
 // Frontend static assets live in backend/public/ (synced from ../frontend via
 // `npm run build` locally — see sync-frontend.js) so a deploy that only ships
@@ -29,18 +90,22 @@ app.use(express.static(PUBLIC_DIR));
  * Fetch all terms with optional filters
  * Filters: ?group=Giải phẫu&verified=true&search=phế
  */
-app.get('/api/terms', (req, res) => {
+app.get('/api/terms', async (req, res) => {
   try {
     const termsPath = path.join(__dirname, 'public', 'data', 'terms.json');
 
-    if (!fs.existsSync(termsPath)) {
+    const sheetTerms = fs.existsSync(termsPath)
+      ? JSON.parse(fs.readFileSync(termsPath, 'utf8'))
+      : [];
+    const herbTerms = await getHerbTerms();
+    const terms = [...sheetTerms, ...herbTerms];
+
+    if (terms.length === 0) {
       return res.status(404).json({
         success: false,
         error: 'Terms data not found. Run: npm run build',
       });
     }
-
-    const terms = JSON.parse(fs.readFileSync(termsPath, 'utf8'));
 
     // Filters
     const { group1, group2, verified, search } = req.query;
@@ -88,19 +153,23 @@ app.get('/api/terms', (req, res) => {
  * GET /api/groups
  * Fetch unique groups
  */
-app.get('/api/groups', (req, res) => {
+app.get('/api/groups', async (req, res) => {
   try {
     const termsPath = path.join(__dirname, 'public', 'data', 'terms.json');
 
-    if (!fs.existsSync(termsPath)) {
+    const sheetTerms = fs.existsSync(termsPath)
+      ? JSON.parse(fs.readFileSync(termsPath, 'utf8'))
+      : [];
+    const herbTerms = await getHerbTerms();
+    const terms = [...sheetTerms, ...herbTerms];
+
+    if (terms.length === 0) {
       return res.status(404).json({
         success: false,
         error: 'Terms data not found',
       });
     }
-    
-    const terms = JSON.parse(fs.readFileSync(termsPath, 'utf8'));
-    
+
     // Extract unique groups
     const group1Set = new Set();
     const group2Set = new Set();
