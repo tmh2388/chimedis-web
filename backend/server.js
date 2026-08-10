@@ -223,37 +223,67 @@ app.get('/api/metadata', (req, res) => {
   }
 });
 
+function runScript(scriptFile, onDone) {
+  const proc = spawn('node', [scriptFile], { cwd: __dirname, stdio: 'pipe' });
+  let output = '';
+  let errorOutput = '';
+  proc.stdout.on('data', (data) => { output += data.toString(); });
+  proc.stderr.on('data', (data) => { errorOutput += data.toString(); });
+  proc.on('close', (code) => onDone(code, output, errorOutput));
+}
+
+/**
+ * POST /api/import-herbs-now
+ * Trigger a re-sync of the herbal dictionary from Google Sheets into MySQL
+ * (with webhook secret)
+ */
+app.post('/api/import-herbs-now', (req, res) => {
+  const secret = req.query.secret || req.body.secret;
+
+  if (secret !== WEBHOOK_SECRET) {
+    return res.status(403).json({ success: false, error: 'Unauthorized' });
+  }
+
+  runScript('import-herbal-sheets.js', (code, output, errorOutput) => {
+    if (code === 0) {
+      res.json({ success: true, message: 'Herb import triggered successfully', output });
+    } else {
+      res.status(500).json({ success: false, error: 'Import failed', output, errorOutput });
+    }
+  });
+});
+
 /**
  * POST /api/build-now
  * Trigger immediate build (with webhook secret)
  */
 app.post('/api/build-now', (req, res) => {
   const secret = req.query.secret || req.body.secret;
-  
+
   if (secret !== WEBHOOK_SECRET) {
     return res.status(403).json({
       success: false,
       error: 'Unauthorized',
     });
   }
-  
+
   // Trigger build
   const build = spawn('node', ['build-api.js'], {
     cwd: __dirname,
     stdio: 'pipe',
   });
-  
+
   let output = '';
   let errorOutput = '';
-  
+
   build.stdout.on('data', (data) => {
     output += data.toString();
   });
-  
+
   build.stderr.on('data', (data) => {
     errorOutput += data.toString();
   });
-  
+
   build.on('close', (code) => {
     if (code === 0) {
       res.json({
