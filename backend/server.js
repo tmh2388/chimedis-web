@@ -43,10 +43,12 @@ function herbRowToTerm(h) {
     vi: h.name_vi,
     en: h.latin_name,
     group1: 'Dược liệu',
+    // group2 luôn giữ nguyên tiếng Trung làm khoá lọc ổn định (không đổi khi
+    // chuyển ngôn ngữ hiển thị) — group2_vi/en chỉ dùng để hiển thị nhãn.
     group2: h.section_zh || h.chapter_zh,
+    group2_vi: h.section_vi || h.chapter_vi,
+    group2_en: h.section_en || h.chapter_en,
     vitri: h.medicinal_part,
-    congnang: h.action_text_zh,
-    lamsang: h.indication_text_zh,
     nguon: h.source_species,
     verify: false,
     category: 'herb',
@@ -56,10 +58,20 @@ function herbRowToTerm(h) {
     taste_zh: h.taste_zh,
     meridian_vi: h.meridian_vi,
     meridian_zh: h.meridian_zh,
-    dose_text: h.dose_text_zh,
+    action_zh: h.action_text_zh,
+    action_vi: h.action_text_vi,
+    action_en: h.action_text_en,
+    indication_zh: h.indication_text_zh,
+    indication_vi: h.indication_text_vi,
+    indication_en: h.indication_text_en,
+    dose_text_zh: h.dose_text_zh,
+    dose_text_vi: h.dose_text_vi,
+    dose_text_en: h.dose_text_en,
     dose_min_g: h.dose_min_g,
     dose_max_g: h.dose_max_g,
-    caution: h.caution_text_zh,
+    caution_zh: h.caution_text_zh,
+    caution_vi: h.caution_text_vi,
+    caution_en: h.caution_text_en,
   };
 }
 
