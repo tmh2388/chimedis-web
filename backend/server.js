@@ -26,17 +26,17 @@ app.use(express.static(path.join(__dirname, 'public')));
  */
 app.get('/api/terms', (req, res) => {
   try {
-    const termsPath = path.join(__dirname, 'data', 'terms.json');
-    
+    const termsPath = path.join(__dirname, 'public', 'data', 'terms.json');
+
     if (!fs.existsSync(termsPath)) {
       return res.status(404).json({
         success: false,
         error: 'Terms data not found. Run: npm run build',
       });
     }
-    
+
     const terms = JSON.parse(fs.readFileSync(termsPath, 'utf8'));
-    
+
     // Filters
     const { group1, group2, verified, search } = req.query;
     
@@ -85,8 +85,8 @@ app.get('/api/terms', (req, res) => {
  */
 app.get('/api/groups', (req, res) => {
   try {
-    const termsPath = path.join(__dirname, 'data', 'terms.json');
-    
+    const termsPath = path.join(__dirname, 'public', 'data', 'terms.json');
+
     if (!fs.existsSync(termsPath)) {
       return res.status(404).json({
         success: false,
@@ -126,7 +126,7 @@ app.get('/api/groups', (req, res) => {
  */
 app.get('/api/metadata', (req, res) => {
   try {
-    const metadataPath = path.join(__dirname, 'data', 'metadata.json');
+    const metadataPath = path.join(__dirname, 'public', 'data', 'metadata.json');
     
     if (!fs.existsSync(metadataPath)) {
       return res.status(404).json({

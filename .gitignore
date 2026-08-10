@@ -1,0 +1,6 @@
+node_modules/
+.env
+backend/credentials.json
+backend/public/data/*.json
+.DS_Store
+*.log
