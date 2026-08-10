@@ -12,10 +12,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
 
+const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(FRONTEND_DIR));
 
 // ===== API ENDPOINTS =====
 
@@ -210,10 +213,10 @@ app.get('/health', (req, res) => {
 });
 
 /**
- * GET /
+ * GET /api
  * API documentation
  */
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({
     name: 'Chimedis API',
     version: '1.0.0',
@@ -226,6 +229,15 @@ app.get('/', (req, res) => {
       'GET /health': 'Health check',
     },
     documentation: 'https://github.com/tmh2388/chimedis-web',
+  });
+});
+
+/**
+ * SPA fallback — any other GET request serves the PWA shell
+ */
+app.get(/^(?!\/api).*/, (req, res, next) => {
+  res.sendFile(path.join(FRONTEND_DIR, 'index.html'), (err) => {
+    if (err) next(err);
   });
 });
 
