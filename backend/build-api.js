@@ -14,12 +14,12 @@ import { google } from 'googleapis';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createGoogleAuth } from './google-auth.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Configuration
 const SHEET_ID = process.env.GOOGLE_SHEETS_ID || '1wXldDsL7Zs3GYEXx7o1n3y7T1KHiWkasAgWNhBIUHaI';
-const CREDENTIALS_PATH = process.env.GOOGLE_CREDENTIALS_JSON || path.join(__dirname, 'credentials.json');
 const OUTPUT_DIR = process.env.OUTPUT_DIR || path.join(__dirname, 'public', 'data');
 
 // Ensure output directory exists
@@ -28,10 +28,7 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 }
 
 // Initialize Google Auth
-const auth = new google.auth.GoogleAuth({
-  keyFile: CREDENTIALS_PATH,
-  scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-});
+const auth = createGoogleAuth(['https://www.googleapis.com/auth/spreadsheets.readonly']);
 
 const sheets = google.sheets({ version: 'v4', auth });
 
@@ -59,8 +56,10 @@ export async function buildAPI() {
   console.log(`📊 Sheet ID: ${SHEET_ID}`);
   console.log(`📁 Output: ${OUTPUT_DIR}`);
 
-  if (!fs.existsSync(CREDENTIALS_PATH)) {
-    writePlaceholderData(`Không tìm thấy credentials.json tại ${CREDENTIALS_PATH}.`);
+  const hasInlineCreds = (process.env.GOOGLE_CREDENTIALS_JSON || '').trim().startsWith('{');
+  const credsFilePath = process.env.GOOGLE_CREDENTIALS_JSON || path.join(__dirname, 'credentials.json');
+  if (!hasInlineCreds && !fs.existsSync(credsFilePath)) {
+    writePlaceholderData(`Không tìm thấy credentials Google (biến GOOGLE_CREDENTIALS_JSON trống và không có file tại ${credsFilePath}).`);
     return;
   }
 

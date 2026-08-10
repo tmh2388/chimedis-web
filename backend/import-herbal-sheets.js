@@ -17,17 +17,9 @@
  */
 import { google } from 'googleapis';
 import mysql from 'mysql2/promise';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { createGoogleAuth } from './google-auth.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const CREDENTIALS_PATH = process.env.GOOGLE_CREDENTIALS_JSON || path.join(__dirname, 'credentials.json');
-
-const auth = new google.auth.GoogleAuth({
-  keyFile: CREDENTIALS_PATH,
-  scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-});
+const auth = createGoogleAuth(['https://www.googleapis.com/auth/spreadsheets.readonly']);
 const sheets = google.sheets({ version: 'v4', auth });
 
 // Standard TCM vocabulary — these code sets are fixed/universal, not
