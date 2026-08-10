@@ -35,11 +35,35 @@ const auth = new google.auth.GoogleAuth({
 
 const sheets = google.sheets({ version: 'v4', auth });
 
+function writePlaceholderData(reason) {
+  console.warn(`⚠️  ${reason}`);
+  console.warn('   Bỏ qua đồng bộ Google Sheets — ứng dụng sẽ dùng dữ liệu nhúng sẵn trong frontend cho tới khi được cấu hình.');
+  console.warn('   Hướng dẫn kết nối: docs/google-sheets-setup.md');
+
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'terms.json'), JSON.stringify([], null, 2));
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'groups.json'), JSON.stringify({ group1: [], group2: [] }, null, 2));
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'metadata.json'), JSON.stringify({
+    lastBuilt: new Date().toISOString(),
+    totalTerms: 0,
+    verified: 0,
+    unverified: 0,
+    version: '1.0.0',
+    note: 'placeholder — Google Sheets chưa được cấu hình',
+  }, null, 2));
+
+  console.log('✅ Đã ghi dữ liệu placeholder (rỗng). Deploy tiếp tục bình thường.');
+}
+
 async function buildAPI() {
   console.log('🔄 Starting API build from Google Sheets...');
   console.log(`📊 Sheet ID: ${SHEET_ID}`);
   console.log(`📁 Output: ${OUTPUT_DIR}`);
-  
+
+  if (!fs.existsSync(CREDENTIALS_PATH)) {
+    writePlaceholderData(`Không tìm thấy credentials.json tại ${CREDENTIALS_PATH}.`);
+    return;
+  }
+
   try {
     // 1. Fetch TERMS sheet
     console.log('\n📖 Fetching TERMS...');
