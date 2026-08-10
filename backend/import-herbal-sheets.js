@@ -121,7 +121,9 @@ export async function runImport() {
 
   const rows = [];
   for (const h of herbs) {
-    if (h.record_type !== 'CORE') continue; // skip RELATED_HERB duplicates (those live in appendix-style rows)
+    // CORE and RELATED_HERB are both standalone dictionary entries with their
+    // own full clinical profile (e.g. 紫苏叶 core vs. 紫苏梗/紫苏子 related) —
+    // RELATED_HERB just flags "a variant/other part of a plant", not a duplicate.
     if (h.is_active === false || h.is_active === 'FALSE') continue;
 
     const cat = categoryById.get(h.category_id) || {};
