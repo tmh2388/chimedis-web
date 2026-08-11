@@ -181,6 +181,7 @@ footer .note{font-size:10.5px;color:var(--ngua);opacity:.55;margin-top:12px;
 .field p.cn{font-size:12.5px;color:var(--tham-2)}
 .field p.lang-vi{font-size:13px;color:var(--tham-2)}
 .field p.lang-en{font-size:13px;color:var(--tham-2);font-style:italic}
+.field p.lang-en-lead{font-size:15px;color:var(--thamthm);font-weight:700;font-style:normal}
 .field.tcm{background:linear-gradient(180deg,#fbf6ee,#f7efe2);margin:14px -20px 0;padding:14px 20px;
   border:0;border-top:1px solid var(--vien)}
 .field.tcm .ft{color:var(--son)}
@@ -665,6 +666,22 @@ function renderMultiLang(vi, zh, en){
     { on: state.contentLangs.zh, text: zh, cls: 'han' },
     { on: state.contentLangs.vi, text: vi, cls: 'lang-vi' },
     { on: state.contentLangs.en, text: en, cls: 'lang-en' },
+  ];
+  let html = parts.filter(p => p.on && p.text).map(p => `<p class="${p.cls}">${p.text}</p>`).join('');
+  if(!html){
+    const fb = parts.find(p => p.text);
+    if(fb) html = `<p class="${fb.cls}">${fb.text}</p>`;
+  }
+  return html;
+}
+// Riêng "Ví dụ" của Từ ghép Y Khoa: đảo thứ tự Anh->Việt->Trung (thay vì Trung->Việt->Anh
+// như mọi nơi khác) vì tiếng Anh mới là vai trò chủ đạo của domain này — Anh in đậm, đứng
+// thẳng (không nghiêng) để nổi bật, Việt/Trung xuống thành chú giải phụ.
+function renderMultiLangEnFirst(vi, zh, en){
+  const parts = [
+    { on: state.contentLangs.en, text: en, cls: 'lang-en-lead' },
+    { on: state.contentLangs.vi, text: vi, cls: 'lang-vi' },
+    { on: state.contentLangs.zh, text: zh, cls: 'han' },
   ];
   let html = parts.filter(p => p.on && p.text).map(p => `<p class="${p.cls}">${p.text}</p>`).join('');
   if(!html){
@@ -1187,7 +1204,7 @@ function openPopup(id){
     const n = Math.max(exVi.length, exZh.length, exEn.length);
     let exampleBody = '';
     for(let i=0; i<n; i++){
-      const body = renderMultiLang(exVi[i], exZh[i], exEn[i]);
+      const body = renderMultiLangEnFirst(exVi[i], exZh[i], exEn[i]);
       if(body) exampleBody += `<div${i>0?' style="margin-top:10px"':''}>${body}</div>`;
     }
     if(exampleBody) html += `<div class="field tcm"><div class="ft">${t('f_example')}</div>${exampleBody}</div>`;
