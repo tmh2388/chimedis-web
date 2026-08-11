@@ -721,17 +721,25 @@ function matchTerm(t, q){
 }
 
 // ===== CẤU TRÚC NHÓM (menu1 / menu2) =====
-function GROUP1(){ return [
-  {key:'all', label:t('g_all')},
-  {key:'Giải phẫu', label:t('g_anat')},
-  {key:'Sinh lý', label:t('g_phys')},
-  {key:'Bệnh lý', label:t('g_path')},
-  {key:'Dược liệu', label:t('g_herb')},
-  {key:'Huyệt vị', label:t('g_acu')},
-  {key:'Thang phương', label:t('g_form')},
-  {key:'Từ ghép Y Khoa', label:t('g_wordelem')},
-  {key:'Ôn luyện', label:t('g_review')},
-]; }
+// 'all' và 'Ôn luyện' luôn hiện (không phải domain dữ liệu thật). Các domain
+// còn lại chỉ hiện khi TERMS thực sự có ít nhất 1 mục — tự ẩn Huyệt vị/Thang
+// phương/... khi chưa có nguồn dữ liệu, không cần sửa code khi thêm domain
+// mới hay khi domain rỗng có dữ liệu trở lại (chỉ cần TERMS cập nhật).
+const ALWAYS_SHOW_GROUPS = ['all', 'Ôn luyện'];
+function GROUP1(){
+  const all = [
+    {key:'all', label:t('g_all')},
+    {key:'Giải phẫu', label:t('g_anat')},
+    {key:'Sinh lý', label:t('g_phys')},
+    {key:'Bệnh lý', label:t('g_path')},
+    {key:'Dược liệu', label:t('g_herb')},
+    {key:'Huyệt vị', label:t('g_acu')},
+    {key:'Thang phương', label:t('g_form')},
+    {key:'Từ ghép Y Khoa', label:t('g_wordelem')},
+    {key:'Ôn luyện', label:t('g_review')},
+  ];
+  return all.filter(g => ALWAYS_SHOW_GROUPS.includes(g.key) || TERMS.some(x => x.group1 === g.key));
+}
 // Giải phẫu/Sinh lý giờ có dữ liệu thật (MySQL anatomy_terms) nên dùng cơ chế
 // data-driven giống Dược liệu (group2/group2_vi/group2_en lấy từ TERMS thực
 // tế) — chỉ Bệnh lý còn dùng danh sách hardcode SYS_OPTIONS vì chưa có nguồn
@@ -1170,11 +1178,18 @@ function openPopup(id){
     </div>
     <div class="pp-body">`;
   if(term.category === 'word_element'){
-    // Loại 'term' (thuật ngữ ghép): meaning là tiếng Anh (định nghĩa gốc), example là
-    // phần phân tích cấu tạo (root breakdown) — không phải ví dụ dùng từ như 3 loại kia.
-    const meaningBody = renderMultiLang(term.meaning, '', term.meaning_en);
-    if(meaningBody) html += `<div class="field"><div class="ft">${t('f_meaning')}</div>${meaningBody}</div>`;
-    const exampleBody = renderMultiLang(term.example, term.example_cn, term.example_en);
+    // Bỏ field "Ý nghĩa" — đã có ở khối đầu (dòng vi lớn dưới headword), không lặp lại.
+    // Chỉ giữ "Ví dụ". Khi 1 mục gộp nhiều từ (vd. "-ac, -al, -ar...") nguồn cho nhiều ví
+    // dụ ngăn cách bởi "/" (hoặc "／") — tách thành từng dòng riêng theo đúng vị trí ở cả
+    // 3 ngôn ngữ, thay vì gộp chung 1 đoạn dài khó đọc.
+    const splitEx = (s) => (s || '').split(/\s*[\/／]\s*/).filter(Boolean);
+    const exVi = splitEx(term.example), exZh = splitEx(term.example_cn), exEn = splitEx(term.example_en);
+    const n = Math.max(exVi.length, exZh.length, exEn.length);
+    let exampleBody = '';
+    for(let i=0; i<n; i++){
+      const body = renderMultiLang(exVi[i], exZh[i], exEn[i]);
+      if(body) exampleBody += `<div${i>0?' style="margin-top:10px"':''}>${body}</div>`;
+    }
     if(exampleBody) html += `<div class="field tcm"><div class="ft">${t('f_example')}</div>${exampleBody}</div>`;
   } else if(term.category === 'herb'){
     // Tính vị/quy kinh: chỉ có VI+ZH. Công năng: có bản dịch VI/EN chuẩn (nguồn).
