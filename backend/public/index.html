@@ -181,7 +181,8 @@ footer .note{font-size:10.5px;color:var(--ngua);opacity:.55;margin-top:12px;
 .field p.cn{font-size:12.5px;color:var(--tham-2)}
 .field p.lang-vi{font-size:13px;color:var(--tham-2)}
 .field p.lang-en{font-size:13px;color:var(--tham-2);font-style:italic}
-.field p.lang-en-lead{font-size:15px;color:var(--thamthm);font-weight:700;font-style:normal}
+.field p.lang-en-lead{font-size:16px;color:var(--thamthm);font-weight:700;font-style:normal}
+.field p.lang-en-lead .ex-ipa{font-size:12.5px;color:var(--muc-mo);font-weight:400;font-style:italic}
 .field.tcm{background:linear-gradient(180deg,#fbf6ee,#f7efe2);margin:14px -20px 0;padding:14px 20px;
   border:0;border-top:1px solid var(--vien)}
 .field.tcm .ft{color:var(--son)}
@@ -677,9 +678,10 @@ function renderMultiLang(vi, zh, en){
 // Riêng "Ví dụ" của Từ ghép Y Khoa: đảo thứ tự Anh->Việt->Trung (thay vì Trung->Việt->Anh
 // như mọi nơi khác) vì tiếng Anh mới là vai trò chủ đạo của domain này — Anh in đậm, đứng
 // thẳng (không nghiêng) để nổi bật, Việt/Trung xuống thành chú giải phụ.
-function renderMultiLangEnFirst(vi, zh, en){
+function renderMultiLangEnFirst(vi, zh, en, ipa){
+  const ipaHtml = (en && ipa) ? ` <span class="ex-ipa">/${ipa}/</span>` : '';
   const parts = [
-    { on: state.contentLangs.en, text: en, cls: 'lang-en-lead' },
+    { on: state.contentLangs.en, text: en ? en+ipaHtml : en, cls: 'lang-en-lead' },
     { on: state.contentLangs.vi, text: vi, cls: 'lang-vi' },
     { on: state.contentLangs.zh, text: zh, cls: 'han' },
   ];
@@ -1199,12 +1201,20 @@ function openPopup(id){
     // Chỉ giữ "Ví dụ". Khi 1 mục gộp nhiều từ (vd. "-ac, -al, -ar...") nguồn cho nhiều ví
     // dụ ngăn cách bởi "/" (hoặc "／") — tách thành từng dòng riêng theo đúng vị trí ở cả
     // 3 ngôn ngữ, thay vì gộp chung 1 đoạn dài khó đọc.
-    const splitEx = (s) => (s || '').split(/\s*[\/／]\s*/).filter(Boolean);
+    // Chỉ tách khi có khoảng trắng bao quanh dấu "/" (đúng là dấu ngăn nhiều ví dụ, vd.
+    // "cardiac / gastric") — KHÔNG tách khi "/" dính liền chữ (vd. "men/o" trong phần phân
+    // tích cấu tạo của loại 'term' — đó là ký hiệu viết tắt dạng gốc từ, không phải dấu ngăn).
+    const splitEx = (s) => (s || '').split(/\s+[\/／]\s+/).filter(Boolean);
     const exVi = splitEx(term.example), exZh = splitEx(term.example_cn), exEn = splitEx(term.example_en);
+    // IPA đã có sẵn đầy đủ trong nguồn cho mọi loại (term.ipa) — ghép vào Ví dụ cho
+    // TẤT CẢ loại (tiền tố/hậu tố/từ căn/thuật ngữ ghép), không loại trừ. Với tiền tố/hậu
+    // tố/từ căn nhiều dạng, ipa liệt kê theo đúng thứ tự dạng từ (giống "en"), khớp vị trí
+    // với ví dụ đã tách; với "term" (thuật ngữ ghép) chỉ có 1 dạng nên chỉ 1 ipa.
+    const exIpa = (term.ipa||'').split(',').map(s=>s.trim());
     const n = Math.max(exVi.length, exZh.length, exEn.length);
     let exampleBody = '';
     for(let i=0; i<n; i++){
-      const body = renderMultiLangEnFirst(exVi[i], exZh[i], exEn[i]);
+      const body = renderMultiLangEnFirst(exVi[i], exZh[i], exEn[i], exIpa[i]);
       if(body) exampleBody += `<div${i>0?' style="margin-top:10px"':''}>${body}</div>`;
     }
     if(exampleBody) html += `<div class="field tcm"><div class="ft">${t('f_example')}</div>${exampleBody}</div>`;

@@ -1437,9 +1437,9 @@
     "py": "shàng, tóu",
     "vi": "trên, đầu",
     "meaning": "phía trên/đầu",
-    "ex": "cephalad",
-    "exZh": "向頭端 xiàng tóuduān",
-    "exVi": "hướng về đầu",
+    "ex": "superior / cephalad",
+    "exZh": "上方的 shàngfāng de / 向頭端 xiàng tóuduān",
+    "exVi": "ở trên, phía trên / hướng về đầu",
     "ipa": "ˈsuːpəroʊ, ˈsɛfəloʊ"
   },
   {
@@ -1450,9 +1450,9 @@
     "py": "xià, wěi",
     "vi": "dưới, đuôi",
     "meaning": "phía dưới",
-    "ex": "caudal",
-    "exZh": "尾側的 wěicè de",
-    "exVi": "về phía đuôi",
+    "ex": "inferior / caudal",
+    "exZh": "下方的 xiàfāng de / 尾側的 wěicè de",
+    "exVi": "ở dưới, phía dưới / về phía đuôi",
     "ipa": "ˈɪnfəroʊ, ˈkɔːdoʊ"
   },
   {
@@ -1515,9 +1515,9 @@
     "py": "fùcè",
     "vi": "phía bụng",
     "meaning": "mặt bụng",
-    "ex": "ventral",
-    "exZh": "腹側的 fùcè de",
-    "exVi": "thuộc mặt bụng",
+    "ex": "ventral / anterior",
+    "exZh": "腹側的 fùcè de / 前方的 qiánfāng de",
+    "exVi": "thuộc mặt bụng / ở phía trước",
     "ipa": "ˈvɛntroʊ, ˈæntəroʊ"
   },
   {
@@ -1528,9 +1528,9 @@
     "py": "bèicè",
     "vi": "phía lưng",
     "meaning": "mặt lưng",
-    "ex": "dorsal",
-    "exZh": "背側的 bèicè de",
-    "exVi": "thuộc mặt lưng",
+    "ex": "dorsal / posterior",
+    "exZh": "背側的 bèicè de / 後方的 hòufāng de",
+    "exVi": "thuộc mặt lưng / ở phía sau",
     "ipa": "ˈdɔːrsoʊ, ˈpɑːstəroʊ"
   },
   {
@@ -1541,9 +1541,9 @@
     "py": "pífū",
     "vi": "da",
     "meaning": "da",
-    "ex": "dermatitis",
-    "exZh": "皮膚炎 pífū yán",
-    "exVi": "viêm da",
+    "ex": "dermatitis / hypodermic",
+    "exZh": "皮膚炎 pífū yán / 皮下的 pí xià de",
+    "exVi": "viêm da / dưới da",
     "ipa": "dərˈmætoʊ, ˈdɜːrmoʊ"
   },
   {
@@ -1710,9 +1710,9 @@
     "py": "jiàn",
     "vi": "gân",
     "meaning": "gân",
-    "ex": "tendinitis",
-    "exZh": "腱炎 jiàn yán",
-    "exVi": "viêm gân",
+    "ex": "tenodesis / tendinitis",
+    "exZh": "肌腱固定術 jījiàn gùdìng shù / 腱炎 jiàn yán",
+    "exVi": "phẫu thuật cố định gân / viêm gân",
     "ipa": "ˈtɛnoʊ, ˈtɛndɪnoʊ"
   },
   {
@@ -1736,9 +1736,9 @@
     "py": "jǐzhuī",
     "vi": "đốt sống, cột sống",
     "meaning": "cột sống, đốt sống",
-    "ex": "spondylosis",
-    "exZh": "脊椎病 jǐzhuī bìng",
-    "exVi": "thoái hoá cột sống",
+    "ex": "spondylosis / vertebral",
+    "exZh": "脊椎病 jǐzhuī bìng / 椎骨的 zhuīgǔ de",
+    "exVi": "thoái hoá cột sống / thuộc đốt sống",
     "ipa": "ˈspɑːndɪloʊ, ˈvɜːrtəbroʊ"
   },
   {
@@ -1905,9 +1905,9 @@
     "py": "xiǎo'ér",
     "vi": "trẻ em",
     "meaning": "trẻ em (lưu ý: ped/o cũng có thể mang nghĩa 'chân' tuỳ ngữ cảnh — xem thêm pod/o)",
-    "ex": "pediatrician",
-    "exZh": "兒科醫師 érkē yīshī",
-    "exVi": "bác sĩ nhi khoa",
+    "ex": "pediatric / pediatrician",
+    "exZh": "小兒的 xiǎo'ér de / 兒科醫師 érkē yīshī",
+    "exVi": "thuộc nhi khoa / bác sĩ nhi khoa",
     "ipa": "ˈpɛdoʊ, ˌpiːdiˈætroʊ"
   },
   {
@@ -1918,9 +1918,9 @@
     "py": "lǎonián",
     "vi": "già, lão",
     "meaning": "tuổi già",
-    "ex": "geriatrics",
-    "exZh": "老年醫學 lǎonián yīxué",
-    "exVi": "lão khoa học",
+    "ex": "geriatrics / gerontology",
+    "exZh": "老年醫學 lǎonián yīxué / 老年學 lǎonián xué",
+    "exVi": "lão khoa học / lão niên học (nghiên cứu về tuổi già)",
     "ipa": "ˈdʒɪəroʊ, dʒəˈrɑːntoʊ"
   },
   {
@@ -2048,9 +2048,9 @@
     "py": "jìngmài",
     "vi": "tĩnh mạch",
     "meaning": "tĩnh mạch",
-    "ex": "phlebitis",
-    "exZh": "靜脈炎 jìngmài yán",
-    "exVi": "viêm tĩnh mạch",
+    "ex": "phlebitis / venography",
+    "exZh": "靜脈炎 jìngmài yán / 靜脈造影術 jìngmài zàoyǐng shù",
+    "exVi": "viêm tĩnh mạch / chụp X-quang tĩnh mạch",
     "ipa": "ˈflɛboʊ, ˈviːnoʊ"
   },
   {
@@ -2126,9 +2126,9 @@
     "py": "bànmó",
     "vi": "van tim",
     "meaning": "van tim",
-    "ex": "valvuloplasty",
-    "exZh": "瓣膜成形術 bànmó chéngxíng shù",
-    "exVi": "tạo hình van tim",
+    "ex": "valvotomy / valvuloplasty",
+    "exZh": "瓣膜切開術 bànmó qiēkāi shù / 瓣膜成形術 bànmó chéngxíng shù",
+    "exVi": "phẫu thuật mở van tim / tạo hình van tim",
     "ipa": "ˈvælvoʊ, ˈvælvjəloʊ"
   },
   {
@@ -2165,9 +2165,9 @@
     "py": "xuè",
     "vi": "huyết, máu",
     "meaning": "máu",
-    "ex": "hemorrhage",
-    "exZh": "出血 chūxuè",
-    "exVi": "xuất huyết",
+    "ex": "hemorrhage / hematology",
+    "exZh": "出血 chūxuè / 血液學 xuèyè xué",
+    "exVi": "xuất huyết / huyết học",
     "ipa": "ˈhiːmoʊ, hiːˈmætoʊ"
   },
   {
@@ -2308,9 +2308,9 @@
     "py": "fèi, qì",
     "vi": "phổi, khí",
     "meaning": "phổi / khí, hơi",
-    "ex": "pneumonia",
-    "exZh": "肺炎 fèiyán",
-    "exVi": "viêm phổi",
+    "ex": "pneumothorax / pneumonia",
+    "exZh": "氣胸 qìxiōng / 肺炎 fèiyán",
+    "exVi": "tràn khí màng phổi / viêm phổi",
     "ipa": "ˈnuːmoʊ, nuːˈmɑːnoʊ"
   },
   {
@@ -2412,9 +2412,9 @@
     "py": "yǎng",
     "vi": "oxy",
     "meaning": "oxy",
-    "ex": "hypoxia",
-    "exZh": "缺氧 quēyǎng",
-    "exVi": "thiếu oxy",
+    "ex": "hypoxia / oxyhemoglobin",
+    "exZh": "缺氧 quēyǎng / 氧合血紅蛋白 yǎnghé xuèhóngdànbái",
+    "exVi": "thiếu oxy / huyết sắc tố kết hợp oxy",
     "ipa": "ˈɑːksoʊ, ˈɑːksi"
   },
   {
@@ -2503,9 +2503,9 @@
     "py": "kǒu",
     "vi": "miệng",
     "meaning": "miệng",
-    "ex": "stomatitis",
-    "exZh": "口炎 kǒuyán",
-    "exVi": "viêm miệng",
+    "ex": "oral / stomatitis",
+    "exZh": "口腔的 kǒuqiāng de / 口炎 kǒuyán",
+    "exVi": "thuộc miệng / viêm miệng",
     "ipa": "ˈɔːroʊ, ˈstoʊmətoʊ"
   },
   {
@@ -2516,9 +2516,9 @@
     "py": "shé",
     "vi": "lưỡi",
     "meaning": "lưỡi",
-    "ex": "glossitis",
-    "exZh": "舌炎 shéyán",
-    "exVi": "viêm lưỡi",
+    "ex": "glossitis / lingual",
+    "exZh": "舌炎 shéyán / 舌的 shé de",
+    "exVi": "viêm lưỡi / thuộc lưỡi",
     "ipa": "ˈglɑːsoʊ, ˈlɪŋgwoʊ"
   },
   {
@@ -2633,9 +2633,9 @@
     "py": "lánwěi",
     "vi": "ruột thừa",
     "meaning": "ruột thừa",
-    "ex": "appendicitis",
-    "exZh": "闌尾炎 lánwěi yán",
-    "exVi": "viêm ruột thừa",
+    "ex": "appendage / appendicitis",
+    "exZh": "附器 fùqì / 闌尾炎 lánwěi yán",
+    "exVi": "phần phụ / viêm ruột thừa",
     "ipa": "əˈpɛndoʊ, əˈpɛndɪkoʊ"
   },
   {
@@ -2646,9 +2646,9 @@
     "py": "jiécháng",
     "vi": "đại tràng",
     "meaning": "đại tràng",
-    "ex": "colonoscopy",
-    "exZh": "結腸鏡檢查 jiécháng jìng jiǎnchá",
-    "exVi": "nội soi đại tràng",
+    "ex": "colostomy / colonoscopy",
+    "exZh": "結腸造口術 jiécháng zàokǒu shù / 結腸鏡檢查 jiécháng jìng jiǎnchá",
+    "exVi": "phẫu thuật mở thông đại tràng / nội soi đại tràng",
     "ipa": "ˈkoʊloʊ, kəˈloʊnoʊ"
   },
   {
@@ -2672,9 +2672,9 @@
     "py": "zhícháng",
     "vi": "trực tràng",
     "meaning": "trực tràng (proct(o)- gồm cả hậu môn)",
-    "ex": "proctology",
-    "exZh": "直腸病學 zhícháng bìngxué",
-    "exVi": "khoa hậu môn trực tràng",
+    "ex": "rectal / proctology",
+    "exZh": "直腸的 zhícháng de / 直腸病學 zhícháng bìngxué",
+    "exVi": "thuộc trực tràng / khoa hậu môn trực tràng",
     "ipa": "ˈrɛktoʊ, ˈprɑːktoʊ"
   },
   {
@@ -2724,9 +2724,9 @@
     "py": "dǎn",
     "vi": "mật",
     "meaning": "mật",
-    "ex": "cholelithiasis",
-    "exZh": "膽石症 dǎnshí zhèng",
-    "exVi": "sỏi mật",
+    "ex": "cholelithiasis / bilirubin",
+    "exZh": "膽石症 dǎnshí zhèng / 膽紅素 dǎnhóngsù",
+    "exVi": "sỏi mật / bilirubin (sắc tố mật)",
     "ipa": "ˈkoʊli, ˈbɪli"
   },
   {
@@ -2802,9 +2802,9 @@
     "py": "shèn",
     "vi": "thận",
     "meaning": "thận",
-    "ex": "nephritis",
-    "exZh": "腎炎 shènyán",
-    "exVi": "viêm thận",
+    "ex": "nephritis / renal",
+    "exZh": "腎炎 shènyán / 腎的 shèn de",
+    "exVi": "viêm thận / thuộc thận",
     "ipa": "ˈnɛfroʊ, ˈriːnoʊ"
   },
   {
@@ -2854,9 +2854,9 @@
     "py": "pángguāng",
     "vi": "bàng quang",
     "meaning": "bàng quang / túi",
-    "ex": "cystitis",
-    "exZh": "膀胱炎 pángguāng yán",
-    "exVi": "viêm bàng quang",
+    "ex": "cystitis / vesical",
+    "exZh": "膀胱炎 pángguāng yán / 膀胱的 pángguāng de",
+    "exVi": "viêm bàng quang / thuộc bàng quang",
     "ipa": "ˈsɪstoʊ, ˈvɛsɪkoʊ"
   },
   {
@@ -3036,9 +3036,9 @@
     "py": "shuìmián",
     "vi": "giấc ngủ",
     "meaning": "giấc ngủ",
-    "ex": "insomnia",
-    "exZh": "失眠 shīmián",
-    "exVi": "mất ngủ",
+    "ex": "insomnia / hypnosis",
+    "exZh": "失眠 shīmián / 催眠 cuīmián",
+    "exVi": "mất ngủ / thôi miên",
     "ipa": "ˈsɑːmnoʊ, ˈhɪpnoʊ"
   },
   {
@@ -3075,9 +3075,9 @@
     "py": "jiǎzhuàngxiàn",
     "vi": "tuyến giáp",
     "meaning": "tuyến giáp",
-    "ex": "thyroiditis",
-    "exZh": "甲狀腺炎 jiǎzhuàngxiàn yán",
-    "exVi": "viêm tuyến giáp",
+    "ex": "thyroxine / thyroiditis",
+    "exZh": "甲狀腺素 jiǎzhuàngxiàn sù / 甲狀腺炎 jiǎzhuàngxiàn yán",
+    "exVi": "thyroxine (hormone giáp) / viêm tuyến giáp",
     "ipa": "ˈθaɪroʊ, ˈθaɪrɔɪdoʊ"
   },
   {
@@ -3101,9 +3101,9 @@
     "py": "nǎochuítǐ",
     "vi": "tuyến yên",
     "meaning": "tuyến yên",
-    "ex": "hypophysectomy",
-    "exZh": "垂體切除術 chuítǐ qiēchú shù",
-    "exVi": "cắt tuyến yên",
+    "ex": "pituitary / hypophysectomy",
+    "exZh": "垂體的 chuítǐ de / 垂體切除術 chuítǐ qiēchú shù",
+    "exVi": "thuộc tuyến yên / cắt tuyến yên",
     "ipa": "pɪˈtuːɪtɛroʊ, haɪˈpɑːfɪsoʊ"
   },
   {
@@ -3127,9 +3127,9 @@
     "py": "táng",
     "vi": "đường, glucose",
     "meaning": "đường glucose",
-    "ex": "hyperglycemia",
-    "exZh": "高血糖 gāo xuètáng",
-    "exVi": "tăng đường huyết",
+    "ex": "glucose / hyperglycemia",
+    "exZh": "葡萄糖 pútáotáng / 高血糖 gāo xuètáng",
+    "exVi": "glucose (đường huyết) / tăng đường huyết",
     "ipa": "ˈgluːkoʊ, ˈglaɪkoʊ"
   },
   {
@@ -3166,9 +3166,9 @@
     "py": "rǔfáng",
     "vi": "vú",
     "meaning": "tuyến vú",
-    "ex": "mastitis",
-    "exZh": "乳腺炎 rǔxiàn yán",
-    "exVi": "viêm tuyến vú",
+    "ex": "mastitis / mammography",
+    "exZh": "乳腺炎 rǔxiàn yán / 乳房攝影術 rǔfáng shèyǐng shù",
+    "exVi": "viêm tuyến vú / chụp X-quang tuyến vú",
     "ipa": "ˈmæstoʊ, ˈmæmoʊ"
   },
   {
@@ -3179,9 +3179,9 @@
     "py": "zǐgōng",
     "vi": "tử cung",
     "meaning": "tử cung",
-    "ex": "hysterectomy",
-    "exZh": "子宮切除術 zǐgōng qiēchú shù",
-    "exVi": "cắt tử cung",
+    "ex": "endometrium / hysterectomy / uterine",
+    "exZh": "子宮內膜 zǐgōng nèimó / 子宮切除術 zǐgōng qiēchú shù / 子宮的 zǐgōng de",
+    "exVi": "nội mạc tử cung / cắt tử cung / thuộc tử cung",
     "ipa": "ˈmiːtroʊ, ˈhɪstəroʊ, ˈjuːtəroʊ"
   },
   {
@@ -3218,9 +3218,9 @@
     "py": "yīndào",
     "vi": "âm đạo",
     "meaning": "âm đạo",
-    "ex": "colposcopy",
-    "exZh": "陰道鏡檢查 yīndàojìng jiǎnchá",
-    "exVi": "soi cổ tử cung/âm đạo",
+    "ex": "colposcopy / vaginitis",
+    "exZh": "陰道鏡檢查 yīndàojìng jiǎnchá / 陰道炎 yīndào yán",
+    "exVi": "soi cổ tử cung/âm đạo / viêm âm đạo",
     "ipa": "ˈkɑːlpoʊ, ˈvædʒɪnoʊ"
   },
   {
@@ -3270,9 +3270,9 @@
     "py": "rǔzhī",
     "vi": "sữa",
     "meaning": "sữa",
-    "ex": "lactation",
-    "exZh": "泌乳 mìrǔ",
-    "exVi": "tiết sữa",
+    "ex": "galactorrhea / lactation",
+    "exZh": "溢乳 yìrǔ / 泌乳 mìrǔ",
+    "exVi": "tiết sữa bất thường / tiết sữa",
     "ipa": "gəˈlæktoʊ, ˈlæktoʊ"
   },
   {
@@ -3296,9 +3296,9 @@
     "py": "fēnmiǎn",
     "vi": "sinh đẻ",
     "meaning": "sự sinh đẻ",
-    "ex": "nullipara",
-    "exZh": "未產婦 wèi chǎnfù",
-    "exVi": "người chưa từng sinh con",
+    "ex": "nullipara / postpartum",
+    "exZh": "未產婦 wèi chǎnfù / 產後 chǎnhòu",
+    "exVi": "người chưa từng sinh con / sau sinh",
     "ipa": "ˈpɛəroʊ, ˈpɑːrtoʊ"
   },
   {
@@ -3348,9 +3348,9 @@
     "py": "gāowán",
     "vi": "tinh hoàn",
     "meaning": "tinh hoàn",
-    "ex": "orchitis",
-    "exZh": "睪丸炎 gāowán yán",
-    "exVi": "viêm tinh hoàn",
+    "ex": "orchidectomy / orchitis / testosterone",
+    "exZh": "睪丸切除術 gāowán qiēchú shù / 睪丸炎 gāowán yán / 睪固酮 gāo gùtóng",
+    "exVi": "phẫu thuật cắt tinh hoàn / viêm tinh hoàn / testosterone",
     "ipa": "ˈɔːrkoʊ, ˈɔːrkioʊ, ˈtɛstoʊ"
   },
   {
@@ -3387,9 +3387,9 @@
     "py": "jīngzǐ",
     "vi": "tinh trùng",
     "meaning": "tinh trùng",
-    "ex": "spermatogenesis",
-    "exZh": "精子發生 jīngzǐ fāshēng",
-    "exVi": "quá trình sinh tinh",
+    "ex": "spermatogenesis / spermicide",
+    "exZh": "精子發生 jīngzǐ fāshēng / 殺精劑 shājīng jì",
+    "exVi": "quá trình sinh tinh / chất diệt tinh trùng",
     "ipa": "ˈspɜːrmətoʊ, ˈspɜːrmoʊ"
   },
   {
@@ -3530,9 +3530,9 @@
     "py": "shìlì",
     "vi": "thị giác",
     "meaning": "thị lực, thị giác",
-    "ex": "optician",
-    "exZh": "驗光師 yànguāng shī",
-    "exVi": "chuyên viên đo kính",
+    "ex": "optician / optic nerve",
+    "exZh": "驗光師 yànguāng shī / 視神經 shì shénjīng",
+    "exVi": "chuyên viên đo kính / dây thần kinh thị giác",
     "ipa": "ˈɑːptoʊ, ˈɑːptɪkoʊ"
   },
   {
@@ -3556,9 +3556,9 @@
     "py": "gǔmó",
     "vi": "màng nhĩ",
     "meaning": "màng nhĩ",
-    "ex": "myringotomy",
-    "exZh": "鼓膜切開術 gǔmó qiēkāi shù",
-    "exVi": "rạch màng nhĩ",
+    "ex": "myringotomy / tympanoplasty",
+    "exZh": "鼓膜切開術 gǔmó qiēkāi shù / 鼓室成形術 gǔshì chéngxíng shù",
+    "exVi": "rạch màng nhĩ / tạo hình màng nhĩ",
     "ipa": "məˈrɪŋgoʊ, ˈtɪmpənoʊ"
   },
   {
@@ -4141,9 +4141,9 @@
     "py": "sè",
     "vi": "màu, sắc tố",
     "meaning": "màu sắc",
-    "ex": "hemochromatosis",
-    "exZh": "血色病 xuèsèbìng",
-    "exVi": "nhiễm sắc tố sắt mô",
+    "ex": "chromosome / hemochromatosis",
+    "exZh": "染色體 rǎnsètǐ / 血色病 xuèsèbìng",
+    "exVi": "nhiễm sắc thể / nhiễm sắc tố sắt mô",
     "ipa": "ˈkroʊmoʊ, ˈkroʊmətoʊ"
   },
   {
@@ -4180,9 +4180,9 @@
     "py": "dú",
     "vi": "độc, chất độc",
     "meaning": "độc tố",
-    "ex": "toxicology",
-    "exZh": "毒理學 dúlǐ xué",
-    "exVi": "độc chất học",
+    "ex": "toxin / toxicology",
+    "exZh": "毒素 dúsù / 毒理學 dúlǐ xué",
+    "exVi": "độc tố / độc chất học",
     "ipa": "ˈtɑːksoʊ, ˈtɑːksɪkoʊ"
   },
   {
@@ -4219,9 +4219,9 @@
     "py": "zhīfáng",
     "vi": "mỡ, chất béo",
     "meaning": "mô mỡ",
-    "ex": "liposuction",
-    "exZh": "抽脂術 chōuzhī shù",
-    "exVi": "hút mỡ",
+    "ex": "liposuction / adipose tissue",
+    "exZh": "抽脂術 chōuzhī shù / 脂肪組織 zhīfáng zǔzhī",
+    "exVi": "hút mỡ / mô mỡ",
     "ipa": "ˈlɪpoʊ, ˈædɪpoʊ"
   },
   {
@@ -4284,9 +4284,9 @@
     "py": "yá",
     "vi": "răng (gốc Latin)",
     "meaning": "răng",
-    "ex": "dental caries",
-    "exZh": "齲齒 qǔchǐ",
-    "exVi": "sâu răng",
+    "ex": "dentin / dental caries",
+    "exZh": "牙本質 yábĕnzhì / 齲齒 qǔchǐ",
+    "exVi": "ngà răng / sâu răng",
     "ipa": "ˈdɛnti, ˈdɛntoʊ"
   },
   {
@@ -4297,9 +4297,9 @@
     "py": "chún",
     "vi": "môi",
     "meaning": "môi",
-    "ex": "cheilitis",
-    "exZh": "唇炎 chúnyán",
-    "exVi": "viêm môi",
+    "ex": "labial / cheilitis",
+    "exZh": "唇的 chún de / 唇炎 chúnyán",
+    "exVi": "thuộc môi / viêm môi",
     "ipa": "ˈleɪbioʊ, ˈkaɪloʊ"
   },
   {
@@ -4310,9 +4310,9 @@
     "py": "nèizàng",
     "vi": "nội tạng",
     "meaning": "các cơ quan trong khoang bụng/ngực",
-    "ex": "splanchnic nerve",
-    "exZh": "內臟神經 nèizàng shénjīng",
-    "exVi": "thần kinh nội tạng",
+    "ex": "splanchnic nerve / visceral",
+    "exZh": "內臟神經 nèizàng shénjīng / 內臟的 nèizàng de",
+    "exVi": "thần kinh nội tạng / thuộc nội tạng",
     "ipa": "ˈsplæŋknoʊ, ˈvɪsəroʊ"
   },
   {
@@ -4401,10 +4401,10 @@
     "py": "shǒu",
     "vi": "tay",
     "meaning": "bàn tay",
-    "ex": "chiropractor",
-    "exZh": "整脊師 zhěngjǐ shī",
-    "exVi": "bác sĩ chỉnh cột sống bằng tay",
-    "ipa": "ˈkaɪroʊ"
+    "ex": "chiropractor / cheiralgia",
+    "exZh": "整脊師 zhěngjǐ shī / 手痛 shǒu tòng",
+    "exVi": "bác sĩ chỉnh cột sống bằng tay / đau bàn tay",
+    "ipa": "ˈkaɪroʊ, ˈkaɪroʊ"
   },
   {
     "t": "root",
@@ -4492,9 +4492,9 @@
     "py": "tóngkǒng",
     "vi": "con ngươi (đồng tử)",
     "meaning": "đồng tử mắt",
-    "ex": "corectopia",
-    "exZh": "瞳孔異位 tóngkǒng yìwèi",
-    "exVi": "lệch vị trí đồng tử",
+    "ex": "corectopia / coreoplasty",
+    "exZh": "瞳孔異位 tóngkǒng yìwèi / 瞳孔成形術 tóngkǒng chéngxíng shù",
+    "exVi": "lệch vị trí đồng tử / tạo hình đồng tử",
     "ipa": "ˈkɔːroʊ, ˈkɔːrioʊ"
   },
   {
@@ -4609,7 +4609,7 @@
     "py": "lǜ",
     "vi": "xanh lục",
     "meaning": "màu xanh lá",
-    "ex": "achlorhydria (mất màu/acid dịch vị)",
+    "ex": "achlorhydria",
     "exZh": "胃酸缺乏症 wèisuān quēfá zhèng",
     "exVi": "vô toan dịch vị",
     "ipa": "ˈklɔːroʊ"
@@ -7069,7 +7069,7 @@
     "ex": "presbycusis / diplacusia",
     "exZh": "老年性耳聾 lǎoniánxìng ěrlóng / 複聽 fùtīng",
     "exVi": "điếc do tuổi già / song thính (nghe một âm thành hai)",
-    "ipa": "əˈkjuːsɪs"
+    "ipa": "əˈkjuːsɪs, əˈkjuːʒə"
   },
   {
     "t": "root",
@@ -7222,10 +7222,10 @@
     "py": "gài",
     "vi": "canxi",
     "meaning": "canxi",
-    "ex": "hypercalcemia",
-    "exZh": "高鈣血症 gāogài xuèzhèng",
-    "exVi": "tăng canxi máu",
-    "ipa": "ˈkælsi"
+    "ex": "calcification / hypercalcemia",
+    "exZh": "鈣化 gàihuà / 高鈣血症 gāogài xuèzhèng",
+    "exVi": "vôi hoá / tăng canxi máu",
+    "ipa": "ˈkælsi, ˈkælkoʊ"
   },
   {
     "t": "root",
@@ -7235,10 +7235,10 @@
     "py": "shāozhuó",
     "vi": "đốt, cầm máu bằng nhiệt",
     "meaning": "đốt cháy để cầm máu/điều trị",
-    "ex": "electrocautery",
-    "exZh": "電灼術 diànzhuó shù",
-    "exVi": "đốt điện",
-    "ipa": "ˈkɔːtəroʊ"
+    "ex": "electrocautery / caustic",
+    "exZh": "電灼術 diànzhuó shù / 腐蝕性的 fǔshíxìng de",
+    "exVi": "đốt điện / có tính ăn mòn",
+    "ipa": "ˈkɔːtəroʊ, ˈkɔːtoʊ"
   },
   {
     "t": "root",
@@ -7300,10 +7300,10 @@
     "py": "shēngzhí, qǐyuán",
     "vi": "sinh ra, sinh dục",
     "meaning": "nguồn gốc, cơ quan sinh dục",
-    "ex": "genitalia",
-    "exZh": "生殖器 shēngzhíqì",
-    "exVi": "cơ quan sinh dục",
-    "ipa": "ˈdʒɛnoʊ"
+    "ex": "genotype / genitalia",
+    "exZh": "基因型 jīyīnxíng / 生殖器 shēngzhíqì",
+    "exVi": "kiểu gen / cơ quan sinh dục",
+    "ipa": "ˈdʒɛnoʊ, dʒəˈnɪtoʊ"
   },
   {
     "t": "root",
@@ -7352,10 +7352,10 @@
     "py": "tóng",
     "vi": "ketone (thể xeton)",
     "meaning": "thể ketone",
-    "ex": "ketoacidosis",
-    "exZh": "酮症酸中毒 tóngzhèng suānzhòngdú",
-    "exVi": "nhiễm toan ceton",
-    "ipa": "ˈkiːtoʊ"
+    "ex": "ketoacidosis / ketonuria",
+    "exZh": "酮症酸中毒 tóngzhèng suānzhòngdú / 酮尿症 tóngniàozhèng",
+    "exVi": "nhiễm toan ceton / ceton niệu",
+    "ipa": "ˈkiːtoʊ, ˈkiːtənoʊ"
   },
   {
     "t": "root",
@@ -7365,10 +7365,10 @@
     "py": "niányè",
     "vi": "chất nhầy",
     "meaning": "chất nhầy, niêm mạc",
-    "ex": "mucosa",
-    "exZh": "黏膜 niánmó",
-    "exVi": "niêm mạc",
-    "ipa": "ˈmjuːkoʊ"
+    "ex": "mucus / mucosa",
+    "exZh": "黏液 niányè / 黏膜 niánmó",
+    "exVi": "chất nhầy / niêm mạc",
+    "ipa": "ˈmjuːkoʊ, mjuːˈkoʊsoʊ"
   },
   {
     "t": "root",
@@ -7586,10 +7586,10 @@
     "py": "suǒgǔ",
     "vi": "xương đòn",
     "meaning": "xương đòn",
-    "ex": "clavicular fracture",
-    "exZh": "鎖骨骨折 suǒgǔ gǔzhé",
-    "exVi": "gãy xương đòn",
-    "ipa": "kləˈvɪkjəloʊ"
+    "ex": "clavicular fracture / cleidocranial dysplasia",
+    "exZh": "鎖骨骨折 suǒgǔ gǔzhé / 鎖骨顱骨發育不全 suǒgǔ lúgǔ fāyù bùquán",
+    "exVi": "gãy xương đòn / loạn sản xương đòn-sọ",
+    "ipa": "kləˈvɪkjəloʊ, ˈklaɪdoʊ"
   },
   {
     "t": "root",
@@ -7677,10 +7677,10 @@
     "py": "huái",
     "vi": "mắt cá chân",
     "meaning": "mắt cá chân",
-    "ex": "malleolar",
-    "exZh": "踝的 huái de",
-    "exVi": "thuộc mắt cá",
-    "ipa": "məˈliːoʊloʊ"
+    "ex": "malleus / malleolar",
+    "exZh": "錘骨 chuígǔ / 踝的 huái de",
+    "exVi": "xương búa (tai giữa) / thuộc mắt cá",
+    "ipa": "ˈmæliˌoʊ, məˈliːoʊloʊ"
   },
   {
     "t": "root",
@@ -7768,10 +7768,10 @@
     "py": "dǐnggǔ",
     "vi": "xương đỉnh, thành",
     "meaning": "xương đỉnh sọ / thành (khoang cơ thể)",
-    "ex": "parietal lobe",
-    "exZh": "頂葉 dǐngyè",
-    "exVi": "thuỳ đỉnh",
-    "ipa": "pəˈraɪətəloʊ"
+    "ex": "parietal lobe / parietal bone",
+    "exZh": "頂葉 dǐngyè / 頂骨 dǐnggǔ",
+    "exVi": "thuỳ đỉnh / xương đỉnh",
+    "ipa": "pəˈraɪətəloʊ, pəˈraɪətoʊ"
   },
   {
     "t": "root",
@@ -8171,10 +8171,10 @@
     "py": "kǒuqì",
     "vi": "hơi thở",
     "meaning": "hơi thở",
-    "ex": "halitosis",
-    "exZh": "口臭 kǒuchòu",
-    "exVi": "hôi miệng",
-    "ipa": "ˈhæloʊ"
+    "ex": "halitus / halitosis",
+    "exZh": "呼出氣體 hūchū qìtǐ / 口臭 kǒuchòu",
+    "exVi": "hơi thở ra / hôi miệng",
+    "ipa": "ˈhæloʊ, həˈlɪtoʊ"
   },
   {
     "t": "root",
@@ -8314,10 +8314,10 @@
     "py": "shènzhǎn",
     "vi": "đài thận",
     "meaning": "đài thận (bể thận)",
-    "ex": "caliectasis",
-    "exZh": "腎盞擴張 shènzhǎn kuòzhāng",
-    "exVi": "giãn đài thận",
-    "ipa": "ˈkeɪlɪkoʊ"
+    "ex": "caliectasis / caliceal",
+    "exZh": "腎盞擴張 shènzhǎn kuòzhāng / 腎盞的 shènzhǎn de",
+    "exVi": "giãn đài thận / thuộc đài thận",
+    "ipa": "ˈkeɪlɪkoʊ, ˈkeɪlioʊ"
   },
   {
     "t": "root",
@@ -8483,10 +8483,10 @@
     "py": "rènshēn",
     "vi": "thai kỳ",
     "meaning": "mang thai",
-    "ex": "gestational diabetes",
-    "exZh": "妊娠糖尿病 rènshēn tángniàobìng",
-    "exVi": "đái tháo đường thai kỳ",
-    "ipa": "dʒɛˈsteɪtoʊ"
+    "ex": "gestosis / gestational diabetes",
+    "exZh": "妊娠毒血症 rènshēn dúxuèzhèng / 妊娠糖尿病 rènshēn tángniàobìng",
+    "exVi": "nhiễm độc thai nghén / đái tháo đường thai kỳ",
+    "ipa": "ˈdʒɛstoʊ, dʒɛˈsteɪtoʊ"
   },
   {
     "t": "root",
@@ -8574,10 +8574,10 @@
     "py": "shuǐ, fángshuǐ",
     "vi": "thuỷ dịch",
     "meaning": "thuỷ dịch (trong mắt)",
-    "ex": "aqueous humor",
-    "exZh": "房水 fángshuǐ",
-    "exVi": "thuỷ dịch",
-    "ipa": "ˈeɪkwioʊ"
+    "ex": "aquaporin / aqueous humor",
+    "exZh": "水通道蛋白 shuǐ tōngdào dànbái / 房水 fángshuǐ",
+    "exVi": "protein kênh nước (aquaporin) / thuỷ dịch",
+    "ipa": "ˈækwoʊ, ˈeɪkwioʊ"
   },
   {
     "t": "root",
@@ -8704,10 +8704,10 @@
     "py": "dèngǔ",
     "vi": "xương bàn đạp",
     "meaning": "xương bàn đạp (tai giữa)",
-    "ex": "stapedectomy",
-    "exZh": "鐙骨切除術 dèngǔ qiēchú shù",
-    "exVi": "cắt xương bàn đạp",
-    "ipa": "steɪˈpiːdioʊ"
+    "ex": "stapedius / stapedectomy",
+    "exZh": "鐙骨肌 dèng gǔ jī / 鐙骨切除術 dèngǔ qiēchú shù",
+    "exVi": "cơ bàn đạp / cắt xương bàn đạp",
+    "ipa": "stəˈpiːdoʊ, steɪˈpiːdioʊ"
   },
   {
     "t": "root",
@@ -8821,10 +8821,10 @@
     "py": "hóngbān",
     "vi": "ban đỏ",
     "meaning": "vùng da đỏ do sung huyết",
-    "ex": "erythema",
-    "exZh": "紅斑 hóngbān",
-    "exVi": "ban đỏ da",
-    "ipa": "ˌɛrɪˈθiːmoʊ"
+    "ex": "erythema / erythematous",
+    "exZh": "紅斑 hóngbān / 紅斑性的 hóngbānxìng de",
+    "exVi": "ban đỏ da / có tính ban đỏ",
+    "ipa": "ˌɛrɪˈθiːmoʊ, ˌɛrɪˈθiːmətoʊ"
   },
   {
     "t": "root",
