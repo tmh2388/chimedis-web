@@ -7,9 +7,9 @@
     "py": "wú",
     "vi": "không, vô",
     "meaning": "phủ định, thiếu vắng",
-    "ex": "analgesia",
-    "exZh": "無痛 wú tòng",
-    "exVi": "vô cảm giác đau",
+    "ex": "analgesia / apnea",
+    "exZh": "無痛 wú tòng / 呼吸暫停 hūxī zàntíng",
+    "exVi": "vô cảm giác đau / ngưng thở",
     "ipa": "ə-, æn-"
   },
   {
@@ -46,9 +46,9 @@
     "py": "qián",
     "vi": "trước",
     "meaning": "trước (thời gian/vị trí)",
-    "ex": "antenatal",
-    "exZh": "產前 chǎnqián",
-    "exVi": "trước sinh",
+    "ex": "antenatal / preoperative / prognosis",
+    "exZh": "產前 chǎnqián / 術前 shùqián / 預後 yùhòu",
+    "exVi": "trước sinh / trước phẫu thuật / tiên lượng",
     "ipa": "ˈænti, priː, proʊ"
   },
   {
@@ -59,9 +59,9 @@
     "py": "kàng, fǎn",
     "vi": "kháng, chống, đối",
     "meaning": "đối kháng, chống lại",
-    "ex": "antipyretic",
-    "exZh": "解熱藥 jiěrè yào",
-    "exVi": "thuốc hạ sốt",
+    "ex": "antipyretic / contraindication",
+    "exZh": "解熱藥 jiěrè yào / 禁忌症 jìnjìzhèng",
+    "exVi": "thuốc hạ sốt / chống chỉ định",
     "ipa": "ˈænti, ˈkɑːntrə"
   },
   {
@@ -111,9 +111,9 @@
     "py": "zhōuwéi",
     "vi": "quanh, chu vi",
     "meaning": "xung quanh",
-    "ex": "pericardium",
-    "exZh": "心包 xīnbāo",
-    "exVi": "màng ngoài tim",
+    "ex": "circumcision / pericardium",
+    "exZh": "包皮環切術 bāopí huánqiēshù / 心包 xīnbāo",
+    "exVi": "cắt bao quy đầu / màng ngoài tim",
     "ipa": "ˈsɜːrkəm, ˈpɛri"
   },
   {
@@ -163,9 +163,9 @@
     "py": "wài",
     "vi": "ngoài, ngoại",
     "meaning": "bên ngoài",
-    "ex": "ectopic",
-    "exZh": "異位 yìwèi",
-    "exVi": "lạc chỗ, ngoại vị",
+    "ex": "ectopic / exocrine / extracellular",
+    "exZh": "異位 yìwèi / 外分泌 wài fēnmì / 細胞外 xìbāo wài",
+    "exVi": "lạc chỗ, ngoại vị / ngoại tiết / ngoại bào",
     "ipa": "ˈɛktoʊ, ˈɛksoʊ, ˈɛkstrə"
   },
   {
@@ -176,9 +176,9 @@
     "py": "nèi",
     "vi": "trong, nội",
     "meaning": "bên trong",
-    "ex": "endoscopy",
-    "exZh": "內視鏡檢查 nèishìjìng jiǎnchá",
-    "exVi": "nội soi",
+    "ex": "endoscopy / empyema",
+    "exZh": "內視鏡檢查 nèishìjìng jiǎnchá / 膿胸 nóngxiōng",
+    "exVi": "nội soi / mủ màng phổi",
     "ipa": "ˈɛndoʊ, ɛn-"
   },
   {
@@ -241,9 +241,9 @@
     "py": "xiāngtóng",
     "vi": "giống, cùng, hằng định",
     "meaning": "giống nhau, không đổi",
-    "ex": "homeostasis",
-    "exZh": "體內平衡 tǐnèi pínghéng",
-    "exVi": "cân bằng nội môi",
+    "ex": "homeostasis / homograft",
+    "exZh": "體內平衡 tǐnèi pínghéng / 同種移植 tóngzhǒng yízhí",
+    "exVi": "cân bằng nội môi / ghép đồng loài",
     "ipa": "ˈhoʊmoʊ, hoʊˈmiːoʊ"
   },
   {
@@ -280,9 +280,9 @@
     "py": "bù",
     "vi": "không, trong",
     "meaning": "phủ định hoặc chỉ 'vào trong'",
-    "ex": "incontinence",
-    "exZh": "失禁 shījìn",
-    "exVi": "tiểu/đại tiện không tự chủ",
+    "ex": "incontinence / impotence",
+    "exZh": "失禁 shījìn / 陽痿 yángwěi",
+    "exVi": "tiểu/đại tiện không tự chủ / bất lực",
     "ipa": "ɪn-, ɪm-"
   },
   {
@@ -358,9 +358,9 @@
     "py": "jùdà (yìcháng)",
     "vi": "khổng lồ, to bất thường",
     "meaning": "kích thước quá to bất thường (đi kèm -megaly ở hậu tố)",
-    "ex": "megacolon",
-    "exZh": "巨結腸 jùjiécháng",
-    "exVi": "phình đại tràng",
+    "ex": "megacolon / megalocyte",
+    "exZh": "巨結腸 jùjiécháng / 巨紅細胞 jù hóngxìbāo",
+    "exVi": "phình đại tràng / hồng cầu khổng lồ",
     "ipa": "ˈmɛgə, ˈmɛgəloʊ"
   },
   {
@@ -579,9 +579,9 @@
     "py": "shàng",
     "vi": "trên, vượt mức",
     "meaning": "bên trên, vượt mức",
-    "ex": "suprarenal",
-    "exZh": "腎上腺 shènshàngxiàn",
-    "exVi": "trên thận (thượng thận)",
+    "ex": "suprarenal / superinfection",
+    "exZh": "腎上腺 shènshàngxiàn / 重複感染 chóngfù gǎnrǎn",
+    "exVi": "trên thận (thượng thận) / bội nhiễm",
     "ipa": "ˈsuːpər, ˈsuːprə"
   },
   {
@@ -592,9 +592,9 @@
     "py": "gòngtóng, jiéhé",
     "vi": "cùng, hợp, kèm theo",
     "meaning": "cùng nhau, kết hợp",
-    "ex": "syndrome",
-    "exZh": "綜合症 zònghé zhèng",
-    "exVi": "hội chứng",
+    "ex": "syndrome / sympathetic",
+    "exZh": "綜合症 zònghé zhèng / 交感神經 jiāogǎn shénjīng",
+    "exVi": "hội chứng / thần kinh giao cảm",
     "ipa": "sɪm-, sɪn-"
   },
   {
@@ -670,9 +670,9 @@
     "py": "…xìng de",
     "vi": "thuộc về, có tính chất",
     "meaning": "hậu tố tính từ chỉ 'liên quan đến'",
-    "ex": "cardiac / gastric / venous",
-    "exZh": "心臟的／胃的／靜脈的",
-    "exVi": "thuộc tim / thuộc dạ dày / thuộc tĩnh mạch",
+    "ex": "cardiac / gastric / venous / renal / muscular / urinary / esophageal / arthritic",
+    "exZh": "心臟的 / 胃的 / 靜脈的 / 腎的 / 肌肉的 / 泌尿的 / 食道的 / 關節炎的",
+    "exVi": "thuộc tim / thuộc dạ dày / thuộc tĩnh mạch / thuộc thận / thuộc cơ / thuộc tiết niệu / thuộc thực quản / thuộc viêm khớp",
     "ipa": "æk, əl, ər, ˈɛri, ˈiːəl, ɪk, əs, tɪk"
   },
   {
@@ -683,9 +683,9 @@
     "py": "tòng",
     "vi": "đau",
     "meaning": "đau",
-    "ex": "neuralgia",
-    "exZh": "神經痛 shénjīng tòng",
-    "exVi": "đau dây thần kinh",
+    "ex": "neuralgia / mastodynia",
+    "exZh": "神經痛 shénjīng tòng / 乳房痛 rǔfáng tòng",
+    "exVi": "đau dây thần kinh / đau vú",
     "ipa": "ˈældʒə, ˈdɪniə"
   },
   {
@@ -722,9 +722,9 @@
     "py": "dǎduàn",
     "vi": "làm gãy, phá vỡ",
     "meaning": "phá vỡ có chủ đích",
-    "ex": "osteoclast",
-    "exZh": "破骨細胞 pògǔ xìbāo",
-    "exVi": "huỷ cốt bào",
+    "ex": "osteoclasis / osteoclast",
+    "exZh": "人工折骨術 réngōng zhé gǔ shù / 破骨細胞 pògǔ xìbāo",
+    "exVi": "phẫu thuật làm gãy xương chỉnh hình / huỷ cốt bào",
     "ipa": "ˈkleɪsɪs, klæst"
   },
   {
@@ -839,9 +839,9 @@
     "py": "yǐnqǐ, xíngchéng",
     "vi": "sinh ra, gây nên",
     "meaning": "nguồn gốc, quá trình sinh ra",
-    "ex": "pathogenic",
-    "exZh": "致病的 zhìbìng de",
-    "exVi": "gây bệnh",
+    "ex": "pathogenic / carcinogenesis",
+    "exZh": "致病的 zhìbìng de / 致癌作用 zhì'ái zuòyòng",
+    "exVi": "gây bệnh / quá trình sinh ung thư",
     "ipa": "ˈdʒɛnɪk, ˈdʒɛnəsɪs"
   },
   {
@@ -865,9 +865,9 @@
     "py": "zàoyǐng shù",
     "vi": "chụp, ghi hình, máy ghi",
     "meaning": "kỹ thuật/dụng cụ tạo hình ảnh",
-    "ex": "angiography",
-    "exZh": "血管造影術 xuèguǎn zàoyǐng shù",
-    "exVi": "chụp mạch máu",
+    "ex": "angiography / electrocardiograph",
+    "exZh": "血管造影術 xuèguǎn zàoyǐng shù / 心電圖機 xīndiàntú jī",
+    "exVi": "chụp mạch máu / máy điện tâm đồ",
     "ipa": "græf, ˈgræfi"
   },
   {
@@ -878,9 +878,9 @@
     "py": "zhuàngtài",
     "vi": "tình trạng",
     "meaning": "trạng thái, tình trạng",
-    "ex": "hyperthyroidism",
-    "exZh": "甲狀腺功能亢進症 jiǎzhuàngxiàn gōngnéng kàngjìn zhèng",
-    "exVi": "cường giáp",
+    "ex": "hyperthyroidism / anemia",
+    "exZh": "甲狀腺功能亢進症 jiǎzhuàngxiàn gōngnéng kàngjìn zhèng / 貧血 pínxuè",
+    "exVi": "cường giáp / thiếu máu",
     "ipa": "iə, ˈɪzəm"
   },
   {
@@ -891,9 +891,9 @@
     "py": "…kē, …kē yīshī",
     "vi": "y học điều trị, thầy thuốc chuyên khoa",
     "meaning": "chuyên khoa điều trị / bác sĩ thuộc chuyên khoa đó",
-    "ex": "psychiatry",
-    "exZh": "精神病學 jīngshénbìng xué",
-    "exVi": "tâm thần học",
+    "ex": "psychiatry / podiatrist / pediatrician",
+    "exZh": "精神病學 jīngshénbìng xué / 足科醫師 zúkē yīshī / 小兒科醫師 xiǎo'érkē yīshī",
+    "exVi": "tâm thần học / bác sĩ chuyên khoa chân / bác sĩ nhi khoa",
     "ipa": "aɪˈætri, aɪˈætrɪst, ˌaɪəˈtrɪʃən"
   },
   {
@@ -995,9 +995,9 @@
     "py": "cèliáng yí",
     "vi": "máy đo, phép đo",
     "meaning": "dụng cụ đo / kỹ thuật đo",
-    "ex": "spirometry",
-    "exZh": "肺量測定法 fèiliàng cèdìng fǎ",
-    "exVi": "đo chức năng hô hấp",
+    "ex": "spirometry / thermometer",
+    "exZh": "肺量測定法 fèiliàng cèdìng fǎ / 體溫計 tǐwēnjì",
+    "exVi": "đo chức năng hô hấp / nhiệt kế",
     "ipa": "ˈmiːtər, ˈmɛtri"
   },
   {
@@ -1242,9 +1242,9 @@
     "py": "dà chūxuè",
     "vi": "xuất huyết ồ ạt",
     "meaning": "chảy máu nặng",
-    "ex": "hemorrhage",
-    "exZh": "出血 chūxuè",
-    "exVi": "xuất huyết",
+    "ex": "hemorrhage / menorrhagia",
+    "exZh": "出血 chūxuè / 月經過多 yuèjīng guòduō",
+    "exVi": "xuất huyết / rong kinh (kinh nguyệt ra nhiều)",
     "ipa": "rɪdʒ, ˈreɪdʒə"
   },
   {
@@ -1307,9 +1307,9 @@
     "py": "jìng, jìngjiǎn",
     "vi": "ống soi, soi",
     "meaning": "dụng cụ soi / kỹ thuật soi",
-    "ex": "gastroscopy",
-    "exZh": "胃鏡檢查 wèijìng jiǎnchá",
-    "exVi": "nội soi dạ dày",
+    "ex": "gastroscopy / stethoscope",
+    "exZh": "胃鏡檢查 wèijìng jiǎnchá / 聽診器 tīngzhěnqì",
+    "exVi": "nội soi dạ dày / ống nghe",
     "ipa": "skoʊp, ˈskəpi"
   },
   {
@@ -3972,9 +3972,9 @@
     "py": "qīnhé, shì",
     "vi": "ái lực, ưa thích",
     "meaning": "có ái lực/xu hướng đối với",
-    "ex": "hemophilia",
-    "exZh": "血友病 xuèyǒubìng",
-    "exVi": "bệnh máu khó đông",
+    "ex": "hemophilia / eosinophil",
+    "exZh": "血友病 xuèyǒubìng / 嗜酸性粒細胞 shìsuānxìng lì xìbāo",
+    "exVi": "bệnh máu khó đông / bạch cầu ái toan",
     "ipa": "fɪl, ˈfɪliə"
   },
   {
@@ -4037,9 +4037,9 @@
     "py": "yālì",
     "vi": "áp lực, áp suất",
     "meaning": "áp lực (thường là huyết áp)",
-    "ex": "hypertension",
-    "exZh": "高血壓 gāoxuèyā",
-    "exVi": "tăng huyết áp",
+    "ex": "hypertension / antihypertensive",
+    "exZh": "高血壓 gāoxuèyā / 降壓藥 jiàngyā yào",
+    "exVi": "tăng huyết áp / thuốc hạ huyết áp",
     "ipa": "ˈtɛnʃən, ˈtɛnsɪv"
   },
   {
@@ -7066,9 +7066,9 @@
     "py": "tīnglì",
     "vi": "thính lực",
     "meaning": "tình trạng nghe",
-    "ex": "presbycusis",
-    "exZh": "老年性耳聾 lǎoniánxìng ěrlóng",
-    "exVi": "điếc do tuổi già",
+    "ex": "presbycusis / diplacusia",
+    "exZh": "老年性耳聾 lǎoniánxìng ěrlóng / 複聽 fùtīng",
+    "exVi": "điếc do tuổi già / song thính (nghe một âm thành hai)",
     "ipa": "əˈkjuːsɪs"
   },
   {
