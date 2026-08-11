@@ -133,6 +133,43 @@ CREATE TABLE IF NOT EXISTS anatomy_terms (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ---------------------------------------------------------------------
+-- word_elements — "Từ ghép Y Khoa" (English medical word-formation:
+-- prefix/suffix/root/compound term). Unlike every other domain, the
+-- headword here is the ENGLISH form (en), not Chinese — hz/zh is just a
+-- one-word gloss, not a term of its own. Source: a standalone reference
+-- app (med-terms.html, "本草詞根") already fully trilingual (zh/vi/en) —
+-- no machine translation needed, straight import via
+-- import-word-elements.js from backend/data/word-elements-raw.json.
+--
+-- element_type: 'prefix' | 'suffix' | 'root' | 'term' — this is what
+-- dropdown 2 ("Loại") filters on for this domain, NOT organ_system
+-- (prefix/suffix are ~all 'gen', not organ-specific — organ_system only
+-- meaningfully varies for root/term).
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS word_elements (
+  element_id     VARCHAR(32) PRIMARY KEY,   -- e.g. 'we-prefix-001'
+  element_type   VARCHAR(16) NOT NULL,      -- 'prefix' | 'suffix' | 'root' | 'term'
+  organ_system   VARCHAR(16) NOT NULL,      -- khoá gốc từ nguồn, vd. 'cardio', 'gen'
+
+  en             VARCHAR(128) NOT NULL,     -- từ/từ tố tiếng Anh — headword của domain này
+  ipa            VARCHAR(255),
+  zh             VARCHAR(64),               -- nghĩa Hán 1 từ, KHÔNG phải headword
+  py             VARCHAR(128),
+  vi             VARCHAR(128),              -- nghĩa Việt ngắn
+  gloss          TEXT,                      -- giải thích thêm — TIẾNG VIỆT cho prefix/suffix/root,
+                                             -- nhưng TIẾNG ANH cho type='term' (nguồn gốc trộn lẫn,
+                                             -- xem import-word-elements.js — frontend tự xử lý theo type)
+  example_en     TEXT,                      -- ví dụ (prefix/suffix/root) hoặc phân tích cấu tạo (term)
+  example_zh     TEXT,
+  example_vi     TEXT,
+
+  is_active      BOOLEAN DEFAULT TRUE,
+  updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  FULLTEXT INDEX ft_word_elements_search (en, zh, vi, py, gloss)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ---------------------------------------------------------------------
 -- Future domains follow the same "denormalized read view" pattern:
 --   formulas   — from 03_master_data/HVYD Formula Core DB (kb_formulas,
 --                kb_formula_ingredients, kb_formula_indication_claims...)

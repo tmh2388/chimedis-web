@@ -135,6 +135,54 @@ async function getAnatomyTerms() {
   }
 }
 
+/**
+ * Maps a `word_elements` MySQL row ("Từ ghép Y Khoa" — English prefix/
+ * suffix/root/compound-term) into the same flat term shape /api/terms
+ * returns for other domains. Unlike everywhere else, `en` is the headword
+ * here, not a translation — hz/zh is just a 1-word gloss (see schema.sql).
+ * group2 is element_type (prefix/suffix/root/term), the "Loại" filter in
+ * dropdown 2 — NOT organ_system, which barely varies for prefix/suffix.
+ *
+ * meaning/example split vi vs en explicitly at this layer (not left mixed)
+ * per the "trường cần định vị rõ ràng" rule — source data's `gloss` field
+ * is Vietnamese for prefix/suffix/root entries but English for `term`
+ * entries (its own quirk, see schema.sql comment), so the split must
+ * happen here rather than trusting a single ambiguous field downstream.
+ */
+function wordElementRowToTerm(w) {
+  return {
+    id: w.element_id,
+    hz: w.zh,
+    py: w.py,
+    vi: w.vi,
+    en: w.en,
+    ipa: w.ipa,
+    group1: 'Từ ghép Y Khoa',
+    group2: w.element_type,
+    category: 'word_element',
+    element_type: w.element_type,
+    organ_system: w.organ_system,
+    meaning: w.element_type === 'term' ? null : w.gloss,
+    meaning_en: w.element_type === 'term' ? w.gloss : null,
+    example: w.example_vi,
+    example_cn: w.example_zh,
+    example_en: w.example_en,
+    nguon: '本草詞根 — Y Học Anh Văn',
+    verify: false,
+  };
+}
+
+async function getWordElementTerms() {
+  if (!mysqlPool) return [];
+  try {
+    const [rows] = await mysqlPool.query('SELECT * FROM word_elements WHERE is_active = TRUE');
+    return rows.map(wordElementRowToTerm);
+  } catch (err) {
+    console.error('⚠️  Không đọc được dữ liệu Từ ghép Y Khoa từ MySQL:', err.message);
+    return [];
+  }
+}
+
 // Frontend static assets live in backend/public/ (synced from ../frontend via
 // `npm run build` locally — see sync-frontend.js) so a deploy that only ships
 // the backend/ directory still serves the PWA.
@@ -161,7 +209,8 @@ app.get('/api/terms', async (req, res) => {
       : [];
     const herbTerms = await getHerbTerms();
     const anatomyTerms = await getAnatomyTerms();
-    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms];
+    const wordElementTerms = await getWordElementTerms();
+    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms];
 
     if (terms.length === 0) {
       return res.status(404).json({
@@ -225,7 +274,8 @@ app.get('/api/groups', async (req, res) => {
       : [];
     const herbTerms = await getHerbTerms();
     const anatomyTerms = await getAnatomyTerms();
-    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms];
+    const wordElementTerms = await getWordElementTerms();
+    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms];
 
     if (terms.length === 0) {
       return res.status(404).json({
