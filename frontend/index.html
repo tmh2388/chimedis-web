@@ -173,6 +173,8 @@ footer .note{font-size:10.5px;color:var(--ngua);opacity:.55;margin-top:12px;
 .field .ft::before{content:"";width:13px;height:2px;background:var(--son)}
 .field p{font-size:13.5px;color:var(--muc);margin-bottom:4px}
 .field p.cn{font-size:12.5px;color:var(--tham-2)}
+.field p.lang-vi{font-size:13px;color:var(--tham-2)}
+.field p.lang-en{font-size:13px;color:var(--tham-2);font-style:italic}
 .field.tcm{background:linear-gradient(180deg,#fbf6ee,#f7efe2);margin:14px -20px 0;padding:14px 20px;
   border:0;border-top:1px solid var(--vien)}
 .field.tcm .ft{color:var(--son)}
@@ -342,6 +344,14 @@ header{transition:padding .2s ease}
 .drawer-item svg{width:20px;height:20px;color:var(--tham-2);flex:0 0 20px}
 .drawer-item .soon{margin-left:auto;font-size:10px;color:var(--muc-mo);background:var(--ngua-am);
   padding:2px 8px;border-radius:6px}
+.drawer-item .chev{margin-left:auto;transition:transform .15s}
+.drawer-item .chev.open{transform:rotate(180deg)}
+.content-lang-panel{max-height:0;overflow:hidden;transition:max-height .18s ease;background:var(--ngua-am)}
+.content-lang-panel.show{max-height:180px}
+.clp-hint{padding:10px 20px 4px;font-size:11.5px;color:var(--muc-mo)}
+.clp-item{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 10px 46px;
+  font-size:13.5px;color:var(--muc);cursor:pointer}
+.clp-item input{width:18px;height:18px;accent-color:var(--thamthm);cursor:pointer}
 .drawer-foot{padding:16px 20px;border-top:1px solid var(--vien);font-size:11px;color:var(--muc-mo)}
 .drawer-close{position:absolute;top:calc(20px + env(safe-area-inset-top));right:16px;width:30px;height:30px;
   border-radius:50%;background:rgba(217,233,228,.18);border:0;color:#fff;display:flex;align-items:center;
@@ -443,8 +453,19 @@ header{transition:padding .2s ease}
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="dr_progress">Tiến độ học tập</span><span class="soon" data-i18n="soon">Sắp có</span></div>
       <div class="drawer-sec" data-i18n="dr_settings">Cài đặt</div>
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1l-.3-2.5h-4l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h4l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"/></svg><span data-i18n="dr_sys">Cài đặt hệ thống</span><span class="soon" data-i18n="soon">Sắp có</span></div>
-      <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span data-i18n="dr_display">Tuỳ chỉnh hiển thị</span><span class="soon" data-i18n="soon">Sắp có</span></div>
-      <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg><span data-i18n="dr_lang">Ngôn ngữ giao diện</span><span class="soon" data-i18n="soon">Sắp có</span></div>
+      <div class="drawer-item" onclick="toggleContentLangPanel()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span data-i18n="dr_display">Tuỳ chỉnh hiển thị</span><svg class="chev" id="clpChev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="content-lang-panel" id="contentLangPanel">
+        <div class="clp-hint" data-i18n="dr_content_lang">Ngôn ngữ hiển thị nội dung</div>
+        <label class="clp-item"><span>中文</span><input type="checkbox" id="clZh" onchange="toggleContentLang('zh')"></label>
+        <label class="clp-item"><span>Tiếng Việt</span><input type="checkbox" id="clVi" onchange="toggleContentLang('vi')"></label>
+        <label class="clp-item"><span>English</span><input type="checkbox" id="clEn" onchange="toggleContentLang('en')"></label>
+      </div>
+      <div class="drawer-item" onclick="toggleIfaceLangPanel()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg><span data-i18n="dr_lang">Ngôn ngữ giao diện</span><svg class="chev" id="ifaceLangChev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="content-lang-panel" id="ifaceLangPanel">
+        <label class="clp-item"><span>中文</span><input type="radio" name="ifaceLang" onchange="setLang('zh')"></label>
+        <label class="clp-item"><span>Tiếng Việt</span><input type="radio" name="ifaceLang" onchange="setLang('vi')"></label>
+        <label class="clp-item"><span>English</span><input type="radio" name="ifaceLang" onchange="setLang('en')"></label>
+      </div>
       <div class="drawer-sec" data-i18n="dr_other">Khác</div>
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/></svg><span data-i18n="dr_source">Nguồn học thuật</span><span class="soon" data-i18n="soon">Sắp có</span></div>
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span data-i18n="dr_about">Giới thiệu Hạ Vân Y Đạo</span><span class="soon" data-i18n="soon">Sắp có</span></div>
@@ -463,7 +484,7 @@ header{transition:padding .2s ease}
 // Dữ liệu nhúng sẵn (seed) — dùng làm màn hình đầu tiên & fallback khi API/offline không có cache
 let TERMS = [{"id": "hh001", "hz": "肺", "py": "fèi", "vi": "Phổi", "en": "lung", "group1": "Giải phẫu", "group2": "Hệ hô hấp", "vitri": "Phổi nằm trong lồng ngực, hai bên trung thất, được bao bọc bởi màng phổi. Phổi phải có ba thuỳ, phổi trái có hai thuỳ.", "vitri_cn": "肺位于胸腔内，纵隔两侧，由胸膜包绕。", "congnang": "Cơ quan chính của hệ hô hấp, đảm nhiệm trao đổi khí — đưa oxy vào máu và thải carbon dioxide.", "tcm": "Phế chủ khí, chủ tuyên phát túc giáng, thông điều thuỷ đạo, khai khiếu ở mũi, hợp với bì mao.", "tcm_cn": "肺主气，主宣发肃降，通调水道，开窍于鼻，其华在毛。", "lamsang": "Viêm phổi, viêm phế quản, hen phế quản, COPD. Trung Y phân biệt: Phế khí hư, Phế âm hư, Phong hàn phạm phế, Phong nhiệt phạm phế.", "nguon": "Hoàng Đế Nội Kinh (cần xác thực chương/quyển cụ thể) · Giải phẫu học Gray", "verify": true, "verify_note": "Ghi chú Trung Y là kiến thức nền phổ biến trong giáo trình 中医基础理论, chưa trích dẫn được nguyên văn cụ thể từ Nội Kinh — cần anh bổ sung câu gốc và xuất xứ chính xác.", "congnang_cn": "肺是呼吸系统的主要器官，负责气体交换，将氧气输入血液并排出二氧化碳。", "lamsang_cn": "相关疾病包括肺炎、支气管炎、哮喘、慢性阻塞性肺疾病等；中医辨证有肺气虚、肺阴虚、风寒犯肺、风热犯肺。", "cn_machine": true}, {"id": "hh002", "hz": "鼻", "py": "bí", "vi": "Mũi", "en": "nose", "group1": "Giải phẫu", "group2": "Hệ hô hấp", "vitri": "Cơ quan khởi đầu đường hô hấp trên, gồm tháp mũi, khoang mũi, niêm mạc mũi.", "vitri_cn": "鼻是呼吸道的起始部位，包括外鼻、鼻腔和鼻黏膜。", "congnang": "Lọc, làm ấm, làm ẩm không khí hít vào; chứa thụ thể khứu giác.", "tcm": "Mũi là khiếu của Phế — \"Phế khai khiếu ở mũi\".", "tcm_cn": "鼻为肺之窍。", "lamsang": "Viêm mũi dị ứng, viêm xoang, polyp mũi.", "nguon": "Giải phẫu học cơ bản", "verify": false, "congnang_cn": "过滤、温暖、湿润吸入的空气；含有嗅觉感受器。", "lamsang_cn": "过敏性鼻炎、鼻窦炎、鼻息肉。", "cn_machine": true}, {"id": "hh003", "hz": "咽", "py": "yān", "vi": "Hầu", "en": "pharynx", "group1": "Giải phẫu", "group2": "Hệ hô hấp", "vitri": "Ống cơ nối khoang mũi/miệng với thanh quản và thực quản, chia 3 phần: mũi hầu, miệng hầu, thanh hầu.", "vitri_cn": "咽是连接鼻腔、口腔与喉、食管的肌性管道。", "congnang": "Đường chung cho không khí và thức ăn đi qua; tham gia phát âm.", "tcm": "Liên quan đến kinh Phế và kinh Vị; là cửa ngõ khí thông với Phế và Vị.", "tcm_cn": "咽为肺胃之门户。", "lamsang": "Viêm họng, viêm amidan.", "nguon": "Giải phẫu học cơ bản", "verify": true, "verify_note": "Câu \"咽为肺胃之门户\" là diễn đạt phổ biến trong tài liệu Trung Y nhưng cần anh xác nhận lại cách dùng chuẩn.", "congnang_cn": "空气与食物共同通过的通道，参与发音。", "lamsang_cn": "咽炎、扁桃体炎。", "cn_machine": true}, {"id": "hh004", "hz": "喉", "py": "hóu", "vi": "Thanh quản", "en": "larynx", "group1": "Giải phẫu", "group2": "Hệ hô hấp", "vitri": "Nằm giữa hầu và khí quản, chứa dây thanh âm, có sụn giáp (yết hầu) lồi ra trước cổ.", "vitri_cn": "喉位于咽与气管之间，内含声带。", "congnang": "Phát âm, bảo vệ đường thở khi nuốt (nắp thanh môn đóng).", "tcm": "Liên quan kinh Phế; \"Phế hệ\" bao gồm khí quản, thanh quản.", "tcm_cn": "喉为肺系所属。", "lamsang": "Viêm thanh quản, khàn tiếng, polyp dây thanh.", "nguon": "Giải phẫu học cơ bản", "verify": false, "congnang_cn": "发音，吞咽时保护气道（会厌关闭）。", "lamsang_cn": "喉炎、声音嘶哑、声带息肉。", "cn_machine": true}, {"id": "hh005", "hz": "气管", "py": "qìguǎn", "vi": "Khí quản", "en": "trachea", "group1": "Giải phẫu", "group2": "Hệ hô hấp", "vitri": "Ống dẫn khí từ thanh quản xuống, chia thành hai phế quản gốc tại carina (khoảng đốt sống ngực T4-T5).", "vitri_cn": "气管上接喉，下分为左右支气管。", "congnang": "Dẫn không khí vào phổi, có lớp niêm mạc với lông chuyển để lọc bụi.", "tcm": "Thuộc \"Phế hệ\", là một phần đường dẫn khí của Phế.", "tcm_cn": "属肺系。", "lamsang": "Viêm khí quản, dị vật đường thở.", "nguon": "Giải phẫu học cơ bản", "verify": false, "congnang_cn": "将空气导入肺部，黏膜的纤毛可过滤灰尘。", "lamsang_cn": "气管炎、气道异物。", "cn_machine": true}, {"id": "hh006", "hz": "支气管", "py": "zhīqìguǎn", "vi": "Phế quản", "en": "bronchus", "group1": "Giải phẫu", "group2": "Hệ hô hấp", "vitri": "Hai nhánh chính từ khí quản vào hai phổi, tiếp tục phân chia thành phế quản nhỏ hơn (tiểu phế quản).", "vitri_cn": "支气管由气管分出，进入左右两肺后逐级分支。", "congnang": "Dẫn khí vào sâu trong phổi, điều chỉnh lưu lượng khí qua co thắt cơ trơn.", "tcm": "Thuộc \"Phế hệ\".", "tcm_cn": "属肺系。", "lamsang": "Viêm phế quản, hen phế quản, giãn phế quản.", "nguon": "Giải phẫu học cơ bản", "verify": false, "congnang_cn": "将空气导入肺部深处，通过平滑肌收缩调节气流。", "lamsang_cn": "支气管炎、哮喘、支气管扩张。", "cn_machine": true}, {"id": "hh007", "hz": "肺泡", "py": "fèipào", "vi": "Phế nang", "en": "alveolus", "group1": "Giải phẫu", "group2": "Hệ hô hấp", "vitri": "Túi khí nhỏ ở cuối tiểu phế quản, vách mỏng, bao quanh bởi mao mạch.", "vitri_cn": "肺泡是细支气管末端的小气囊，周围有毛细血管包绕。", "congnang": "Nơi diễn ra trao đổi khí oxy và carbon dioxide giữa khí và máu.", "tcm": "", "tcm_cn": "", "lamsang": "Khí phế thũng, phù phổi, xơ phổi.", "nguon": "Giải phẫu học cơ bản", "verify": false, "congnang_cn": "气体与血液之间进行氧气和二氧化碳交换的场所。", "lamsang_cn": "肺气肿、肺水肿、肺纤维化。", "cn_machine": true}, {"id": "hh008", "hz": "胸膜", "py": "xiōngmó", "vi": "Màng phổi", "en": "pleura", "group1": "Giải phẫu", "group2": "Hệ hô hấp", "vitri": "Lớp màng mỏng hai lá (lá thành và lá tạng) bao quanh phổi, giữa có khoang màng phổi chứa dịch bôi trơn.", "vitri_cn": "胸膜分脏胸膜和壁胸膜，两层之间为胸膜腔。", "congnang": "Giảm ma sát khi phổi co giãn, giữ áp lực âm hỗ trợ hô hấp.", "tcm": "", "tcm_cn": "", "lamsang": "Tràn dịch màng phổi, viêm màng phổi, tràn khí màng phổi.", "nguon": "Giải phẫu học cơ bản", "verify": false, "congnang_cn": "减少肺扩张收缩时的摩擦，维持负压以支持呼吸。", "lamsang_cn": "胸腔积液、胸膜炎、气胸。", "cn_machine": true}, {"id": "hh009", "hz": "横膈膜", "py": "héngémó", "vi": "Cơ hoành", "en": "diaphragm", "group1": "Giải phẫu", "group2": "Hệ hô hấp", "vitri": "Cơ vân hình vòm ngăn giữa lồng ngực và ổ bụng.", "vitri_cn": "横膈膜是分隔胸腔与腹腔的穹顶状肌肉。", "congnang": "Cơ hô hấp chính — co lại khi hít vào để tăng thể tích lồng ngực.", "tcm": "", "tcm_cn": "", "lamsang": "Thoát vị hoành, nấc cụt do kích thích cơ hoành.", "nguon": "Giải phẫu học cơ bản", "verify": false, "congnang_cn": "主要的呼吸肌——吸气时收缩以增大胸腔容积。", "lamsang_cn": "膈疝、膈肌受刺激引起呃逆。", "cn_machine": true}, {"id": "hh010", "hz": "纵隔", "py": "zònggé", "vi": "Trung thất", "en": "mediastinum", "group1": "Giải phẫu", "group2": "Hệ hô hấp", "vitri": "Khoang giữa hai phổi trong lồng ngực, chứa tim, các mạch máu lớn, thực quản, khí quản.", "vitri_cn": "纵隔位于两肺之间，内含心脏、大血管、食管、气管等。", "congnang": "Khoang chứa và bảo vệ các cơ quan trung tâm lồng ngực.", "tcm": "", "tcm_cn": "", "lamsang": "U trung thất, viêm trung thất.", "nguon": "Giải phẫu học cơ bản", "verify": false, "congnang_cn": "容纳并保护胸腔中央器官的腔隙。", "lamsang_cn": "纵隔肿瘤、纵隔炎。", "cn_machine": true}, {"id": "hh011", "hz": "呼吸", "py": "hūxī", "vi": "Hô hấp", "en": "respiration", "group1": "Sinh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "Quá trình trao đổi khí giữa cơ thể và môi trường, gồm hít vào và thở ra.", "tcm": "Hô hấp do Phế chủ quản, liên quan đến Thận (Thận chủ nạp khí — hấp thu khí sâu).", "tcm_cn": "呼吸由肺主管，与肾之纳气功能相关。", "lamsang": "Khó thở, thở nhanh, thở chậm, ngưng thở khi ngủ.", "nguon": "Sinh lý học cơ bản", "verify": true, "verify_note": "Mối liên hệ Phế-Thận trong hô hấp (\"Thận chủ nạp khí\") là khái niệm Trung Y kinh điển quan trọng — cần anh xác nhận cách diễn đạt và bổ sung nguồn gốc kinh điển chính xác (Nội Kinh / Loại Kinh...).", "lamsang_cn": "呼吸困难、呼吸急促、呼吸缓慢、睡眠呼吸暂停。", "cn_machine": true}, {"id": "hh012", "hz": "吸气", "py": "xīqì", "vi": "Hít vào", "en": "inhalation", "group1": "Sinh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "Cơ hoành và cơ liên sườn co lại, tăng thể tích lồng ngực, không khí đi vào phổi.", "tcm": "", "tcm_cn": "", "lamsang": "", "nguon": "Sinh lý học cơ bản", "verify": false, "congnang_cn": "膈肌与肋间肌收缩，增大胸腔容积，空气进入肺部。", "cn_machine": true}, {"id": "hh013", "hz": "呼气", "py": "hūqì", "vi": "Thở ra", "en": "exhalation", "group1": "Sinh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "Cơ hô hấp giãn, thể tích lồng ngực giảm, khí CO2 được đẩy ra ngoài.", "tcm": "", "tcm_cn": "", "lamsang": "", "nguon": "Sinh lý học cơ bản", "verify": false, "congnang_cn": "呼吸肌放松，胸腔容积减小，二氧化碳被排出体外。", "cn_machine": true}, {"id": "hh014", "hz": "肺活量", "py": "fèihuóliàng", "vi": "Dung tích sống", "en": "vital capacity", "group1": "Sinh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "Lượng khí tối đa có thể thở ra sau khi hít vào tối đa — chỉ số đánh giá chức năng hô hấp.", "tcm": "", "tcm_cn": "", "lamsang": "Giảm trong bệnh phổi hạn chế (xơ phổi), bệnh phổi tắc nghẽn.", "nguon": "Sinh lý học cơ bản", "verify": false, "congnang_cn": "最大吸气后所能呼出的最大气量——评估呼吸功能的指标。", "lamsang_cn": "在限制性肺病（肺纤维化）和阻塞性肺病中下降。", "cn_machine": true}, {"id": "hh015", "hz": "肺炎", "py": "fèiyán", "vi": "Viêm phổi", "en": "pneumonia", "group1": "Bệnh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "", "tcm": "Thuộc phạm vi \"Phong ôn phạm Phế\", \"Đàm nhiệt ung Phế\" trong Trung Y.", "tcm_cn": "中医属\"风温犯肺\"\"痰热壅肺\"范畴。", "lamsang": "Nhiễm trùng nhu mô phổi do vi khuẩn, virus, nấm; sốt, ho, khó thở, đau ngực.", "nguon": "Bệnh học hô hấp hiện đại", "verify": true, "verify_note": "Việc quy bệnh danh hiện đại (viêm phổi) vào chứng hậu Trung Y cụ thể (Phong ôn phạm Phế / Đàm nhiệt ung Phế) cần anh xác nhận — đây là điểm dễ gây hiểu nhầm đồng nhất hai hệ thống nếu không ghi chú rõ ràng.", "lamsang_cn": "由细菌、病毒、真菌引起的肺实质感染；发热、咳嗽、呼吸困难、胸痛。", "cn_machine": true}, {"id": "hh016", "hz": "支气管炎", "py": "zhīqìguǎnyán", "vi": "Viêm phế quản", "en": "bronchitis", "group1": "Bệnh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "", "tcm": "", "tcm_cn": "", "lamsang": "Viêm niêm mạc phế quản, ho có đờm kéo dài, có thể cấp hoặc mạn tính.", "nguon": "Bệnh học hô hấp hiện đại", "verify": false, "lamsang_cn": "支气管黏膜炎症，持续咳痰，可为急性或慢性。", "cn_machine": true}, {"id": "hh017", "hz": "哮喘", "py": "xiàochuǎn", "vi": "Hen phế quản", "en": "asthma", "group1": "Bệnh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "", "tcm": "Trung Y gọi là \"Háo suyễn\", liên quan đến Phế, Thận, Tỳ hư và đàm ẩm nội phục.", "tcm_cn": "中医称\"哮喘\"，与肺、肾、脾虚及痰饮内伏相关。", "lamsang": "Co thắt phế quản tái phát, khò khè, khó thở, thường liên quan dị ứng.", "nguon": "Bệnh học hô hấp hiện đại", "verify": true, "verify_note": "Cơ chế bệnh \"Phế Thận Tỳ hư, đàm ẩm nội phục\" là tổng hợp phổ biến trong giáo trình nhưng cần anh xác nhận lại cách trình bày và mức độ chi tiết phù hợp.", "lamsang_cn": "反复性支气管痉挛、喘鸣、呼吸困难，常与过敏相关。", "cn_machine": true}, {"id": "hh018", "hz": "慢性阻塞性肺疾病", "py": "mànxìng zǔsèxìng fèi jíbìng", "vi": "Bệnh phổi tắc nghẽn mạn tính", "en": "COPD", "group1": "Bệnh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "", "tcm": "", "tcm_cn": "", "lamsang": "Tắc nghẽn luồng khí mạn tính, thường do hút thuốc lá; gồm viêm phế quản mạn và khí phế thũng.", "nguon": "Bệnh học hô hấp hiện đại", "verify": false, "lamsang_cn": "慢性气流阻塞，多由吸烟引起；包括慢性支气管炎和肺气肿。", "cn_machine": true}, {"id": "hh019", "hz": "肺水肿", "py": "fèishuǐzhǒng", "vi": "Phù phổi", "en": "pulmonary edema", "group1": "Bệnh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "", "tcm": "", "tcm_cn": "", "lamsang": "Dịch tích tụ trong phế nang, thường do suy tim trái; gây khó thở cấp.", "nguon": "Bệnh học hô hấp hiện đại", "verify": false, "lamsang_cn": "液体积聚于肺泡，多由左心衰竭引起；导致急性呼吸困难。", "cn_machine": true}, {"id": "hh020", "hz": "肺纤维化", "py": "fèixiānwéihuà", "vi": "Xơ phổi", "en": "pulmonary fibrosis", "group1": "Bệnh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "", "tcm": "", "tcm_cn": "", "lamsang": "Sẹo hoá mô phổi tiến triển, giảm khả năng trao đổi khí, khó thở tiến triển.", "nguon": "Bệnh học hô hấp hiện đại", "verify": false, "lamsang_cn": "肺组织进行性瘢痕化，气体交换能力下降，呼吸困难逐渐加重。", "cn_machine": true}, {"id": "hh021", "hz": "肺气虚", "py": "fèiqìxū", "vi": "Phế khí hư", "en": "Lung Qi deficiency (TCM)", "group1": "Bệnh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "", "tcm": "Chứng hậu Trung Y: Phế khí suy yếu, biểu hiện ho yếu, thở ngắn, dễ ra mồ hôi, sợ gió.", "tcm_cn": "肺气不足，症见咳声低弱、气短、自汗、畏风。", "lamsang": "Không có bệnh danh Tây Y tương đương trực tiếp — đây là khái niệm thuộc hệ thống biện chứng Trung Y.", "nguon": "中医诊断学 (Trung Y chẩn đoán học) — cần anh chỉ định giáo trình/phiên bản cụ thể", "verify": true, "verify_note": "Đây là thuật ngữ Trung Y thuần, không có tương đương Tây Y — cần anh xác nhận định nghĩa và nguồn giáo trình chính xác trước khi đưa vào dữ liệu thật.", "lamsang_cn": "无直接对应的西医病名——属中医辨证体系的概念。", "cn_machine": true}, {"id": "hh022", "hz": "肺阴虚", "py": "fèiyīnxū", "vi": "Phế âm hư", "en": "Lung Yin deficiency (TCM)", "group1": "Bệnh lý", "group2": "Hệ hô hấp", "vitri": "", "vitri_cn": "", "congnang": "", "tcm": "Chứng hậu Trung Y: Phế âm hao tổn, biểu hiện ho khan, họng khô, sốt chiều, ra mồ hôi đêm.", "tcm_cn": "肺阴亏耗，症见干咳、咽干、午后潮热、夜间盗汗。", "lamsang": "Không có bệnh danh Tây Y tương đương trực tiếp.", "nguon": "中医诊断学 — cần anh chỉ định giáo trình/phiên bản cụ thể", "verify": true, "verify_note": "Tương tự hh021 — thuật ngữ Trung Y thuần, cần anh xác thực định nghĩa và nguồn.", "lamsang_cn": "无直接对应的西医病名。", "cn_machine": true}];
 
-const I18N = {"vi": {"sub": "Tiếng Trung Y Khoa", "search_ph": "Nhập 汉字 / pinyin / tiếng Việt / tiếng Anh để tra cứu", "g_all": "Toàn bộ", "g_anat": "Giải phẫu", "g_phys": "Sinh lý", "g_path": "Bệnh lý", "g_mer": "Kinh mạch", "g_acu": "Huyệt vị", "g_form": "Thang phương", "g_herb": "Dược liệu", "g_review": "Ôn luyện", "dd_all": "Toàn bộ", "sys_resp": "Hô hấp", "sys_circ": "Tuần hoàn", "sys_dige": "Tiêu hoá", "sys_nerv": "Thần kinh", "intro_resp": "Hệ cơ quan đảm nhiệm trao đổi khí giữa cơ thể và môi trường. Cấu trúc chính gồm mũi, hầu, thanh quản, khí quản, phế quản, phổi và phế nang.", "tab_vocab": "Từ vựng", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Đã thuộc", "all_terms": "Toàn bộ thuật ngữ", "results_for": "Kết quả cho", "words": "từ", "choose_sys": "Chọn một hệ cơ quan ở trên để xem giới thiệu và lọc từ vựng tương ứng.", "flow_title": "Đường đi giải phẫu", "detail": "Chi tiết", "f_pos": "Vị trí", "f_func": "Công năng", "f_tcm": "Ghi chú Trung Y", "f_clin": "Lâm sàng", "f_taste": "Tính vị", "f_meridian": "Quy kinh", "f_dose": "Liều dùng", "f_caution": "Kiêng kỵ", "f_mt_note": "Dịch máy — cần rà soát", "f_verify": "⚠ Cần xác thực", "f_source": "Nguồn", "f_cnwarn": "⚠ Phần tiếng Trung là bản dịch tạm cho demo — cần Hạ Vân Y Đạo rà soát.", "btn_known": "Đã thuộc", "btn_known_on": "Đã thuộc ✓", "btn_review": "Thêm vào ôn tập", "fc_front": "MẶT TRƯỚC", "fc_back": "MẶT SAU", "fc_flip": "Chạm để lật", "fc_flipback": "Lật lại", "fc_no": "Chưa nhớ", "fc_mid": "Cần ôn lại", "fc_yes": "Đã thuộc", "fc_empty": "Không có từ nào trong phạm vi này để học.", "qz_choose": "Chọn nghĩa tiếng Việt", "qz_mean": "nghĩa là gì?", "qz_q": "Câu", "qz_pts": "điểm", "qz_correct": "✓ Đúng", "qz_wrong": "✗ Sai", "qz_next": "Câu tiếp theo", "qz_result": "Xem kết quả", "qz_done_lab": "câu trả lời đúng", "qz_retry": "Làm lại", "qz_empty": "Không có từ nào trong phạm vi này để làm quiz.", "done_title": "Đã thuộc", "done_sub": "Ôn lại theo chu kỳ ngắt quãng — 1 · 3 · 7 · 14 · 30 ngày", "st_known": "Đã thuộc", "st_review": "Cần ôn lại", "st_today": "Hôm nay", "fl_today": "Hôm nay cần ôn", "fl_known": "Đã thuộc", "fl_review": "Cần ôn lại", "next_review": "Ôn tiếp", "today": "Hôm nay", "after": "sau", "days": "ngày", "no_words": "Chưa có từ nào trong nhóm này.", "review_today": "Ôn hôm nay", "dr_account": "Tài khoản", "dr_login": "Đăng nhập / Đăng ký", "dr_progress": "Tiến độ học tập", "dr_settings": "Cài đặt", "dr_sys": "Cài đặt hệ thống", "dr_display": "Tuỳ chỉnh hiển thị", "dr_lang": "Ngôn ngữ giao diện", "dr_other": "Khác", "dr_source": "Nguồn học thuật", "dr_about": "Giới thiệu Hạ Vân Y Đạo", "soon": "Sắp có", "empty_vocab": "Không tìm thấy thuật ngữ phù hợp.", "load_more": "Xem thêm", "showing_count": "Đang hiện {n}/{total}", "footer_desc": "Ứng dụng tra cứu và ghi nhớ thuật ngữ y khoa, từ y học hiện đại đến kinh điển Trung Y.", "footer_note": "Nội dung phục vụ học tập và nghiên cứu, không thay thế chẩn đoán hoặc chỉ định điều trị của bác sĩ. Dữ liệu mẫu trong bản demo này chưa qua xác thực học thuật đầy đủ."}, "zh": {"sub": "中医汉语", "search_ph": "输入 汉字 / 拼音 / 越南语 / 英语 进行查询", "g_all": "全部", "g_anat": "解剖", "g_phys": "生理", "g_path": "病理", "g_mer": "经络", "g_acu": "腧穴", "g_form": "汤方", "g_herb": "药材", "g_review": "复习", "dd_all": "全部", "sys_resp": "呼吸", "sys_circ": "循环", "sys_dige": "消化", "sys_nerv": "神经", "intro_resp": "人体与外界进行气体交换的系统，主要包括鼻、咽、喉、气管、支气管、肺和肺泡。", "tab_vocab": "词汇", "tab_fc": "卡片", "tab_quiz": "测验", "tab_done": "已掌握", "all_terms": "全部术语", "results_for": "查询结果", "words": "个词", "choose_sys": "请选择上方的器官系统以查看简介并筛选相应词汇。", "flow_title": "解剖路径", "detail": "详情", "f_pos": "位置", "f_func": "功能", "f_tcm": "中医注释", "f_clin": "临床", "f_taste": "性味", "f_meridian": "归经", "f_dose": "用量", "f_caution": "使用注意", "f_mt_note": "机器翻译 — 待审核", "f_verify": "⚠ 待核实", "f_source": "来源", "f_cnwarn": "⚠ 中文部分为演示用临时翻译——需夏雲醫道审核。", "btn_known": "已掌握", "btn_known_on": "已掌握 ✓", "btn_review": "加入复习", "fc_front": "正面", "fc_back": "背面", "fc_flip": "点击翻转", "fc_flipback": "翻回", "fc_no": "未记住", "fc_mid": "需复习", "fc_yes": "已掌握", "fc_empty": "此范围内暂无可学习的词。", "qz_choose": "选择越南语释义", "qz_mean": "是什么意思？", "qz_q": "第", "qz_pts": "分", "qz_correct": "✓ 正确", "qz_wrong": "✗ 错误", "qz_next": "下一题", "qz_result": "查看结果", "qz_done_lab": "题答对", "qz_retry": "重做", "qz_empty": "此范围内暂无可测验的词。", "done_title": "已掌握", "done_sub": "按间隔周期复习 — 1 · 3 · 7 · 14 · 30 天", "st_known": "已掌握", "st_review": "需复习", "st_today": "今天", "fl_today": "今日待复习", "fl_known": "已掌握", "fl_review": "需复习", "next_review": "下次复习", "today": "今天", "after": "", "days": "天后", "no_words": "该组暂无词。", "review_today": "今日复习", "dr_account": "账户", "dr_login": "登录 / 注册", "dr_progress": "学习进度", "dr_settings": "设置", "dr_sys": "系统设置", "dr_display": "显示自定义", "dr_lang": "界面语言", "dr_other": "其他", "dr_source": "学术来源", "dr_about": "关于夏雲醫道", "soon": "即将推出", "empty_vocab": "未找到匹配的术语。", "load_more": "查看更多", "showing_count": "显示 {n}/{total}", "footer_desc": "医学术语查询与记忆应用，涵盖现代医学与中医经典。", "footer_note": "内容仅供学习与研究使用，不能替代医生的诊断或治疗建议。本演示版本中的样本数据尚未经过完整的学术核实。"}, "en": {"sub": "Medical Chinese", "search_ph": "Type 汉字 / pinyin / Vietnamese / English to search", "g_all": "All", "g_anat": "Anatomy", "g_phys": "Physiology", "g_path": "Pathology", "g_mer": "Meridians", "g_acu": "Acupoints", "g_form": "Formulas", "g_herb": "Herbs", "g_review": "Review", "dd_all": "All", "sys_resp": "Respiratory", "sys_circ": "Circulatory", "sys_dige": "Digestive", "sys_nerv": "Nervous", "intro_resp": "The system responsible for gas exchange between the body and the environment. Main structures: nose, pharynx, larynx, trachea, bronchi, lungs and alveoli.", "tab_vocab": "Vocabulary", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Learned", "all_terms": "All terms", "results_for": "Results for", "words": "words", "choose_sys": "Select an organ system above to see its intro and filter related terms.", "flow_title": "Anatomical pathway", "detail": "Details", "f_pos": "Location", "f_func": "Function", "f_tcm": "TCM notes", "f_clin": "Clinical", "f_taste": "Taste & temperature", "f_meridian": "Meridians", "f_dose": "Dosage", "f_caution": "Cautions", "f_mt_note": "Machine translated — needs review", "f_verify": "⚠ Needs verification", "f_source": "Source", "f_cnwarn": "⚠ The Chinese text is a draft translation for demo — pending review by Hạ Vân Y Đạo.", "btn_known": "Learned", "btn_known_on": "Learned ✓", "btn_review": "Add to review", "fc_front": "FRONT", "fc_back": "BACK", "fc_flip": "Tap to flip", "fc_flipback": "Flip back", "fc_no": "Not yet", "fc_mid": "Review", "fc_yes": "Learned", "fc_empty": "No words in this scope to study.", "qz_choose": "Choose the Vietnamese meaning", "qz_mean": "means?", "qz_q": "Question", "qz_pts": "pts", "qz_correct": "✓ Correct", "qz_wrong": "✗ Wrong", "qz_next": "Next", "qz_result": "See results", "qz_done_lab": "correct answers", "qz_retry": "Retry", "qz_empty": "No words in this scope for a quiz.", "done_title": "Learned", "done_sub": "Spaced repetition — 1 · 3 · 7 · 14 · 30 days", "st_known": "Learned", "st_review": "To review", "st_today": "Today", "fl_today": "Due today", "fl_known": "Learned", "fl_review": "To review", "next_review": "Next review", "today": "Today", "after": "in", "days": "days", "no_words": "No words in this group yet.", "review_today": "Review today", "dr_account": "Account", "dr_login": "Sign in / Sign up", "dr_progress": "Learning progress", "dr_settings": "Settings", "dr_sys": "System settings", "dr_display": "Display options", "dr_lang": "Interface language", "dr_other": "Other", "dr_source": "Academic sources", "dr_about": "About Hạ Vân Y Đạo", "soon": "Soon", "empty_vocab": "No matching terms found.", "load_more": "Show more", "showing_count": "Showing {n}/{total}", "footer_desc": "An app for looking up and memorizing medical terminology, from modern medicine to classical TCM.", "footer_note": "Content is for study and research only and does not replace a doctor's diagnosis or treatment advice. Sample data in this demo has not yet been fully academically verified."}};
+const I18N = {"vi": {"sub": "Tiếng Trung Y Khoa", "search_ph": "Nhập 汉字 / pinyin / tiếng Việt / tiếng Anh để tra cứu", "g_all": "Toàn bộ", "g_anat": "Giải phẫu", "g_phys": "Sinh lý", "g_path": "Bệnh lý", "g_mer": "Kinh mạch", "g_acu": "Huyệt vị", "g_form": "Thang phương", "g_herb": "Dược liệu", "g_review": "Ôn luyện", "dd_all": "Toàn bộ", "sys_resp": "Hô hấp", "sys_circ": "Tuần hoàn", "sys_dige": "Tiêu hoá", "sys_nerv": "Thần kinh", "intro_resp": "Hệ cơ quan đảm nhiệm trao đổi khí giữa cơ thể và môi trường. Cấu trúc chính gồm mũi, hầu, thanh quản, khí quản, phế quản, phổi và phế nang.", "tab_vocab": "Từ vựng", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Đã thuộc", "all_terms": "Toàn bộ thuật ngữ", "results_for": "Kết quả cho", "words": "từ", "choose_sys": "Chọn một hệ cơ quan ở trên để xem giới thiệu và lọc từ vựng tương ứng.", "flow_title": "Đường đi giải phẫu", "detail": "Chi tiết", "f_pos": "Vị trí", "f_func": "Công năng", "f_tcm": "Ghi chú Trung Y", "f_clin": "Lâm sàng", "f_taste": "Tính vị", "f_meridian": "Quy kinh", "f_dose": "Liều dùng", "f_caution": "Kiêng kỵ", "f_mt_note": "Dịch máy — cần rà soát", "f_verify": "⚠ Cần xác thực", "f_source": "Nguồn", "f_cnwarn": "⚠ Phần tiếng Trung là bản dịch tạm cho demo — cần Hạ Vân Y Đạo rà soát.", "btn_known": "Đã thuộc", "btn_known_on": "Đã thuộc ✓", "btn_review": "Thêm vào ôn tập", "fc_front": "MẶT TRƯỚC", "fc_back": "MẶT SAU", "fc_flip": "Chạm để lật", "fc_flipback": "Lật lại", "fc_no": "Chưa nhớ", "fc_mid": "Cần ôn lại", "fc_yes": "Đã thuộc", "fc_empty": "Không có từ nào trong phạm vi này để học.", "qz_choose": "Chọn nghĩa tiếng Việt", "qz_mean": "nghĩa là gì?", "qz_q": "Câu", "qz_pts": "điểm", "qz_correct": "✓ Đúng", "qz_wrong": "✗ Sai", "qz_next": "Câu tiếp theo", "qz_result": "Xem kết quả", "qz_done_lab": "câu trả lời đúng", "qz_retry": "Làm lại", "qz_empty": "Không có từ nào trong phạm vi này để làm quiz.", "done_title": "Đã thuộc", "done_sub": "Ôn lại theo chu kỳ ngắt quãng — 1 · 3 · 7 · 14 · 30 ngày", "st_known": "Đã thuộc", "st_review": "Cần ôn lại", "st_today": "Hôm nay", "fl_today": "Hôm nay cần ôn", "fl_known": "Đã thuộc", "fl_review": "Cần ôn lại", "next_review": "Ôn tiếp", "today": "Hôm nay", "after": "sau", "days": "ngày", "no_words": "Chưa có từ nào trong nhóm này.", "review_today": "Ôn hôm nay", "dr_account": "Tài khoản", "dr_login": "Đăng nhập / Đăng ký", "dr_progress": "Tiến độ học tập", "dr_settings": "Cài đặt", "dr_sys": "Cài đặt hệ thống", "dr_display": "Tuỳ chỉnh hiển thị", "dr_content_lang": "Ngôn ngữ hiển thị nội dung", "dr_lang": "Ngôn ngữ giao diện", "dr_other": "Khác", "dr_source": "Nguồn học thuật", "dr_about": "Giới thiệu Hạ Vân Y Đạo", "soon": "Sắp có", "empty_vocab": "Không tìm thấy thuật ngữ phù hợp.", "load_more": "Xem thêm", "showing_count": "Đang hiện {n}/{total}", "footer_desc": "Ứng dụng tra cứu và ghi nhớ thuật ngữ y khoa, từ y học hiện đại đến kinh điển Trung Y.", "footer_note": "Nội dung phục vụ học tập và nghiên cứu, không thay thế chẩn đoán hoặc chỉ định điều trị của bác sĩ. Dữ liệu mẫu trong bản demo này chưa qua xác thực học thuật đầy đủ."}, "zh": {"sub": "中医汉语", "search_ph": "输入 汉字 / 拼音 / 越南语 / 英语 进行查询", "g_all": "全部", "g_anat": "解剖", "g_phys": "生理", "g_path": "病理", "g_mer": "经络", "g_acu": "腧穴", "g_form": "汤方", "g_herb": "药材", "g_review": "复习", "dd_all": "全部", "sys_resp": "呼吸", "sys_circ": "循环", "sys_dige": "消化", "sys_nerv": "神经", "intro_resp": "人体与外界进行气体交换的系统，主要包括鼻、咽、喉、气管、支气管、肺和肺泡。", "tab_vocab": "词汇", "tab_fc": "卡片", "tab_quiz": "测验", "tab_done": "已掌握", "all_terms": "全部术语", "results_for": "查询结果", "words": "个词", "choose_sys": "请选择上方的器官系统以查看简介并筛选相应词汇。", "flow_title": "解剖路径", "detail": "详情", "f_pos": "位置", "f_func": "功能", "f_tcm": "中医注释", "f_clin": "临床", "f_taste": "性味", "f_meridian": "归经", "f_dose": "用量", "f_caution": "使用注意", "f_mt_note": "机器翻译 — 待审核", "f_verify": "⚠ 待核实", "f_source": "来源", "f_cnwarn": "⚠ 中文部分为演示用临时翻译——需夏雲醫道审核。", "btn_known": "已掌握", "btn_known_on": "已掌握 ✓", "btn_review": "加入复习", "fc_front": "正面", "fc_back": "背面", "fc_flip": "点击翻转", "fc_flipback": "翻回", "fc_no": "未记住", "fc_mid": "需复习", "fc_yes": "已掌握", "fc_empty": "此范围内暂无可学习的词。", "qz_choose": "选择越南语释义", "qz_mean": "是什么意思？", "qz_q": "第", "qz_pts": "分", "qz_correct": "✓ 正确", "qz_wrong": "✗ 错误", "qz_next": "下一题", "qz_result": "查看结果", "qz_done_lab": "题答对", "qz_retry": "重做", "qz_empty": "此范围内暂无可测验的词。", "done_title": "已掌握", "done_sub": "按间隔周期复习 — 1 · 3 · 7 · 14 · 30 天", "st_known": "已掌握", "st_review": "需复习", "st_today": "今天", "fl_today": "今日待复习", "fl_known": "已掌握", "fl_review": "需复习", "next_review": "下次复习", "today": "今天", "after": "", "days": "天后", "no_words": "该组暂无词。", "review_today": "今日复习", "dr_account": "账户", "dr_login": "登录 / 注册", "dr_progress": "学习进度", "dr_settings": "设置", "dr_sys": "系统设置", "dr_display": "显示自定义", "dr_content_lang": "内容显示语言", "dr_lang": "界面语言", "dr_other": "其他", "dr_source": "学术来源", "dr_about": "关于夏雲醫道", "soon": "即将推出", "empty_vocab": "未找到匹配的术语。", "load_more": "查看更多", "showing_count": "显示 {n}/{total}", "footer_desc": "医学术语查询与记忆应用，涵盖现代医学与中医经典。", "footer_note": "内容仅供学习与研究使用，不能替代医生的诊断或治疗建议。本演示版本中的样本数据尚未经过完整的学术核实。"}, "en": {"sub": "Medical Chinese", "search_ph": "Type 汉字 / pinyin / Vietnamese / English to search", "g_all": "All", "g_anat": "Anatomy", "g_phys": "Physiology", "g_path": "Pathology", "g_mer": "Meridians", "g_acu": "Acupoints", "g_form": "Formulas", "g_herb": "Herbs", "g_review": "Review", "dd_all": "All", "sys_resp": "Respiratory", "sys_circ": "Circulatory", "sys_dige": "Digestive", "sys_nerv": "Nervous", "intro_resp": "The system responsible for gas exchange between the body and the environment. Main structures: nose, pharynx, larynx, trachea, bronchi, lungs and alveoli.", "tab_vocab": "Vocabulary", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Learned", "all_terms": "All terms", "results_for": "Results for", "words": "words", "choose_sys": "Select an organ system above to see its intro and filter related terms.", "flow_title": "Anatomical pathway", "detail": "Details", "f_pos": "Location", "f_func": "Function", "f_tcm": "TCM notes", "f_clin": "Clinical", "f_taste": "Taste & temperature", "f_meridian": "Meridians", "f_dose": "Dosage", "f_caution": "Cautions", "f_mt_note": "Machine translated — needs review", "f_verify": "⚠ Needs verification", "f_source": "Source", "f_cnwarn": "⚠ The Chinese text is a draft translation for demo — pending review by Hạ Vân Y Đạo.", "btn_known": "Learned", "btn_known_on": "Learned ✓", "btn_review": "Add to review", "fc_front": "FRONT", "fc_back": "BACK", "fc_flip": "Tap to flip", "fc_flipback": "Flip back", "fc_no": "Not yet", "fc_mid": "Review", "fc_yes": "Learned", "fc_empty": "No words in this scope to study.", "qz_choose": "Choose the Vietnamese meaning", "qz_mean": "means?", "qz_q": "Question", "qz_pts": "pts", "qz_correct": "✓ Correct", "qz_wrong": "✗ Wrong", "qz_next": "Next", "qz_result": "See results", "qz_done_lab": "correct answers", "qz_retry": "Retry", "qz_empty": "No words in this scope for a quiz.", "done_title": "Learned", "done_sub": "Spaced repetition — 1 · 3 · 7 · 14 · 30 days", "st_known": "Learned", "st_review": "To review", "st_today": "Today", "fl_today": "Due today", "fl_known": "Learned", "fl_review": "To review", "next_review": "Next review", "today": "Today", "after": "in", "days": "days", "no_words": "No words in this group yet.", "review_today": "Review today", "dr_account": "Account", "dr_login": "Sign in / Sign up", "dr_progress": "Learning progress", "dr_settings": "Settings", "dr_sys": "System settings", "dr_display": "Display options", "dr_content_lang": "Content display language", "dr_lang": "Interface language", "dr_other": "Other", "dr_source": "Academic sources", "dr_about": "About Hạ Vân Y Đạo", "soon": "Soon", "empty_vocab": "No matching terms found.", "load_more": "Show more", "showing_count": "Showing {n}/{total}", "footer_desc": "An app for looking up and memorizing medical terminology, from modern medicine to classical TCM.", "footer_note": "Content is for study and research only and does not replace a doctor's diagnosis or treatment advice. Sample data in this demo has not yet been fully academically verified."}};
 function t(key){ return (I18N[state.lang] && I18N[state.lang][key]) || I18N.vi[key] || key; }
 // Chọn nội dung theo ngôn ngữ đang hiển thị (dữ liệu chỉ có VI + ZH, chưa có EN cho trường này).
 // zh === 'zh': ưu tiên tiếng Trung. Còn lại (vi/en): ưu tiên tiếng Việt, tiếng Trung làm dòng phụ.
@@ -481,7 +502,20 @@ function pickLang3(vi, zh, en){
   const cn = (state.lang !== 'zh' && zh && zh !== primary) ? zh : '';
   return { text: primary, cn };
 }
-function setLang(l){ state.lang=l; localStorage.setItem('chimedis_lang', l); closeLangMenu(); render(); }
+function setLang(l){ state.lang=l; localStorage.setItem('chimedis_lang', l); closeLangMenu(); syncIfaceLangPanel(); render(); }
+// Mục "Ngôn ngữ giao diện" trong drawer dùng chung state.lang/setLang() với nút VI ở
+// header — không phải cài đặt riêng, chỉ là lối vào thứ 2 cho cùng 1 lựa chọn.
+function syncIfaceLangPanel(){
+  document.querySelectorAll('input[name="ifaceLang"]').forEach((el, i) => {
+    const key = ['zh','vi','en'][i];
+    el.checked = state.lang === key;
+  });
+}
+function toggleIfaceLangPanel(){
+  document.getElementById('ifaceLangPanel').classList.toggle('show');
+  document.getElementById('ifaceLangChev').classList.toggle('open');
+  syncIfaceLangPanel();
+}
 
 // Bỏ tiền tố cấp chương ("Toàn chương — " / "Whole chapter — " / "全章 " / "第X节 ")
 // khỏi nhãn hiển thị — chỉ giữ lại tên loại thuốc, không cần biết nó thuộc "toàn
@@ -569,7 +603,64 @@ let state = {
   qzOrder: [],
   lang: (localStorage.getItem('chimedis_lang')||'vi'),
   vocabVisible: VOCAB_PAGE_SIZE, // số từ đang hiển thị trong tab Từ vựng (xem "Xem thêm" để tải thêm)
+  contentLangs: loadContentLangs(), // ngôn ngữ NỘI DUNG thuật ngữ hiển thị (Trung/Việt/Anh) — độc lập
+                                     // với state.lang (ngôn ngữ giao diện hệ thống). Mặc định chỉ bật Trung.
+  popupId: null, // id thuật ngữ đang mở trong popup (để render lại khi đổi contentLangs), null nếu đang đóng.
 };
+
+// ===== NGÔN NGỮ HIỂN THỊ NỘI DUNG (độc lập với ngôn ngữ giao diện state.lang) =====
+const CONTENT_LANGS_KEY = 'chimedis_content_langs_v1';
+function loadContentLangs(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(CONTENT_LANGS_KEY));
+    if(saved && (saved.zh || saved.vi || saved.en)){
+      return { zh: !!saved.zh, vi: !!saved.vi, en: !!saved.en };
+    }
+  }catch(e){}
+  return { zh: true, vi: false, en: false }; // mặc định: chỉ hiện tiếng Trung
+}
+function saveContentLangs(){ localStorage.setItem(CONTENT_LANGS_KEY, JSON.stringify(state.contentLangs)); }
+function toggleContentLang(key){
+  const next = Object.assign({}, state.contentLangs, { [key]: !state.contentLangs[key] });
+  if(!next.zh && !next.vi && !next.en){
+    // luôn giữ ít nhất 1 ngôn ngữ bật — trả checkbox về trạng thái cũ, không cho tắt hết
+    syncContentLangPanel();
+    return;
+  }
+  state.contentLangs = next;
+  saveContentLangs();
+  syncContentLangPanel();
+  render();
+  if(state.popupId) openPopup(state.popupId); // popup đang mở -> render lại với ngôn ngữ mới
+}
+function syncContentLangPanel(){
+  const zh = document.getElementById('clZh'), vi = document.getElementById('clVi'), en = document.getElementById('clEn');
+  if(zh) zh.checked = state.contentLangs.zh;
+  if(vi) vi.checked = state.contentLangs.vi;
+  if(en) en.checked = state.contentLangs.en;
+}
+function toggleContentLangPanel(){
+  document.getElementById('contentLangPanel').classList.toggle('show');
+  document.getElementById('clpChev').classList.toggle('open');
+  syncContentLangPanel();
+}
+// Trả về HTML các dòng nội dung đã bật (thứ tự cố định Trung -> Việt -> Anh), mỗi ngôn ngữ
+// phân biệt bằng kiểu chữ thay vì nhãn chữ (Trung: chữ gốc; Việt: chữ thường; Anh: chữ nghiêng).
+// Nếu không có ngôn ngữ nào đang bật có nội dung, fallback về ngôn ngữ đầu tiên có sẵn để
+// tránh field trống hẳn.
+function renderMultiLang(vi, zh, en){
+  const parts = [
+    { on: state.contentLangs.zh, text: zh, cls: 'han' },
+    { on: state.contentLangs.vi, text: vi, cls: 'lang-vi' },
+    { on: state.contentLangs.en, text: en, cls: 'lang-en' },
+  ];
+  let html = parts.filter(p => p.on && p.text).map(p => `<p class="${p.cls}">${p.text}</p>`).join('');
+  if(!html){
+    const fb = parts.find(p => p.text);
+    if(fb) html = `<p class="${fb.cls}">${fb.text}</p>`;
+  }
+  return html;
+}
 
 // localStorage: tiến độ học
 const STORAGE_KEY = 'chimedis_progress_v1';
@@ -654,17 +745,19 @@ function renderMenu1(){
   const el = document.getElementById('menu1');
   const g1html = GROUP1().map(g => `<option value="${g.key}" ${state.group1===g.key?'selected':''}>${g.label}</option>`).join('');
   const g2 = getGroup2Options();
-  const g2html = (g2 && g2.length)
-    ? `<select class="dd-select dd2" onchange="onDropdown2Change(this.value)">${g2.map(o=>`<option value="${o.value}" ${o.selected?'selected':''}>${o.label}</option>`).join('')}</select>`
-    : '';
+  const disabled = g2.length===1 && g2[0].disabled;
+  const g2html = `<select class="dd-select dd2" ${disabled?'disabled':''} onchange="onDropdown2Change(this.value)">${g2.map(o=>`<option value="${o.value}" ${o.selected?'selected':''}>${o.label}</option>`).join('')}</select>`;
   el.innerHTML = `<select class="dd-select dd1" onchange="selectGroup1(this.value)">${g1html}</select>${g2html}`;
 }
-// Danh sách option cho dropdown 2, tuỳ theo dropdown 1 đang chọn — null nghĩa là ẩn dropdown 2.
+// Danh sách option cho dropdown 2, tuỳ theo dropdown 1 đang chọn. Luôn trả về ít nhất
+// 1 option (placeholder "Toàn bộ", disabled) để dropdown 2 luôn hiển thị cố định,
+// không ẩn/hiện làm dropdown 1 đổi kích thước (xem feedback UI 2026-08).
 function getGroup2Options(){
+  const placeholder = [{ value:'', label:t('dd_all'), selected:true, disabled:true }];
   if(state.group1 === 'Ôn luyện'){
     return REVIEW_TABS.map(([k,labelKey]) => ({ value:k, label:t(labelKey), selected: state.tab===k }));
   }
-  if(state.group1 === 'all') return null;
+  if(state.group1 === 'all') return placeholder;
   if(ANATOMY_GROUPS.includes(state.group1)){
     const sysOpts = SYS_OPTIONS()
       .map(o => ({ value:o.key, label:o.label, selected: state.group2===o.key }))
@@ -678,7 +771,7 @@ function getGroup2Options(){
   const groupTerms = TERMS.filter(x=>x.group1===state.group1 && x.group2);
   const labelByValue = new Map();
   groupTerms.forEach(x => { if(!labelByValue.has(x.group2)) labelByValue.set(x.group2, x); });
-  if(labelByValue.size === 0) return null;
+  if(labelByValue.size === 0) return placeholder;
   const catOpts = [...labelByValue.entries()].map(([v, x]) => ({
     value: v,
     label: stripCategoryPrefix(pickLang3(x.group2_vi, v, x.group2_en).text),
@@ -1009,6 +1102,7 @@ function openPopupByHz(hz){
 function openPopup(id){
   const term = TERMS.find(x=>x.id===id);
   if(!term) return;
+  state.popupId = id;
   const list = getFiltered();
   const idx = list.findIndex(x=>x.id===id);
   const prev = list[idx-1], next = list[idx+1];
@@ -1030,55 +1124,56 @@ function openPopup(id){
   if(term.category === 'herb'){
     // Tính vị/quy kinh: chỉ có VI+ZH. Công năng: có bản dịch VI/EN chuẩn (nguồn).
     // Chủ trị/liều dùng/kiêng kỵ: dịch máy VI/EN — hiển thị kèm ghi chú "cần rà soát".
-    // Chỉ ghi chú "dịch máy" khi đang thực sự hiển thị bản dịch (không phải khi
-    // lang=zh, vì lúc đó hiển thị nguyên văn nguồn, không phải máy dịch).
-    const mtNote = state.lang !== 'zh' ? `<p class="src" style="padding:2px 0 0">(${t('f_mt_note')})</p>` : '';
-    if(term.taste_vi || term.temperature_vi){
-      const p = pickLang([term.temperature_vi,term.taste_vi].filter(Boolean).join(', '), [term.temperature_zh,term.taste_zh].filter(Boolean).join('、'));
-      html += `<div class="field"><div class="ft">${t('f_taste')}</div><p${state.lang==='zh'?' class="han"':''}>${p.text}</p>${p.cn?`<p class="cn han">${p.cn}</p>`:''}</div>`;
+    // mtNote chỉ hiện khi có ít nhất 1 ngôn ngữ dịch máy (vi/en) đang được bật xem.
+    const mtNote = (state.contentLangs.vi || state.contentLangs.en) ? `<p class="src" style="padding:2px 0 0">(${t('f_mt_note')})</p>` : '';
+    if(term.taste_vi || term.temperature_vi || term.taste_zh || term.temperature_zh){
+      const vi = [term.temperature_vi,term.taste_vi].filter(Boolean).join(', ');
+      const zh = [term.temperature_zh,term.taste_zh].filter(Boolean).join('、');
+      const body = renderMultiLang(vi, zh, '');
+      if(body) html += `<div class="field"><div class="ft">${t('f_taste')}</div>${body}</div>`;
     }
     if(term.meridian_vi || term.meridian_zh){
-      const p = pickLang(term.meridian_vi, term.meridian_zh);
-      html += `<div class="field"><div class="ft">${t('f_meridian')}</div><p${state.lang==='zh'?' class="han"':''}>${p.text}</p>${p.cn?`<p class="cn han">${p.cn}</p>`:''}</div>`;
+      const body = renderMultiLang(term.meridian_vi, term.meridian_zh, '');
+      if(body) html += `<div class="field"><div class="ft">${t('f_meridian')}</div>${body}</div>`;
     }
     if(term.action_zh || term.action_vi || term.action_en){
-      const p = pickLang3(term.action_vi, term.action_zh, term.action_en);
-      html += `<div class="field"><div class="ft">${t('f_func')}</div><p${state.lang==='zh'?' class="han"':''}>${p.text}</p>${p.cn?`<p class="cn han">${p.cn}</p>`:''}</div>`;
+      const body = renderMultiLang(term.action_vi, term.action_zh, term.action_en);
+      if(body) html += `<div class="field"><div class="ft">${t('f_func')}</div>${body}</div>`;
     }
     if(term.indication_zh || term.indication_vi || term.indication_en){
-      const p = pickLang3(term.indication_vi, term.indication_zh, term.indication_en);
-      html += `<div class="field tcm"><div class="ft">${t('f_clin')}</div><p${state.lang==='zh'?' class="han"':''}>${p.text}</p>${p.cn?`<p class="cn han">${p.cn}</p>`:''}${mtNote}</div>`;
+      const body = renderMultiLang(term.indication_vi, term.indication_zh, term.indication_en);
+      if(body) html += `<div class="field tcm"><div class="ft">${t('f_clin')}</div>${body}${mtNote}</div>`;
     }
     if(term.dose_text_zh || term.dose_min_g){
-      const p = pickLang3(term.dose_text_vi, term.dose_text_zh, term.dose_text_en);
-      const range = (term.dose_min_g && term.dose_max_g) ? `${term.dose_min_g}–${term.dose_max_g}g. ` : '';
-      html += `<div class="field"><div class="ft">${t('f_dose')}</div><p>${range}${p.text}</p>${p.cn?`<p class="cn han">${p.cn}</p>`:''}${mtNote}</div>`;
+      const body = renderMultiLang(term.dose_text_vi, term.dose_text_zh, term.dose_text_en);
+      const range = (term.dose_min_g && term.dose_max_g) ? `<p>${term.dose_min_g}–${term.dose_max_g}g</p>` : '';
+      html += `<div class="field"><div class="ft">${t('f_dose')}</div>${range}${body}${mtNote}</div>`;
     }
     if(term.caution_zh){
-      const p = pickLang3(term.caution_vi, term.caution_zh, term.caution_en);
-      html += `<div class="field verify"><div class="ft">${t('f_caution')}</div><p${state.lang==='zh'?' class="han"':''}>${p.text}</p>${p.cn?`<p class="cn han">${p.cn}</p>`:''}${mtNote}</div>`;
+      const body = renderMultiLang(term.caution_vi, term.caution_zh, term.caution_en);
+      if(body) html += `<div class="field verify"><div class="ft">${t('f_caution')}</div>${body}${mtNote}</div>`;
     }
   } else {
-    // Dùng pickLang3(vi, zh, en) để đổi ngôn ngữ đúng ở cả 3 thứ tiếng — các
-    // mục seed cũ (22 mục demo) không có field *_en nên fallback về vi/zh
-    // như trước, không vỡ. mtNote chỉ hiện khi cả bài đã đánh dấu cn_machine
-    // (dịch máy) và đang không xem bằng tiếng Trung (lúc đó là nguyên văn nguồn).
-    const mtNote = (term.cn_machine && state.lang !== 'zh') ? `<p class="src" style="padding:2px 0 0">(${t('f_mt_note')})</p>` : '';
-    if(term.vitri || term.vitri_en){
-      const p = pickLang3(term.vitri, term.vitri_cn, term.vitri_en);
-      html += `<div class="field"><div class="ft">${t('f_pos')}</div><p${state.lang==='zh'?' class="han"':''}>${p.text}</p>${p.cn?`<p class="cn han">${p.cn}</p>`:''}${mtNote}</div>`;
+    // Dùng renderMultiLang(vi, zh, en) để xếp chồng các bản dịch đã bật đúng thứ tự
+    // Trung -> Việt -> Anh. Các mục seed cũ (22 mục demo) không có field *_en nên
+    // renderMultiLang tự fallback, không vỡ. mtNote chỉ hiện khi cả bài đã đánh dấu
+    // cn_machine (dịch máy) và đang có ít nhất 1 ngôn ngữ dịch máy (vi/en) được bật.
+    const mtNote = (term.cn_machine && (state.contentLangs.vi || state.contentLangs.en)) ? `<p class="src" style="padding:2px 0 0">(${t('f_mt_note')})</p>` : '';
+    if(term.vitri || term.vitri_en || term.vitri_cn){
+      const body = renderMultiLang(term.vitri, term.vitri_cn, term.vitri_en);
+      if(body) html += `<div class="field"><div class="ft">${t('f_pos')}</div>${body}${mtNote}</div>`;
     }
-    if(term.congnang || term.congnang_en){
-      const p = pickLang3(term.congnang, term.congnang_cn, term.congnang_en);
-      html += `<div class="field"><div class="ft">${t('f_func')}</div><p${state.lang==='zh'?' class="han"':''}>${p.text}</p>${p.cn?`<p class="cn han">${p.cn}</p>`:''}${mtNote}</div>`;
+    if(term.congnang || term.congnang_en || term.congnang_cn){
+      const body = renderMultiLang(term.congnang, term.congnang_cn, term.congnang_en);
+      if(body) html += `<div class="field"><div class="ft">${t('f_func')}</div>${body}${mtNote}</div>`;
     }
-    if(term.tcm || term.tcm_en){
-      const p = pickLang3(term.tcm, term.tcm_cn, term.tcm_en);
-      html += `<div class="field tcm"><div class="ft">${t('f_tcm')}</div><p${state.lang==='zh'?' class="han"':''}>${p.text}</p>${p.cn?`<p class="cn han">${p.cn}</p>`:''}${mtNote}</div>`;
+    if(term.tcm || term.tcm_en || term.tcm_cn){
+      const body = renderMultiLang(term.tcm, term.tcm_cn, term.tcm_en);
+      if(body) html += `<div class="field tcm"><div class="ft">${t('f_tcm')}</div>${body}${mtNote}</div>`;
     }
-    if(term.lamsang || term.lamsang_en){
-      const p = pickLang3(term.lamsang, term.lamsang_cn, term.lamsang_en);
-      html += `<div class="field"><div class="ft">${t('f_clin')}</div><p${state.lang==='zh'?' class="han"':''}>${p.text}</p>${p.cn?`<p class="cn han">${p.cn}</p>`:''}${mtNote}</div>`;
+    if(term.lamsang || term.lamsang_en || term.lamsang_cn){
+      const body = renderMultiLang(term.lamsang, term.lamsang_cn, term.lamsang_en);
+      if(body) html += `<div class="field"><div class="ft">${t('f_clin')}</div>${body}${mtNote}</div>`;
     }
     if(term.verify){
       html += `<div class="field verify"><div class="ft">${t('f_verify')}</div><p>${term.verify_note||'Nội dung này cần Hạ Vân Minh kiểm chứng trước khi dùng làm dữ liệu chính thức.'}</p></div>`;
@@ -1098,6 +1193,7 @@ function openPopup(id){
 }
 function closePopup(){
   document.getElementById('ppOverlay').classList.remove('show');
+  state.popupId = null;
 }
 function togglePopupKnown(id){
   const cur = getStatus(id);
@@ -1196,6 +1292,8 @@ function setupPopupSwipe(){
 function openDrawer(){
   document.getElementById('drawer').classList.add('show');
   document.getElementById('drawerScrim').classList.add('show');
+  syncContentLangPanel();
+  syncIfaceLangPanel();
 }
 function closeDrawer(){
   document.getElementById('drawer').classList.remove('show');

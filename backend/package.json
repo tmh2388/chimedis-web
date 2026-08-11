@@ -10,7 +10,9 @@
     "build": "node sync-frontend.js && node build-api.js",
     "build:watch": "node --watch build-api.js",
     "import:herbs": "node import-herbal-sheets.js",
-    "import:anatomy": "node import-anatomy-terms.js"
+    "import:anatomy": "node import-anatomy-terms.js",
+    "mt-review:export": "node export-mt-review-sheet.js",
+    "mt-review:import": "node import-mt-review-sheet.js"
   },
   "keywords": [
     "chimedis",
