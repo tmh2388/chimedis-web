@@ -44,7 +44,7 @@ async function run() {
       elementId, it.t, it.sys || 'gen',
       it.en, it.ipa || null, it.zh || null, it.py || null, it.vi || null,
       it.meaning || null,
-      it.ex || null, it.exZh || null, it.exVi || null,
+      it.ex || null, it.exZh || null, it.exVi || null, it.exIpa || null,
       true,
     ];
   });
@@ -56,14 +56,14 @@ async function run() {
          element_id, element_type, organ_system,
          en, ipa, zh, py, vi,
          gloss,
-         example_en, example_zh, example_vi,
+         example_en, example_zh, example_vi, example_ipa,
          is_active
        ) VALUES ?
        ON DUPLICATE KEY UPDATE
          element_type=VALUES(element_type), organ_system=VALUES(organ_system),
          en=VALUES(en), ipa=VALUES(ipa), zh=VALUES(zh), py=VALUES(py), vi=VALUES(vi),
          gloss=VALUES(gloss),
-         example_en=VALUES(example_en), example_zh=VALUES(example_zh), example_vi=VALUES(example_vi),
+         example_en=VALUES(example_en), example_zh=VALUES(example_zh), example_vi=VALUES(example_vi), example_ipa=VALUES(example_ipa),
          is_active=VALUES(is_active)`,
       [rows]
     );

@@ -165,6 +165,11 @@ CREATE TABLE IF NOT EXISTS word_elements (
   example_en     TEXT,                      -- ví dụ (prefix/suffix/root) hoặc phân tích cấu tạo (term)
   example_zh     TEXT,
   example_vi     TEXT,
+  example_ipa    TEXT,                      -- IPA của TRỌN VẸN từng từ ví dụ (không phải IPA của
+                                             -- dạng tiền tố/hậu tố ở cột `ipa` phía trên) — tự soạn
+                                             -- tay 2026-08 vì nguồn không có, xem MEMORY dự án.
+                                             -- Nhiều ví dụ trong 1 mục: ngăn cách bởi ", " đúng thứ
+                                             -- tự với example_en (tách bởi " / ").
 
   is_active      BOOLEAN DEFAULT TRUE,
   updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

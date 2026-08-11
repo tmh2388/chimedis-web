@@ -170,6 +170,7 @@ function wordElementRowToTerm(w) {
     example: w.example_vi,
     example_cn: w.example_zh,
     example_en: w.example_en,
+    example_ipa: w.example_ipa,
     nguon: '本草詞根 — Y Học Anh Văn',
     verify: false,
   };
