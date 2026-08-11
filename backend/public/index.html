@@ -629,7 +629,7 @@ function loadContentLangs(){
       return { zh: !!saved.zh, vi: !!saved.vi, en: !!saved.en };
     }
   }catch(e){}
-  return { zh: true, vi: false, en: false }; // mặc định: chỉ hiện tiếng Trung
+  return { zh: true, vi: true, en: true }; // mặc định: hiện đủ cả 3 ngôn ngữ, đỡ phải bật tay
 }
 function saveContentLangs(){ localStorage.setItem(CONTENT_LANGS_KEY, JSON.stringify(state.contentLangs)); }
 function toggleContentLang(key){
@@ -1184,11 +1184,12 @@ function openPopup(id){
     if(term.taste_vi || term.temperature_vi || term.taste_zh || term.temperature_zh){
       const vi = [term.temperature_vi,term.taste_vi].filter(Boolean).join(', ');
       const zh = [term.temperature_zh,term.taste_zh].filter(Boolean).join('、');
-      const body = renderMultiLang(vi, zh, '');
+      const en = [term.temperature_en,term.taste_en].filter(Boolean).join(', ');
+      const body = renderMultiLang(vi, zh, en);
       if(body) html += `<div class="field"><div class="ft">${t('f_taste')}</div>${body}</div>`;
     }
     if(term.meridian_vi || term.meridian_zh){
-      const body = renderMultiLang(term.meridian_vi, term.meridian_zh, '');
+      const body = renderMultiLang(term.meridian_vi, term.meridian_zh, term.meridian_en);
       if(body) html += `<div class="field"><div class="ft">${t('f_meridian')}</div>${body}</div>`;
     }
     if(term.action_zh || term.action_vi || term.action_en){

@@ -39,10 +39,13 @@ CREATE TABLE IF NOT EXISTS herbs (
 
   temperature_zh      VARCHAR(32),   -- 性: 温/寒/热...
   temperature_vi      VARCHAR(64),
+  temperature_en      VARCHAR(64),
   taste_zh            VARCHAR(64),   -- 味: 辛、微苦...
   taste_vi            VARCHAR(128),
+  taste_en            VARCHAR(128),
   meridian_zh         VARCHAR(128),  -- 归经: 肺、膀胱...
   meridian_vi         VARCHAR(255),
+  meridian_en         VARCHAR(255),
 
   action_text_zh      TEXT,          -- 功能 (công năng) — from ref_action_codes, real translation
   action_text_vi      TEXT,

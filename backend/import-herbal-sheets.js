@@ -25,32 +25,51 @@ const auth = createGoogleAuth(['https://www.googleapis.com/auth/spreadsheets.rea
 const sheets = google.sheets({ version: 'v4', auth });
 
 // Standard TCM vocabulary — these code sets are fixed/universal, not
-// specific to this dataset, so it's safe to hardcode the VI/ZH labels
+// specific to this dataset, so it's safe to hardcode the VI/ZH/EN labels
 // here rather than depending on a lookup tab that doesn't exist in the source.
+// Mỗi mã có 2 biến thể khoá (có/không gạch dưới, vd. WEIWEN/WEI_WEN) vì nguồn
+// Sheet dùng lẫn lộn cả 2 kiểu — thiếu 1 biến thể nào sẽ khiến mã đó lọt qua
+// không dịch được, hiện nguyên mã thô ra UI (bug đã gặp với WEI_HAN/WEI_WEN,
+// 28 vị thuốc, phát hiện 2026-08-11 — xem fix-herb-tvm-fields.js để sửa dữ
+// liệu cũ, file này chỉ áp dụng cho lần import tiếp theo).
 const TEMPERATURE_LABELS = {
-  HAN: ['寒', 'Hàn'], WEIHAN: ['微寒', 'Hơi hàn'], LIANG: ['凉', 'Lương'],
-  PING: ['平', 'Bình'], WEN: ['温', 'Ôn'], WEIWEN: ['微温', 'Hơi ôn'],
-  RE: ['热', 'Nhiệt'], DARE: ['大热', 'Đại nhiệt'], DAHAN: ['大寒', 'Đại hàn'],
+  HAN: ['寒', 'Hàn', 'Cold'],
+  WEIHAN: ['微寒', 'Hơi hàn', 'Slightly cold'], WEI_HAN: ['微寒', 'Hơi hàn', 'Slightly cold'],
+  LIANG: ['凉', 'Lương', 'Cool'],
+  PING: ['平', 'Bình', 'Neutral'],
+  WEN: ['温', 'Ôn', 'Warm'],
+  WEIWEN: ['微温', 'Hơi ôn', 'Slightly warm'], WEI_WEN: ['微温', 'Hơi ôn', 'Slightly warm'],
+  RE: ['热', 'Nhiệt', 'Hot'],
+  DARE: ['大热', 'Đại nhiệt', 'Very hot'], DA_RE: ['大热', 'Đại nhiệt', 'Very hot'],
+  DAHAN: ['大寒', 'Đại hàn', 'Extremely cold'], DA_HAN: ['大寒', 'Đại hàn', 'Extremely cold'],
 };
 const TASTE_LABELS = {
-  XIN: ['辛', 'Cay'], GAN: ['甘', 'Ngọt'], KU: ['苦', 'Đắng'], SUAN: ['酸', 'Chua'],
-  XIAN: ['咸', 'Mặn'], DAN: ['淡', 'Nhạt'], SE: ['涩', 'Chát'],
-  WEIXIN: ['微辛', 'Hơi cay'], WEIGAN: ['微甘', 'Hơi ngọt'],
-  WEIKU: ['微苦', 'Hơi đắng'], WEI_KU: ['微苦', 'Hơi đắng'], WEISUAN: ['微酸', 'Hơi chua'],
+  XIN: ['辛', 'Cay', 'Pungent'], GAN: ['甘', 'Ngọt', 'Sweet'], KU: ['苦', 'Đắng', 'Bitter'],
+  SUAN: ['酸', 'Chua', 'Sour'], XIAN: ['咸', 'Mặn', 'Salty'], DAN: ['淡', 'Nhạt', 'Bland'],
+  SE: ['涩', 'Chát', 'Astringent'],
+  WEIXIN: ['微辛', 'Hơi cay', 'Slightly pungent'], WEI_XIN: ['微辛', 'Hơi cay', 'Slightly pungent'],
+  WEIGAN: ['微甘', 'Hơi ngọt', 'Slightly sweet'], WEI_GAN: ['微甘', 'Hơi ngọt', 'Slightly sweet'],
+  WEIKU: ['微苦', 'Hơi đắng', 'Slightly bitter'], WEI_KU: ['微苦', 'Hơi đắng', 'Slightly bitter'],
+  WEISUAN: ['微酸', 'Hơi chua', 'Slightly sour'], WEI_SUAN: ['微酸', 'Hơi chua', 'Slightly sour'],
 };
 const MERIDIAN_LABELS = {
-  FEI: ['肺', 'Phế'], XIN: ['心', 'Tâm'], PI: ['脾', 'Tỳ'], GAN: ['肝', 'Can'], SHEN: ['肾', 'Thận'],
-  WEI: ['胃', 'Vị'], DAN: ['胆', 'Đởm'], DACHANG: ['大肠', 'Đại trường'], DA_CHANG: ['大肠', 'Đại trường'],
-  XIAOCHANG: ['小肠', 'Tiểu trường'], PANGGUANG: ['膀胱', 'Bàng quang'], PANG_GUANG: ['膀胱', 'Bàng quang'],
-  SANJIAO: ['三焦', 'Tam tiêu'], XINBAO: ['心包', 'Tâm bào'], XIN_BAO: ['心包', 'Tâm bào'],
+  FEI: ['肺', 'Phế', 'Lung'], XIN: ['心', 'Tâm', 'Heart'], PI: ['脾', 'Tỳ', 'Spleen'],
+  GAN: ['肝', 'Can', 'Liver'], SHEN: ['肾', 'Thận', 'Kidney'], WEI: ['胃', 'Vị', 'Stomach'],
+  DAN: ['胆', 'Đởm', 'Gallbladder'],
+  DACHANG: ['大肠', 'Đại trường', 'Large intestine'], DA_CHANG: ['大肠', 'Đại trường', 'Large intestine'],
+  XIAOCHANG: ['小肠', 'Tiểu trường', 'Small intestine'], XIAO_CHANG: ['小肠', 'Tiểu trường', 'Small intestine'],
+  PANGGUANG: ['膀胱', 'Bàng quang', 'Bladder'], PANG_GUANG: ['膀胱', 'Bàng quang', 'Bladder'],
+  SANJIAO: ['三焦', 'Tam tiêu', 'Triple burner'], SAN_JIAO: ['三焦', 'Tam tiêu', 'Triple burner'],
+  XINBAO: ['心包', 'Tâm bào', 'Pericardium'], XIN_BAO: ['心包', 'Tâm bào', 'Pericardium'],
 };
 
 function decodeCodes(codeStr, labelMap) {
-  if (!codeStr || codeStr === 'NOT_STATED_IN_SOURCE') return { zh: null, vi: null };
+  if (!codeStr || codeStr === 'NOT_STATED_IN_SOURCE') return { zh: null, vi: null, en: null };
   const codes = String(codeStr).split('|').map((c) => c.trim()).filter(Boolean);
-  const zh = codes.map((c) => (labelMap[c] || [c, c])[0]).join('、');
-  const vi = codes.map((c) => (labelMap[c] || [c, c])[1]).join(', ');
-  return { zh, vi };
+  const zh = codes.map((c) => (labelMap[c] || [c, c, c])[0]).join('、');
+  const vi = codes.map((c) => (labelMap[c] || [c, c, c])[1]).join(', ');
+  const en = codes.map((c) => (labelMap[c] || [c, c, c])[2]).join(', ');
+  return { zh, vi, en };
 }
 
 function rowsToObjects(values) {
@@ -220,7 +239,7 @@ export async function runImport() {
       cat.section_zh || null, catTr.sectionVi || null, catTr.sectionEn || null,
       h.name_zh, h.name_zh_traditional, h.name_vi, h.pinyin, h.latin_name,
       h.medicinal_part, h.source_species,
-      temperature.zh, temperature.vi, taste.zh, taste.vi, meridian.zh, meridian.vi,
+      temperature.zh, temperature.vi, temperature.en, taste.zh, taste.vi, taste.en, meridian.zh, meridian.vi, meridian.en,
       action.zh, action.vi, action.en,
       profile.indication_text_zh || null, indicationVi[i], indicationEn[i],
       useRule ? useRule.preparation_text_zh : null, doseVi[i], doseEn[i],
@@ -237,7 +256,7 @@ export async function runImport() {
       `INSERT INTO herbs (
          herb_id, category_id, chapter_zh, chapter_vi, chapter_en, section_zh, section_vi, section_en,
          name_zh, name_zh_traditional, name_vi, pinyin, latin_name, medicinal_part, source_species,
-         temperature_zh, temperature_vi, taste_zh, taste_vi, meridian_zh, meridian_vi,
+         temperature_zh, temperature_vi, temperature_en, taste_zh, taste_vi, taste_en, meridian_zh, meridian_vi, meridian_en,
          action_text_zh, action_text_vi, action_text_en,
          indication_text_zh, indication_text_vi, indication_text_en,
          dose_text_zh, dose_text_vi, dose_text_en, dose_min_g, dose_max_g,
@@ -248,8 +267,8 @@ export async function runImport() {
          section_zh=VALUES(section_zh), section_vi=VALUES(section_vi), section_en=VALUES(section_en),
          name_zh=VALUES(name_zh), name_zh_traditional=VALUES(name_zh_traditional), name_vi=VALUES(name_vi),
          pinyin=VALUES(pinyin), latin_name=VALUES(latin_name), medicinal_part=VALUES(medicinal_part),
-         source_species=VALUES(source_species), temperature_zh=VALUES(temperature_zh), temperature_vi=VALUES(temperature_vi),
-         taste_zh=VALUES(taste_zh), taste_vi=VALUES(taste_vi), meridian_zh=VALUES(meridian_zh), meridian_vi=VALUES(meridian_vi),
+         source_species=VALUES(source_species), temperature_zh=VALUES(temperature_zh), temperature_vi=VALUES(temperature_vi), temperature_en=VALUES(temperature_en),
+         taste_zh=VALUES(taste_zh), taste_vi=VALUES(taste_vi), taste_en=VALUES(taste_en), meridian_zh=VALUES(meridian_zh), meridian_vi=VALUES(meridian_vi), meridian_en=VALUES(meridian_en),
          action_text_zh=VALUES(action_text_zh), action_text_vi=VALUES(action_text_vi), action_text_en=VALUES(action_text_en),
          indication_text_zh=VALUES(indication_text_zh), indication_text_vi=VALUES(indication_text_vi), indication_text_en=VALUES(indication_text_en),
          dose_text_zh=VALUES(dose_text_zh), dose_text_vi=VALUES(dose_text_vi), dose_text_en=VALUES(dose_text_en),
