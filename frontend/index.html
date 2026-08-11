@@ -514,6 +514,28 @@ function group2Label(g1, g2){
 }
 function termGroup2Label(term){ return group2Label(term.group1, term.group2); }
 
+// ===== SẮP XẾP ABC =====
+// Quy tắc chuẩn: mọi danh sách nội dung hiển thị (không phải sơ đồ/trình tự có ý
+// nghĩa cố định như FLOW_MAP) phải sắp abc theo ngôn ngữ đang hiển thị, bất kể
+// bộ lọc/tìm kiếm nào đang áp dụng — sensitivity:'base' để bỏ qua dấu thanh/dấu
+// phụ khi so sánh (vd. "má" và "ma" cùng nhóm chữ M), cho ra đúng cảm giác "abc".
+const COLLATOR_VI = new Intl.Collator('vi', { sensitivity: 'base', numeric: true });
+const COLLATOR_EN = new Intl.Collator('en', { sensitivity: 'base', numeric: true });
+function currentCollator(){ return state.lang === 'vi' ? COLLATOR_VI : COLLATOR_EN; }
+// Khoá sắp xếp abc của 1 term, theo ngôn ngữ đang hiển thị (VI→vi, EN→en, ZH→pinyin).
+// Fallback sang trường khác nếu trường theo ngôn ngữ hiện tại bị rỗng.
+function sortKeyFor(term){
+  if(state.lang === 'en') return term.en || term.vi || term.py || '';
+  if(state.lang === 'zh') return term.py || term.vi || term.en || '';
+  return term.vi || term.en || term.py || '';
+}
+function alphaCompare(a, b){
+  const collator = currentCollator();
+  const cmp = collator.compare(sortKeyFor(a), sortKeyFor(b));
+  return cmp !== 0 ? cmp : (a.vi||'').localeCompare(b.vi||''); // tie-break ổn định
+}
+function sortTermsAlpha(list){ return [...list].sort(alphaCompare); }
+
 // Tóm tắt ngắn hiện ngay trong danh sách (chưa cần mở popup) — cắt bớt độ dài,
 // tiếng Anh cắt ngắn hơn vì chữ dài hơn nên chiếm nhiều chỗ hơn cùng số ký tự.
 function truncateText(text, max){
@@ -640,23 +662,25 @@ function getGroup2Options(){
   }
   if(state.group1 === 'all') return null;
   if(ANATOMY_GROUPS.includes(state.group1)){
-    const opts = [{ value:'', label:t('dd_all'), selected: !state.group2 }];
-    SYS_OPTIONS().forEach(o => opts.push({ value:o.key, label:o.label, selected: state.group2===o.key }));
-    return opts;
+    const sysOpts = SYS_OPTIONS()
+      .map(o => ({ value:o.key, label:o.label, selected: state.group2===o.key }))
+      .sort((a,b) => currentCollator().compare(a.label, b.label));
+    return [{ value:'', label:t('dd_all'), selected: !state.group2 }, ...sysOpts];
   }
   // Dược liệu / Huyệt vị / Thang phương: nhóm theo group2 thực tế có trong dữ liệu (vd. theo tiết).
   // group2 (khoá lọc) luôn là tiếng Trung gốc; group2_vi/group2_en chỉ để hiển thị nhãn.
+  // Sắp abc theo NHÃN đã dịch/đã bỏ tiền tố (không phải theo key thô), để đúng thứ tự
+  // abc trong ngôn ngữ đang hiển thị thay vì theo thứ tự chương sách giáo khoa.
   const groupTerms = TERMS.filter(x=>x.group1===state.group1 && x.group2);
   const labelByValue = new Map();
   groupTerms.forEach(x => { if(!labelByValue.has(x.group2)) labelByValue.set(x.group2, x); });
-  const values = [...labelByValue.keys()].sort();
-  if(values.length === 0) return null;
-  const opts = [{ value:'', label:t('dd_all'), selected: !state.group2 }];
-  values.forEach(v => {
-    const x = labelByValue.get(v);
-    const label = stripCategoryPrefix(pickLang3(x.group2_vi, v, x.group2_en).text);
-    opts.push({ value:v, label, selected: state.group2===v });
-  });
+  if(labelByValue.size === 0) return null;
+  const catOpts = [...labelByValue.entries()].map(([v, x]) => ({
+    value: v,
+    label: stripCategoryPrefix(pickLang3(x.group2_vi, v, x.group2_en).text),
+    selected: state.group2===v,
+  })).sort((a,b) => currentCollator().compare(a.label, b.label));
+  const opts = [{ value:'', label:t('dd_all'), selected: !state.group2 }, ...catOpts];
   return opts;
 }
 function selectGroup1(key){
@@ -693,7 +717,7 @@ function loadMoreVocab(){
 function getFiltered(){
   let list = TERMS;
   if(state.searchQuery){
-    return TERMS.filter(t => matchTerm(t, state.searchQuery));
+    return sortTermsAlpha(TERMS.filter(t => matchTerm(t, state.searchQuery)));
   }
   // 'Ôn luyện' là mục chọn chế độ học (Flashcard/Quiz/Đã thuộc), không phải 1 nhóm dữ liệu
   // thật — khi đang ở mục này, ôn luyện trên toàn bộ thuật ngữ giống như 'all'.
@@ -703,7 +727,7 @@ function getFiltered(){
   if(state.group2){
     list = list.filter(t => t.group2 === state.group2);
   }
-  return list;
+  return sortTermsAlpha(list);
 }
 
 // ===== RENDER MAIN AREA =====
@@ -937,6 +961,7 @@ function renderDoneTab(){
   else if(doneFilter==='known') list = known;
   else if(doneFilter==='review') list = review;
   else list = today;
+  list = sortTermsAlpha(list);
 
   const rows = list.map(term=>{
     const p = progress[term.id];
