@@ -45,9 +45,19 @@ async function translateOne(text, target, cache) {
       try {
         const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
         const json = await res.json();
-        if (json && json.responseData && json.responseData.translatedText) {
-          result = json.responseData.translatedText;
+        const tt = json && json.responseData && json.responseData.translatedText;
+        // MyMemory trả HTTP 200 kèm chuỗi cảnh báo hết quota thay vì lỗi thật
+        // (vd. "MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS...")
+        // — phải nhận diện riêng, nếu không sẽ lưu nhầm câu cảnh báo này làm
+        // bản dịch thật.
+        const isQuotaWarning = typeof tt === 'string' && /MYMEMORY WARNING|QUOTA|LIMIT/i.test(tt);
+        if (json.responseStatus && Number(json.responseStatus) !== 200) {
+          throw new Error(`MyMemory responseStatus=${json.responseStatus}`);
         }
+        if (isQuotaWarning) {
+          throw new Error('MyMemory hết quota dịch miễn phí hôm nay');
+        }
+        if (tt) result = tt;
         break;
       } catch (err) {
         if (attempt === 2) console.warn(`   ⚠️  Dịch lỗi (giữ nguyên gốc): ${err.message}`);

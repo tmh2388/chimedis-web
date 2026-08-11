@@ -67,10 +67,69 @@ CREATE TABLE IF NOT EXISTS herbs (
 
 CREATE TABLE IF NOT EXISTS import_log (
   source_key    VARCHAR(64) PRIMARY KEY,  -- e.g. 'herbal_core_db_v2.0.0'
-  domain        VARCHAR(32) NOT NULL,     -- 'herb' | 'acupoint' | 'formula' (future)
+  domain        VARCHAR(32) NOT NULL,     -- 'herb' | 'acupoint' | 'formula' | 'anatomy'
   spreadsheet_id VARCHAR(64) NOT NULL,
   row_count     INT,
   imported_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ---------------------------------------------------------------------
+-- anatomy_terms — Giải phẫu (Anatomy) + Sinh lý (Physiology).
+--
+-- Unlike herbs, there is no pre-existing structured "Core DB" for this
+-- domain — source is a raw Chinese-teaching course ("《实用医学汉语基础篇》",
+-- Drive folder 1iLXo3SawcvvmhefxtdXNlBV_Vz7MKvUj: PPTX lessons per organ
+-- system + 1 reference PDF for the muscular system) plus a small set of
+-- pre-existing seed entries for the respiratory system. Content was
+-- manually extracted/curated into backend/data/anatomy-raw.json, then
+-- imported via import-anatomy-terms.js (machine-translating vi/en where
+-- the source has none, via translate.js — same MyMemory pipeline as
+-- herbs). Bệnh lý (Pathology) is NOT covered — no readable source found
+-- for it yet (the full TCM textbooks in Drive returned empty content,
+-- likely scanned images without an OCR text layer).
+--
+-- organ_system_zh is the stable filter key (raw Chinese, mirrors herbs'
+-- group2 convention); organ_system_vi/en are display-only labels from
+-- organ-system-translations.js (hand-verified, not machine translated —
+-- same reasoning as category-translations.js for herb chapters/sections).
+-- machine_translated flags rows where vi/en are NOT from the source
+-- (nearly all of them, except the ~90 muscle-system entries that already
+-- had human-quality Vietnamese in the reference PDF).
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS anatomy_terms (
+  term_id            VARCHAR(32) PRIMARY KEY,   -- e.g. 'an-resp-001'
+  domain             VARCHAR(16) NOT NULL,      -- 'Giải phẫu' | 'Sinh lý'
+  organ_system_zh    VARCHAR(64) NOT NULL,      -- khoá lọc gốc, vd. '呼吸系统'
+  organ_system_vi    VARCHAR(64),
+  organ_system_en    VARCHAR(64),
+
+  hz                 VARCHAR(64) NOT NULL,
+  py                 VARCHAR(128),
+  vi                 VARCHAR(128),
+  en                 VARCHAR(128),
+
+  position_zh        TEXT,          -- vị trí (vitri)
+  position_vi        TEXT,
+  position_en        TEXT,
+  function_zh        TEXT,          -- công năng (congnang)
+  function_vi        TEXT,
+  function_en         TEXT,
+  tcm_note_zh        TEXT,          -- ghi chú Trung Y (tcm)
+  tcm_note_vi        TEXT,
+  tcm_note_en        TEXT,
+  clinical_zh        TEXT,          -- lâm sàng (lamsang)
+  clinical_vi        TEXT,
+  clinical_en        TEXT,
+
+  source             TEXT,          -- vd. "《实用医学汉语基础篇》第四课：心血管系统"
+  machine_translated BOOLEAN DEFAULT TRUE,
+  verify             BOOLEAN DEFAULT TRUE,
+  verify_note        TEXT,
+
+  is_active          BOOLEAN DEFAULT TRUE,
+  updated_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  FULLTEXT INDEX ft_anatomy_search (hz, vi, en, py, function_vi, function_en)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ---------------------------------------------------------------------
@@ -78,4 +137,5 @@ CREATE TABLE IF NOT EXISTS import_log (
 --   formulas   — from 03_master_data/HVYD Formula Core DB (kb_formulas,
 --                kb_formula_ingredients, kb_formula_indication_claims...)
 --   acupoints  — once acupoint_db is rebuilt
+--   Bệnh lý (pathology) — needs a readable source first; see note above
 -- ---------------------------------------------------------------------

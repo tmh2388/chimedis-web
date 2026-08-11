@@ -86,6 +86,55 @@ async function getHerbTerms() {
   }
 }
 
+/**
+ * Maps an `anatomy_terms` MySQL row (Giải phẫu/Sinh lý) into the same flat
+ * term shape /api/terms already returns — field names (vitri/congnang/tcm/
+ * lamsang + _cn/_en variants) match what the frontend's non-herb popup
+ * branch expects (see frontend/index.html openPopup()).
+ */
+function anatomyRowToTerm(a) {
+  return {
+    id: a.term_id,
+    hz: a.hz,
+    py: a.py,
+    vi: a.vi,
+    en: a.en,
+    group1: a.domain,
+    // group2 luôn giữ nguyên tiếng Trung làm khoá lọc ổn định, giống Dược liệu —
+    // group2_vi/group2_en chỉ dùng để hiển thị nhãn.
+    group2: a.organ_system_zh,
+    group2_vi: a.organ_system_vi,
+    group2_en: a.organ_system_en,
+    vitri: a.position_vi,
+    vitri_cn: a.position_zh,
+    vitri_en: a.position_en,
+    congnang: a.function_vi,
+    congnang_cn: a.function_zh,
+    congnang_en: a.function_en,
+    tcm: a.tcm_note_vi,
+    tcm_cn: a.tcm_note_zh,
+    tcm_en: a.tcm_note_en,
+    lamsang: a.clinical_vi,
+    lamsang_cn: a.clinical_zh,
+    lamsang_en: a.clinical_en,
+    nguon: a.source,
+    verify: !!a.verify,
+    verify_note: a.verify_note,
+    cn_machine: !!a.machine_translated,
+  };
+}
+
+async function getAnatomyTerms() {
+  if (!mysqlPool) return [];
+  try {
+    const [rows] = await mysqlPool.query('SELECT * FROM anatomy_terms WHERE is_active = TRUE');
+    return rows.map(anatomyRowToTerm);
+  } catch (err) {
+    console.error('⚠️  Không đọc được dữ liệu Giải phẫu/Sinh lý từ MySQL:', err.message);
+    return [];
+  }
+}
+
 // Frontend static assets live in backend/public/ (synced from ../frontend via
 // `npm run build` locally — see sync-frontend.js) so a deploy that only ships
 // the backend/ directory still serves the PWA.
@@ -111,7 +160,8 @@ app.get('/api/terms', async (req, res) => {
       ? JSON.parse(fs.readFileSync(termsPath, 'utf8'))
       : [];
     const herbTerms = await getHerbTerms();
-    const terms = [...sheetTerms, ...herbTerms];
+    const anatomyTerms = await getAnatomyTerms();
+    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms];
 
     if (terms.length === 0) {
       return res.status(404).json({
@@ -174,7 +224,8 @@ app.get('/api/groups', async (req, res) => {
       ? JSON.parse(fs.readFileSync(termsPath, 'utf8'))
       : [];
     const herbTerms = await getHerbTerms();
-    const terms = [...sheetTerms, ...herbTerms];
+    const anatomyTerms = await getAnatomyTerms();
+    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms];
 
     if (terms.length === 0) {
       return res.status(404).json({

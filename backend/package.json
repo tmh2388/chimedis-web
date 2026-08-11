@@ -9,7 +9,8 @@
     "dev": "node --watch server.js",
     "build": "node sync-frontend.js && node build-api.js",
     "build:watch": "node --watch build-api.js",
-    "import:herbs": "node import-herbal-sheets.js"
+    "import:herbs": "node import-herbal-sheets.js",
+    "import:anatomy": "node import-anatomy-terms.js"
   },
   "keywords": [
     "chimedis",
