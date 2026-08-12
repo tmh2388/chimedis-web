@@ -75,6 +75,7 @@ function herbRowToTerm(h) {
     caution_zh: h.caution_text_zh,
     caution_vi: h.caution_text_vi,
     caution_en: h.caution_text_en,
+    cn_machine: !!h.machine_translated,
   };
 }
 

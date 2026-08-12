@@ -5,7 +5,9 @@
  * đè các cột vi/en đã sửa tay vào MySQL. Chỉ ghi các ô KHÔNG rỗng — bỏ
  * trống nghĩa là chưa xem lại, giữ nguyên bản dịch máy cũ. Hàng có cột
  * "reviewed" = TRUE thì đánh dấu machine_translated = FALSE cho thuật ngữ
- * đó (chỉ áp dụng cho Giải phẫu/Sinh lý — bảng herbs không có cờ này).
+ * đó — áp dụng cho cả Dược liệu (herbs.machine_translated, thêm 2026-08)
+ * lẫn Giải phẫu/Sinh lý (anatomy_terms.machine_translated) — UI ẩn ghi
+ * chú "Dịch máy — cần rà soát" khi cờ này = FALSE.
  *
  * Chạy nhiều lần an toàn (idempotent) — sheet vẫn giữ nguyên, chỉ cần sửa
  * tiếp và chạy lại để đồng bộ thêm.
@@ -68,7 +70,7 @@ function parseRow(rawRow, fieldKeys, idKey) {
 
 async function importHerbs(conn) {
   const rows = (await readTab('herbs_mt_review')).map((r) => parseRow(r, HERB_FIELDS, 'herb_id'));
-  let updated = 0;
+  let updated = 0, markedReviewed = 0;
   for (const row of rows) {
     const sets = [];
     const params = [];
@@ -76,12 +78,13 @@ async function importHerbs(conn) {
       if (row[`${key}_vi`]) { sets.push(`${key}_vi = ?`); params.push(row[`${key}_vi`]); }
       if (row[`${key}_en`]) { sets.push(`${key}_en = ?`); params.push(row[`${key}_en`]); }
     }
+    if (row.reviewed) { sets.push('machine_translated = FALSE'); markedReviewed++; }
     if (!sets.length) continue;
     params.push(row.herb_id);
     await conn.execute(`UPDATE herbs SET ${sets.join(', ')} WHERE herb_id = ?`, params);
     updated++;
   }
-  console.log(`Dược liệu: cập nhật ${updated} hàng.`);
+  console.log(`Dược liệu: cập nhật ${updated} hàng (${markedReviewed} đã đánh dấu reviewed).`);
 }
 
 async function importAnatomy(conn) {

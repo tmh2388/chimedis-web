@@ -61,6 +61,10 @@ CREATE TABLE IF NOT EXISTS herbs (
   caution_text_zh     TEXT,          -- 使用注意 (kiêng kỵ) — machine translated
   caution_text_vi     TEXT,
   caution_text_en     TEXT,
+  machine_translated  BOOLEAN DEFAULT TRUE,  -- indication/dose/caution vi+en vẫn là dịch máy
+                                              -- chưa rà soát — tắt (FALSE) qua sheet rà soát
+                                              -- (xem import-mt-review-sheet.js), UI ẩn ghi chú
+                                              -- "cần rà soát" khi cờ này = FALSE.
 
   is_active           BOOLEAN DEFAULT TRUE,
   updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
