@@ -753,7 +753,11 @@ function matchTerm(t, q){
 // còn lại chỉ hiện khi TERMS thực sự có ít nhất 1 mục — tự ẩn Huyệt vị/Thang
 // phương/... khi chưa có nguồn dữ liệu, không cần sửa code khi thêm domain
 // mới hay khi domain rỗng có dữ liệu trở lại (chỉ cần TERMS cập nhật).
-const ALWAYS_SHOW_GROUPS = ['all', 'Ôn luyện'];
+const ALWAYS_SHOW_GROUPS = ['all'];
+// 'Ôn luyện' tạm ẩn khỏi menu (2026-08) — ưu tiên tra cứu từ điển làm chính,
+// tính năng ôn tập chưa thực sự cần thiết ở giai đoạn này. Code flashcard/quiz
+// vẫn giữ nguyên bên dưới, chỉ cần thêm lại {key:'Ôn luyện', label:t('g_review')}
+// vào mảng `all` (và 'Ôn luyện' vào ALWAYS_SHOW_GROUPS) để bật lại.
 function GROUP1(){
   const all = [
     {key:'all', label:t('g_all')},
@@ -764,7 +768,6 @@ function GROUP1(){
     {key:'Huyệt vị', label:t('g_acu')},
     {key:'Thang phương', label:t('g_form')},
     {key:'Từ ghép Y Khoa', label:t('g_wordelem')},
-    {key:'Ôn luyện', label:t('g_review')},
   ];
   return all.filter(g => ALWAYS_SHOW_GROUPS.includes(g.key) || TERMS.some(x => x.group1 === g.key));
 }
