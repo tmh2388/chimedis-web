@@ -857,17 +857,20 @@ function selectGroup1(key){
   if(state.tab==='flashcard'){ state.fcIndex=0; state.fcFlipped=false; }
   if(state.tab==='quiz'){ initQuiz(); }
   render();
+  scrollToTop();
 }
 function selectGroup2(key){
   state.group2 = (state.group2===key) ? null : key;
   state.vocabVisible = VOCAB_PAGE_SIZE;
   render();
+  scrollToTop();
 }
 function onDropdown2Change(value){
   if(state.group1 === 'Ôn luyện'){ selectTab(value); return; }
   state.group2 = value || null;
   state.vocabVisible = VOCAB_PAGE_SIZE;
   render();
+  scrollToTop();
 }
 function loadMoreVocab(){
   state.vocabVisible += VOCAB_PAGE_SIZE;
