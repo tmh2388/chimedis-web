@@ -150,6 +150,14 @@ async function getAnatomyTerms() {
  * machine translated (the source already ships real vi/zh/en translations),
  * so there is no cn_machine flag here.
  */
+// Bảo vệ tạm thời (2026-08-17): MyMemory bị rate-limit đã trả về NGUYÊN VĂN chữ Hán làm
+// "bản dịch" EN cho ~335/404 huyệt (xem translate.js/isUntranslatedEcho, fix-acupoint-en-echo.js)
+// — ẩn các trường này khỏi API thay vì hiện nhầm tiếng Trung dưới nhãn tiếng Anh, cho tới khi
+// chạy lại được fix-acupoint-en-echo.js (đợi MyMemory reset quota). Không sửa DB ở đây, chỉ lọc
+// lúc trả API — DB giữ nguyên để fix-acupoint-en-echo.js còn nhận diện được hàng nào cần dịch lại.
+function safeEn(en) {
+  return (en && /[a-zA-ZÀ-ỹ]/.test(en)) ? en : null;
+}
 function acupointRowToTerm(a) {
   return {
     id: a.acupoint_id,
@@ -171,10 +179,10 @@ function acupointRowToTerm(a) {
     laterality: a.laterality,
     location_zh: a.location_text_zh,
     location_vi: a.location_text_vi,
-    location_en: a.location_text_en,
+    location_en: safeEn(a.location_text_en),
     indication_zh: a.indication_text_zh,
     indication_vi: a.indication_text_vi,
-    indication_en: a.indication_text_en,
+    indication_en: safeEn(a.indication_text_en),
     action_zh: a.action_text_zh,
     action_vi: a.action_text_vi,
     action_en: a.action_text_en,

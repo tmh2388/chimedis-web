@@ -818,7 +818,24 @@ function matchTerm(t, q){
   if(t.category === 'herb' || t.category === 'acupoint'){
     fields.push(t.indication_vi, t.indication_en);
   }
-  return fields.some(f => norm(f).includes(nq)) || (t.hz && t.hz.includes(q)) || (trad && trad.includes(q)) || (t.indication_zh && t.indication_zh.includes(q));
+  // Từ ghép Y Khoa: định nghĩa (gloss tiếng Anh cho type='term', nghĩa tiếng Việt cho
+  // prefix/suffix/root — xem wordElementRowToTerm) + ví dụ cũng phải tìm được, không chỉ
+  // tên — người dùng hay tra bằng định nghĩa (vd. "inflammation of a joint") chứ không biết
+  // trước từ y khoa cần tìm là gì.
+  if(t.category === 'word_element'){
+    fields.push(t.meaning, t.meaning_en, t.example, t.example_en);
+  }
+  const exactMatch = fields.some(f => norm(f).includes(nq)) || (t.hz && t.hz.includes(q)) || (trad && trad.includes(q)) || (t.indication_zh && t.indication_zh.includes(q));
+  if(exactMatch) return true;
+  // Khớp theo TỪNG TỪ khoá (không cần liền câu/đúng thứ tự) — phát hiện 2026-08-17: tìm
+  // "inflammation of a joint" không ra "osteoarthritis" dù gloss là "degenerative
+  // inflammation of bone and joint", vì đây không phải chuỗi con liền mạch. Yêu cầu MỌI từ
+  // khoá (bỏ từ quá ngắn/hư từ) đều xuất hiện đâu đó trong toàn bộ nội dung — không bắt buộc
+  // đúng thứ tự hay liền nhau.
+  const haystack = norm(fields.filter(Boolean).join(' '));
+  const STOPWORDS = new Set(['a','an','the','of','in','on','at','to','and','or','is','are']);
+  const tokens = nq.split(/\s+/).filter(w => w.length >= 2 && !STOPWORDS.has(w));
+  return tokens.length > 1 && tokens.every(tok => haystack.includes(tok));
 }
 
 // ===== CẤU TRÚC NHÓM (menu1 / menu2) =====

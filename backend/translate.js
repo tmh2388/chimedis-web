@@ -13,7 +13,18 @@
  */
 const MAX_CHARS = 480;
 const EMAIL = process.env.TRANSLATE_CONTACT_EMAIL || '';
-const CONCURRENCY = 4;
+const CONCURRENCY = 2; // giảm từ 4 — chạy 2 lượt import huyệt vị liên tiếp trong 1 ngày từng
+                        // khiến MyMemory rate-limit, xem ghi chú isUntranslatedEcho() bên dưới.
+const REQUEST_STAGGER_MS = 150; // giãn cách nhẹ giữa các request để đỡ bị coi là spam
+
+// Phát hiện 2026-08-17: khi bị rate-limit, MyMemory đôi khi trả HTTP 200 với
+// `translatedText` là NGUYÊN VĂN CHỮ HÁN gốc echo lại (không phải chuỗi cảnh
+// báo "MYMEMORY WARNING" như trường hợp hết quota đã biết) — không có lỗi rõ
+// ràng để bắt, chỉ phát hiện được vì output hoàn toàn không có ký tự Latin dù
+// dịch sang vi/en. Coi đây là 1 dạng lỗi dịch, không lưu làm bản dịch thật.
+function isUntranslatedEcho(text) {
+  return !!text && !/[a-zA-ZÀ-ỹ]/.test(text);
+}
 
 function splitLong(text) {
   if (text.length <= MAX_CHARS) return [text];
@@ -57,6 +68,9 @@ async function translateOne(text, target, cache) {
         if (isQuotaWarning) {
           throw new Error('MyMemory hết quota dịch miễn phí hôm nay');
         }
+        if (tt && isUntranslatedEcho(tt)) {
+          throw new Error('MyMemory trả nguyên văn gốc (nghi bị rate-limit)');
+        }
         if (tt) result = tt;
         break;
       } catch (err) {
@@ -90,6 +104,7 @@ export async function translateBatch(texts, target, onProgress) {
       results[idx] = await translateOne(String(texts[idx]), target, cache);
       done++;
       if (onProgress && done % 50 === 0) onProgress(done, todo.length);
+      if (cursor < todo.length) await new Promise((r) => setTimeout(r, REQUEST_STAGGER_MS));
     }
   }
   await Promise.all(Array.from({ length: Math.min(CONCURRENCY, todo.length || 1) }, worker));

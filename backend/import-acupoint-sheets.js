@@ -46,9 +46,30 @@ import { translateBatch } from './translate.js';
 // (vd. "Zusanli"), không phải pinyin chuẩn — tự sinh pinyin CÓ dấu từ name_zh bằng thư viện
 // `pinyin`, cùng định dạng cách nhau bởi khoảng trắng như cột `pinyin` của Dược liệu
 // (vd. "zú sān lǐ") để card/popup hiện đúng màu cam giống Dược liệu (yêu cầu 2026-08-17).
+//
+// ⚠️ Thư viện `pinyin` là từ điển tần suất tiếng Trung PHỔ THÔNG, không biết ngữ cảnh
+// thuật ngữ Trung Y — sai âm đọc cho các chữ đa âm quen thuộc trong tên huyệt. Phát hiện
+// 2026-08-17 (user báo "Bàng Quang Du" đọc "yú" là sai) — rà soát toàn bộ 404 tên huyệt,
+// xác nhận 6 chữ bị đọc sai và override thủ công theo đúng quy ước TCM chuẩn:
+const PINYIN_OVERRIDES = {
+  '俞': 'shù',  // KHÔNG phải 'yú' (họ người) — trong "背俞穴"/tên huyệt luôn là 'shù'.
+                // Ảnh hưởng 25 huyệt: 肺俞/心俞/脾俞/肾俞/胃俞/膀胱俞... (BL-13~30, KI-16, KI-27, SI-10/14/15, GV-2, EX-B-3).
+  '少': 'shào', // KHÔNG phải 'shǎo' ("ít") — nghĩa "thiếu/trẻ" (như 少阴/少阳) luôn là 'shào'.
+                // Ảnh hưởng: 少商 LU-11, 少泽 SI-1, 少冲 HT-9, 少府 HT-8, 少海 HT-3.
+  '血': 'xuè',  // KHÔNG phải 'xiě' (khẩu ngữ) — thuật ngữ y khoa/trang trọng luôn là 'xuè'.
+                // Ảnh hưởng: 血海 SP-10.
+  '行': 'xíng', // KHÔNG phải 'háng' ("hàng/dòng") — nghĩa "đi/vận hành" luôn là 'xíng'.
+                // Ảnh hưởng: 行间 LR-2.
+  '舍': 'shè',  // KHÔNG phải 'shě' ("từ bỏ") — nghĩa danh từ "nơi ở/trú" luôn là 'shè'.
+                // Ảnh hưởng: 意舍 BL-49, 府舍 SP-13, 气舍 ST-11.
+  '郄': 'xì',   // KHÔNG phải 'qiè' — "郄穴" (huyệt khích) luôn đọc 'xì'.
+                // Ảnh hưởng: 浮郄 BL-38, 阴郄 HT-6, 郄门 PC-4.
+};
 function toPinyin(hanzi) {
   if (!hanzi) return null;
-  return pinyin(hanzi, { style: 'tone' }).map((syll) => syll[0]).join(' ');
+  const chars = Array.from(hanzi);
+  const syllables = pinyin(hanzi, { style: 'tone' }).map((syll) => syll[0]);
+  return chars.map((ch, i) => PINYIN_OVERRIDES[ch] || syllables[i]).join(' ');
 }
 
 const auth = createGoogleAuth(['https://www.googleapis.com/auth/spreadsheets.readonly']);

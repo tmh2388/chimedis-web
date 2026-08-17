@@ -21,6 +21,11 @@
  *                         zh/vi của Huyệt vị luôn là nội dung thật từ nguồn,
  *                         không bao giờ dịch máy — chỉ lọc huyệt có
  *                         en_machine_translated=TRUE, xem schema.sql)
+ *   - acupoint_pinyin_review (TOÀN BỘ 404 huyệt — pinyin tự sinh bằng thư
+ *                         viện `pinyin` có thể sai với chữ đa âm chuyên
+ *                         ngành Trung Y dù đã override 6 trường hợp đã biết
+ *                         (俞/少/血/行/舍/郄, xem import-acupoint-sheets.js)
+ *                         — không đảm bảo hết 100%, cần rà soát tay)
  * Mỗi hàng = 1 thuật ngữ. Mỗi trường có 3 cột zh (nguồn, không sửa) / vi / en
  * (sửa trực tiếp ở đây). Cột "reviewed" cuối hàng: tick TRUE khi đã rà soát
  * xong hàng đó — import-mt-review-sheet.js dùng cột này để đánh dấu
@@ -84,6 +89,10 @@ async function fetchAcupoints(conn) {
   const [rows] = await conn.query(`SELECT ${cols.join(',')} FROM acupoints WHERE is_active = TRUE AND en_machine_translated = TRUE ORDER BY acupoint_id`);
   return rows;
 }
+async function fetchAcupointsPinyin(conn) {
+  const [rows] = await conn.query(`SELECT acupoint_id, name_zh, py, name_vi FROM acupoints WHERE is_active = TRUE ORDER BY acupoint_id`);
+  return rows;
+}
 
 function toSheetRows(rows, fields, idKey, zhNameKey, viNameKey) {
   return rows.map((r) => {
@@ -116,15 +125,17 @@ async function main() {
   const herbs = await fetchHerbs(conn);
   const anatomy = await fetchAnatomy(conn);
   const acupoints = await fetchAcupoints(conn);
+  const acupointsPinyin = await fetchAcupointsPinyin(conn);
   await conn.end();
   console.log(`  Dược liệu: ${herbs.length} hàng`);
   console.log(`  Giải phẫu/Sinh lý (machine_translated=TRUE): ${anatomy.length} hàng`);
   console.log(`  Huyệt vị (en_machine_translated=TRUE): ${acupoints.length} hàng`);
+  console.log(`  Huyệt vị pinyin (toàn bộ): ${acupointsPinyin.length} hàng`);
 
   console.log('Đang kiểm tra tab trong sheet...');
   const meta = await sheets.spreadsheets.get({ spreadsheetId });
   const existingTitles = meta.data.sheets.map((s) => s.properties.title);
-  const wantedTabs = ['herbs_mt_review', 'anatomy_mt_review', 'acupoint_mt_review'];
+  const wantedTabs = ['herbs_mt_review', 'anatomy_mt_review', 'acupoint_mt_review', 'acupoint_pinyin_review'];
   const missing = wantedTabs.filter((t) => !existingTitles.includes(t));
   if (missing.length) {
     await sheets.spreadsheets.batchUpdate({
@@ -147,6 +158,11 @@ async function main() {
     spreadsheetId, 'acupoint_mt_review',
     ['acupoint_id', 'Tên (zh)', 'Tên (vi)', ...fieldHeaders(ACUPOINT_FIELDS), 'reviewed'],
     toSheetRows(acupoints, ACUPOINT_FIELDS, 'acupoint_id', 'name_zh', 'name_vi'),
+  );
+  await writeTab(
+    spreadsheetId, 'acupoint_pinyin_review',
+    ['acupoint_id', 'Tên (zh)', 'Pinyin (tự sinh)', 'Tên (vi)', 'reviewed'],
+    acupointsPinyin.map((r) => [r.acupoint_id, r.name_zh, r.py || '', r.name_vi || '', false]),
   );
 
   console.log('\nXong! Mở sheet tại:');
