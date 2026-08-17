@@ -49,7 +49,10 @@ function herbRowToTerm(h) {
     group2_vi: h.section_vi || h.chapter_vi,
     group2_en: h.section_en || h.chapter_en,
     vitri: h.medicinal_part,
-    nguon: h.source_species,
+    // "Nguồn" ghi tên bộ dữ liệu do Hạ Vân Y Đạo tự xây dựng (không phải loài thực vật gốc —
+    // đó là thông tin khác, không phải "nguồn" theo ý nghĩa quyền sở hữu dữ liệu). Quyết định
+    // 2026-08-17, áp dụng thống nhất cho mọi domain có Core DB riêng (xem acupoints tương tự).
+    nguon: 'HVYD Herbal Core DB',
     verify: false,
     category: 'herb',
     temperature_vi: h.temperature_vi,
@@ -140,6 +143,67 @@ async function getAnatomyTerms() {
 }
 
 /**
+ * Maps an `acupoints` MySQL row (Huyệt vị) into the same flat term shape
+ * /api/terms returns for other domains — reuses herb's field names
+ * (action_* and indication_*) since the popup template branch for 'acupoint'
+ * follows the same layout as 'herb'. Unlike herbs, none of these fields are
+ * machine translated (the source already ships real vi/zh/en translations),
+ * so there is no cn_machine flag here.
+ */
+function acupointRowToTerm(a) {
+  return {
+    id: a.acupoint_id,
+    hz: a.name_zh,
+    py: a.py || '', // pinyin có dấu, tự sinh khi import (xem import-acupoint-sheets.js) —
+                     // fallback '' (không phải null/undefined) để tránh in chữ "undefined"
+                     // trong các mẫu `${term.py}` ở frontend nếu vì lý do gì đó bị thiếu.
+    vi: a.name_vi,
+    en: a.name_en,
+    group1: 'Huyệt vị',
+    // group2 = kinh lạc (tiếng Trung làm khoá lọc ổn định), giống quy ước Dược liệu/Giải phẫu.
+    group2: a.meridian_zh,
+    group2_vi: a.meridian_vi,
+    group2_en: a.meridian_en,
+    sequence_number: a.sequence_number,
+    vitri: a.body_region_vi,
+    category: 'acupoint',
+    entity_type: a.entity_type,
+    laterality: a.laterality,
+    location_zh: a.location_text_zh,
+    location_vi: a.location_text_vi,
+    location_en: a.location_text_en,
+    indication_zh: a.indication_text_zh,
+    indication_vi: a.indication_text_vi,
+    indication_en: a.indication_text_en,
+    action_zh: a.action_text_zh,
+    action_vi: a.action_text_vi,
+    action_en: a.action_text_en,
+    special_class_zh: a.special_class_zh,
+    special_class_vi: a.special_class_vi,
+    special_class_en: a.special_class_en,
+    // "Nguồn" ghi tên bộ dữ liệu Hạ Vân Y Đạo tự xây dựng, KHÔNG phải trích dẫn giáo trình gốc
+    // từng trang — xem ghi chú trong import-acupoint-sheets.js/schema.sql (quyết định 2026-08-17).
+    nguon: 'HVYD Acupoint Core DB',
+    verify: false,
+    // Chỉ location_en/indication_en có thể là dịch máy (vi/zh luôn là nội dung thật) — mtNote
+    // trong popup vì vậy chỉ nên đáng tin khi đang xem tiếng Anh, nhưng dùng chung cờ với các
+    // domain khác cho đơn giản (xem renderMultiLang/mtNote trong frontend).
+    cn_machine: !!a.en_machine_translated,
+  };
+}
+
+async function getAcupointTerms() {
+  if (!mysqlPool) return [];
+  try {
+    const [rows] = await mysqlPool.query('SELECT * FROM acupoints WHERE is_active = TRUE');
+    return rows.map(acupointRowToTerm);
+  } catch (err) {
+    console.error('⚠️  Không đọc được dữ liệu Huyệt vị từ MySQL:', err.message);
+    return [];
+  }
+}
+
+/**
  * Maps a `word_elements` MySQL row ("Từ ghép Y Khoa" — English prefix/
  * suffix/root/compound-term) into the same flat term shape /api/terms
  * returns for other domains. Unlike everywhere else, `en` is the headword
@@ -215,7 +279,8 @@ app.get('/api/terms', async (req, res) => {
     const herbTerms = await getHerbTerms();
     const anatomyTerms = await getAnatomyTerms();
     const wordElementTerms = await getWordElementTerms();
-    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms];
+    const acupointTerms = await getAcupointTerms();
+    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms];
 
     if (terms.length === 0) {
       return res.status(404).json({
@@ -280,7 +345,8 @@ app.get('/api/groups', async (req, res) => {
     const herbTerms = await getHerbTerms();
     const anatomyTerms = await getAnatomyTerms();
     const wordElementTerms = await getWordElementTerms();
-    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms];
+    const acupointTerms = await getAcupointTerms();
+    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms];
 
     if (terms.length === 0) {
       return res.status(404).json({

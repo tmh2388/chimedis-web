@@ -13,10 +13,14 @@
  *   3. Copy ID sheet trong URL (đoạn giữa /d/ và /edit) → set MT_REVIEW_SPREADSHEET_ID.
  * Script tự tạo 2 tab "herbs_mt_review" / "anatomy_mt_review" trong sheet đó.
  *
- * Ghi vào 2 tab:
+ * Ghi vào 3 tab:
  *   - herbs_mt_review    (indication/dose/caution của 567 vị Dược liệu)
  *   - anatomy_mt_review  (position/function/tcm_note/clinical của 329
  *                         thuật ngữ Giải phẫu/Sinh lý)
+ *   - acupoint_mt_review (location/indication EN của Huyệt vị — CHỈ EN, vì
+ *                         zh/vi của Huyệt vị luôn là nội dung thật từ nguồn,
+ *                         không bao giờ dịch máy — chỉ lọc huyệt có
+ *                         en_machine_translated=TRUE, xem schema.sql)
  * Mỗi hàng = 1 thuật ngữ. Mỗi trường có 3 cột zh (nguồn, không sửa) / vi / en
  * (sửa trực tiếp ở đây). Cột "reviewed" cuối hàng: tick TRUE khi đã rà soát
  * xong hàng đó — import-mt-review-sheet.js dùng cột này để đánh dấu
@@ -54,6 +58,10 @@ const ANATOMY_FIELDS = [
   ['tcm_note', 'Ghi chú Trung Y'],
   ['clinical', 'Lâm sàng'],
 ];
+const ACUPOINT_FIELDS = [
+  ['location_text', 'Vị trí'],
+  ['indication_text', 'Chủ trị'],
+];
 
 function fieldHeaders(fields) {
   const h = [];
@@ -69,6 +77,11 @@ async function fetchHerbs(conn) {
 async function fetchAnatomy(conn) {
   const cols = ['term_id', 'hz', 'vi', ...ANATOMY_FIELDS.flatMap(([k]) => [`${k}_zh`, `${k}_vi`, `${k}_en`])];
   const [rows] = await conn.query(`SELECT ${cols.join(',')} FROM anatomy_terms WHERE is_active = TRUE AND machine_translated = TRUE ORDER BY term_id`);
+  return rows;
+}
+async function fetchAcupoints(conn) {
+  const cols = ['acupoint_id', 'name_zh', 'name_vi', ...ACUPOINT_FIELDS.flatMap(([k]) => [`${k}_zh`, `${k}_vi`, `${k}_en`])];
+  const [rows] = await conn.query(`SELECT ${cols.join(',')} FROM acupoints WHERE is_active = TRUE AND en_machine_translated = TRUE ORDER BY acupoint_id`);
   return rows;
 }
 
@@ -102,14 +115,16 @@ async function main() {
   console.log('Đang đọc dữ liệu từ MySQL...');
   const herbs = await fetchHerbs(conn);
   const anatomy = await fetchAnatomy(conn);
+  const acupoints = await fetchAcupoints(conn);
   await conn.end();
   console.log(`  Dược liệu: ${herbs.length} hàng`);
   console.log(`  Giải phẫu/Sinh lý (machine_translated=TRUE): ${anatomy.length} hàng`);
+  console.log(`  Huyệt vị (en_machine_translated=TRUE): ${acupoints.length} hàng`);
 
   console.log('Đang kiểm tra tab trong sheet...');
   const meta = await sheets.spreadsheets.get({ spreadsheetId });
   const existingTitles = meta.data.sheets.map((s) => s.properties.title);
-  const wantedTabs = ['herbs_mt_review', 'anatomy_mt_review'];
+  const wantedTabs = ['herbs_mt_review', 'anatomy_mt_review', 'acupoint_mt_review'];
   const missing = wantedTabs.filter((t) => !existingTitles.includes(t));
   if (missing.length) {
     await sheets.spreadsheets.batchUpdate({
@@ -127,6 +142,11 @@ async function main() {
     spreadsheetId, 'anatomy_mt_review',
     ['term_id', 'Tên (zh)', 'Tên (vi)', ...fieldHeaders(ANATOMY_FIELDS), 'reviewed'],
     toSheetRows(anatomy, ANATOMY_FIELDS, 'term_id', 'hz', 'vi'),
+  );
+  await writeTab(
+    spreadsheetId, 'acupoint_mt_review',
+    ['acupoint_id', 'Tên (zh)', 'Tên (vi)', ...fieldHeaders(ACUPOINT_FIELDS), 'reviewed'],
+    toSheetRows(acupoints, ACUPOINT_FIELDS, 'acupoint_id', 'name_zh', 'name_vi'),
   );
 
   console.log('\nXong! Mở sheet tại:');

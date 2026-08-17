@@ -182,9 +182,90 @@ CREATE TABLE IF NOT EXISTS word_elements (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ---------------------------------------------------------------------
+-- acupoints — Huyệt vị. Source: "HVYD Acupoint Core DB v1.1.2" Google Sheet
+-- (26+ normalized tables: kb_acupoints, kb_acupoint_names, kb_meridians,
+-- kb_acupoint_meridian_map, kb_acupoint_locations, kb_acupoint_indication_claims,
+-- kb_acupoint_action_claims, ref_action_codes, kb_acupoint_class_map,
+-- ref_acupoint_class_codes, ref_body_regions...). The source provides real
+-- vi/zh translations for name/location/indication (translation_vi/
+-- translation_zh columns) but EN is only filled for 1-3 of 404 points —
+-- location_text_en/indication_text_en fall back to machine translation
+-- (MyMemory) when missing, flagged via en_machine_translated. vi/zh are
+-- NEVER machine translated for this domain (always real/reviewed content).
+--
+-- meridian_vi uses a hand-verified lookup table (MERIDIAN_VI_STANDARD in
+-- the import script), not the source's own label_vi column — the source
+-- orders it "[organ] thủ/túc [âm-dương]" (vd. "Tiểu trường thủ Thái dương")
+-- while the standard TCM Vietnamese convention Hạ Vân Y Đạo wants is
+-- "Kinh Thủ/Túc [Âm-Dương] [Organ]" with every word capitalized (vd.
+-- "Kinh Thủ Thái Dương Tiểu Trường") — decision 2026-08-17.
+--
+-- location_text_vi/indication_text_vi have point-code references (vd.
+-- "ST-35") annotated with the referenced point's Vietnamese name (vd.
+-- "Độc Tỵ (ST-35)") — the source's zh text already pairs name+code this
+-- way, only the vi translation had dropped the name — decision 2026-08-17.
+--
+-- action_text_* (tác dụng lâm sàng) is genuinely incomplete in the source
+-- itself (README: "PRODUCTION_IN_PROGRESS", only ~9 claims covering the
+-- Lung meridian as of 2026-08) — left NULL for points without it, by
+-- design (per Hạ Vân Y Đạo's own decision), not a bug to fix here.
+--
+-- Import script: import-acupoint-sheets.js. Re-running upserts, safe anytime.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS acupoints (
+  acupoint_id        VARCHAR(16) PRIMARY KEY,   -- e.g. 'ST-36', 'EX-UE-1'
+  entity_type        VARCHAR(24) NOT NULL,      -- 'REGULAR_ACUPOINT' | 'EXTRA_ACUPOINT'
+  sequence_number    INT,                       -- thứ tự trong kinh, vd. ST-36 = 36
+  laterality         VARCHAR(24),               -- 'BILATERAL' | 'MIDLINE' | 'MULTIPLE_SYMMETRIC'
+
+  meridian_code      VARCHAR(8),                -- 'LU','LI','ST'... NULL nếu kỳ huyệt không thuộc kinh nào
+  meridian_zh        VARCHAR(64),               -- tên đầy đủ, vd. 手太阴肺经 — khoá lọc group2 ổn định
+  meridian_vi        VARCHAR(128),
+  meridian_en        VARCHAR(128),
+
+  body_region_zh     VARCHAR(64),
+  body_region_vi      VARCHAR(64),
+  body_region_en      VARCHAR(64),
+
+  name_zh             VARCHAR(64) NOT NULL,
+  py                  VARCHAR(128),  -- pinyin CÓ dấu thanh, tự sinh từ name_zh bằng thư viện
+                                      -- `pinyin` (nguồn không có cột pinyin — cột name_en/locale
+                                      -- 'en' trong kb_acupoint_names thực ra là pinyin KHÔNG dấu,
+                                      -- vd. "Zusanli" — vẫn giữ nguyên ở name_en, py là bổ sung mới).
+  name_vi             VARCHAR(128),
+  name_en             VARCHAR(128),
+
+  location_text_zh    TEXT,          -- vị trí — nguyên văn nguồn
+  location_text_vi    TEXT,          -- vị trí — bản dịch thật từ nguồn (không phải dịch máy)
+  location_text_en    TEXT,
+
+  indication_text_zh  TEXT,          -- chủ trị — nguyên văn nguồn
+  indication_text_vi  TEXT,          -- chủ trị — bản dịch thật từ nguồn
+  indication_text_en  TEXT,
+
+  action_text_zh       TEXT,          -- tác dụng lâm sàng — CHƯA ĐẦY ĐỦ, để trống với đa số huyệt (xem trên)
+  action_text_vi        TEXT,
+  action_text_en        TEXT,
+
+  special_class_zh     VARCHAR(255),  -- loại huyệt đặc biệt, vd. "输穴、原穴、八会穴之脉会"
+  special_class_vi     VARCHAR(255),  -- "Du huyệt, Nguyên huyệt, Bát hội huyệt (Mạch hội)"
+  special_class_en     VARCHAR(255),
+
+  en_machine_translated BOOLEAN DEFAULT FALSE, -- location_text_en/indication_text_en: nguồn không có
+                                       -- sẵn EN cho gần hết 404 huyệt (chỉ 1-3 huyệt có EN thật) —
+                                       -- dịch máy MyMemory bù vào khi thiếu, cờ này bật khi ít nhất 1
+                                       -- trong 2 trường trên là dịch máy. vi/zh KHÔNG bao giờ dịch máy
+                                       -- (đều là bản dịch/nguyên văn thật từ nguồn).
+
+  is_active            BOOLEAN DEFAULT TRUE,
+  updated_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  FULLTEXT INDEX ft_acupoints_search (name_zh, name_vi, name_en, indication_text_zh, indication_text_vi, indication_text_en, location_text_vi)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ---------------------------------------------------------------------
 -- Future domains follow the same "denormalized read view" pattern:
 --   formulas   — from 03_master_data/HVYD Formula Core DB (kb_formulas,
 --                kb_formula_ingredients, kb_formula_indication_claims...)
---   acupoints  — once acupoint_db is rebuilt
 --   Bệnh lý (pathology) — needs a readable source first; see note above
 -- ---------------------------------------------------------------------
