@@ -25,7 +25,13 @@
   --shadow:0 1px 3px rgba(14,58,58,.06),0 6px 24px rgba(14,58,58,.05);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
+/* Khoá cứng html/body — KHÔNG cho tự cuộn/bounce ở tầng trang, mọi cuộn chỉ xảy ra bên trong
+   #scrollZone (đã có overscroll-behavior-y:contain riêng). Trước đây html/body vẫn co giãn/nảy
+   (rubber-band) được ở tầng ngoài khi kéo xuống hết cỡ trên iOS — <html> không có background nên
+   lộ ra màu trắng mặc định của trình duyệt phía trên header, và header (định vị theo scrollTop
+   của #scrollZone, không phải của trang) không có cơ hội nhận lại sự kiện scroll để co giãn về
+   đúng trạng thái — bug phát hiện 2026-08-17. */
+html,body{height:100%;overflow:hidden;position:fixed;inset:0;width:100%;overscroll-behavior:none;background:var(--thamthm)}
 body{font-family:"Noto Sans","Segoe UI",system-ui,sans-serif;background:var(--ngua);
   color:var(--muc);line-height:1.5;-webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
 .han{font-family:"Noto Serif SC","Songti SC",serif}
@@ -808,38 +814,49 @@ function stripDiacritics(str){
 function norm(str){ return stripDiacritics(String(str||'')).toLowerCase().trim(); }
 
 const SEARCH_STOPWORDS = new Set(['a','an','the','of','in','on','at','to','and','or','is','are']);
-// Dấu ngăn cụm coi là "khoảng trắng" khi tách từ khoá — gồm dấu câu Latin VÀ dấu câu tiếng
-// Trung toàn góc (，。、；：！？), cộng khoảng trắng thừa/lặp. Mục đích: gõ "呕吐，，疼痛" (2 dấu
-// phẩy dính nhau) hay "buồn nôn" đều tách đúng thành từng cụm nghĩa, không bị dính chữ hoặc
-// bị dấu câu thừa làm gãy chuỗi so khớp (yêu cầu 2026-08-17).
-const SEARCH_DELIM_RE = /[,.;:!?，。、；：！？"'“”‘’()（）\[\]【】\-–—\s]+/g;
+// Dấu ngăn CỤM triệu chứng/từ khoá — CHỈ dấu câu thật sự (Latin + Trung toàn góc), KHÔNG
+// gồm khoảng trắng. Mục đích: gõ nhiều cụm cách nhau bởi dấu phẩy (vd. "đau lưng, đau đầu"
+// hay "呕吐，，疼痛" dù dính 2 dấu phẩy) phải ra kết quả khớp BẤT KỲ cụm nào (OR theo cụm).
+// KHÔNG được tách theo khoảng trắng bên trong 1 cụm — "đau lưng"/"đau bụng"/"đau đầu" là
+// CỤM TỪ CÓ NGHĨA (2 âm tiết Việt), tách rời "đau" ra so khớp riêng sẽ khớp nhầm vào mọi mục
+// có chữ "đau" (vd. tìm "đau lưng" lại ra cả "đau đầu", "đau bụng"...) — bug phát hiện
+// 2026-08-17, sửa lại cùng ngày sau khi đổi delimiter gồm cả \s gây lỗi này.
+const SEARCH_DELIM_RE = /[,.;:!?，。、；：！？"'“”‘’()（）\[\]【】]+/g;
 function searchTokens(q){
-  return norm(q).replace(SEARCH_DELIM_RE, ' ').split(' ').filter(w => w && !SEARCH_STOPWORDS.has(w));
+  return norm(q).split(SEARCH_DELIM_RE).map(s=>s.trim()).filter(w => w && !SEARCH_STOPWORDS.has(w));
 }
 function matchTerm(t, q){
   if(!q) return true;
   const nq = norm(q);
   const trad = hzTradOf(t); // cho phép gõ giản thể hoặc phồn thể đều tìm ra, bất kể đang hiển thị kiểu nào
+  // Tên thuật ngữ (hz/pinyin/vi/en) LUÔN tìm được ở cả 3 ngôn ngữ bất kể đang bật/tắt ngôn ngữ
+  // hiển thị nào — ô tìm kiếm đã hứa rõ "Nhập 汉字 / pinyin / tiếng Việt / tiếng Anh", đây là TRA
+  // TÊN, không phải đọc nội dung, nên không phụ thuộc contentLangs.
   const fields = [t.hz, t.py, t.vi, t.en];
-  // Dược liệu/Huyệt vị: chủ trị cũng phải tìm được (vd. gõ "đau đầu" ra đúng huyệt/vị thuốc
-  // trị đau đầu), không chỉ tìm theo tên — quan trọng hơn với Huyệt vị vì tên huyệt (vd.
-  // "Túc Tam Lý") không gợi ý được công dụng như tên vị thuốc thường làm.
+  // Nội dung mô tả (chủ trị/định nghĩa/ví dụ) CHỈ tìm trong đúng những ngôn ngữ đang được BẬT
+  // hiển thị (state.contentLangs) — nếu tìm cả ngôn ngữ đang ẩn, người dùng sẽ thấy kết quả
+  // "không có căn cứ" vì đúng chữ khớp lại không được in ra ở đâu cả trong popup (renderMultiLang
+  // cũng lọc theo contentLangs). Bug thực tế 2026-08-17: tìm "nhức" (tiếng Việt) ra huyệt A Giao
+  // dù người dùng không thấy chữ "nhức" — vì đang chỉ bật hiển thị tiếng Trung, còn "nhức" nằm
+  // trong indication_vi đang bị ẩn. Search phải phản ánh đúng nội dung đang hiển thị trên màn
+  // hình, không được tìm "xuyên" qua dữ liệu ẩn.
   if(t.category === 'herb' || t.category === 'acupoint'){
-    fields.push(t.indication_vi, t.indication_en, t.indication_zh);
+    if(state.contentLangs.vi) fields.push(t.indication_vi);
+    if(state.contentLangs.en) fields.push(t.indication_en);
+    if(state.contentLangs.zh) fields.push(t.indication_zh);
   }
-  // Từ ghép Y Khoa: định nghĩa (gloss tiếng Anh cho type='term', nghĩa tiếng Việt cho
-  // prefix/suffix/root — xem wordElementRowToTerm) + ví dụ cũng phải tìm được, không chỉ
-  // tên — người dùng hay tra bằng định nghĩa (vd. "inflammation of a joint") chứ không biết
-  // trước từ y khoa cần tìm là gì.
+  // Từ ghép Y Khoa: định nghĩa/ví dụ cũng vậy — riêng `meaning`/`example` mang ngôn ngữ KHÔNG cố
+  // định (tiếng Anh cho type='term', tiếng Việt cho prefix/suffix/root — xem wordElementRowToTerm
+  // và ghi chú project_chimedis_overview), nên chỉ loại khi CẢ vi lẫn en đều đang tắt.
   if(t.category === 'word_element'){
-    fields.push(t.meaning, t.meaning_en, t.example, t.example_en);
+    if(state.contentLangs.vi || state.contentLangs.en) fields.push(t.meaning, t.example);
+    if(state.contentLangs.en) fields.push(t.meaning_en, t.example_en);
   }
   const haystack = norm(fields.filter(Boolean).join(' '));
   if(haystack.includes(nq) || (t.hz && t.hz.includes(q)) || (trad && trad.includes(q))) return true;
-  // Khớp theo BẤT KỲ cụm/từ khoá nào (OR, không bắt buộc đủ hết) sau khi tách theo dấu ngăn —
-  // phát hiện 2026-08-17: (1) tìm "buồn nôn" cần ra cả thuật ngữ chỉ có "nôn" (mô tả tự nhiên,
-  // không phải tên chuẩn); (2) gõ tiếng Trung nhiều cụm cách nhau bởi dấu phẩy (vd. "呕吐，，疼痛")
-  // cần ra bất kỳ cụm nào khớp, không bị dấu phẩy thừa/lặp chặn toàn bộ câu tìm.
+  // Khớp theo BẤT KỲ CỤM nào (mỗi cụm giữ nguyên khoảng trắng bên trong) sau khi tách theo
+  // dấu phẩy/chấm phẩy/dấu câu — cho phép gõ nhiều triệu chứng 1 lần (vd. "đau lưng, đau đầu")
+  // và ra kết quả khớp cụm bất kỳ, mà KHÔNG làm vụn từng cụm thành từ đơn (xem SEARCH_DELIM_RE).
   return searchTokens(q).some(tok => haystack.includes(tok));
 }
 
