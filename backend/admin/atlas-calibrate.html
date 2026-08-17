@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Chimedis — Công cụ hiệu chỉnh Atlas Huyệt vị</title>
+<style>
+  :root{
+    --ngua:#F5F0E6; --thamthm:#0E3A3A; --tham-2:#12504C;
+    --ngoc:#7FB7AE; --ngoc-mo:#D9E9E4; --dong:#B07D4A; --son:#C8452F;
+    --muc:#1C2B2A; --vien:#D8CFBE;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,'Segoe UI',sans-serif;background:var(--ngua);color:var(--muc);display:flex;height:100vh;overflow:hidden}
+  #sidebar{width:340px;flex:none;background:#fff;border-right:1px solid var(--vien);overflow-y:auto;padding:14px}
+  #sidebar h2{font-size:15px;margin:0 0 10px;color:var(--thamthm)}
+  #sidebar h3{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--dong);margin:18px 0 6px}
+  #main{flex:1;position:relative;overflow:auto;background:#dfe6e4;display:flex;align-items:flex-start;justify-content:center}
+  #canvasWrap{position:relative;margin:20px}
+  canvas{background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.15);cursor:crosshair}
+  select,input,button{font:inherit;font-size:13px}
+  select,input[type=text],input[type=number]{width:100%;padding:6px 8px;border:1px solid var(--vien);border-radius:6px;margin-bottom:8px}
+  button{padding:7px 10px;border:1px solid var(--tham-2);border-radius:6px;background:var(--tham-2);color:#fff;cursor:pointer;margin:2px 0}
+  button.ghost{background:#fff;color:var(--tham-2)}
+  button.danger{background:var(--son);border-color:var(--son)}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  .row{display:flex;gap:6px}
+  .row > *{flex:1}
+  #rulerList,#markerList{font-size:12px;border:1px solid var(--vien);border-radius:6px;max-height:200px;overflow-y:auto}
+  .li{padding:6px 8px;border-bottom:1px solid var(--vien);display:flex;justify-content:space-between;align-items:center;gap:4px}
+  .li:last-child{border-bottom:none}
+  .li button{padding:2px 6px;font-size:11px;margin:0}
+  .mode-badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:8px}
+  .mode-idle{background:var(--ngoc-mo);color:var(--tham-2)}
+  .mode-ruler{background:#FDE8D8;color:#B0592A}
+  .mode-marker{background:#D8E8F5;color:#2A5CB0}
+  #status{font-size:12px;color:#666;padding:8px;background:var(--ngua);border-radius:6px;margin-top:10px;min-height:34px}
+  #json-out{width:100%;height:140px;font-family:ui-monospace,monospace;font-size:10.5px}
+  small{color:#888;display:block;margin:-4px 0 8px}
+</style>
+</head>
+<body>
+<div id="sidebar">
+  <h2>🧭 Hiệu chỉnh Atlas Huyệt vị</h2>
+
+  <h3>1. Chọn ảnh nền</h3>
+  <select id="imgSelect"></select>
+
+  <h3>2. Thước thốn (骨度分寸)</h3>
+  <small>Chọn 1 đoạn thốn chuẩn, click 2 mốc trên ảnh (mốc gần → mốc xa), rồi bấm "Chốt thước".</small>
+  <select id="cunPreset"></select>
+  <div class="row">
+    <button id="btnStartRuler" class="ghost">📏 Bắt đầu đặt thước</button>
+  </div>
+  <div id="rulerStatus" style="font-size:12px;color:var(--dong);min-height:18px;margin:4px 0"></div>
+  <div id="rulerList"></div>
+
+  <h3>3. Đặt huyệt</h3>
+  <small>Chọn thước làm mốc, nhập số thốn dọc trục (từ mốc gần) và lệch ngang (+/- thốn), rồi bấm "Tính vị trí" — hoặc bấm "Đặt tay" rồi click thẳng lên ảnh.</small>
+  <input id="acuId" type="text" placeholder="Mã huyệt, vd. LU-6">
+  <select id="rulerForPoint"></select>
+  <div class="row">
+    <input id="cunAlong" type="number" step="0.1" placeholder="Thốn dọc trục (từ mốc gần)">
+    <input id="cunLateral" type="number" step="0.1" placeholder="Lệch ngang (+/-)">
+  </div>
+  <div class="row">
+    <button id="btnComputePoint">➕ Tính & đặt</button>
+    <button id="btnManualPoint" class="ghost">✋ Đặt tay (click ảnh)</button>
+  </div>
+  <div id="markerList"></div>
+
+  <h3>4. Xuất dữ liệu</h3>
+  <div class="row">
+    <button id="btnExport" class="ghost">📋 Xuất JSON</button>
+    <button id="btnClearAll" class="danger">🗑 Xoá hết</button>
+  </div>
+  <textarea id="json-out" readonly placeholder="Bấm 'Xuất JSON' để xem..."></textarea>
+
+  <div id="status">Sẵn sàng. Chọn ảnh để bắt đầu.</div>
+</div>
+
+<div id="main">
+  <div id="canvasWrap">
+    <canvas id="cv"></canvas>
+  </div>
+</div>
+
+<script>
+// ===== Bảng thốn chuẩn (骨度分寸法) — WHO 2008 + 针灸学 giáo trình =====
+const CUN_PRESETS = [
+  {key:'axilla_elbow', label:'Nếp nách trước → Nếp khuỷu (9 thốn)', cun:9},
+  {key:'elbow_wrist', label:'Nếp khuỷu → Nếp cổ tay (12 thốn)', cun:12},
+  {key:'pubis_knee_med', label:'Xương mu → Lồi cầu trong đùi (18 thốn)', cun:18},
+  {key:'knee_ankle_med', label:'Lồi cầu trong chày → Mắt cá trong (13 thốn)', cun:13},
+  {key:'trochanter_popliteal', label:'Mấu chuyển lớn → Nếp khoeo (19 thốn)', cun:19},
+  {key:'popliteal_ankle_lat', label:'Nếp khoeo → Mắt cá ngoài (16 thốn)', cun:16},
+  {key:'hairline_ant_post', label:'Chân tóc trước → Chân tóc sau (12 thốn)', cun:12},
+  {key:'glabella_hairline', label:'Ấn Đường → Chân tóc trước (3 thốn)', cun:3},
+  {key:'sternum_umbilicus', label:'Thiên Đột → Kỳ Cốt/mũi ức (9 thốn)', cun:9},
+  {key:'xiphoid_umbilicus', label:'Kỳ Cốt (mũi ức) → Rốn (8 thốn)', cun:8},
+  {key:'umbilicus_pubis', label:'Rốn → Khúc Cốt/xương mu (5 thốn)', cun:5},
+  {key:'scapula_spine', label:'Bờ trong xương bả vai → Cột sống (3 thốn)', cun:3},
+  {key:'custom', label:'— Tuỳ chỉnh (nhập số thốn) —', cun:null},
+];
+
+const IMAGES = [
+  'atlas-forearm-hand-anterior.png','atlas-forearm-hand-posterior.png',
+  'atlas-legs-anterior.png','atlas-legs-posterior.png','atlas-leg-lateral.png',
+  'atlas-chest-abdomen-anterior.png','atlas-back-torso.png',
+  'atlas-head-anterior.png','atlas-head-lateral.png',
+  'atlas-whole-body-anterior.png','atlas-whole-body-posterior.png',
+];
+
+const ASSET_ID_BY_FILE = {
+  'atlas-forearm-hand-anterior.png':'ATLAS-FOREARM-HAND-ANT',
+  'atlas-forearm-hand-posterior.png':'ATLAS-FOREARM-HAND-POST',
+  'atlas-legs-anterior.png':'ATLAS-LEGS-ANT',
+  'atlas-legs-posterior.png':'ATLAS-LEGS-POST',
+  'atlas-leg-lateral.png':'ATLAS-LEG-LATERAL',
+  'atlas-chest-abdomen-anterior.png':'ATLAS-CHEST-ABDOMEN-ANT',
+  'atlas-back-torso.png':'ATLAS-BACK-TORSO',
+  'atlas-head-anterior.png':'ATLAS-HEAD-ANT',
+  'atlas-head-lateral.png':'ATLAS-HEAD-LATERAL',
+  'atlas-whole-body-anterior.png':'ATLAS-WHOLE-BODY-ANT',
+  'atlas-whole-body-posterior.png':'ATLAS-WHOLE-BODY-POST',
+};
+
+let state = {
+  img: null, imgFile: null, scale: 1,
+  mode: 'idle', // idle | placing_ruler_a | placing_ruler_b | placing_marker_manual
+  rulerDraft: null, // {a:{x,y}}
+  rulers: [], // {id, a:{x,y}, b:{x,y}, cun, label}
+  markers: [], // {acupoint_id, x, y, rulerId, cunAlong, cunLateral, manual}
+};
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const imgSelect = document.getElementById('imgSelect');
+const cunPreset = document.getElementById('cunPreset');
+const rulerForPoint = document.getElementById('rulerForPoint');
+const statusEl = document.getElementById('status');
+const rulerStatus = document.getElementById('rulerStatus');
+
+IMAGES.forEach(f => { const o=document.createElement('option'); o.value=f; o.textContent=f; imgSelect.appendChild(o); });
+CUN_PRESETS.forEach(p => { const o=document.createElement('option'); o.value=p.key; o.textContent=p.label; cunPreset.appendChild(o); });
+
+function setStatus(s){ statusEl.textContent = s; }
+
+function loadImage(file){
+  const img = new Image();
+  img.onload = () => {
+    state.img = img; state.imgFile = file;
+    const maxW = Math.min(window.innerWidth - 380, 1400);
+    state.scale = Math.min(1, maxW / img.width);
+    cv.width = img.width * state.scale;
+    cv.height = img.height * state.scale;
+    state.rulers = []; state.markers = [];
+    renderRulerList(); renderMarkerList(); renderRulerForPointOptions();
+    draw();
+    setStatus(`Đã tải ${file} (${img.width}×${img.height}px, hiển thị ${Math.round(state.scale*100)}%).`);
+  };
+  img.src = 'atlas-images/' + file;
+}
+imgSelect.addEventListener('change', () => loadImage(imgSelect.value));
+
+function toCanvasXY(clientX, clientY){
+  const r = cv.getBoundingClientRect();
+  return { x: (clientX - r.left) / state.scale, y: (clientY - r.top) / state.scale };
+}
+
+function draw(){
+  if(!state.img) return;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.drawImage(state.img, 0, 0, cv.width, cv.height);
+  state.rulers.forEach(r => drawRuler(r));
+  if(state.rulerDraft && state.rulerDraft.a){
+    ctx.fillStyle = '#C8452F';
+    const p = scaled(state.rulerDraft.a);
+    ctx.beginPath(); ctx.arc(p.x,p.y,5,0,7); ctx.fill();
+  }
+  state.markers.forEach(m => drawMarker(m));
+}
+function scaled(p){ return { x: p.x*state.scale, y: p.y*state.scale }; }
+
+// Vẽ thước thốn: đường chính + vạch chia mỗi 1 thốn, lệch sang bên (giống ảnh tham chiếu MAP app)
+function drawRuler(r){
+  const a = scaled(r.a), b = scaled(r.b);
+  const dx = b.x-a.x, dy = b.y-a.y;
+  const len = Math.hypot(dx,dy);
+  const ux = dx/len, uy = dy/len;
+  const px = -uy, py = ux; // perpendicular
+  const offset = 26; // px, khoảng cách thước ra khỏi trục thật
+  const oa = { x: a.x + px*offset, y: a.y + py*offset };
+  const ob = { x: b.x + px*offset, y: b.y + py*offset };
+
+  ctx.strokeStyle = '#2E8B57'; ctx.fillStyle = '#2E8B57'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(oa.x,oa.y); ctx.lineTo(ob.x,ob.y); ctx.stroke();
+
+  const scalePerCun = len / r.cun;
+  for(let c=0; c<=r.cun; c++){
+    const t = c/r.cun;
+    const cx = oa.x + (ob.x-oa.x)*t, cy = oa.y + (ob.y-oa.y)*t;
+    const tickLen = (c%5===0) ? 9 : 5;
+    ctx.beginPath();
+    ctx.moveTo(cx - px*tickLen, cy - py*tickLen);
+    ctx.lineTo(cx + px*tickLen, cy + py*tickLen);
+    ctx.stroke();
+    if(c%1===0){
+      ctx.font = '10px sans-serif';
+      ctx.fillText(String(c), cx + px*14 - 3, cy + py*14 + 3);
+    }
+  }
+  // đường nối 2 đầu về trục thật (đánh dấu mốc A/B)
+  ctx.strokeStyle = 'rgba(46,139,87,.5)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(oa.x,oa.y); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(b.x,b.y); ctx.lineTo(ob.x,ob.y); ctx.stroke();
+  ctx.fillStyle='#1C6B3F'; ctx.beginPath(); ctx.arc(a.x,a.y,4,0,7); ctx.fill();
+  ctx.beginPath(); ctx.arc(b.x,b.y,4,0,7); ctx.fill();
+
+  ctx.fillStyle = '#12504C'; ctx.font = 'bold 11px sans-serif';
+  ctx.fillText(r.label, oa.x + px*20, oa.y + py*20 - 6);
+}
+
+function drawMarker(m){
+  const p = scaled(m);
+  ctx.beginPath(); ctx.arc(p.x,p.y,7,0,7);
+  ctx.strokeStyle = '#C8452F'; ctx.lineWidth = 2.5; ctx.stroke();
+  ctx.fillStyle = '#C8452F'; ctx.font = 'bold 11px sans-serif';
+  ctx.fillText(m.acupoint_id, p.x+10, p.y-8);
+}
+
+cv.addEventListener('click', (e) => {
+  const p = toCanvasXY(e.clientX, e.clientY);
+  if(state.mode === 'placing_ruler_a'){
+    state.rulerDraft = { a: p };
+    state.mode = 'placing_ruler_b';
+    rulerStatus.textContent = 'Đã đặt mốc GẦN. Click mốc XA để hoàn tất.';
+    draw();
+  } else if(state.mode === 'placing_ruler_b'){
+    const preset = CUN_PRESETS.find(x => x.key === cunPreset.value);
+    let cun = preset.cun;
+    if(cun == null){ cun = parseFloat(prompt('Nhập số thốn cho đoạn tuỳ chỉnh:', '9')) || 9; }
+    const id = 'R' + (state.rulers.length+1);
+    state.rulers.push({ id, a: state.rulerDraft.a, b: p, cun, label: preset.label.replace(/\s*\(.+\)$/,'') + ` (${cun} thốn)` });
+    state.rulerDraft = null; state.mode = 'idle';
+    rulerStatus.textContent = '';
+    renderRulerList(); renderRulerForPointOptions();
+    setStatus(`Đã chốt thước "${id}".`);
+    draw();
+  } else if(state.mode === 'placing_marker_manual'){
+    const acuId = document.getElementById('acuId').value.trim();
+    if(!acuId){ alert('Nhập mã huyệt trước khi đặt tay.'); return; }
+    state.markers.push({ acupoint_id: acuId, x: p.x, y: p.y, manual: true });
+    state.mode = 'idle';
+    renderMarkerList();
+    setStatus(`Đã đặt tay huyệt ${acuId}.`);
+    draw();
+  }
+});
+
+document.getElementById('btnStartRuler').addEventListener('click', () => {
+  if(!state.img){ alert('Chọn ảnh trước.'); return; }
+  state.mode = 'placing_ruler_a'; state.rulerDraft = null;
+  rulerStatus.textContent = 'Click mốc GẦN (vd. nếp khuỷu) trên ảnh.';
+});
+
+document.getElementById('btnManualPoint').addEventListener('click', () => {
+  if(!state.img){ alert('Chọn ảnh trước.'); return; }
+  const acuId = document.getElementById('acuId').value.trim();
+  if(!acuId){ alert('Nhập mã huyệt trước.'); return; }
+  state.mode = 'placing_marker_manual';
+  setStatus(`Click lên ảnh để đặt tay huyệt ${acuId}.`);
+});
+
+document.getElementById('btnComputePoint').addEventListener('click', () => {
+  const acuId = document.getElementById('acuId').value.trim();
+  const rulerId = rulerForPoint.value;
+  const cunAlong = parseFloat(document.getElementById('cunAlong').value);
+  const cunLateral = parseFloat(document.getElementById('cunLateral').value) || 0;
+  if(!acuId){ alert('Nhập mã huyệt.'); return; }
+  if(!rulerId){ alert('Chọn thước làm mốc (cần đặt thước trước ở bước 2).'); return; }
+  if(Number.isNaN(cunAlong)){ alert('Nhập số thốn dọc trục.'); return; }
+  const r = state.rulers.find(x => x.id === rulerId);
+  const dx = r.b.x-r.a.x, dy = r.b.y-r.a.y;
+  const len = Math.hypot(dx,dy);
+  const ux=dx/len, uy=dy/len, px=-uy, py=ux;
+  const scalePerCun = len / r.cun;
+  const x = r.a.x + ux*cunAlong*scalePerCun + px*cunLateral*scalePerCun;
+  const y = r.a.y + uy*cunAlong*scalePerCun + py*cunLateral*scalePerCun;
+  state.markers.push({ acupoint_id: acuId, x, y, rulerId, cunAlong, cunLateral, manual:false });
+  renderMarkerList();
+  setStatus(`Đã tính & đặt huyệt ${acuId} theo thước ${rulerId}.`);
+  document.getElementById('acuId').value=''; document.getElementById('cunAlong').value=''; document.getElementById('cunLateral').value='';
+  draw();
+});
+
+function renderRulerForPointOptions(){
+  rulerForPoint.innerHTML = '<option value="">— chọn thước —</option>' +
+    state.rulers.map(r => `<option value="${r.id}">${r.id}: ${r.label}</option>`).join('');
+}
+
+function renderRulerList(){
+  const el = document.getElementById('rulerList');
+  el.innerHTML = state.rulers.map(r => `<div class="li"><span>${r.id}: ${r.label}</span><button data-rid="${r.id}" class="rmRuler">✕</button></div>`).join('') || '<div class="li" style="color:#999">Chưa có thước.</div>';
+  el.querySelectorAll('.rmRuler').forEach(b => b.addEventListener('click', (e) => {
+    state.rulers = state.rulers.filter(r => r.id !== e.target.dataset.rid);
+    renderRulerList(); renderRulerForPointOptions(); draw();
+  }));
+}
+function renderMarkerList(){
+  const el = document.getElementById('markerList');
+  el.innerHTML = state.markers.map((m,i) => `<div class="li"><span>${m.acupoint_id} ${m.manual?'(tay)':''}</span><button data-i="${i}" class="rmMarker">✕</button></div>`).join('') || '<div class="li" style="color:#999">Chưa có huyệt.</div>';
+  el.querySelectorAll('.rmMarker').forEach(b => b.addEventListener('click', (e) => {
+    state.markers.splice(parseInt(e.target.dataset.i),1);
+    renderMarkerList(); draw();
+  }));
+}
+
+document.getElementById('btnExport').addEventListener('click', () => {
+  const assetId = ASSET_ID_BY_FILE[state.imgFile] || state.imgFile;
+  const out = state.markers.map(m => ({
+    asset_id: assetId,
+    acupoint_id: m.acupoint_id,
+    x_normalized: +(m.x/state.img.width).toFixed(4),
+    y_normalized: +(m.y/state.img.height).toFixed(4),
+    laterality: 'BILATERAL',
+    confidence: m.manual ? 0.7 : 0.95,
+  }));
+  document.getElementById('json-out').value = JSON.stringify(out, null, 1);
+});
+
+document.getElementById('btnClearAll').addEventListener('click', () => {
+  if(!confirm('Xoá hết thước và huyệt đã đặt trên ảnh này?')) return;
+  state.rulers=[]; state.markers=[]; state.rulerDraft=null; state.mode='idle';
+  renderRulerList(); renderMarkerList(); renderRulerForPointOptions(); draw();
+});
+
+// tải ảnh đầu tiên
+loadImage(IMAGES[0]);
+</script>
+</body>
+</html>
