@@ -807,6 +807,15 @@ function stripDiacritics(str){
 }
 function norm(str){ return stripDiacritics(String(str||'')).toLowerCase().trim(); }
 
+const SEARCH_STOPWORDS = new Set(['a','an','the','of','in','on','at','to','and','or','is','are']);
+// Dấu ngăn cụm coi là "khoảng trắng" khi tách từ khoá — gồm dấu câu Latin VÀ dấu câu tiếng
+// Trung toàn góc (，。、；：！？), cộng khoảng trắng thừa/lặp. Mục đích: gõ "呕吐，，疼痛" (2 dấu
+// phẩy dính nhau) hay "buồn nôn" đều tách đúng thành từng cụm nghĩa, không bị dính chữ hoặc
+// bị dấu câu thừa làm gãy chuỗi so khớp (yêu cầu 2026-08-17).
+const SEARCH_DELIM_RE = /[,.;:!?，。、；：！？"'“”‘’()（）\[\]【】\-–—\s]+/g;
+function searchTokens(q){
+  return norm(q).replace(SEARCH_DELIM_RE, ' ').split(' ').filter(w => w && !SEARCH_STOPWORDS.has(w));
+}
 function matchTerm(t, q){
   if(!q) return true;
   const nq = norm(q);
@@ -816,7 +825,7 @@ function matchTerm(t, q){
   // trị đau đầu), không chỉ tìm theo tên — quan trọng hơn với Huyệt vị vì tên huyệt (vd.
   // "Túc Tam Lý") không gợi ý được công dụng như tên vị thuốc thường làm.
   if(t.category === 'herb' || t.category === 'acupoint'){
-    fields.push(t.indication_vi, t.indication_en);
+    fields.push(t.indication_vi, t.indication_en, t.indication_zh);
   }
   // Từ ghép Y Khoa: định nghĩa (gloss tiếng Anh cho type='term', nghĩa tiếng Việt cho
   // prefix/suffix/root — xem wordElementRowToTerm) + ví dụ cũng phải tìm được, không chỉ
@@ -825,17 +834,13 @@ function matchTerm(t, q){
   if(t.category === 'word_element'){
     fields.push(t.meaning, t.meaning_en, t.example, t.example_en);
   }
-  const exactMatch = fields.some(f => norm(f).includes(nq)) || (t.hz && t.hz.includes(q)) || (trad && trad.includes(q)) || (t.indication_zh && t.indication_zh.includes(q));
-  if(exactMatch) return true;
-  // Khớp theo TỪNG TỪ khoá (không cần liền câu/đúng thứ tự) — phát hiện 2026-08-17: tìm
-  // "inflammation of a joint" không ra "osteoarthritis" dù gloss là "degenerative
-  // inflammation of bone and joint", vì đây không phải chuỗi con liền mạch. Yêu cầu MỌI từ
-  // khoá (bỏ từ quá ngắn/hư từ) đều xuất hiện đâu đó trong toàn bộ nội dung — không bắt buộc
-  // đúng thứ tự hay liền nhau.
   const haystack = norm(fields.filter(Boolean).join(' '));
-  const STOPWORDS = new Set(['a','an','the','of','in','on','at','to','and','or','is','are']);
-  const tokens = nq.split(/\s+/).filter(w => w.length >= 2 && !STOPWORDS.has(w));
-  return tokens.length > 1 && tokens.every(tok => haystack.includes(tok));
+  if(haystack.includes(nq) || (t.hz && t.hz.includes(q)) || (trad && trad.includes(q))) return true;
+  // Khớp theo BẤT KỲ cụm/từ khoá nào (OR, không bắt buộc đủ hết) sau khi tách theo dấu ngăn —
+  // phát hiện 2026-08-17: (1) tìm "buồn nôn" cần ra cả thuật ngữ chỉ có "nôn" (mô tả tự nhiên,
+  // không phải tên chuẩn); (2) gõ tiếng Trung nhiều cụm cách nhau bởi dấu phẩy (vd. "呕吐，，疼痛")
+  // cần ra bất kỳ cụm nào khớp, không bị dấu phẩy thừa/lặp chặn toàn bộ câu tìm.
+  return searchTokens(q).some(tok => haystack.includes(tok));
 }
 
 // ===== CẤU TRÚC NHÓM (menu1 / menu2) =====
