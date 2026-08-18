@@ -55,8 +55,10 @@
   <div id="rulerList"></div>
 
   <h3>3. Đặt huyệt</h3>
-  <small>Chọn thước làm mốc, nhập số thốn dọc trục (từ mốc gần) và lệch ngang (+/- thốn), rồi bấm "Tính vị trí" — hoặc bấm "Đặt tay" rồi click thẳng lên ảnh.</small>
-  <input id="acuId" type="text" placeholder="Mã huyệt, vd. LU-6">
+  <small>Chọn kinh mạch → chọn huyệt (không cần nhớ mã). Rồi chọn thước làm mốc, nhập số thốn dọc trục (từ mốc gần) và lệch ngang (+/- thốn), bấm "Tính & đặt" — hoặc bấm "Đặt tay" rồi click thẳng lên ảnh.</small>
+  <select id="meridianSelect"></select>
+  <select id="pointSelect"></select>
+  <div id="pointHint" style="font-size:11px;color:#888;margin:-4px 0 8px"></div>
   <select id="rulerForPoint"></select>
   <div class="row">
     <input id="cunAlong" type="number" step="0.1" placeholder="Thốn dọc trục (từ mốc gần)">
@@ -84,6 +86,7 @@
   </div>
 </div>
 
+<script src="acupoints-data.js"></script>
 <script>
 // ===== Bảng thốn chuẩn (骨度分寸法) — WHO 2008 + 针灸学 giáo trình =====
 const CUN_PRESETS = [
@@ -143,6 +146,30 @@ const rulerStatus = document.getElementById('rulerStatus');
 IMAGES.forEach(f => { const o=document.createElement('option'); o.value=f; o.textContent=f; imgSelect.appendChild(o); });
 CUN_PRESETS.forEach(p => { const o=document.createElement('option'); o.value=p.key; o.textContent=p.label; cunPreset.appendChild(o); });
 
+// ===== Chọn huyệt qua Kinh mạch → Huyệt (thay vì gõ mã tay, dễ sai/khó nhớ) =====
+const meridianSelect = document.getElementById('meridianSelect');
+const pointSelect = document.getElementById('pointSelect');
+const pointHint = document.getElementById('pointHint');
+Object.keys(ACUPOINTS_BY_MERIDIAN).forEach(mer => {
+  const o = document.createElement('option'); o.value = mer;
+  o.textContent = `${mer} (${ACUPOINTS_BY_MERIDIAN[mer].length} huyệt)`;
+  meridianSelect.appendChild(o);
+});
+function fillPointSelect(){
+  const pts = ACUPOINTS_BY_MERIDIAN[meridianSelect.value] || [];
+  pointSelect.innerHTML = pts.map(p => `<option value="${p.id}">${p.id} · ${p.vi}</option>`).join('');
+  updatePointHint();
+}
+function updatePointHint(){
+  const mer = ACUPOINTS_BY_MERIDIAN[meridianSelect.value] || [];
+  const p = mer.find(x => x.id === pointSelect.value);
+  pointHint.textContent = p ? p.loc + (p.loc.length>=60?'…':'') : '';
+}
+meridianSelect.addEventListener('change', fillPointSelect);
+pointSelect.addEventListener('change', updatePointHint);
+fillPointSelect();
+function currentAcuId(){ return pointSelect.value; }
+
 function setStatus(s){ statusEl.textContent = s; }
 
 function loadImage(file){
@@ -181,17 +208,22 @@ function draw(){
 }
 function scaled(p){ return { x: p.x*state.scale, y: p.y*state.scale }; }
 
-// Vẽ thước thốn: đường chính + vạch chia mỗi 1 thốn, lệch sang bên (giống ảnh tham chiếu MAP app)
+// Vẽ thước thốn: đường chính + vạch chia mỗi 1 thốn, lệch sang bên (giống ảnh tham chiếu MAP app).
+// offset (lệch trái/phải khỏi trục thật) và opacity (độ đậm) chỉnh được riêng từng thước — xem
+// renderRulerList() cho 2 thanh trượt tương ứng.
 function drawRuler(r){
   const a = scaled(r.a), b = scaled(r.b);
   const dx = b.x-a.x, dy = b.y-a.y;
   const len = Math.hypot(dx,dy);
   const ux = dx/len, uy = dy/len;
   const px = -uy, py = ux; // perpendicular
-  const offset = 26; // px, khoảng cách thước ra khỏi trục thật
+  const offset = r.offset ?? 26; // px, khoảng cách thước ra khỏi trục thật — âm = lệch sang bên kia
+  const opacity = r.opacity ?? 1;
   const oa = { x: a.x + px*offset, y: a.y + py*offset };
   const ob = { x: b.x + px*offset, y: b.y + py*offset };
 
+  ctx.save();
+  ctx.globalAlpha = opacity;
   ctx.strokeStyle = '#2E8B57'; ctx.fillStyle = '#2E8B57'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(oa.x,oa.y); ctx.lineTo(ob.x,ob.y); ctx.stroke();
 
@@ -218,6 +250,7 @@ function drawRuler(r){
 
   ctx.fillStyle = '#12504C'; ctx.font = 'bold 11px sans-serif';
   ctx.fillText(r.label, oa.x + px*20, oa.y + py*20 - 6);
+  ctx.restore();
 }
 
 function drawMarker(m){
@@ -240,15 +273,15 @@ cv.addEventListener('click', (e) => {
     let cun = preset.cun;
     if(cun == null){ cun = parseFloat(prompt('Nhập số thốn cho đoạn tuỳ chỉnh:', '9')) || 9; }
     const id = 'R' + (state.rulers.length+1);
-    state.rulers.push({ id, a: state.rulerDraft.a, b: p, cun, label: preset.label.replace(/\s*\(.+\)$/,'') + ` (${cun} thốn)` });
+    state.rulers.push({ id, a: state.rulerDraft.a, b: p, cun, label: preset.label.replace(/\s*\(.+\)$/,'') + ` (${cun} thốn)`, offset: 26, opacity: 1 });
     state.rulerDraft = null; state.mode = 'idle';
     rulerStatus.textContent = '';
     renderRulerList(); renderRulerForPointOptions();
     setStatus(`Đã chốt thước "${id}".`);
     draw();
   } else if(state.mode === 'placing_marker_manual'){
-    const acuId = document.getElementById('acuId').value.trim();
-    if(!acuId){ alert('Nhập mã huyệt trước khi đặt tay.'); return; }
+    const acuId = currentAcuId();
+    if(!acuId){ alert('Chọn kinh mạch + huyệt trước khi đặt tay.'); return; }
     state.markers.push({ acupoint_id: acuId, x: p.x, y: p.y, manual: true });
     state.mode = 'idle';
     renderMarkerList();
@@ -265,18 +298,18 @@ document.getElementById('btnStartRuler').addEventListener('click', () => {
 
 document.getElementById('btnManualPoint').addEventListener('click', () => {
   if(!state.img){ alert('Chọn ảnh trước.'); return; }
-  const acuId = document.getElementById('acuId').value.trim();
-  if(!acuId){ alert('Nhập mã huyệt trước.'); return; }
+  const acuId = currentAcuId();
+  if(!acuId){ alert('Chọn kinh mạch + huyệt trước.'); return; }
   state.mode = 'placing_marker_manual';
   setStatus(`Click lên ảnh để đặt tay huyệt ${acuId}.`);
 });
 
 document.getElementById('btnComputePoint').addEventListener('click', () => {
-  const acuId = document.getElementById('acuId').value.trim();
+  const acuId = currentAcuId();
   const rulerId = rulerForPoint.value;
   const cunAlong = parseFloat(document.getElementById('cunAlong').value);
   const cunLateral = parseFloat(document.getElementById('cunLateral').value) || 0;
-  if(!acuId){ alert('Nhập mã huyệt.'); return; }
+  if(!acuId){ alert('Chọn kinh mạch + huyệt trước.'); return; }
   if(!rulerId){ alert('Chọn thước làm mốc (cần đặt thước trước ở bước 2).'); return; }
   if(Number.isNaN(cunAlong)){ alert('Nhập số thốn dọc trục.'); return; }
   const r = state.rulers.find(x => x.id === rulerId);
@@ -289,7 +322,7 @@ document.getElementById('btnComputePoint').addEventListener('click', () => {
   state.markers.push({ acupoint_id: acuId, x, y, rulerId, cunAlong, cunLateral, manual:false });
   renderMarkerList();
   setStatus(`Đã tính & đặt huyệt ${acuId} theo thước ${rulerId}.`);
-  document.getElementById('acuId').value=''; document.getElementById('cunAlong').value=''; document.getElementById('cunLateral').value='';
+  document.getElementById('cunAlong').value=''; document.getElementById('cunLateral').value='';
   draw();
 });
 
@@ -300,10 +333,38 @@ function renderRulerForPointOptions(){
 
 function renderRulerList(){
   const el = document.getElementById('rulerList');
-  el.innerHTML = state.rulers.map(r => `<div class="li"><span>${r.id}: ${r.label}</span><button data-rid="${r.id}" class="rmRuler">✕</button></div>`).join('') || '<div class="li" style="color:#999">Chưa có thước.</div>';
+  el.innerHTML = state.rulers.map(r => `
+    <div class="li" style="display:block">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>${r.id}: ${r.label}</span>
+        <button data-rid="${r.id}" class="rmRuler">✕</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+        <span style="font-size:10px;color:#888;width:60px">Lệch ngang</span>
+        <input type="range" min="-100" max="100" step="2" value="${r.offset ?? 26}" data-rid="${r.id}" class="rngOffset" style="flex:1">
+        <span style="font-size:10px;color:#888;width:28px;text-align:right" class="offsetVal">${r.offset ?? 26}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+        <span style="font-size:10px;color:#888;width:60px">Độ đậm</span>
+        <input type="range" min="10" max="100" step="5" value="${Math.round((r.opacity ?? 1)*100)}" data-rid="${r.id}" class="rngOpacity" style="flex:1">
+        <span style="font-size:10px;color:#888;width:28px;text-align:right" class="opacityVal">${Math.round((r.opacity ?? 1)*100)}%</span>
+      </div>
+    </div>`).join('') || '<div class="li" style="color:#999">Chưa có thước.</div>';
   el.querySelectorAll('.rmRuler').forEach(b => b.addEventListener('click', (e) => {
     state.rulers = state.rulers.filter(r => r.id !== e.target.dataset.rid);
     renderRulerList(); renderRulerForPointOptions(); draw();
+  }));
+  el.querySelectorAll('.rngOffset').forEach(inp => inp.addEventListener('input', (e) => {
+    const r = state.rulers.find(x => x.id === e.target.dataset.rid);
+    r.offset = parseFloat(e.target.value);
+    e.target.nextElementSibling.textContent = r.offset;
+    draw();
+  }));
+  el.querySelectorAll('.rngOpacity').forEach(inp => inp.addEventListener('input', (e) => {
+    const r = state.rulers.find(x => x.id === e.target.dataset.rid);
+    r.opacity = parseFloat(e.target.value)/100;
+    e.target.nextElementSibling.textContent = e.target.value + '%';
+    draw();
   }));
 }
 function renderMarkerList(){

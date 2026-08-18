@@ -18,15 +18,33 @@ Công cụ 1 file HTML (không build step) để đặt toạ độ huyệt lên
    đặt thước" → click mốc GẦN rồi mốc XA trên ảnh (đúng thứ tự) → công cụ tự
    vẽ thước có vạch chia từng thốn chạy dọc theo chi, giống mẫu tham khảo
    app 3D Acupuncture (ảnh người dùng gửi 2026-08-17).
+   - Mỗi thước có 2 thanh trượt riêng ngay dưới tên thước trong danh sách:
+     **"Lệch ngang"** (kéo để thước tránh xa không đè lên huyệt/đường viền
+     cơ thể — kéo sang âm để lệch hướng ngược lại) và **"Độ đậm"** (giảm
+     xuống nếu thước quá nổi che khuất chi tiết ảnh).
 3. 1 ảnh có thể đặt NHIỀU thước (vd. ảnh cánh tay cần cả đoạn nách→khuỷu 9
    thốn và đoạn khuỷu→cổ tay 12 thốn).
-4. Với mỗi huyệt: nhập mã huyệt + chọn thước làm mốc + số thốn dọc trục
-   (từ mốc gần) + số thốn lệch ngang (dương/âm tuỳ bên) → "Tính & đặt".
+4. Với mỗi huyệt: **chọn Kinh mạch → chọn Huyệt** trong 2 dropdown (không
+   cần nhớ/gõ mã huyệt — có sẵn đủ 404 huyệt, đúng tên Việt + gợi ý vị trí
+   hiện ngay bên dưới khi chọn) → chọn thước làm mốc + số thốn dọc trục (từ
+   mốc gần) + số thốn lệch ngang (dương/âm tuỳ bên) → "Tính & đặt".
    Nếu huyệt không có mô tả dạng "cách mốc X thốn" (thường là huyệt ở bàn
    tay/bàn chân/đầu mặt), dùng "Đặt tay" rồi click thẳng lên ảnh.
 5. "Xuất JSON" → dán kết quả vào script ghi `kb_atlas_markers` (theo đúng
    schema: asset_id, acupoint_id, x_normalized, y_normalized, laterality,
    confidence).
+
+## Cập nhật danh sách huyệt trong dropdown
+
+Dữ liệu Kinh mạch/Huyệt được nhúng thẳng vào `acupoints-data.js` (không
+`fetch()` để tránh lỗi CORS khi mở trực tiếp bằng double-click, không qua
+server). Nếu bảng `acupoints` trong MySQL có thay đổi (thêm huyệt, sửa
+tên/vị trí), chạy lại:
+
+```
+cd backend/admin
+MYSQL_HOST=... MYSQL_USER=... MYSQL_PASSWORD=... MYSQL_DATABASE=... node generate-acupoints-data.mjs
+```
 
 ## Lưu ý
 
