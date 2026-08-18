@@ -1,3 +1,7 @@
 # Ảnh atlas nặng (~3MB x 11) — không commit vào git, tải riêng từ Drive
 # (xem kb_atlas_assets trong Acupoint Core DB Sheet để lấy storage_uri từng ảnh)
 atlas-images/*.png
+
+# Mesh 3D (body-model.glb, xem README mục "Bản 3D") — nặng, tải riêng từ
+# Sketchfab theo hướng dẫn README, không phải mã nguồn
+*.glb
