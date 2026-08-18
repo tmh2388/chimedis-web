@@ -44,6 +44,13 @@
 
   <h3>1. Chọn ảnh nền</h3>
   <select id="imgSelect"></select>
+  <div class="row" style="align-items:center;margin-bottom:8px">
+    <button id="btnZoomOut" class="ghost" style="flex:0 0 40px">−</button>
+    <span id="zoomLabel" style="flex:1;text-align:center;font-size:12px;color:var(--dong)">100%</span>
+    <button id="btnZoomIn" class="ghost" style="flex:0 0 40px">+</button>
+    <button id="btnZoomReset" class="ghost" style="flex:0 0 56px">Vừa khung</button>
+  </div>
+  <small>Zoom chỉ phóng to/nhỏ ẢNH — thanh công cụ bên trái không đổi. Dùng Cmd/Ctrl+cuộn chuột trên ảnh cũng zoom được.</small>
 
   <h3>2. Thước thốn (骨度分寸)</h3>
   <small>Chọn 1 đoạn thốn chuẩn, click 2 mốc trên ảnh (mốc gần → mốc xa), rồi bấm "Chốt thước".</small>
@@ -128,7 +135,7 @@ const ASSET_ID_BY_FILE = {
 };
 
 let state = {
-  img: null, imgFile: null, scale: 1,
+  img: null, imgFile: null, scale: 1, baseScale: 1, zoom: 1,
   mode: 'idle', // idle | placing_ruler_a | placing_ruler_b | placing_marker_manual
   rulerDraft: null, // {a:{x,y}}
   rulers: [], // {id, a:{x,y}, b:{x,y}, cun, label}
@@ -177,17 +184,43 @@ function loadImage(file){
   img.onload = () => {
     state.img = img; state.imgFile = file;
     const maxW = Math.min(window.innerWidth - 380, 1400);
-    state.scale = Math.min(1, maxW / img.width);
-    cv.width = img.width * state.scale;
-    cv.height = img.height * state.scale;
+    state.baseScale = Math.min(1, maxW / img.width);
+    state.zoom = 1;
+    applyZoom();
     state.rulers = []; state.markers = [];
     renderRulerList(); renderMarkerList(); renderRulerForPointOptions();
-    draw();
-    setStatus(`Đã tải ${file} (${img.width}×${img.height}px, hiển thị ${Math.round(state.scale*100)}%).`);
+    setStatus(`Đã tải ${file} (${img.width}×${img.height}px).`);
   };
   img.src = 'atlas-images/' + file;
 }
 imgSelect.addEventListener('change', () => loadImage(imgSelect.value));
+
+// ===== Zoom riêng cho ẢNH (không đụng tới zoom trình duyệt/thanh công cụ) =====
+// state.scale = baseScale (vừa khung lúc tải ảnh) × zoom (người dùng tự chỉnh) —
+// mọi nơi khác trong file (draw/scaled/toCanvasXY) chỉ cần dùng state.scale như cũ,
+// không cần sửa gì thêm khi thay đổi zoom.
+const ZOOM_MIN = 0.25, ZOOM_MAX = 4;
+function applyZoom(){
+  if(!state.img) return;
+  state.scale = state.baseScale * state.zoom;
+  cv.width = state.img.width * state.scale;
+  cv.height = state.img.height * state.scale;
+  document.getElementById('zoomLabel').textContent = Math.round(state.zoom*100) + '%';
+  draw();
+}
+function setZoom(z){
+  state.zoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, z));
+  applyZoom();
+}
+document.getElementById('btnZoomIn').addEventListener('click', () => setZoom(state.zoom * 1.25));
+document.getElementById('btnZoomOut').addEventListener('click', () => setZoom(state.zoom / 1.25));
+document.getElementById('btnZoomReset').addEventListener('click', () => setZoom(1));
+// Cmd/Ctrl + cuộn chuột trên ảnh = zoom (không cuộn trang), cuộn thường vẫn cuộn dọc như bình thường
+cv.addEventListener('wheel', (e) => {
+  if(!(e.metaKey || e.ctrlKey)) return;
+  e.preventDefault();
+  setZoom(state.zoom * (e.deltaY < 0 ? 1.1 : 1/1.1));
+}, { passive:false });
 
 function toCanvasXY(clientX, clientY){
   const r = cv.getBoundingClientRect();
