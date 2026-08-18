@@ -44,6 +44,11 @@
   <h3>1. Mô hình 3D</h3>
   <small>Đặt file <code>body-model.glb</code> vào cùng thư mục với file HTML này (xem README). Chưa có file thật → công cụ tự hiện hình placeholder (viên nang) để bạn thử thao tác trước.</small>
   <div id="modelStatus" style="font-size:12px;color:#888;margin-bottom:8px">Đang tải mô hình…</div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+    <span style="font-size:11px;color:#888;width:70px">Độ sáng da</span>
+    <input type="range" id="skinLightness" min="0" max="100" value="65" style="flex:1">
+    <span id="skinLightnessVal" style="font-size:11px;color:#888;width:30px;text-align:right">65%</span>
+  </div>
 
   <h3>2. Mốc thốn (骨度分寸) trên mesh 3D</h3>
   <small>Chọn 1 đoạn thốn chuẩn, click 2 mốc TRÊN BỀ MẶT mô hình (mốc gần → mốc xa), rồi bấm "Chốt thước". Thước sẽ là 1 đường thẳng nối 2 mốc — các huyệt tính ra sẽ tự chiếu (snap) lại đúng bề mặt da gần nhất, không lơ lửng trong khối.</small>
@@ -196,6 +201,27 @@ function makePlaceholderBody(){
   return group;
 }
 
+// Màu da gốc (tông ngăm mặc định của mesh) → trắng, kéo thanh trượt để pha dần.
+// Vì mesh không có UV/texture (chỉ có màu vật liệu phẳng), đổi màu ở đây là đủ,
+// không cần sửa file glb gốc.
+const SKIN_BASE = new THREE.Color(0x8a6a52);
+const SKIN_WHITE = new THREE.Color(0xf3e3d3);
+function applySkinLightness(pct){
+  if(!bodyMesh) return;
+  const t = pct / 100;
+  const color = SKIN_BASE.clone().lerp(SKIN_WHITE, t);
+  bodyMesh.forEach(mesh => {
+    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    mats.forEach(m => { if(m && m.color) m.color.copy(color); });
+  });
+}
+const skinSlider = document.getElementById('skinLightness');
+const skinLabel = document.getElementById('skinLightnessVal');
+skinSlider.addEventListener('input', () => {
+  skinLabel.textContent = skinSlider.value + '%';
+  applySkinLightness(parseFloat(skinSlider.value));
+});
+
 function useMesh(rootObject, isPlaceholder){
   scene.add(rootObject);
   fitCameraToObject(rootObject);
@@ -213,6 +239,7 @@ function useMesh(rootObject, isPlaceholder){
     modelStatus.textContent = `Đã tải body-model.glb (${meshes.length} mesh con).`;
     warn.style.display = 'none';
   }
+  applySkinLightness(parseFloat(skinSlider.value));
 }
 
 const loader = new GLTFLoader();
