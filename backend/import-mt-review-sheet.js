@@ -5,9 +5,11 @@
  * đè các cột vi/en đã sửa tay vào MySQL. Chỉ ghi các ô KHÔNG rỗng — bỏ
  * trống nghĩa là chưa xem lại, giữ nguyên bản dịch máy cũ. Hàng có cột
  * "reviewed" = TRUE thì đánh dấu machine_translated = FALSE cho thuật ngữ
- * đó — áp dụng cho cả Dược liệu (herbs.machine_translated, thêm 2026-08)
- * lẫn Giải phẫu/Sinh lý (anatomy_terms.machine_translated) — UI ẩn ghi
- * chú "Dịch máy — cần rà soát" khi cờ này = FALSE.
+ * đó — áp dụng cho cả Dược liệu (herbs.machine_translated, thêm 2026-08),
+ * Giải phẫu/Sinh lý (anatomy_terms.machine_translated), và Huyệt vị
+ * (acupoints.en_machine_translated) — UI ẩn ghi chú "Dịch máy — cần rà
+ * soát" khi cờ này = FALSE. Tab acupoint_pinyin_review (py/name_vi) ghi
+ * đè trực tiếp, không có cờ machine_translated tương ứng.
  *
  * Chạy nhiều lần an toàn (idempotent) — sheet vẫn giữ nguyên, chỉ cần sửa
  * tiếp và chạy lại để đồng bộ thêm.
@@ -35,6 +37,7 @@ const sheets = google.sheets({ version: 'v4', auth });
 
 const HERB_FIELDS = ['indication_text', 'dose_text', 'caution_text'];
 const ANATOMY_FIELDS = ['position', 'function', 'tcm_note', 'clinical'];
+const ACUPOINT_FIELDS = ['location_text', 'indication_text'];
 
 function truthy(v) {
   const s = String(v || '').trim().toLowerCase();
@@ -106,6 +109,45 @@ async function importAnatomy(conn) {
   console.log(`Giải phẫu/Sinh lý: cập nhật ${updated} hàng (${markedReviewed} đã đánh dấu reviewed).`);
 }
 
+async function importAcupoints(conn) {
+  const rows = (await readTab('acupoint_mt_review')).map((r) => parseRow(r, ACUPOINT_FIELDS, 'acupoint_id'));
+  let updated = 0, markedReviewed = 0;
+  for (const row of rows) {
+    const sets = [];
+    const params = [];
+    for (const key of ACUPOINT_FIELDS) {
+      if (row[`${key}_vi`]) { sets.push(`${key}_vi = ?`); params.push(row[`${key}_vi`]); }
+      if (row[`${key}_en`]) { sets.push(`${key}_en = ?`); params.push(row[`${key}_en`]); }
+    }
+    if (row.reviewed) { sets.push('en_machine_translated = FALSE'); markedReviewed++; }
+    if (!sets.length) continue;
+    params.push(row.acupoint_id);
+    await conn.execute(`UPDATE acupoints SET ${sets.join(', ')} WHERE acupoint_id = ?`, params);
+    updated++;
+  }
+  console.log(`Huyệt vị (vị trí/chủ trị): cập nhật ${updated} hàng (${markedReviewed} đã đánh dấu reviewed).`);
+}
+
+// Tab acupoint_pinyin_review có layout khác (không phải bộ ba zh/vi/en):
+// acupoint_id, Tên (zh) [chỉ để đối chiếu, không ghi lại], Pinyin (tự sinh), Tên (vi), reviewed
+async function importAcupointsPinyin(conn) {
+  const rows = await readTab('acupoint_pinyin_review');
+  let updated = 0;
+  for (const raw of rows) {
+    const values = Object.values(raw);
+    const [acupointId, , py, nameVi] = values;
+    const sets = [];
+    const params = [];
+    if (py) { sets.push('py = ?'); params.push(py); }
+    if (nameVi) { sets.push('name_vi = ?'); params.push(nameVi); }
+    if (!sets.length) continue;
+    params.push(acupointId);
+    await conn.execute(`UPDATE acupoints SET ${sets.join(', ')} WHERE acupoint_id = ?`, params);
+    updated++;
+  }
+  console.log(`Huyệt vị (pinyin/tên vi): cập nhật ${updated} hàng.`);
+}
+
 async function main() {
   const conn = await mysql.createConnection({
     host: process.env.MYSQL_HOST,
@@ -116,6 +158,8 @@ async function main() {
   });
   await importHerbs(conn);
   await importAnatomy(conn);
+  await importAcupoints(conn);
+  await importAcupointsPinyin(conn);
   await conn.end();
   console.log('Xong.');
 }
