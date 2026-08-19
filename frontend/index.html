@@ -869,36 +869,57 @@ function matchTerm(t, q){
 //     là cách viết tự nhiên hơn "A + -B").
 //   - "đau lưng + đau đầu, đau bụng" → AND ở vế "đau lưng", vế còn lại tự OR nội bộ nhờ dấu phẩy
 //     (matchTerm xử lý) → nghĩa là "đau lưng" VÀ (đau đầu HOẶC đau bụng).
-// CHỈ coi "+"/"-" là TOÁN TỬ khi nó đứng NGAY ĐẦU 1 cụm mới — tức ngay sau khoảng trắng hoặc ở
-// đầu câu tìm — KHÔNG đụng vào dấu gạch nối/dấu cộng nằm DÍNH LIỀN giữa 1 từ hay mã (vd không
-// phá vỡ "COPD-19" hay 1 mã có dấu gạch nối thành 2 vế). Không dùng khoảng trắng đơn thuần làm
-// AND (như Google) vì cụm tiếng Việt 2 âm tiết ("đau lưng") sẽ bị vụn ra như bug 2026-08-17 —
-// phải gõ rõ dấu "+"/"-" mới vào chế độ nhiều vế. Không gõ toán tử nào thì hành vi y hệt
-// matchTerm gốc (an toàn, không đổi trải nghiệm mặc định).
-// LƯU Ý: không được \s* NUỐT khoảng trắng theo sau dấu +/- vào trong chính match này — nếu 2
-// toán tử liền kề chỉ cách nhau 1 khoảng trắng (vd "đau lưng + -sốt"), match đầu sẽ ăn mất
-// khoảng trắng dùng chung, khiến match sau (dấu "-") mất luôn ký tự khoảng trắng cần có phía
-// trước để khớp nhóm (^|\s) — bug phát hiện 2026-08-18 khi thêm cú pháp "-" độc lập. Dùng lookahead
-// (?=\s*\S) để CHỈ XÁC NHẬN có chữ theo sau chứ không tiêu thụ khoảng trắng đó.
-const QUERY_OPERATOR_RE = /(^|\s)([+-])(?=\s*\S)/g;
-// Chuỗi đánh dấu an toàn dùng làm ranh giới vế tạm thời khi tách — không phải ký tự điều khiển
-// (tránh lỗi encode khi lưu file), chỉ cần đủ lạ để không trùng nội dung tìm kiếm thật nào.
-const QUERY_CLAUSE_MARK = '\u0001CLAUSE\u0001';
+// Không dùng khoảng trắng đơn thuần làm AND (như Google) vì cụm tiếng Việt 2 âm tiết ("đau lưng")
+// sẽ bị vụn ra như bug 2026-08-17 — phải gõ rõ dấu "+"/"-" mới vào chế độ nhiều vế. Không gõ toán
+// tử nào thì hành vi y hệt matchTerm gốc (an toàn, không đổi trải nghiệm mặc định). Xem
+// isOperatorPos()/splitQueryClauses() bên dưới để biết chính xác khi nào 1 dấu +/- được coi là
+// toán tử (2026-08-19: đổi từ regex sang duyệt từng vị trí, sửa 2 bug — xem comment tại đó).
+// Dấu +/- được coi là TOÁN TỬ (không phải ký tự nội dung) khi:
+//  - "+": LUÔN LUÔN — dữ liệu không có mục nào cần tìm đúng ký tự "+" làm nội dung, nên không sợ
+//    đụng hàng, kể cả khi gõ dính liền 2 bên như "A+B" (cách gõ tự nhiên trên mobile, trước đây
+//    KHÔNG được nhận diện vì bắt buộc có khoảng trắng phía trước — bug phát hiện 2026-08-19).
+//  - "-": chỉ khi có khoảng trắng (hoặc đầu/cuối chuỗi) ở ÍT NHẤT 1 bên — để KHÔNG phá vỡ mã ghép
+//    sát 2 bên như "COPD-19"/"H1-N1" (yêu cầu gốc 2026-08-17/18).
+function isOperatorPos(q, i){
+  const ch = q[i];
+  if(ch !== '+' && ch !== '-') return false;
+  if(ch === '+') return true;
+  const before = i>0 ? q[i-1] : '';
+  const after = i+1<q.length ? q[i+1] : '';
+  return before==='' || /\s/.test(before) || after==='' || /\s/.test(after);
+}
 function normalizeQueryOperators(q){ return String(q||'').replace(/[‐‑‒–—−]/g, '-'); }
+// Tách chuỗi tìm kiếm thành các vế theo +/-. QUAN TRỌNG: vế RỖNG (đang gõ dở, vd "đau lưng +"
+// khi chưa gõ tiếp) bị BỎ QUA thay vì làm cả kết quả biến mất về 0 — sửa bug UX 2026-08-19: danh
+// sách "biến mất" ngay khi vừa gõ xong dấu +/-, chỉ hiện lại sau khi gõ thêm ký tự tiếp theo. Trả
+// về null nếu cả chuỗi không có vị trí toán tử hợp lệ nào (gọi nơi dùng tự fallback về matchTerm
+// nguyên văn, giữ đúng hành vi gốc trước khi có cú pháp nâng cao này).
+function splitQueryClauses(q){
+  let found = false;
+  const clauses = [];
+  let prevEnd = 0, prevSign = '+';
+  for(let i=0;i<q.length;i++){
+    if(!isOperatorPos(q,i)) continue;
+    found = true;
+    const phrase = q.slice(prevEnd, i).trim();
+    if(phrase) clauses.push({sign: prevSign, phrase: phrase});
+    prevSign = q[i];
+    prevEnd = i+1;
+  }
+  if(!found) return null;
+  const lastPhrase = q.slice(prevEnd).trim();
+  if(lastPhrase) clauses.push({sign: prevSign, phrase: lastPhrase});
+  return clauses;
+}
 function matchQuery(t, q){
   if(!q || !q.trim()) return true;
   q = normalizeQueryOperators(q);
-  QUERY_OPERATOR_RE.lastIndex = 0;
-  if(!QUERY_OPERATOR_RE.test(q)) return matchTerm(t, q);
-  QUERY_OPERATOR_RE.lastIndex = 0;
-  const marked = q.replace(QUERY_OPERATOR_RE, function(m, pre, sign){ return pre + QUERY_CLAUSE_MARK + sign; });
-  const clauses = marked.split(QUERY_CLAUSE_MARK).map(function(s){ return s.trim(); }).filter(Boolean);
-  if(clauses.length <= 1) return matchTerm(t, q);
-  return clauses.every(function(clause){
-    const negate = clause[0] === '-';
-    const phrase = (clause[0] === '+' || clause[0] === '-') ? clause.slice(1).trim() : clause;
-    if(!phrase) return true;
-    const hit = matchTerm(t, phrase);
+  const clauses = splitQueryClauses(q);
+  if(clauses === null) return matchTerm(t, q);
+  if(clauses.length === 0) return true;
+  return clauses.every(function(c){
+    const negate = c.sign === '-';
+    const hit = matchTerm(t, c.phrase);
     return negate ? !hit : hit;
   });
 }
