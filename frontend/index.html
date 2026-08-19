@@ -429,7 +429,7 @@ header{transition:padding .2s ease}
 
   <div class="searchwrap">
     <div class="search" id="searchBox">
-      <input id="searchInput" />
+      <input id="searchInput" autocorrect="off" autocapitalize="off" autocomplete="off" spellcheck="false" />
       <button class="clearbtn" onclick="clearSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <button class="searchbtn" onclick="doSearch()" aria-label="Tìm kiếm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></button>
     </div>
@@ -884,8 +884,10 @@ const QUERY_OPERATOR_RE = /(^|\s)([+-])(?=\s*\S)/g;
 // Chuỗi đánh dấu an toàn dùng làm ranh giới vế tạm thời khi tách — không phải ký tự điều khiển
 // (tránh lỗi encode khi lưu file), chỉ cần đủ lạ để không trùng nội dung tìm kiếm thật nào.
 const QUERY_CLAUSE_MARK = '\u0001CLAUSE\u0001';
+function normalizeQueryOperators(q){ return String(q||'').replace(/[‐‑‒–—−]/g, '-'); }
 function matchQuery(t, q){
   if(!q || !q.trim()) return true;
+  q = normalizeQueryOperators(q);
   QUERY_OPERATOR_RE.lastIndex = 0;
   if(!QUERY_OPERATOR_RE.test(q)) return matchTerm(t, q);
   QUERY_OPERATOR_RE.lastIndex = 0;
