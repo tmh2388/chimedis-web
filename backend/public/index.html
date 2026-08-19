@@ -840,10 +840,16 @@ function matchTerm(t, q){
   // dù người dùng không thấy chữ "nhức" — vì đang chỉ bật hiển thị tiếng Trung, còn "nhức" nằm
   // trong indication_vi đang bị ẩn. Search phải phản ánh đúng nội dung đang hiển thị trên màn
   // hình, không được tìm "xuyên" qua dữ liệu ẩn.
+  // 2026-08-19: TRƯỚC ĐÂY chỉ đưa `indication_*` vào haystack — bỏ sót toàn bộ các field khác
+  // đang HIỂN THỊ THẬT trên popup (xem renderPopup trong file này): công năng, liều dùng, kiêng
+  // kỵ, tính vị, quy kinh, vị trí huyệt. Hậu quả: tìm "phát hãn" (nằm ở field `action_vi`, mục
+  // Công năng) không ra kết quả dù chữ đó hiện rõ trên màn hình — user báo lỗi 2026-08-19. Nay đưa
+  // đủ MỌI field content đang hiển thị vào haystack, vẫn giữ nguyên tắc "chỉ tìm đúng ngôn ngữ
+  // đang bật hiển thị" (contentLangs) ở trên.
   if(t.category === 'herb' || t.category === 'acupoint'){
-    if(state.contentLangs.vi) fields.push(t.indication_vi);
-    if(state.contentLangs.en) fields.push(t.indication_en);
-    if(state.contentLangs.zh) fields.push(t.indication_zh);
+    if(state.contentLangs.vi) fields.push(t.indication_vi, t.action_vi, t.dose_text_vi, t.caution_vi, t.taste_vi, t.temperature_vi, t.meridian_vi, t.location_vi);
+    if(state.contentLangs.en) fields.push(t.indication_en, t.action_en, t.dose_text_en, t.caution_en, t.taste_en, t.temperature_en, t.meridian_en, t.location_en);
+    if(state.contentLangs.zh) fields.push(t.indication_zh, t.action_zh, t.dose_text_zh, t.caution_zh, t.taste_zh, t.temperature_zh, t.meridian_zh, t.location_zh);
   }
   // Từ ghép Y Khoa: định nghĩa/ví dụ cũng vậy — riêng `meaning`/`example` mang ngôn ngữ KHÔNG cố
   // định (tiếng Anh cho type='term', tiếng Việt cho prefix/suffix/root — xem wordElementRowToTerm
@@ -851,6 +857,15 @@ function matchTerm(t, q){
   if(t.category === 'word_element'){
     if(state.contentLangs.vi || state.contentLangs.en) fields.push(t.meaning, t.example);
     if(state.contentLangs.en) fields.push(t.meaning_en, t.example_en);
+  }
+  // Giải phẫu/Sinh lý/Bệnh lý: KHÔNG có field `category` (undefined/rỗng) và dùng quy ước tên field
+  // KHÁC hẳn (base = tiếng Việt, hậu tố `_cn` = tiếng Trung, `_en` = tiếng Anh — xem renderMultiLang
+  // gọi ở renderPopup) — trước đây KHÔNG có nhánh nào xử lý domain này nên 4 field nội dung
+  // (vị trí/công năng/ghi chú TCM/lâm sàng) 0% được tìm kiếm ở CẢ 3 ngôn ngữ.
+  if(!t.category){
+    if(state.contentLangs.vi) fields.push(t.vitri, t.congnang, t.tcm, t.lamsang);
+    if(state.contentLangs.zh) fields.push(t.vitri_cn, t.congnang_cn, t.tcm_cn, t.lamsang_cn);
+    if(state.contentLangs.en) fields.push(t.vitri_en, t.congnang_en, t.tcm_en, t.lamsang_en);
   }
   const haystack = norm(fields.filter(Boolean).join(' '));
   if(haystack.includes(nq) || (t.hz && t.hz.includes(q)) || (trad && trad.includes(q))) return true;
