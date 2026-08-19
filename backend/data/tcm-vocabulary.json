@@ -1,0 +1,84 @@
+{
+  "_readme": "Nguồn chân lý DUY NHẤT cho thuật ngữ TCM chuẩn (Hán Việt) dùng chung giữa các script import (backend) và search (frontend) — thay cho 6 bảng từng nằm rải rác độc lập (TEMPERATURE_LABELS/TASTE_LABELS/MERIDIAN_LABELS/RAW_CODE_FIXES trong import-herbal-sheets.js+fix-herb-tvm-fields.js, MERIDIAN_VI_STANDARD trong import-acupoint-sheets.js, SYNONYM_GROUPS trong frontend/index.html). Sửa 1 chỗ, có hiệu lực khắp nơi. Field 'reviewed:false' nghĩa là chưa được Hạ Vân Y Đạo xác nhận trực tiếp — coi như bản nháp cần rà soát, giống quy ước dùng cho dịch máy ở nơi khác trong dự án.",
+
+  "temperature": [
+    {"code": "HAN", "hz": "寒", "vi": "Hàn", "en": "Cold", "reviewed": true},
+    {"code": "WEIHAN", "hz": "微寒", "vi": "Hơi hàn", "en": "Slightly cold", "reviewed": true},
+    {"code": "LIANG", "hz": "凉", "vi": "Lương", "en": "Cool", "reviewed": true},
+    {"code": "PING", "hz": "平", "vi": "Bình", "en": "Neutral", "reviewed": true},
+    {"code": "WEN", "hz": "温", "vi": "Ôn", "en": "Warm", "reviewed": true},
+    {"code": "WEIWEN", "hz": "微温", "vi": "Hơi ôn", "en": "Slightly warm", "reviewed": true},
+    {"code": "RE", "hz": "热", "vi": "Nhiệt", "en": "Hot", "reviewed": true},
+    {"code": "DARE", "hz": "大热", "vi": "Đại nhiệt", "en": "Very hot", "reviewed": true},
+    {"code": "DAHAN", "hz": "大寒", "vi": "Đại hàn", "en": "Extremely cold", "reviewed": true}
+  ],
+
+  "taste": [
+    {"code": "XIN", "hz": "辛", "vi": "Tân", "en": "Pungent", "search_aliases_vi": ["cay"], "search_aliases_en": ["pungent", "spicy"], "reviewed": true},
+    {"code": "GAN", "hz": "甘", "vi": "Cam", "en": "Sweet", "search_aliases_vi": ["ngọt"], "search_aliases_en": ["sweet"], "reviewed": true},
+    {"code": "KU", "hz": "苦", "vi": "Khổ", "en": "Bitter", "search_aliases_vi": ["đắng"], "search_aliases_en": ["bitter"], "reviewed": true},
+    {"code": "SUAN", "hz": "酸", "vi": "Toan", "en": "Sour", "search_aliases_vi": ["chua"], "search_aliases_en": ["sour"], "reviewed": true},
+    {"code": "XIAN", "hz": "咸", "vi": "Hàm", "en": "Salty", "search_aliases_vi": ["mặn"], "search_aliases_en": ["salty"], "reviewed": true},
+    {"code": "DAN", "hz": "淡", "vi": "Đạm", "en": "Bland", "search_aliases_vi": ["nhạt"], "search_aliases_en": ["bland"], "reviewed": true},
+    {"code": "SE", "hz": "涩", "vi": "Sáp", "en": "Astringent", "search_aliases_vi": ["chát"], "search_aliases_en": ["astringent"], "reviewed": true},
+    {"code": "WEIXIN", "hz": "微辛", "vi": "Hơi tân", "en": "Slightly pungent", "search_aliases_vi": ["hơi cay"], "reviewed": true},
+    {"code": "WEIGAN", "hz": "微甘", "vi": "Hơi cam", "en": "Slightly sweet", "search_aliases_vi": ["hơi ngọt"], "reviewed": true},
+    {"code": "WEIKU", "hz": "微苦", "vi": "Hơi khổ", "en": "Slightly bitter", "search_aliases_vi": ["hơi đắng"], "reviewed": true},
+    {"code": "WEISUAN", "hz": "微酸", "vi": "Hơi toan", "en": "Slightly sour", "search_aliases_vi": ["hơi chua"], "reviewed": true}
+  ],
+
+  "meridian_organ": [
+    {"code": "FEI", "hz": "肺", "vi": "Phế", "en": "Lung", "reviewed": true},
+    {"code": "XIN", "hz": "心", "vi": "Tâm", "en": "Heart", "reviewed": true},
+    {"code": "PI", "hz": "脾", "vi": "Tỳ", "en": "Spleen", "reviewed": true},
+    {"code": "GAN", "hz": "肝", "vi": "Can", "en": "Liver", "reviewed": true},
+    {"code": "SHEN", "hz": "肾", "vi": "Thận", "en": "Kidney", "reviewed": true},
+    {"code": "WEI", "hz": "胃", "vi": "Vị", "en": "Stomach", "reviewed": true},
+    {"code": "DAN", "hz": "胆", "vi": "Đởm", "en": "Gallbladder", "reviewed": true},
+    {"code": "DACHANG", "hz": "大肠", "vi": "Đại trường", "en": "Large intestine", "reviewed": true},
+    {"code": "XIAOCHANG", "hz": "小肠", "vi": "Tiểu trường", "en": "Small intestine", "reviewed": true},
+    {"code": "PANGGUANG", "hz": "膀胱", "vi": "Bàng quang", "en": "Bladder", "reviewed": true},
+    {"code": "SANJIAO", "hz": "三焦", "vi": "Tam tiêu", "en": "Triple burner", "reviewed": true},
+    {"code": "XINBAO", "hz": "心包", "vi": "Tâm bào", "en": "Pericardium", "reviewed": true}
+  ],
+
+  "meridian_channel": [
+    {"code": "LU", "vi": "Kinh Thủ Thái Âm Phế", "reviewed": true},
+    {"code": "LI", "vi": "Kinh Thủ Dương Minh Đại Trường", "reviewed": true},
+    {"code": "ST", "vi": "Kinh Túc Dương Minh Vị", "reviewed": true},
+    {"code": "SP", "vi": "Kinh Túc Thái Âm Tỳ", "reviewed": true},
+    {"code": "HT", "vi": "Kinh Thủ Thiếu Âm Tâm", "reviewed": true},
+    {"code": "SI", "vi": "Kinh Thủ Thái Dương Tiểu Trường", "reviewed": true},
+    {"code": "BL", "vi": "Kinh Túc Thái Dương Bàng Quang", "reviewed": true},
+    {"code": "KI", "vi": "Kinh Túc Thiếu Âm Thận", "reviewed": true},
+    {"code": "PC", "vi": "Kinh Thủ Quyết Âm Tâm Bào", "reviewed": true},
+    {"code": "SJ", "vi": "Kinh Thủ Thiếu Dương Tam Tiêu", "reviewed": true},
+    {"code": "TE", "vi": "Kinh Thủ Thiếu Dương Tam Tiêu", "reviewed": true},
+    {"code": "GB", "vi": "Kinh Túc Thiếu Dương Đởm", "reviewed": true},
+    {"code": "LR", "vi": "Kinh Túc Quyết Âm Can", "reviewed": true},
+    {"code": "CV", "vi": "Nhâm Mạch", "reviewed": true},
+    {"code": "GV", "vi": "Đốc Mạch", "reviewed": true}
+  ],
+
+  "action_terms": [
+    {"id": "induce_sweating", "terms": ["phát hãn", "ra mồ hôi", "toát mồ hôi", "induce sweating", "sweating", "promote sweating", "发汗", "出汗"], "reviewed": false},
+    {"id": "release_exterior", "terms": ["giải biểu", "release the exterior", "relieve exterior syndrome", "resolve the exterior", "解表"], "reviewed": false},
+    {"id": "clear_heat", "terms": ["thanh nhiệt", "hạ sốt", "giải nhiệt", "clear heat", "reduce fever", "clear away heat", "清热", "退热"], "reviewed": false},
+    {"id": "stop_pain", "terms": ["chỉ thống", "giảm đau", "relieve pain", "stop pain", "alleviate pain", "止痛"], "reviewed": false},
+    {"id": "stop_cough", "terms": ["chỉ khái", "giảm ho", "stop cough", "relieve cough", "suppress cough", "止咳"], "reviewed": false},
+    {"id": "resolve_phlegm", "terms": ["hoá đàm", "hóa đàm", "tiêu đờm", "long đờm", "resolve phlegm", "expel phlegm", "reduce phlegm", "化痰"], "reviewed": false},
+    {"id": "calm_mind", "terms": ["an thần", "trấn tĩnh", "calm the mind", "calm shen", "tranquilize the mind", "sedative", "安神"], "reviewed": false},
+    {"id": "tonify_qi", "terms": ["bổ khí", "tonify qi", "boost qi", "invigorate qi", "replenish qi", "补气"], "reviewed": false},
+    {"id": "tonify_blood", "terms": ["bổ huyết", "dưỡng huyết", "tonify blood", "nourish blood", "enrich blood", "补血", "养血"], "reviewed": false},
+    {"id": "promote_urination", "terms": ["lợi thuỷ", "lợi thủy", "lợi tiểu", "promote urination", "induce diuresis", "diuretic", "利水", "利尿"], "reviewed": false},
+    {"id": "activate_blood", "terms": ["hoạt huyết", "activate blood", "invigorate blood", "promote blood circulation", "活血"], "reviewed": false},
+    {"id": "dispel_wind", "terms": ["khu phong", "trừ phong", "dispel wind", "expel wind", "dispell wind", "祛风"], "reviewed": false},
+    {"id": "disperse_cold", "terms": ["tán hàn", "disperse cold", "dispel cold", "scatter cold", "散寒"], "reviewed": false},
+    {"id": "detoxify", "terms": ["giải độc", "thải độc", "detoxify", "resolve toxin", "remove toxin", "解毒"], "reviewed": false},
+    {"id": "reduce_swelling", "terms": ["tiêu thũng", "giảm sưng", "reduce swelling", "disperse swelling", "消肿"], "reviewed": false},
+    {"id": "laxative", "terms": ["nhuận tràng", "thông tiện", "laxative", "relieve constipation", "moisten the intestines", "润肠"], "reviewed": false},
+    {"id": "stop_bleeding", "terms": ["cầm máu", "chỉ huyết", "stop bleeding", "stanch bleeding", "stop hemorrhage", "止血"], "reviewed": false},
+    {"id": "strengthen_spleen", "terms": ["kiện tỳ", "bổ tỳ", "strengthen the spleen", "tonify the spleen", "fortify the spleen", "健脾"], "reviewed": false},
+    {"id": "relieve_wheezing", "terms": ["bình suyễn", "giảm khó thở", "relieve wheezing", "relieve asthma", "calm panting", "平喘"], "reviewed": false}
+  ]
+}

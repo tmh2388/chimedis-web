@@ -388,6 +388,21 @@ app.get('/api/groups', async (req, res) => {
 });
 
 /**
+ * GET /api/tcm-vocabulary
+ * Từ vựng TCM chuẩn (tính vị/quy kinh/pháp trị) — nguồn chân lý DUY NHẤT dùng chung giữa
+ * script import và search phía frontend (SYNONYM_GROUPS), xem backend/tcm-vocabulary.js.
+ */
+app.get('/api/tcm-vocabulary', (req, res) => {
+  try {
+    const vocabPath = path.join(__dirname, 'data', 'tcm-vocabulary.json');
+    const vocab = JSON.parse(fs.readFileSync(vocabPath, 'utf8'));
+    res.json({ success: true, data: vocab });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
  * GET /api/metadata
  * Fetch API metadata (last build, stats)
  */

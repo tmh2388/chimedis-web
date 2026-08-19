@@ -20,52 +20,20 @@ import mysql from 'mysql2/promise';
 import { createGoogleAuth } from './google-auth.js';
 import { translateBatch } from './translate.js';
 import { CATEGORY_TRANSLATIONS } from './category-translations.js';
+import { buildLabelMap } from './tcm-vocabulary.js';
 
 const auth = createGoogleAuth(['https://www.googleapis.com/auth/spreadsheets.readonly']);
 const sheets = google.sheets({ version: 'v4', auth });
 
-// Standard TCM vocabulary — these code sets are fixed/universal, not
-// specific to this dataset, so it's safe to hardcode the VI/ZH/EN labels
-// here rather than depending on a lookup tab that doesn't exist in the source.
-// Mỗi mã có 2 biến thể khoá (có/không gạch dưới, vd. WEIWEN/WEI_WEN) vì nguồn
-// Sheet dùng lẫn lộn cả 2 kiểu — thiếu 1 biến thể nào sẽ khiến mã đó lọt qua
-// không dịch được, hiện nguyên mã thô ra UI (bug đã gặp với WEI_HAN/WEI_WEN,
-// 28 vị thuốc, phát hiện 2026-08-11 — xem fix-herb-tvm-fields.js để sửa dữ
-// liệu cũ, file này chỉ áp dụng cho lần import tiếp theo).
-const TEMPERATURE_LABELS = {
-  HAN: ['寒', 'Hàn', 'Cold'],
-  WEIHAN: ['微寒', 'Hơi hàn', 'Slightly cold'], WEI_HAN: ['微寒', 'Hơi hàn', 'Slightly cold'],
-  LIANG: ['凉', 'Lương', 'Cool'],
-  PING: ['平', 'Bình', 'Neutral'],
-  WEN: ['温', 'Ôn', 'Warm'],
-  WEIWEN: ['微温', 'Hơi ôn', 'Slightly warm'], WEI_WEN: ['微温', 'Hơi ôn', 'Slightly warm'],
-  RE: ['热', 'Nhiệt', 'Hot'],
-  DARE: ['大热', 'Đại nhiệt', 'Very hot'], DA_RE: ['大热', 'Đại nhiệt', 'Very hot'],
-  DAHAN: ['大寒', 'Đại hàn', 'Extremely cold'], DA_HAN: ['大寒', 'Đại hàn', 'Extremely cold'],
-};
-// Âm Hán Việt chuẩn TCM (không phải nghĩa thường) — Core DB (ref_codes) không có
-// bảng nhãn cho mã vị, chỉ lưu mã thô (XIN/GAN/KU...), nên bảng này đối chiếu
-// theo giáo trình TCM chuẩn, đã user xác nhận trực tiếp (quyết định 2026-08-19,
-// vd. 甘 = Cam chứ không phải "Ngọt" — xem project_chimedis_translation_qa).
-const TASTE_LABELS = {
-  XIN: ['辛', 'Tân', 'Pungent'], GAN: ['甘', 'Cam', 'Sweet'], KU: ['苦', 'Khổ', 'Bitter'],
-  SUAN: ['酸', 'Toan', 'Sour'], XIAN: ['咸', 'Hàm', 'Salty'], DAN: ['淡', 'Đạm', 'Bland'],
-  SE: ['涩', 'Sáp', 'Astringent'],
-  WEIXIN: ['微辛', 'Hơi tân', 'Slightly pungent'], WEI_XIN: ['微辛', 'Hơi tân', 'Slightly pungent'],
-  WEIGAN: ['微甘', 'Hơi cam', 'Slightly sweet'], WEI_GAN: ['微甘', 'Hơi cam', 'Slightly sweet'],
-  WEIKU: ['微苦', 'Hơi khổ', 'Slightly bitter'], WEI_KU: ['微苦', 'Hơi khổ', 'Slightly bitter'],
-  WEISUAN: ['微酸', 'Hơi toan', 'Slightly sour'], WEI_SUAN: ['微酸', 'Hơi toan', 'Slightly sour'],
-};
-const MERIDIAN_LABELS = {
-  FEI: ['肺', 'Phế', 'Lung'], XIN: ['心', 'Tâm', 'Heart'], PI: ['脾', 'Tỳ', 'Spleen'],
-  GAN: ['肝', 'Can', 'Liver'], SHEN: ['肾', 'Thận', 'Kidney'], WEI: ['胃', 'Vị', 'Stomach'],
-  DAN: ['胆', 'Đởm', 'Gallbladder'],
-  DACHANG: ['大肠', 'Đại trường', 'Large intestine'], DA_CHANG: ['大肠', 'Đại trường', 'Large intestine'],
-  XIAOCHANG: ['小肠', 'Tiểu trường', 'Small intestine'], XIAO_CHANG: ['小肠', 'Tiểu trường', 'Small intestine'],
-  PANGGUANG: ['膀胱', 'Bàng quang', 'Bladder'], PANG_GUANG: ['膀胱', 'Bàng quang', 'Bladder'],
-  SANJIAO: ['三焦', 'Tam tiêu', 'Triple burner'], SAN_JIAO: ['三焦', 'Tam tiêu', 'Triple burner'],
-  XINBAO: ['心包', 'Tâm bào', 'Pericardium'], XIN_BAO: ['心包', 'Tâm bào', 'Pericardium'],
-};
+// Nhãn TCM chuẩn (Hàn/Nhiệt, Tính vị, Quy kinh) — đọc từ backend/data/tcm-vocabulary.json,
+// nguồn chân lý DUY NHẤT dùng chung với fix-herb-tvm-fields.js, import-acupoint-sheets.js,
+// và search phía frontend (thay cho việc mỗi file tự hardcode 1 bản riêng — chính kiểu kiến
+// trúc đó từng gây bug TASTE_LABELS sai Hán Việt, 2026-08-19, xem project_chimedis_translation_qa).
+// buildLabelMap() tự sinh biến thể có gạch dưới (WEIHAN -> cũng nhận WEI_HAN) từ 1 mã chuẩn duy
+// nhất trong vocabulary, không cần liệt kê tay cả 2 kiểu như trước (bug 2026-08-11).
+const TEMPERATURE_LABELS = buildLabelMap('temperature');
+const TASTE_LABELS = buildLabelMap('taste');
+const MERIDIAN_LABELS = buildLabelMap('meridian_organ');
 
 function decodeCodes(codeStr, labelMap) {
   if (!codeStr || codeStr === 'NOT_STATED_IN_SOURCE') return { zh: null, vi: null, en: null };

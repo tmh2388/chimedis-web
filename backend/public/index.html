@@ -878,39 +878,29 @@ function buildSearchHaystack(t){
 // "ra mồ hôi" vẫn tìm ra vị thuốc có công năng ghi "phát hãn" (và ngược lại) — search hiện tại chỉ
 // so khớp CHUỖI CON nguyên văn, không tự biết "phát hãn"="ra mồ hôi" dù cùng 1 nghĩa (khác trường
 // hợp "口疮"≠"口疼" — 2 CHỨNG khác nhau, KHÔNG phải đồng nghĩa, không đưa vào đây).
-// ⚠️ ĐÂY LÀ BỘ KHỞI TẠO (v1) — các cặp thuật ngữ TCM phổ biến, chuẩn giáo trình, nhưng CHƯA được
-// Hạ Vân Y Đạo rà soát trực tiếp (giống quy ước "cần rà soát" áp dụng cho dịch máy ở nơi khác
-// trong dự án) — mở rộng/sửa thoải mái, mỗi nhóm là 1 mảng độc lập, không cần đụng code match.
-const SYNONYM_GROUPS = [
-  ['phát hãn', 'ra mồ hôi', 'toát mồ hôi', 'induce sweating', 'sweating', 'promote sweating', '发汗', '出汗'],
-  ['giải biểu', 'release the exterior', 'relieve exterior syndrome', 'resolve the exterior', '解表'],
-  ['thanh nhiệt', 'hạ sốt', 'giải nhiệt', 'clear heat', 'reduce fever', 'clear away heat', '清热', '退热'],
-  ['chỉ thống', 'giảm đau', 'relieve pain', 'stop pain', 'alleviate pain', '止痛'],
-  ['chỉ khái', 'giảm ho', 'stop cough', 'relieve cough', 'suppress cough', '止咳'],
-  ['hoá đàm', 'hóa đàm', 'tiêu đờm', 'long đờm', 'resolve phlegm', 'expel phlegm', 'reduce phlegm', '化痰'],
-  ['an thần', 'trấn tĩnh', 'calm the mind', 'calm shen', 'tranquilize the mind', 'sedative', '安神'],
-  ['bổ khí', 'tonify qi', 'boost qi', 'invigorate qi', 'replenish qi', '补气'],
-  ['bổ huyết', 'dưỡng huyết', 'tonify blood', 'nourish blood', 'enrich blood', '补血', '养血'],
-  ['lợi thuỷ', 'lợi thủy', 'lợi tiểu', 'promote urination', 'induce diuresis', 'diuretic', '利水', '利尿'],
-  ['hoạt huyết', 'activate blood', 'invigorate blood', 'promote blood circulation', '活血'],
-  ['khu phong', 'trừ phong', 'dispel wind', 'expel wind', 'dispell wind', '祛风'],
-  ['tán hàn', 'disperse cold', 'dispel cold', 'scatter cold', '散寒'],
-  ['giải độc', 'thải độc', 'detoxify', 'resolve toxin', 'remove toxin', '解毒'],
-  ['tiêu thũng', 'giảm sưng', 'reduce swelling', 'disperse swelling', '消肿'],
-  ['nhuận tràng', 'thông tiện', 'laxative', 'relieve constipation', 'moisten the intestines', '润肠'],
-  ['cầm máu', 'chỉ huyết', 'stop bleeding', 'stanch bleeding', 'stop hemorrhage', '止血'],
-  ['kiện tỳ', 'bổ tỳ', 'strengthen the spleen', 'tonify the spleen', 'fortify the spleen', '健脾'],
-  ['bình suyễn', 'giảm khó thở', 'relieve wheezing', 'relieve asthma', 'calm panting', '平喘'],
+// ⚠️ 2026-08-19: KHÔNG còn hardcode ở đây nữa — SYNONYM_GROUPS giờ tải từ
+// GET /api/tcm-vocabulary (field `action_terms`), CÙNG 1 file nguồn
+// (backend/data/tcm-vocabulary.json) mà các script import backend cũng đọc — sửa/thêm 1 nhóm
+// đồng nghĩa ở đó là có hiệu lực ngay cả ở đây, không cần sửa 2 nơi (đúng lý do gộp lại, xem
+// project_chimedis_search_architecture). Mảng dưới đây CHỈ là fallback tối thiểu dùng khi chưa
+// tải xong / mất mạng lần đầu — loadTcmVocabularyFromAPI() sẽ THAY THẾ ngay khi tải được.
+let SYNONYM_GROUPS = [
+  ['phát hãn', 'ra mồ hôi', 'toát mồ hôi', 'induce sweating', 'sweating', '发汗'],
+  ['chỉ thống', 'giảm đau', 'relieve pain', 'stop pain', '止痛'],
 ];
 // Tra ngược: 1 cụm đã chuẩn hoá (norm) -> mảng CÁC CỤM ĐÃ CHUẨN HOÁ cùng nhóm (kể cả chính nó).
-const SYNONYM_LOOKUP = (() => {
+// Là hàm (không phải IIFE 1 lần) vì SYNONYM_GROUPS có thể được THAY THẾ sau khi
+// loadTcmVocabularyFromAPI() tải xong — gọi lại rebuildSynonymLookup() mỗi lần đó.
+let SYNONYM_LOOKUP = new Map();
+function rebuildSynonymLookup(){
   const map = new Map();
   SYNONYM_GROUPS.forEach(group => {
     const normGroup = group.map(norm);
     normGroup.forEach(w => map.set(w, normGroup));
   });
-  return map;
-})();
+  SYNONYM_LOOKUP = map;
+}
+rebuildSynonymLookup();
 function haystackHasSynonymOf(haystack, phraseNorm){
   const group = SYNONYM_LOOKUP.get(phraseNorm);
   return !!group && group.some(w => w !== phraseNorm && haystack.includes(w));
@@ -1830,6 +1820,36 @@ async function loadTermsFromAPI(){
   }
 }
 
+// Từ vựng TCM chuẩn (tính vị/quy kinh/pháp trị + đồng nghĩa cho search) — nguồn chân lý DUY NHẤT
+// dùng chung với script import backend (backend/tcm-vocabulary.js), xem
+// project_chimedis_search_architecture. Chỉ field `action_terms` được dùng ở frontend hiện tại
+// (cho SYNONYM_GROUPS); các field khác (temperature/taste/meridian) dành cho backend, nhúng
+// chung 1 file cho tiện đồng bộ, không phải vì frontend cần đọc hết.
+const TCM_VOCAB_CACHE_KEY = 'chimedis_tcm_vocab_cache_v1';
+async function loadTcmVocabularyFromAPI(){
+  try{
+    const res = await fetch(`${API_BASE}/api/tcm-vocabulary`, { cache: 'no-store' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    const actionTerms = json && json.success && json.data && json.data.action_terms;
+    if(Array.isArray(actionTerms) && actionTerms.length){
+      SYNONYM_GROUPS = actionTerms.map(g => g.terms);
+      rebuildSynonymLookup();
+      try{ localStorage.setItem(TCM_VOCAB_CACHE_KEY, JSON.stringify(SYNONYM_GROUPS)); }catch(e){}
+      if(state.searchQuery) render(); // đang có kết quả tìm kiếm hiển thị -> áp lại đồng nghĩa mới ngay
+    }
+  }catch(err){
+    console.warn('[Chimedis] Không tải được /api/tcm-vocabulary, dùng đồng nghĩa cache/mặc định:', err.message);
+    try{
+      const cached = JSON.parse(localStorage.getItem(TCM_VOCAB_CACHE_KEY));
+      if(Array.isArray(cached) && cached.length){
+        SYNONYM_GROUPS = cached;
+        rebuildSynonymLookup();
+      }
+    }catch(e){ /* giữ nguyên fallback nhúng sẵn */ }
+  }
+}
+
 // ===== KHOÁ VIEWPORT KHI BÀN PHÍM ẢO MỞ (chạm vào ô tìm kiếm) =====
 // Bug WebKit lâu năm, không có cách sửa bằng CSS thuần: khi mở bàn phím ảo, Safari/PWA
 // standalone "pan" (dịch) VIEWPORT THỊ GIÁC lên trên để giữ ô input trong tầm nhìn — html/body
@@ -1861,6 +1881,7 @@ render();
 setupScrollWatch();
 setupPopupSwipe();
 loadTermsFromAPI();
+loadTcmVocabularyFromAPI();
 
 // ===== PWA: register service worker =====
 if('serviceWorker' in navigator){

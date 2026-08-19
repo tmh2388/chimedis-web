@@ -41,6 +41,7 @@ import mysql from 'mysql2/promise';
 import { pinyin } from 'pinyin';
 import { createGoogleAuth } from './google-auth.js';
 import { translateBatch } from './translate.js';
+import { getMeridianChannelStandard } from './tcm-vocabulary.js';
 
 // name_en trong kb_acupoint_names (locale 'en') thực chất là romanization KHÔNG dấu thanh
 // (vd. "Zusanli"), không phải pinyin chuẩn — tự sinh pinyin CÓ dấu từ name_zh bằng thư viện
@@ -101,25 +102,12 @@ const EXTRA_POINT_GROUP = { zh: '奇穴', vi: 'Kỳ Huyệt', en: 'Extra points'
 
 // Tên kinh lạc tiếng Việt CHUẨN (Thủ/Túc + Âm-Dương + Tạng phủ, viết hoa từng chữ) — nguồn
 // (kb_meridians.label_vi) viết theo thứ tự ngược (Tạng phủ trước, Thủ/Túc sau, không viết
-// hoa) nên KHÔNG dùng thẳng, thay bằng bảng tra cứu tay theo đúng quy ước Trung Y chuẩn
-// (yêu cầu 2026-08-17: "Kinh Thủ Thái Dương Tiểu Trường", viết hoa chữ cái đầu mỗi từ, áp
-// dụng cả cho Nhâm mạch/Đốc mạch).
-const MERIDIAN_VI_STANDARD = {
-  LU: 'Kinh Thủ Thái Âm Phế',
-  LI: 'Kinh Thủ Dương Minh Đại Trường',
-  ST: 'Kinh Túc Dương Minh Vị',
-  SP: 'Kinh Túc Thái Âm Tỳ',
-  HT: 'Kinh Thủ Thiếu Âm Tâm',
-  SI: 'Kinh Thủ Thái Dương Tiểu Trường',
-  BL: 'Kinh Túc Thái Dương Bàng Quang',
-  KI: 'Kinh Túc Thiếu Âm Thận',
-  PC: 'Kinh Thủ Quyết Âm Tâm Bào',
-  SJ: 'Kinh Thủ Thiếu Dương Tam Tiêu', TE: 'Kinh Thủ Thiếu Dương Tam Tiêu',
-  GB: 'Kinh Túc Thiếu Dương Đởm',
-  LR: 'Kinh Túc Quyết Âm Can',
-  CV: 'Nhâm Mạch',
-  GV: 'Đốc Mạch',
-};
+// hoa) nên KHÔNG dùng thẳng, thay bằng bảng tra cứu chuẩn theo đúng quy ước Trung Y (yêu cầu
+// 2026-08-17: "Kinh Thủ Thái Dương Tiểu Trường", viết hoa chữ cái đầu mỗi từ, áp dụng cả cho
+// Nhâm mạch/Đốc mạch) — đọc từ backend/data/tcm-vocabulary.json, nguồn chân lý DUY NHẤT dùng
+// chung với import-herbal-sheets.js/fix-herb-tvm-fields.js/frontend search (xem
+// project_chimedis_translation_qa).
+const MERIDIAN_VI_STANDARD = getMeridianChannelStandard();
 
 export async function runImport() {
   const spreadsheetId = process.env.GOOGLE_ACUPOINT_CORE_SPREADSHEET_ID;
