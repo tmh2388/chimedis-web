@@ -545,7 +545,7 @@ function hzOf(term){
   if(!term) return '';
   return (state.hanScript === 'traditional') ? (hzTradOf(term) || term.hz) : term.hz;
 }
-const I18N = {"vi": {"sub": "Tiếng Trung Y Khoa", "search_ph": "Nhập 汉字 / pinyin / tiếng Việt / tiếng Anh để tra cứu", "search_hint": "Dùng dấu + để tìm nhiều triệu chứng cùng lúc (VD: đau lưng + đau bụng). Dấu , để khớp 1 trong nhiều cụm. Dấu - trước 1 cụm để loại trừ (VD: đau lưng - sốt).","g_all": "Toàn bộ", "g_anat": "Giải phẫu", "g_phys": "Sinh lý", "g_path": "Bệnh lý", "g_mer": "Kinh mạch", "g_acu": "Huyệt vị", "g_form": "Thang phương", "g_herb": "Dược liệu", "g_wordelem": "Từ ghép Y Khoa", "wt_prefix": "Tiền tố", "wt_suffix": "Hậu tố", "wt_root": "Từ căn", "wt_term": "Thuật ngữ ghép", "f_meaning": "Ý nghĩa", "f_example": "Ví dụ", "g_review": "Ôn luyện", "dd_all": "Toàn bộ", "sys_resp": "Hô hấp", "sys_circ": "Tuần hoàn", "sys_dige": "Tiêu hoá", "sys_nerv": "Thần kinh", "intro_resp": "Hệ cơ quan đảm nhiệm trao đổi khí giữa cơ thể và môi trường. Cấu trúc chính gồm mũi, hầu, thanh quản, khí quản, phế quản, phổi và phế nang.", "tab_vocab": "Từ vựng", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Đã thuộc", "all_terms": "Toàn bộ thuật ngữ", "results_for": "Kết quả cho", "words": "từ", "choose_sys": "Chọn một hệ cơ quan ở trên để xem giới thiệu và lọc từ vựng tương ứng.", "flow_title": "Đường đi giải phẫu", "detail": "Chi tiết", "f_pos": "Vị trí", "f_func": "Công năng", "f_tcm": "Ghi chú Trung Y", "f_clin": "Lâm sàng", "f_indication": "Chủ trị", "f_taste": "Tính vị", "f_meridian": "Quy kinh", "f_pointclass": "Loại huyệt", "f_dose": "Liều dùng", "f_caution": "Kiêng kỵ", "f_mt_note": "Dịch máy — cần rà soát", "f_verify": "⚠ Cần xác thực", "f_source": "Nguồn", "f_cnwarn": "⚠ Phần tiếng Trung là bản dịch tạm cho demo — cần Hạ Vân Y Đạo rà soát.", "btn_known": "Đã thuộc", "btn_known_on": "Đã thuộc ✓", "btn_review": "Thêm vào ôn tập", "fc_front": "MẶT TRƯỚC", "fc_back": "MẶT SAU", "fc_flip": "Chạm để lật", "fc_flipback": "Lật lại", "fc_no": "Chưa nhớ", "fc_mid": "Cần ôn lại", "fc_yes": "Đã thuộc", "fc_empty": "Không có từ nào trong phạm vi này để học.", "qz_choose": "Chọn nghĩa tiếng Việt", "qz_mean": "nghĩa là gì?", "qz_q": "Câu", "qz_pts": "điểm", "qz_correct": "✓ Đúng", "qz_wrong": "✗ Sai", "qz_next": "Câu tiếp theo", "qz_result": "Xem kết quả", "qz_done_lab": "câu trả lời đúng", "qz_retry": "Làm lại", "qz_empty": "Không có từ nào trong phạm vi này để làm quiz.", "done_title": "Đã thuộc", "done_sub": "Ôn lại theo chu kỳ ngắt quãng — 1 · 3 · 7 · 14 · 30 ngày", "st_known": "Đã thuộc", "st_review": "Cần ôn lại", "st_today": "Hôm nay", "fl_today": "Hôm nay cần ôn", "fl_known": "Đã thuộc", "fl_review": "Cần ôn lại", "next_review": "Ôn tiếp", "today": "Hôm nay", "after": "sau", "days": "ngày", "no_words": "Chưa có từ nào trong nhóm này.", "review_today": "Ôn hôm nay", "dr_account": "Tài khoản", "dr_login": "Đăng nhập / Đăng ký", "dr_progress": "Tiến độ học tập", "dr_settings": "Cài đặt", "dr_sys": "Cài đặt hệ thống", "dr_display": "Tuỳ chỉnh hiển thị", "dr_content_lang": "Ngôn ngữ hiển thị nội dung", "dr_lang": "Ngôn ngữ giao diện", "dr_han_script": "Chữ Hán hiển thị", "han_simplified": "简体 — Giản thể", "han_traditional": "繁體 — Phồn thể", "dr_other": "Khác", "dr_source": "Nguồn học thuật", "dr_about": "Giới thiệu Hạ Vân Y Đạo", "soon": "Sắp có", "empty_vocab": "Không tìm thấy thuật ngữ phù hợp.", "load_more": "Xem thêm", "showing_count": "Đang hiện {n}/{total}", "footer_desc": "Ứng dụng tra cứu và ghi nhớ thuật ngữ y khoa, từ y học hiện đại đến kinh điển Trung Y."}, "zh": {"sub": "中医汉语", "search_ph": "输入 汉字 / 拼音 / 越南语 / 英语 进行查询", "search_hint": "输入 + 可同时查询多个症状（例：腰痛 + 腹痛）。逗号 , 表示任意一个符合即可。词前加 - 可排除该词（例：腰痛 - 发热）。","g_all": "全部", "g_anat": "解剖", "g_phys": "生理", "g_path": "病理", "g_mer": "经络", "g_acu": "腧穴", "g_form": "汤方", "g_herb": "药材", "g_wordelem": "词素合成", "wt_prefix": "前缀", "wt_suffix": "后缀", "wt_root": "词根", "wt_term": "复合词", "f_meaning": "含义", "f_example": "例词", "g_review": "复习", "dd_all": "全部", "sys_resp": "呼吸", "sys_circ": "循环", "sys_dige": "消化", "sys_nerv": "神经", "intro_resp": "人体与外界进行气体交换的系统，主要包括鼻、咽、喉、气管、支气管、肺和肺泡。", "tab_vocab": "词汇", "tab_fc": "卡片", "tab_quiz": "测验", "tab_done": "已掌握", "all_terms": "全部术语", "results_for": "查询结果", "words": "个词", "choose_sys": "请选择上方的器官系统以查看简介并筛选相应词汇。", "flow_title": "解剖路径", "detail": "详情", "f_pos": "位置", "f_func": "功能", "f_tcm": "中医注释", "f_clin": "临床", "f_indication": "主治", "f_taste": "性味", "f_meridian": "归经", "f_pointclass": "穴位分类", "f_dose": "用量", "f_caution": "使用注意", "f_mt_note": "机器翻译 — 待审核", "f_verify": "⚠ 待核实", "f_source": "来源", "f_cnwarn": "⚠ 中文部分为演示用临时翻译——需夏雲醫道审核。", "btn_known": "已掌握", "btn_known_on": "已掌握 ✓", "btn_review": "加入复习", "fc_front": "正面", "fc_back": "背面", "fc_flip": "点击翻转", "fc_flipback": "翻回", "fc_no": "未记住", "fc_mid": "需复习", "fc_yes": "已掌握", "fc_empty": "此范围内暂无可学习的词。", "qz_choose": "选择越南语释义", "qz_mean": "是什么意思？", "qz_q": "第", "qz_pts": "分", "qz_correct": "✓ 正确", "qz_wrong": "✗ 错误", "qz_next": "下一题", "qz_result": "查看结果", "qz_done_lab": "题答对", "qz_retry": "重做", "qz_empty": "此范围内暂无可测验的词。", "done_title": "已掌握", "done_sub": "按间隔周期复习 — 1 · 3 · 7 · 14 · 30 天", "st_known": "已掌握", "st_review": "需复习", "st_today": "今天", "fl_today": "今日待复习", "fl_known": "已掌握", "fl_review": "需复习", "next_review": "下次复习", "today": "今天", "after": "", "days": "天后", "no_words": "该组暂无词。", "review_today": "今日复习", "dr_account": "账户", "dr_login": "登录 / 注册", "dr_progress": "学习进度", "dr_settings": "设置", "dr_sys": "系统设置", "dr_display": "显示自定义", "dr_content_lang": "内容显示语言", "dr_lang": "界面语言", "dr_han_script": "汉字显示", "han_simplified": "简体", "han_traditional": "繁體", "dr_other": "其他", "dr_source": "学术来源", "dr_about": "关于夏雲醫道", "soon": "即将推出", "empty_vocab": "未找到匹配的术语。", "load_more": "查看更多", "showing_count": "显示 {n}/{total}", "footer_desc": "医学术语查询与记忆应用，涵盖现代医学与中医经典。"}, "en": {"sub": "Medical Chinese", "search_ph": "Type 汉字 / pinyin / Vietnamese / English to search", "search_hint": "Use + to search multiple symptoms at once (e.g. back pain + stomach ache). Use , for either match. Use - before a phrase to exclude it (e.g. back pain - fever).","g_all": "All", "g_anat": "Anatomy", "g_phys": "Physiology", "g_path": "Pathology", "g_mer": "Meridians", "g_acu": "Acupoints", "g_form": "Formulas", "g_herb": "Herbs", "g_wordelem": "Word elements", "wt_prefix": "Prefix", "wt_suffix": "Suffix", "wt_root": "Root", "wt_term": "Compound term", "f_meaning": "Meaning", "f_example": "Example", "g_review": "Review", "dd_all": "All", "sys_resp": "Respiratory", "sys_circ": "Circulatory", "sys_dige": "Digestive", "sys_nerv": "Nervous", "intro_resp": "The system responsible for gas exchange between the body and the environment. Main structures: nose, pharynx, larynx, trachea, bronchi, lungs and alveoli.", "tab_vocab": "Vocabulary", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Learned", "all_terms": "All terms", "results_for": "Results for", "words": "words", "choose_sys": "Select an organ system above to see its intro and filter related terms.", "flow_title": "Anatomical pathway", "detail": "Details", "f_pos": "Location", "f_func": "Function", "f_tcm": "TCM notes", "f_clin": "Clinical", "f_indication": "Indications", "f_taste": "Taste & temperature", "f_meridian": "Meridians", "f_pointclass": "Point classification", "f_dose": "Dosage", "f_caution": "Cautions", "f_mt_note": "Machine translated — needs review", "f_verify": "⚠ Needs verification", "f_source": "Source", "f_cnwarn": "⚠ The Chinese text is a draft translation for demo — pending review by Hạ Vân Y Đạo.", "btn_known": "Learned", "btn_known_on": "Learned ✓", "btn_review": "Add to review", "fc_front": "FRONT", "fc_back": "BACK", "fc_flip": "Tap to flip", "fc_flipback": "Flip back", "fc_no": "Not yet", "fc_mid": "Review", "fc_yes": "Learned", "fc_empty": "No words in this scope to study.", "qz_choose": "Choose the Vietnamese meaning", "qz_mean": "means?", "qz_q": "Question", "qz_pts": "pts", "qz_correct": "✓ Correct", "qz_wrong": "✗ Wrong", "qz_next": "Next", "qz_result": "See results", "qz_done_lab": "correct answers", "qz_retry": "Retry", "qz_empty": "No words in this scope for a quiz.", "done_title": "Learned", "done_sub": "Spaced repetition — 1 · 3 · 7 · 14 · 30 days", "st_known": "Learned", "st_review": "To review", "st_today": "Today", "fl_today": "Due today", "fl_known": "Learned", "fl_review": "To review", "next_review": "Next review", "today": "Today", "after": "in", "days": "days", "no_words": "No words in this group yet.", "review_today": "Review today", "dr_account": "Account", "dr_login": "Sign in / Sign up", "dr_progress": "Learning progress", "dr_settings": "Settings", "dr_sys": "System settings", "dr_display": "Display options", "dr_content_lang": "Content display language", "dr_lang": "Interface language", "dr_han_script": "Chinese script", "han_simplified": "Simplified (简体)", "han_traditional": "Traditional (繁體)", "dr_other": "Other", "dr_source": "Academic sources", "dr_about": "About Hạ Vân Y Đạo", "soon": "Soon", "empty_vocab": "No matching terms found.", "load_more": "Show more", "showing_count": "Showing {n}/{total}", "footer_desc": "An app for looking up and memorizing medical terminology, from modern medicine to classical TCM."}};
+const I18N = {"vi": {"sub": "Tiếng Trung Y Khoa", "search_ph": "Nhập 汉字 / pinyin / tiếng Việt / tiếng Anh để tra cứu", "search_hint": "Dùng dấu + để tìm nhiều triệu chứng cùng lúc (VD: đau lưng + đau bụng). Dấu , để khớp 1 trong nhiều cụm. Dấu - trước 1 cụm để loại trừ (VD: đau lưng - sốt).","g_all": "Toàn bộ", "g_anat": "Giải phẫu", "g_phys": "Sinh lý", "g_path": "Bệnh lý", "g_mer": "Kinh mạch", "g_acu": "Huyệt vị", "g_form": "Thang phương", "g_herb": "Dược liệu", "g_wordelem": "Từ ghép Y Khoa", "wt_prefix": "Tiền tố", "wt_suffix": "Hậu tố", "wt_root": "Từ căn", "wt_term": "Thuật ngữ ghép", "f_meaning": "Ý nghĩa", "f_example": "Ví dụ", "g_review": "Ôn luyện", "dd_all": "Toàn bộ", "sys_resp": "Hô hấp", "sys_circ": "Tuần hoàn", "sys_dige": "Tiêu hoá", "sys_nerv": "Thần kinh", "intro_resp": "Hệ cơ quan đảm nhiệm trao đổi khí giữa cơ thể và môi trường. Cấu trúc chính gồm mũi, hầu, thanh quản, khí quản, phế quản, phổi và phế nang.", "tab_vocab": "Từ vựng", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Đã thuộc", "all_terms": "Toàn bộ thuật ngữ", "results_for": "Kết quả cho", "words": "từ", "choose_sys": "Chọn một hệ cơ quan ở trên để xem giới thiệu và lọc từ vựng tương ứng.", "flow_title": "Đường đi giải phẫu", "detail": "Chi tiết", "f_pos": "Vị trí", "f_func": "Công năng", "f_tcm": "Ghi chú Trung Y", "f_clin": "Lâm sàng", "f_indication": "Chủ trị", "f_taste": "Tính vị", "f_meridian": "Quy kinh", "f_pointclass": "Loại huyệt", "f_dose": "Liều dùng", "f_caution": "Kiêng kỵ", "f_mt_note": "Dịch máy — cần rà soát", "f_verify": "⚠ Cần xác thực", "f_source": "Nguồn", "f_cnwarn": "⚠ Phần tiếng Trung là bản dịch tạm cho demo — cần Hạ Vân Y Đạo rà soát.", "btn_known": "Đã thuộc", "btn_known_on": "Đã thuộc ✓", "btn_review": "Thêm vào ôn tập", "fc_front": "MẶT TRƯỚC", "fc_back": "MẶT SAU", "fc_flip": "Chạm để lật", "fc_flipback": "Lật lại", "fc_no": "Chưa nhớ", "fc_mid": "Cần ôn lại", "fc_yes": "Đã thuộc", "fc_empty": "Không có từ nào trong phạm vi này để học.", "qz_choose": "Chọn nghĩa tiếng Việt", "qz_mean": "nghĩa là gì?", "qz_q": "Câu", "qz_pts": "điểm", "qz_correct": "✓ Đúng", "qz_wrong": "✗ Sai", "qz_next": "Câu tiếp theo", "qz_result": "Xem kết quả", "qz_done_lab": "câu trả lời đúng", "qz_retry": "Làm lại", "qz_empty": "Không có từ nào trong phạm vi này để làm quiz.", "done_title": "Đã thuộc", "done_sub": "Ôn lại theo chu kỳ ngắt quãng — 1 · 3 · 7 · 14 · 30 ngày", "st_known": "Đã thuộc", "st_review": "Cần ôn lại", "st_today": "Hôm nay", "fl_today": "Hôm nay cần ôn", "fl_known": "Đã thuộc", "fl_review": "Cần ôn lại", "next_review": "Ôn tiếp", "today": "Hôm nay", "after": "sau", "days": "ngày", "no_words": "Chưa có từ nào trong nhóm này.", "review_today": "Ôn hôm nay", "dr_account": "Tài khoản", "dr_login": "Đăng nhập / Đăng ký", "dr_progress": "Tiến độ học tập", "dr_settings": "Cài đặt", "dr_sys": "Cài đặt hệ thống", "dr_display": "Tuỳ chỉnh hiển thị", "dr_content_lang": "Ngôn ngữ hiển thị nội dung", "dr_lang": "Ngôn ngữ giao diện", "dr_han_script": "Chữ Hán hiển thị", "han_simplified": "简体 — Giản thể", "han_traditional": "繁體 — Phồn thể", "dr_other": "Khác", "dr_source": "Nguồn học thuật", "dr_about": "Giới thiệu Hạ Vân Y Đạo", "soon": "Sắp có", "empty_vocab": "Không tìm thấy thuật ngữ phù hợp.", "fuzzy_note": "Không có kết quả khớp chính xác — đang hiện gợi ý gần đúng cho", "load_more": "Xem thêm", "showing_count": "Đang hiện {n}/{total}", "footer_desc": "Ứng dụng tra cứu và ghi nhớ thuật ngữ y khoa, từ y học hiện đại đến kinh điển Trung Y."}, "zh": {"sub": "中医汉语", "search_ph": "输入 汉字 / 拼音 / 越南语 / 英语 进行查询", "search_hint": "输入 + 可同时查询多个症状（例：腰痛 + 腹痛）。逗号 , 表示任意一个符合即可。词前加 - 可排除该词（例：腰痛 - 发热）。","g_all": "全部", "g_anat": "解剖", "g_phys": "生理", "g_path": "病理", "g_mer": "经络", "g_acu": "腧穴", "g_form": "汤方", "g_herb": "药材", "g_wordelem": "词素合成", "wt_prefix": "前缀", "wt_suffix": "后缀", "wt_root": "词根", "wt_term": "复合词", "f_meaning": "含义", "f_example": "例词", "g_review": "复习", "dd_all": "全部", "sys_resp": "呼吸", "sys_circ": "循环", "sys_dige": "消化", "sys_nerv": "神经", "intro_resp": "人体与外界进行气体交换的系统，主要包括鼻、咽、喉、气管、支气管、肺和肺泡。", "tab_vocab": "词汇", "tab_fc": "卡片", "tab_quiz": "测验", "tab_done": "已掌握", "all_terms": "全部术语", "results_for": "查询结果", "words": "个词", "choose_sys": "请选择上方的器官系统以查看简介并筛选相应词汇。", "flow_title": "解剖路径", "detail": "详情", "f_pos": "位置", "f_func": "功能", "f_tcm": "中医注释", "f_clin": "临床", "f_indication": "主治", "f_taste": "性味", "f_meridian": "归经", "f_pointclass": "穴位分类", "f_dose": "用量", "f_caution": "使用注意", "f_mt_note": "机器翻译 — 待审核", "f_verify": "⚠ 待核实", "f_source": "来源", "f_cnwarn": "⚠ 中文部分为演示用临时翻译——需夏雲醫道审核。", "btn_known": "已掌握", "btn_known_on": "已掌握 ✓", "btn_review": "加入复习", "fc_front": "正面", "fc_back": "背面", "fc_flip": "点击翻转", "fc_flipback": "翻回", "fc_no": "未记住", "fc_mid": "需复习", "fc_yes": "已掌握", "fc_empty": "此范围内暂无可学习的词。", "qz_choose": "选择越南语释义", "qz_mean": "是什么意思？", "qz_q": "第", "qz_pts": "分", "qz_correct": "✓ 正确", "qz_wrong": "✗ 错误", "qz_next": "下一题", "qz_result": "查看结果", "qz_done_lab": "题答对", "qz_retry": "重做", "qz_empty": "此范围内暂无可测验的词。", "done_title": "已掌握", "done_sub": "按间隔周期复习 — 1 · 3 · 7 · 14 · 30 天", "st_known": "已掌握", "st_review": "需复习", "st_today": "今天", "fl_today": "今日待复习", "fl_known": "已掌握", "fl_review": "需复习", "next_review": "下次复习", "today": "今天", "after": "", "days": "天后", "no_words": "该组暂无词。", "review_today": "今日复习", "dr_account": "账户", "dr_login": "登录 / 注册", "dr_progress": "学习进度", "dr_settings": "设置", "dr_sys": "系统设置", "dr_display": "显示自定义", "dr_content_lang": "内容显示语言", "dr_lang": "界面语言", "dr_han_script": "汉字显示", "han_simplified": "简体", "han_traditional": "繁體", "dr_other": "其他", "dr_source": "学术来源", "dr_about": "关于夏雲醫道", "soon": "即将推出", "empty_vocab": "未找到匹配的术语。", "fuzzy_note": "没有完全匹配的结果 — 正在显示近似建议，针对", "load_more": "查看更多", "showing_count": "显示 {n}/{total}", "footer_desc": "医学术语查询与记忆应用，涵盖现代医学与中医经典。"}, "en": {"sub": "Medical Chinese", "search_ph": "Type 汉字 / pinyin / Vietnamese / English to search", "search_hint": "Use + to search multiple symptoms at once (e.g. back pain + stomach ache). Use , for either match. Use - before a phrase to exclude it (e.g. back pain - fever).","g_all": "All", "g_anat": "Anatomy", "g_phys": "Physiology", "g_path": "Pathology", "g_mer": "Meridians", "g_acu": "Acupoints", "g_form": "Formulas", "g_herb": "Herbs", "g_wordelem": "Word elements", "wt_prefix": "Prefix", "wt_suffix": "Suffix", "wt_root": "Root", "wt_term": "Compound term", "f_meaning": "Meaning", "f_example": "Example", "g_review": "Review", "dd_all": "All", "sys_resp": "Respiratory", "sys_circ": "Circulatory", "sys_dige": "Digestive", "sys_nerv": "Nervous", "intro_resp": "The system responsible for gas exchange between the body and the environment. Main structures: nose, pharynx, larynx, trachea, bronchi, lungs and alveoli.", "tab_vocab": "Vocabulary", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Learned", "all_terms": "All terms", "results_for": "Results for", "words": "words", "choose_sys": "Select an organ system above to see its intro and filter related terms.", "flow_title": "Anatomical pathway", "detail": "Details", "f_pos": "Location", "f_func": "Function", "f_tcm": "TCM notes", "f_clin": "Clinical", "f_indication": "Indications", "f_taste": "Taste & temperature", "f_meridian": "Meridians", "f_pointclass": "Point classification", "f_dose": "Dosage", "f_caution": "Cautions", "f_mt_note": "Machine translated — needs review", "f_verify": "⚠ Needs verification", "f_source": "Source", "f_cnwarn": "⚠ The Chinese text is a draft translation for demo — pending review by Hạ Vân Y Đạo.", "btn_known": "Learned", "btn_known_on": "Learned ✓", "btn_review": "Add to review", "fc_front": "FRONT", "fc_back": "BACK", "fc_flip": "Tap to flip", "fc_flipback": "Flip back", "fc_no": "Not yet", "fc_mid": "Review", "fc_yes": "Learned", "fc_empty": "No words in this scope to study.", "qz_choose": "Choose the Vietnamese meaning", "qz_mean": "means?", "qz_q": "Question", "qz_pts": "pts", "qz_correct": "✓ Correct", "qz_wrong": "✗ Wrong", "qz_next": "Next", "qz_result": "See results", "qz_done_lab": "correct answers", "qz_retry": "Retry", "qz_empty": "No words in this scope for a quiz.", "done_title": "Learned", "done_sub": "Spaced repetition — 1 · 3 · 7 · 14 · 30 days", "st_known": "Learned", "st_review": "To review", "st_today": "Today", "fl_today": "Due today", "fl_known": "Learned", "fl_review": "To review", "next_review": "Next review", "today": "Today", "after": "in", "days": "days", "no_words": "No words in this group yet.", "review_today": "Review today", "dr_account": "Account", "dr_login": "Sign in / Sign up", "dr_progress": "Learning progress", "dr_settings": "Settings", "dr_sys": "System settings", "dr_display": "Display options", "dr_content_lang": "Content display language", "dr_lang": "Interface language", "dr_han_script": "Chinese script", "han_simplified": "Simplified (简体)", "han_traditional": "Traditional (繁體)", "dr_other": "Other", "dr_source": "Academic sources", "dr_about": "About Hạ Vân Y Đạo", "soon": "Soon", "empty_vocab": "No matching terms found.", "fuzzy_note": "No exact match — showing close suggestions for", "load_more": "Show more", "showing_count": "Showing {n}/{total}", "footer_desc": "An app for looking up and memorizing medical terminology, from modern medicine to classical TCM."}};
 function t(key){ return (I18N[state.lang] && I18N[state.lang][key]) || I18N.vi[key] || key; }
 // Chọn nội dung theo ngôn ngữ đang hiển thị (dữ liệu chỉ có VI + ZH, chưa có EN cho trường này).
 // zh === 'zh': ưu tiên tiếng Trung. Còn lại (vi/en): ưu tiên tiếng Việt, tiếng Trung làm dòng phụ.
@@ -689,6 +689,9 @@ let state = {
   group2: null,        // nhóm cấp 2 (hệ cơ quan) đang chọn
   tab: 'vocab',         // vocab | flashcard | quiz | done
   searchQuery: '',
+  searchFuzzyFallback: false, // true khi kết quả đang hiện là gợi ý fuzzy (không khớp chính xác) — set lại mỗi lần getFiltered() chạy
+  fuzzyQuery: null,   // query mà fuzzyResults đang khớp — getFiltered() dùng lại nếu === searchQuery hiện tại
+  fuzzyResults: null, // kết quả fuzzy đã tính xong (debounced), null nghĩa là chưa tính/đang chờ
   fcIndex: 0,
   fcFlipped: false,
   qzIndex: 0,
@@ -825,10 +828,10 @@ const SEARCH_DELIM_RE = /[,.;:!?，。、；：！？"'“”‘’()（）\[\]�
 function searchTokens(q){
   return norm(q).split(SEARCH_DELIM_RE).map(s=>s.trim()).filter(w => w && !SEARCH_STOPWORDS.has(w));
 }
-function matchTerm(t, q){
-  if(!q) return true;
-  const nq = norm(q);
-  const trad = hzTradOf(t); // cho phép gõ giản thể hoặc phồn thể đều tìm ra, bất kể đang hiển thị kiểu nào
+// Tách riêng phần "gom field nào được đưa vào vùng tìm kiếm" ra khỏi matchTerm() để fuzzy
+// fallback (bên dưới) dùng lại NGUYÊN VẸN — tránh 2 nơi tự liệt kê field rồi lệch nhau theo
+// thời gian (đúng bài học rút ra khi mở rộng field 2026-08-19: 1 danh sách field duy nhất).
+function buildSearchHaystack(t){
   // Tên thuật ngữ (hz/pinyin/vi/en) LUÔN tìm được ở cả 3 ngôn ngữ bất kể đang bật/tắt ngôn ngữ
   // hiển thị nào — ô tìm kiếm đã hứa rõ "Nhập 汉字 / pinyin / tiếng Việt / tiếng Anh", đây là TRA
   // TÊN, không phải đọc nội dung, nên không phụ thuộc contentLangs.
@@ -867,12 +870,75 @@ function matchTerm(t, q){
     if(state.contentLangs.zh) fields.push(t.vitri_cn, t.congnang_cn, t.tcm_cn, t.lamsang_cn);
     if(state.contentLangs.en) fields.push(t.vitri_en, t.congnang_en, t.tcm_en, t.lamsang_en);
   }
-  const haystack = norm(fields.filter(Boolean).join(' '));
+  return norm(fields.filter(Boolean).join(' '));
+}
+function matchTerm(t, q){
+  if(!q) return true;
+  const nq = norm(q);
+  const trad = hzTradOf(t); // cho phép gõ giản thể hoặc phồn thể đều tìm ra, bất kể đang hiển thị kiểu nào
+  const haystack = buildSearchHaystack(t);
   if(haystack.includes(nq) || (t.hz && t.hz.includes(q)) || (trad && trad.includes(q))) return true;
   // Khớp theo BẤT KỲ CỤM nào (mỗi cụm giữ nguyên khoảng trắng bên trong) sau khi tách theo
   // dấu phẩy/chấm phẩy/dấu câu — cho phép gõ nhiều triệu chứng 1 lần (vd. "đau lưng, đau đầu")
   // và ra kết quả khớp cụm bất kỳ, mà KHÔNG làm vụn từng cụm thành từ đơn (xem SEARCH_DELIM_RE).
   return searchTokens(q).some(tok => haystack.includes(tok));
+}
+
+// ===== FUZZY FALLBACK (chịu lỗi gõ sai, vd. "headeach" → vẫn ra "headache") =====
+// CHỈ kích hoạt khi tìm kiếm CHÍNH XÁC (matchTerm/matchQuery ở trên) trả về 0 kết quả — giữ
+// nguyên tốc độ + hành vi mặc định cho tuyệt đại đa số lượt tìm (đã ra kết quả đúng), fuzzy chỉ
+// là lưới đỡ cho đúng trường hợp gõ sai chính tả. Yêu cầu 2026-08-19: "headeach" không ra
+// "headache" dù chỉ lệch 2 ký tự — search hiện tại (substring đã chuẩn hoá dấu/hoa-thường)
+// không chịu được lỗi gõ sai, cần khoảng cách Levenshtein làm lưới đỡ. Đây là fallback CLIENT-SIDE
+// thuần (không cần server/hạ tầng mới) — quyết định 2026-08-19 sau khi xác nhận hosting hiện tại
+// (Hostinger Web App, không phải VPS) không chạy được Meilisearch/Typesense.
+function levenshtein(a, b){
+  if(a === b) return 0;
+  const m = a.length, n = b.length;
+  if(!m) return n;
+  if(!n) return m;
+  let prev = new Array(n+1);
+  for(let j=0;j<=n;j++) prev[j] = j;
+  for(let i=1;i<=m;i++){
+    let cur = [i];
+    for(let j=1;j<=n;j++){
+      cur[j] = a[i-1]===b[j-1] ? prev[j-1] : 1 + Math.min(prev[j-1], prev[j], cur[j-1]);
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+// Ngưỡng sai lệch cho phép tăng dần theo độ dài từ — từ ngắn (≤4 ký tự) chỉ cho lệch 1, tránh
+// fuzzy match lung tung (vd. "an" gần như từ nào cũng lệch được 1-2 ký tự nếu ngưỡng quá rộng).
+function fuzzyWordMatch(haystackWord, queryToken){
+  if(haystackWord === queryToken) return true;
+  if(queryToken.length < 4 || haystackWord.length < 4) return false; // từ quá ngắn: không fuzzy, dễ nhiễu
+  const maxDist = queryToken.length <= 5 ? 1 : (queryToken.length <= 9 ? 2 : 3);
+  if(Math.abs(haystackWord.length - queryToken.length) > maxDist) return false;
+  return levenshtein(haystackWord, queryToken) <= maxDist;
+}
+// Mỗi từ trong query (tách theo khoảng trắng) phải khớp CHÍNH XÁC hoặc FUZZY với ít nhất 1 từ
+// trong haystack của term — AND giữa các từ, giống tinh thần cú pháp nâng cao nhưng đơn giản hơn
+// (fuzzy chỉ là lưới đỡ lỗi gõ, không cần đủ bộ +/-/dấu phẩy).
+function fuzzyMatchTerm(t, q){
+  const queryTokens = norm(q).split(/\s+/).filter(Boolean);
+  if(!queryTokens.length) return false;
+  const haystackWords = buildSearchHaystack(t).split(/\s+/).filter(Boolean);
+  if(!haystackWords.length) return false;
+  return queryTokens.every(tok => haystackWords.some(w => fuzzyWordMatch(w, tok)));
+}
+// Debounce: fuzzy quét toàn bộ pool (~2600 mục, so khớp Levenshtein từng từ) tốn ~1-1.3s ở kịch
+// bản xấu nhất — chỉ chạy sau khi user NGỪNG gõ 1 nhịp (350ms), không chạy trên mỗi keystroke để
+// tránh giật lag, đặc biệt trên di động. Nếu user gõ tiếp trước khi hết giờ, huỷ lượt tính cũ.
+let fuzzyFallbackTimer = null;
+function scheduleFuzzyFallback(query, pool){
+  clearTimeout(fuzzyFallbackTimer);
+  fuzzyFallbackTimer = setTimeout(() => {
+    if(state.searchQuery !== query) return; // đã gõ tiếp/đổi query khác — bỏ kết quả tính chậm này
+    state.fuzzyQuery = query;
+    state.fuzzyResults = pool.filter(t => fuzzyMatchTerm(t, query));
+    render();
+  }, 350);
 }
 
 // ===== CÚ PHÁP TÌM KIẾM NÂNG CAO (AND / OR / NOT ngay trong ô tìm kiếm hiện có) =====
@@ -1085,8 +1151,25 @@ function getFiltered(){
   // Tìm kiếm phải tôn trọng bộ lọc dropdown 1/2 đang chọn (vd. đang ở "Huyệt vị" thì gõ
   // "đau dạ dày" chỉ ra huyệt, không lẫn cả vị thuốc/thuật ngữ khác) — trước đây search bỏ
   // qua list đã lọc, luôn quét lại toàn bộ TERMS, là bug (phát hiện 2026-08-17).
+  state.searchFuzzyFallback = false;
   if(state.searchQuery){
+    const beforeSearch = list;
     list = list.filter(t => matchQuery(t, state.searchQuery));
+    // Không ra kết quả chính xác nào — thử fuzzy (chịu lỗi gõ sai) trên ĐÚNG tập đã lọc theo
+    // dropdown 1/2 ở trên (không quét lại toàn bộ TERMS, giữ đúng nguyên tắc search tôn trọng bộ
+    // lọc đang chọn). Fuzzy quét ~2600 mục × so khớp Levenshtein từng từ KHÔNG rẻ (đo thực tế
+    // ~1-1.3s cho trường hợp xấu nhất trên máy thường) — nếu chạy đồng bộ trên MỌI keystroke sẽ
+    // giật lag rõ rệt, đặc biệt trên di động. Nên CHỈ chạy fuzzy sau khi user NGỪNG gõ 1 nhịp
+    // (debounce qua scheduleFuzzyFallback), không chặn/làm chậm nhánh tìm chính xác (vẫn tức thời
+    // như trước Tầng "fuzzy" này).
+    if(list.length === 0){
+      if(state.fuzzyQuery === state.searchQuery && state.fuzzyResults){
+        list = state.fuzzyResults;
+        state.searchFuzzyFallback = list.length > 0;
+      } else {
+        scheduleFuzzyFallback(state.searchQuery, beforeSearch);
+      }
+    }
   }
   // Huyệt vị khi đã chọn đúng 1 kinh (group2): sắp theo THỨ TỰ HUYỆT TRÊN ĐƯỜNG KINH
   // (sequence_number, vd. LU-1..LU-11), không sắp abc theo tên — sắp abc làm mất hẳn trình
@@ -1176,8 +1259,9 @@ function renderTabContent(){
 // ===== TAB: TỪ VỰNG =====
 function renderVocabTab(){
   const list = getFiltered();
-  let metaLabel = state.searchQuery ? `${t('results_for')} "${state.searchQuery}"` :
-    (state.group1==='all' ? t('all_terms') : (state.group2 ? group2Label(state.group1, state.group2) : group1Label(state.group1)));
+  let metaLabel = state.searchQuery
+    ? (state.searchFuzzyFallback ? `${t('fuzzy_note')} "${state.searchQuery}"` : `${t('results_for')} "${state.searchQuery}"`)
+    : (state.group1==='all' ? t('all_terms') : (state.group2 ? group2Label(state.group1, state.group2) : group1Label(state.group1)));
   if(list.length===0){
     return `<div class="vocab"><div class="vmeta">${metaLabel} — 0 ${t('words')}</div><div class="empty">${t('empty_vocab')}</div></div>`;
   }
