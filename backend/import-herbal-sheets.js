@@ -43,14 +43,18 @@ const TEMPERATURE_LABELS = {
   DARE: ['大热', 'Đại nhiệt', 'Very hot'], DA_RE: ['大热', 'Đại nhiệt', 'Very hot'],
   DAHAN: ['大寒', 'Đại hàn', 'Extremely cold'], DA_HAN: ['大寒', 'Đại hàn', 'Extremely cold'],
 };
+// Âm Hán Việt chuẩn TCM (không phải nghĩa thường) — Core DB (ref_codes) không có
+// bảng nhãn cho mã vị, chỉ lưu mã thô (XIN/GAN/KU...), nên bảng này đối chiếu
+// theo giáo trình TCM chuẩn, đã user xác nhận trực tiếp (quyết định 2026-08-19,
+// vd. 甘 = Cam chứ không phải "Ngọt" — xem project_chimedis_translation_qa).
 const TASTE_LABELS = {
-  XIN: ['辛', 'Cay', 'Pungent'], GAN: ['甘', 'Ngọt', 'Sweet'], KU: ['苦', 'Đắng', 'Bitter'],
-  SUAN: ['酸', 'Chua', 'Sour'], XIAN: ['咸', 'Mặn', 'Salty'], DAN: ['淡', 'Nhạt', 'Bland'],
-  SE: ['涩', 'Chát', 'Astringent'],
-  WEIXIN: ['微辛', 'Hơi cay', 'Slightly pungent'], WEI_XIN: ['微辛', 'Hơi cay', 'Slightly pungent'],
-  WEIGAN: ['微甘', 'Hơi ngọt', 'Slightly sweet'], WEI_GAN: ['微甘', 'Hơi ngọt', 'Slightly sweet'],
-  WEIKU: ['微苦', 'Hơi đắng', 'Slightly bitter'], WEI_KU: ['微苦', 'Hơi đắng', 'Slightly bitter'],
-  WEISUAN: ['微酸', 'Hơi chua', 'Slightly sour'], WEI_SUAN: ['微酸', 'Hơi chua', 'Slightly sour'],
+  XIN: ['辛', 'Tân', 'Pungent'], GAN: ['甘', 'Cam', 'Sweet'], KU: ['苦', 'Khổ', 'Bitter'],
+  SUAN: ['酸', 'Toan', 'Sour'], XIAN: ['咸', 'Hàm', 'Salty'], DAN: ['淡', 'Đạm', 'Bland'],
+  SE: ['涩', 'Sáp', 'Astringent'],
+  WEIXIN: ['微辛', 'Hơi tân', 'Slightly pungent'], WEI_XIN: ['微辛', 'Hơi tân', 'Slightly pungent'],
+  WEIGAN: ['微甘', 'Hơi cam', 'Slightly sweet'], WEI_GAN: ['微甘', 'Hơi cam', 'Slightly sweet'],
+  WEIKU: ['微苦', 'Hơi khổ', 'Slightly bitter'], WEI_KU: ['微苦', 'Hơi khổ', 'Slightly bitter'],
+  WEISUAN: ['微酸', 'Hơi toan', 'Slightly sour'], WEI_SUAN: ['微酸', 'Hơi toan', 'Slightly sour'],
 };
 const MERIDIAN_LABELS = {
   FEI: ['肺', 'Phế', 'Lung'], XIN: ['心', 'Tâm', 'Heart'], PI: ['脾', 'Tỳ', 'Spleen'],

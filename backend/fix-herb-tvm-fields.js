@@ -30,11 +30,13 @@ const TEMPERATURE = [
   ['平', 'Bình', 'Neutral'], ['温', 'Ôn', 'Warm'], ['微温', 'Hơi ôn', 'Slightly warm'],
   ['热', 'Nhiệt', 'Hot'], ['大热', 'Đại nhiệt', 'Very hot'], ['大寒', 'Đại hàn', 'Extremely cold'],
 ];
+// Âm Hán Việt chuẩn TCM (không phải nghĩa thường) — sửa 2026-08-19, xem
+// TASTE_LABELS trong import-herbal-sheets.js + project_chimedis_translation_qa.
 const TASTE = [
-  ['辛', 'Cay', 'Pungent'], ['甘', 'Ngọt', 'Sweet'], ['苦', 'Đắng', 'Bitter'],
-  ['酸', 'Chua', 'Sour'], ['咸', 'Mặn', 'Salty'], ['淡', 'Nhạt', 'Bland'], ['涩', 'Chát', 'Astringent'],
-  ['微辛', 'Hơi cay', 'Slightly pungent'], ['微甘', 'Hơi ngọt', 'Slightly sweet'],
-  ['微苦', 'Hơi đắng', 'Slightly bitter'], ['微酸', 'Hơi chua', 'Slightly sour'],
+  ['辛', 'Tân', 'Pungent'], ['甘', 'Cam', 'Sweet'], ['苦', 'Khổ', 'Bitter'],
+  ['酸', 'Toan', 'Sour'], ['咸', 'Hàm', 'Salty'], ['淡', 'Đạm', 'Bland'], ['涩', 'Sáp', 'Astringent'],
+  ['微辛', 'Hơi tân', 'Slightly pungent'], ['微甘', 'Hơi cam', 'Slightly sweet'],
+  ['微苦', 'Hơi khổ', 'Slightly bitter'], ['微酸', 'Hơi toan', 'Slightly sour'],
 ];
 const MERIDIAN = [
   ['肺', 'Phế', 'Lung'], ['心', 'Tâm', 'Heart'], ['脾', 'Tỳ', 'Spleen'], ['肝', 'Can', 'Liver'],
