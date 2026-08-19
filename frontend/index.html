@@ -872,16 +872,60 @@ function buildSearchHaystack(t){
   }
   return norm(fields.filter(Boolean).join(' '));
 }
+// ===== TỪ ĐIỂN ĐỒNG NGHĨA TCM (Tầng 2 phần 2) =====
+// Mỗi mảng con = các cách gọi CÙNG 1 khái niệm công năng/pháp trị TCM chuẩn — trộn thuật ngữ
+// chuyên môn (thường là tên pháp trị) lẫn cách nói thông thường, đa ngôn ngữ. Mục đích: user gõ
+// "ra mồ hôi" vẫn tìm ra vị thuốc có công năng ghi "phát hãn" (và ngược lại) — search hiện tại chỉ
+// so khớp CHUỖI CON nguyên văn, không tự biết "phát hãn"="ra mồ hôi" dù cùng 1 nghĩa (khác trường
+// hợp "口疮"≠"口疼" — 2 CHỨNG khác nhau, KHÔNG phải đồng nghĩa, không đưa vào đây).
+// ⚠️ ĐÂY LÀ BỘ KHỞI TẠO (v1) — các cặp thuật ngữ TCM phổ biến, chuẩn giáo trình, nhưng CHƯA được
+// Hạ Vân Y Đạo rà soát trực tiếp (giống quy ước "cần rà soát" áp dụng cho dịch máy ở nơi khác
+// trong dự án) — mở rộng/sửa thoải mái, mỗi nhóm là 1 mảng độc lập, không cần đụng code match.
+const SYNONYM_GROUPS = [
+  ['phát hãn', 'ra mồ hôi', 'toát mồ hôi', 'induce sweating', 'sweating', 'promote sweating', '发汗', '出汗'],
+  ['giải biểu', 'release the exterior', 'relieve exterior syndrome', 'resolve the exterior', '解表'],
+  ['thanh nhiệt', 'hạ sốt', 'giải nhiệt', 'clear heat', 'reduce fever', 'clear away heat', '清热', '退热'],
+  ['chỉ thống', 'giảm đau', 'relieve pain', 'stop pain', 'alleviate pain', '止痛'],
+  ['chỉ khái', 'giảm ho', 'stop cough', 'relieve cough', 'suppress cough', '止咳'],
+  ['hoá đàm', 'hóa đàm', 'tiêu đờm', 'long đờm', 'resolve phlegm', 'expel phlegm', 'reduce phlegm', '化痰'],
+  ['an thần', 'trấn tĩnh', 'calm the mind', 'calm shen', 'tranquilize the mind', 'sedative', '安神'],
+  ['bổ khí', 'tonify qi', 'boost qi', 'invigorate qi', 'replenish qi', '补气'],
+  ['bổ huyết', 'dưỡng huyết', 'tonify blood', 'nourish blood', 'enrich blood', '补血', '养血'],
+  ['lợi thuỷ', 'lợi thủy', 'lợi tiểu', 'promote urination', 'induce diuresis', 'diuretic', '利水', '利尿'],
+  ['hoạt huyết', 'activate blood', 'invigorate blood', 'promote blood circulation', '活血'],
+  ['khu phong', 'trừ phong', 'dispel wind', 'expel wind', 'dispell wind', '祛风'],
+  ['tán hàn', 'disperse cold', 'dispel cold', 'scatter cold', '散寒'],
+  ['giải độc', 'thải độc', 'detoxify', 'resolve toxin', 'remove toxin', '解毒'],
+  ['tiêu thũng', 'giảm sưng', 'reduce swelling', 'disperse swelling', '消肿'],
+  ['nhuận tràng', 'thông tiện', 'laxative', 'relieve constipation', 'moisten the intestines', '润肠'],
+  ['cầm máu', 'chỉ huyết', 'stop bleeding', 'stanch bleeding', 'stop hemorrhage', '止血'],
+  ['kiện tỳ', 'bổ tỳ', 'strengthen the spleen', 'tonify the spleen', 'fortify the spleen', '健脾'],
+  ['bình suyễn', 'giảm khó thở', 'relieve wheezing', 'relieve asthma', 'calm panting', '平喘'],
+];
+// Tra ngược: 1 cụm đã chuẩn hoá (norm) -> mảng CÁC CỤM ĐÃ CHUẨN HOÁ cùng nhóm (kể cả chính nó).
+const SYNONYM_LOOKUP = (() => {
+  const map = new Map();
+  SYNONYM_GROUPS.forEach(group => {
+    const normGroup = group.map(norm);
+    normGroup.forEach(w => map.set(w, normGroup));
+  });
+  return map;
+})();
+function haystackHasSynonymOf(haystack, phraseNorm){
+  const group = SYNONYM_LOOKUP.get(phraseNorm);
+  return !!group && group.some(w => w !== phraseNorm && haystack.includes(w));
+}
 function matchTerm(t, q){
   if(!q) return true;
   const nq = norm(q);
   const trad = hzTradOf(t); // cho phép gõ giản thể hoặc phồn thể đều tìm ra, bất kể đang hiển thị kiểu nào
   const haystack = buildSearchHaystack(t);
   if(haystack.includes(nq) || (t.hz && t.hz.includes(q)) || (trad && trad.includes(q))) return true;
+  if(haystackHasSynonymOf(haystack, nq)) return true;
   // Khớp theo BẤT KỲ CỤM nào (mỗi cụm giữ nguyên khoảng trắng bên trong) sau khi tách theo
   // dấu phẩy/chấm phẩy/dấu câu — cho phép gõ nhiều triệu chứng 1 lần (vd. "đau lưng, đau đầu")
   // và ra kết quả khớp cụm bất kỳ, mà KHÔNG làm vụn từng cụm thành từ đơn (xem SEARCH_DELIM_RE).
-  return searchTokens(q).some(tok => haystack.includes(tok));
+  return searchTokens(q).some(tok => haystack.includes(tok) || haystackHasSynonymOf(haystack, tok));
 }
 
 // ===== FUZZY FALLBACK (chịu lỗi gõ sai, vd. "headeach" → vẫn ra "headache") =====
