@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'chimedis-v1';
+const CACHE_VERSION = 'chimedis-v2';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 
@@ -42,12 +42,24 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // App shell / static assets: cache-first, refresh in background
+  // HTML shell ('/' và '/index.html' chứa TOÀN BỘ code — không có file JS/CSS
+  // tách riêng có hash tên file để cache-bust): network-first để mọi lần deploy
+  // mới có hiệu lực NGAY ở lần mở app kế tiếp có mạng, không phải đợi 1 vòng
+  // "cache-first rồi refresh nền" mới thấy bản mới — user report 2026-08-19:
+  // sau khi update version mới, search "hoàn toàn không tìm được" vì WKWebView
+  // (app iOS) vẫn phục vụ index.html CŨ đã cache trước đó, không phải lỗi logic
+  // search (đã xác nhận logic search hoạt động đúng trên bản mới).
+  if (url.pathname === '/' || url.pathname === '/index.html') {
+    event.respondWith(networkFirst(request, SHELL_CACHE));
+    return;
+  }
+
+  // Static assets khác (icon, manifest...): cache-first, refresh in background
   event.respondWith(cacheFirst(request));
 });
 
-async function networkFirst(request) {
-  const cache = await caches.open(DATA_CACHE);
+async function networkFirst(request, cacheName) {
+  const cache = await caches.open(cacheName || DATA_CACHE);
   try {
     const response = await fetch(request);
     if (response && response.ok) {
