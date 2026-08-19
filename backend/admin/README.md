@@ -53,63 +53,14 @@ MYSQL_HOST=... MYSQL_USER=... MYSQL_PASSWORD=... MYSQL_DATABASE=... node generat
 - `confidence` tự động: 0.95 nếu tính theo thước, 0.7 nếu đặt tay bằng mắt
   (không có cơ sở đo thốn) — nên rà soát kỹ các huyệt confidence 0.7 hơn.
 
-## Bản 3D (thí điểm) — `atlas-calibrate-3d.html`
+## Atlas 3D — đã TÁCH sang repo riêng (2026-08-19)
 
-Song song với bản 2D trên, đây là bản THÍ ĐIỂM cho hướng atlas 3D (Three.js),
-dùng chung dữ liệu `acupoints-data.js`. Chưa thay thế bản 2D — 2D vẫn là bản
-chính đang dùng để hoàn thiện atlas.
+Hướng atlas 3D (Three.js) không còn nằm trong repo này nữa — đã chuyển
+thành dự án độc lập tại **https://github.com/tmh2388/chimedis-atlas3d**
+(private), vì đây là hướng đầu tư/bản quyền riêng theo quyết định của user,
+tách khỏi app từ điển tra cứu chính. Xem repo đó để biết tiến độ, dữ liệu
+huyệt vẫn đồng bộ 1 chiều từ `acupoints` MySQL của repo này qua
+`generate-acupoints-data.mjs` (bản sao, không kết nối DB trực tiếp).
 
-### Nguồn mesh 3D — đã chọn, cần bạn tự tải
-- **Human Body Base Mesh Male**, Sketchfab, tác giả `ferrumiron6`
-  (https://sketchfab.com/3d-models/human-body-base-mesh-male-3678451d8ccb435e833f8a10729c09f5)
-  — **CC BY 4.0**: được dùng thương mại, **bắt buộc ghi công tác giả** (đã
-  thêm dòng credit vào... *cần bổ sung vào trang About/Nguồn của app khi lên
-  production*, tự thân file này chưa tự ghi).
-  12.8k tam giác, không UV/texture (đúng ý — atlas dùng phong cách line-art
-  phẳng, không cần da thật).
-- Tải file: cần tài khoản Sketchfab miễn phí để bấm Download → chọn định
-  dạng **.glb** (KHÔNG chọn .fbx/.obj, script này load thẳng glb) → đổi tên
-  thành `body-model.glb` → đặt vào cùng thư mục với `atlas-calibrate-3d.html`
-  (không commit file .glb vào git — thêm vào `.gitignore` như đã làm với
-  `atlas-images/*.png`, vì file mesh cũng nặng và không phải mã nguồn).
-- Chưa có `body-model.glb` → công cụ tự hiện hình placeholder (viên nang) để
-  vẫn thử được thao tác thước/marker, có cảnh báo rõ trên màn hình — KHÔNG
-  dùng toạ độ đặt trên placeholder làm dữ liệu thật.
-
-### Cách dùng (giống hệt logic thốn của bản 2D, chỉ khác không gian 3D)
-1. `python3 -m http.server <port>` trong `backend/admin/`, mở
-   `atlas-calibrate-3d.html`.
-2. Kéo chuột = xoay mô hình, cuộn = zoom, chuột phải kéo = pan — xem được cả
-   mặt trước/sau/bên chỉ trong 1 mesh (khác 2D phải vẽ nhiều ảnh riêng theo
-   view).
-3. "Bắt đầu đặt thước" → click 2 mốc TRÊN BỀ MẶT mesh (mốc gần → xa) → công
-   cụ nối 1 đường thẳng (dây cung) giữa 2 điểm, có vạch chia từng thốn.
-4. Chọn Kinh mạch → Huyệt → chọn thước → nhập thốn dọc trục + lệch ngang →
-   "Tính & đặt": điểm tính theo dây cung thẳng, sau đó **tự động chiếu
-   (raycast) trở lại bề mặt mesh gần nhất** dọc theo pháp tuyến trung bình,
-   để huyệt luôn nằm đúng trên da chứ không lơ lửng trong khối.
-5. "Xuất JSON": mỗi huyệt có `x,y,z` (toạ độ thế giới thật, đơn vị mét theo
-   mesh gốc) + `normal_x,y,z` (hướng vuông góc bề mặt tại điểm đó — dùng để
-   sau này hiển thị marker luôn "dán" đúng mặt da khi xoay mô hình).
-
-### Giới hạn đã biết (v1 thí điểm, cần cải tiến trước khi dùng đại trà)
-- Thước là **dây cung thẳng** nối 2 mốc, không phải đường trắc địa
-  (geodesic) bám sát độ cong thật của da — ở đoạn cong nhiều (khuỷu, khoeo)
-  số thốn tính theo dây cung sẽ ngắn hơn thực tế đo dọc da. Bước snap-to-surface
-  sửa được sai lệch bề mặt (điểm luôn nằm đúng trên da) nhưng KHÔNG sửa được
-  sai lệch chiều dài dây cung — cần rà soát bằng mắt từng huyệt như quy trình
-  đã áp dụng cho 2D, đặc biệt quanh khớp.
-- Chưa có "mốc xương" (landmark) dựng sẵn trên mesh — mỗi lần đặt thước phải
-  tự click lại mốc bằng mắt, giống thao tác 2D. Bước nâng cấp tiếp theo hợp
-  lý: rig sẵn ~15-20 mốc xương chuẩn trên mesh (Blender/Mixamo) rồi chọn từ
-  dropdown thay vì click tay mỗi lần — giảm sai số do đặt mốc lệch.
-- Schema xuất JSON (`x,y,z,normal_*`) là **đề xuất mới**, chưa khớp bảng
-  `kb_atlas_markers` hiện tại (đang là `x_normalized,y_normalized` cho ảnh
-  2D) — cần bàn + viết migration/bảng mới (`kb_atlas_markers_3d`?) trước khi
-  ghi dữ liệu thật vào Core DB, không tự ý đổi bảng cũ.
-- Đã kiểm tra bằng tay (không phải chỉ đọc code): dựng server local, load
-  model, đặt thước + tính huyệt + xuất JSON — toàn bộ chạy đúng trên hình
-  placeholder. **Chưa test được với mesh giải phẫu thật** (chưa tải file) —
-  cần xác nhận lại raycasting/snap hoạt động đúng trên mesh nhiều tam giác
-  và nhiều sub-mesh hơn (glb thật có thể có nhiều group riêng cho từng vùng
-  cơ thể, không phải 1 mesh liền như placeholder).
+Bản 2D (`atlas-calibrate.html` ở trên) vẫn là bản chính đang dùng để hoàn
+thiện atlas trong repo này, không bị ảnh hưởng bởi việc tách dự án.
