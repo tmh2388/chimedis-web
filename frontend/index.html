@@ -1149,11 +1149,12 @@ function getGroup2Options(){
   return opts;
 }
 function selectGroup1(key){
-  // bấm menu trong lúc đang tìm kiếm -> xoá tìm kiếm, hiện lại menu
-  if(state.searchQuery){
-    state.searchQuery=''; searchInput.value='';
-    document.getElementById('searchBox').classList.remove('hasval');
-  }
+  // ⚠️ 2026-08-20: TRƯỚC ĐÂY đổi dropdown 1 trong lúc đang tìm kiếm sẽ XOÁ SẠCH ô tìm kiếm — có
+  // từ chính commit đầu tiên của repo, không phải hồi quy mới. User yêu cầu đổi lại theo đúng
+  // kiến trúc getFiltered() đã có sẵn (lọc group1 → group2 → searchQuery theo THỨ TỰ, đã ghi rõ
+  // trong comment tại đó): đổi dropdown phải LỌC TIẾP trên kết quả đang tìm, không xoá tìm kiếm
+  // để "hiện lại menu" như trước — vd. tìm "phát hãn" ra 36 từ, bấm "Dược liệu" phải thu hẹp
+  // xuống đúng 36 từ đó thuộc domain Dược liệu, không phải quay về danh sách Dược liệu đầy đủ.
   state.group1 = key;
   state.group2 = null;
   state.vocabVisible = VOCAB_PAGE_SIZE;
