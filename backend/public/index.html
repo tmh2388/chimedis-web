@@ -831,46 +831,56 @@ function searchTokens(q){
 // Tách riêng phần "gom field nào được đưa vào vùng tìm kiếm" ra khỏi matchTerm() để fuzzy
 // fallback (bên dưới) dùng lại NGUYÊN VẸN — tránh 2 nơi tự liệt kê field rồi lệch nhau theo
 // thời gian (đúng bài học rút ra khi mở rộng field 2026-08-19: 1 danh sách field duy nhất).
-function buildSearchHaystack(t){
+// Gom field theo 2 nhóm: `primary` (mô tả LÂM SÀNG CHÍNH — quyết định 1 mục "dùng để làm gì":
+// công năng/chủ trị/định nghĩa) và `secondary` (thuộc tính đi kèm — liều dùng/kiêng kỵ/tính vị/
+// quy kinh/vị trí/ghi chú). Tách riêng để matchRank() (bên dưới) ưu tiên khớp ở field CHÍNH hơn
+// khớp ở field PHỤ — bug thật phát hiện 2026-08-20 (câu hỏi kiến trúc của user): tìm "phát hãn",
+// "Bạc hà" lên TRƯỚC "Ma hoàng" dù "phát hãn" ở Bạc hà chỉ là 1 CẢNH BÁO tác dụng phụ trong
+// `caution_vi` ("...phát hãn hao khí, người thể hư đa hãn không nên dùng"), còn ở Ma hoàng đó
+// LÀ công năng chính (`action_vi`: "Phát hãn giải biểu...") — trước đây 2 field này được coi
+// NGANG NHAU, tie-break rơi về abc thuần tuý ("B" < "M") nên sai thứ tự liên quan hoàn toàn.
+// buildSearchHaystack() (tìm kiếm chính xác/fuzzy) vẫn gộp CẢ 2 nhóm như cũ — KHÔNG đổi phạm vi
+// tìm kiếm, chỉ đổi cách XẾP HẠNG kết quả.
+function buildSearchFieldGroups(t){
   // Tên thuật ngữ (hz/pinyin/vi/en) LUÔN tìm được ở cả 3 ngôn ngữ bất kể đang bật/tắt ngôn ngữ
   // hiển thị nào — ô tìm kiếm đã hứa rõ "Nhập 汉字 / pinyin / tiếng Việt / tiếng Anh", đây là TRA
   // TÊN, không phải đọc nội dung, nên không phụ thuộc contentLangs.
-  const fields = [t.hz, t.py, t.vi, t.en];
-  // Nội dung mô tả (chủ trị/định nghĩa/ví dụ) CHỈ tìm trong đúng những ngôn ngữ đang được BẬT
-  // hiển thị (state.contentLangs) — nếu tìm cả ngôn ngữ đang ẩn, người dùng sẽ thấy kết quả
-  // "không có căn cứ" vì đúng chữ khớp lại không được in ra ở đâu cả trong popup (renderMultiLang
-  // cũng lọc theo contentLangs). Bug thực tế 2026-08-17: tìm "nhức" (tiếng Việt) ra huyệt A Giao
-  // dù người dùng không thấy chữ "nhức" — vì đang chỉ bật hiển thị tiếng Trung, còn "nhức" nằm
-  // trong indication_vi đang bị ẩn. Search phải phản ánh đúng nội dung đang hiển thị trên màn
-  // hình, không được tìm "xuyên" qua dữ liệu ẩn.
-  // 2026-08-19: TRƯỚC ĐÂY chỉ đưa `indication_*` vào haystack — bỏ sót toàn bộ các field khác
-  // đang HIỂN THỊ THẬT trên popup (xem renderPopup trong file này): công năng, liều dùng, kiêng
-  // kỵ, tính vị, quy kinh, vị trí huyệt. Hậu quả: tìm "phát hãn" (nằm ở field `action_vi`, mục
-  // Công năng) không ra kết quả dù chữ đó hiện rõ trên màn hình — user báo lỗi 2026-08-19. Nay đưa
-  // đủ MỌI field content đang hiển thị vào haystack, vẫn giữ nguyên tắc "chỉ tìm đúng ngôn ngữ
-  // đang bật hiển thị" (contentLangs) ở trên.
+  const primary = [t.hz, t.py, t.vi, t.en];
+  const secondary = [];
+  // Nội dung mô tả CHỈ tìm trong đúng những ngôn ngữ đang được BẬT hiển thị (state.contentLangs)
+  // — nếu tìm cả ngôn ngữ đang ẩn, người dùng sẽ thấy kết quả "không có căn cứ" vì đúng chữ khớp
+  // lại không được in ra ở đâu cả trong popup (renderMultiLang cũng lọc theo contentLangs). Bug
+  // thực tế 2026-08-17: tìm "nhức" (tiếng Việt) ra huyệt A Giao dù người dùng không thấy chữ
+  // "nhức" — vì đang chỉ bật hiển thị tiếng Trung, còn "nhức" nằm trong indication_vi đang bị ẩn.
   if(t.category === 'herb' || t.category === 'acupoint'){
-    if(state.contentLangs.vi) fields.push(t.indication_vi, t.action_vi, t.dose_text_vi, t.caution_vi, t.taste_vi, t.temperature_vi, t.meridian_vi, t.location_vi);
-    if(state.contentLangs.en) fields.push(t.indication_en, t.action_en, t.dose_text_en, t.caution_en, t.taste_en, t.temperature_en, t.meridian_en, t.location_en);
-    if(state.contentLangs.zh) fields.push(t.indication_zh, t.action_zh, t.dose_text_zh, t.caution_zh, t.taste_zh, t.temperature_zh, t.meridian_zh, t.location_zh);
+    if(state.contentLangs.vi){ primary.push(t.indication_vi, t.action_vi); secondary.push(t.dose_text_vi, t.caution_vi, t.taste_vi, t.temperature_vi, t.meridian_vi, t.location_vi); }
+    if(state.contentLangs.en){ primary.push(t.indication_en, t.action_en); secondary.push(t.dose_text_en, t.caution_en, t.taste_en, t.temperature_en, t.meridian_en, t.location_en); }
+    if(state.contentLangs.zh){ primary.push(t.indication_zh, t.action_zh); secondary.push(t.dose_text_zh, t.caution_zh, t.taste_zh, t.temperature_zh, t.meridian_zh, t.location_zh); }
   }
   // Từ ghép Y Khoa: định nghĩa/ví dụ cũng vậy — riêng `meaning`/`example` mang ngôn ngữ KHÔNG cố
   // định (tiếng Anh cho type='term', tiếng Việt cho prefix/suffix/root — xem wordElementRowToTerm
-  // và ghi chú project_chimedis_overview), nên chỉ loại khi CẢ vi lẫn en đều đang tắt.
+  // và ghi chú project_chimedis_overview), nên chỉ loại khi CẢ vi lẫn en đều đang tắt. Không có
+  // field "phụ" nào ở domain này — chỉ 2 field content, đều là mô tả chính.
   if(t.category === 'word_element'){
-    if(state.contentLangs.vi || state.contentLangs.en) fields.push(t.meaning, t.example);
-    if(state.contentLangs.en) fields.push(t.meaning_en, t.example_en);
+    if(state.contentLangs.vi || state.contentLangs.en) primary.push(t.meaning, t.example);
+    if(state.contentLangs.en) primary.push(t.meaning_en, t.example_en);
   }
   // Giải phẫu/Sinh lý/Bệnh lý: KHÔNG có field `category` (undefined/rỗng) và dùng quy ước tên field
   // KHÁC hẳn (base = tiếng Việt, hậu tố `_cn` = tiếng Trung, `_en` = tiếng Anh — xem renderMultiLang
-  // gọi ở renderPopup) — trước đây KHÔNG có nhánh nào xử lý domain này nên 4 field nội dung
-  // (vị trí/công năng/ghi chú TCM/lâm sàng) 0% được tìm kiếm ở CẢ 3 ngôn ngữ.
+  // gọi ở renderPopup). Công năng/lâm sàng = chính; vị trí/ghi chú TCM = phụ.
   if(!t.category){
-    if(state.contentLangs.vi) fields.push(t.vitri, t.congnang, t.tcm, t.lamsang);
-    if(state.contentLangs.zh) fields.push(t.vitri_cn, t.congnang_cn, t.tcm_cn, t.lamsang_cn);
-    if(state.contentLangs.en) fields.push(t.vitri_en, t.congnang_en, t.tcm_en, t.lamsang_en);
+    if(state.contentLangs.vi){ primary.push(t.congnang, t.lamsang); secondary.push(t.vitri, t.tcm); }
+    if(state.contentLangs.zh){ primary.push(t.congnang_cn, t.lamsang_cn); secondary.push(t.vitri_cn, t.tcm_cn); }
+    if(state.contentLangs.en){ primary.push(t.congnang_en, t.lamsang_en); secondary.push(t.vitri_en, t.tcm_en); }
   }
-  return norm(fields.filter(Boolean).join(' '));
+  return { primary, secondary };
+}
+function buildSearchHaystack(t){
+  const { primary, secondary } = buildSearchFieldGroups(t);
+  return norm(primary.concat(secondary).filter(Boolean).join(' '));
+}
+function buildPrimaryHaystack(t){
+  return norm(buildSearchFieldGroups(t).primary.filter(Boolean).join(' '));
 }
 // ===== TỪ ĐIỂN ĐỒNG NGHĨA TCM (Tầng 2 phần 2) =====
 // Mỗi mảng con = các cách gọi CÙNG 1 khái niệm công năng/pháp trị TCM chuẩn — trộn thuật ngữ
@@ -1181,9 +1191,9 @@ function loadMoreVocab(){
 // truy vấn/tính toán nặng, giữ nguyên tốc độ. CHỈ áp dụng khi đang tìm kiếm — duyệt danh mục
 // bình thường (không gõ gì) vẫn sắp abc y hệt trước, không đổi UX đó.
 function matchRank(t, q, isFuzzy){
-  if(isFuzzy) return 5; // fallback fuzzy luôn xếp cuối — đã tự nhận là "gợi ý gần đúng"
+  if(isFuzzy) return 6; // fallback fuzzy luôn xếp cuối — đã tự nhận là "gợi ý gần đúng"
   const nq = norm(q);
-  if(!nq) return 3;
+  if(!nq) return 4;
   const nameFields = [t.hz, t.py, t.vi, t.en].filter(Boolean).map(norm);
   if(nameFields.some(f => f === nq)) return 0; // tên khớp NGUYÊN VĂN
   if(nameFields.some(f => f.startsWith(nq) || nq.startsWith(f))) return 1; // tên khớp 1 phần mạnh
@@ -1191,12 +1201,20 @@ function matchRank(t, q, isFuzzy){
   // ⚠️ PHẢI kiểm tra khớp NGUYÊN VĂN trong nội dung TRƯỚC khi kiểm tra đồng nghĩa — bug tự bắt
   // được khi test trước khi push: nếu kiểm tra đồng nghĩa trước, 1 mục vừa CÓ chữ đúng nguyên
   // văn trong nội dung (vd. Ma hoàng có "sweating" ngay trong action_en) vừa NẰM TRONG nhóm đồng
-  // nghĩa sẽ luôn bị tính là "chỉ khớp đồng nghĩa" (bậc 4, thấp hơn) — kết quả: mục ĐÚNG NHẤT lại
-  // bị xếp SAU hàng chục mục khác chỉ tình cờ chứa chữ đó trong phần lưu ý/kiêng kỵ (bậc 3).
-  const haystack = buildSearchHaystack(t);
-  if(haystack.includes(nq)) return 3; // nội dung chứa NGUYÊN VĂN query
-  if(haystackHasSynonymOf(haystack, nq)) return 4; // CHỈ khớp qua đồng nghĩa, không có chữ nguyên văn
-  return 3; // các trường hợp khác đã qua được matchQuery (vd. khớp theo cụm tách dấu phẩy/AND-NOT) nhưng không rơi vào nhánh nào ở trên — coi ngang bậc nội dung
+  // nghĩa sẽ luôn bị tính là "chỉ khớp đồng nghĩa" (bậc thấp hơn) — kết quả: mục ĐÚNG NHẤT lại bị
+  // xếp SAU các mục khác chỉ tình cờ chứa chữ đó trong phần phụ.
+  // ⚠️ PHẢI phân biệt field CHÍNH (công năng/chủ trị — quyết định "dùng để làm gì") với field PHỤ
+  // (liều dùng/kiêng kỵ/tính vị/quy kinh/vị trí) — bug thật phát hiện 2026-08-20 (câu hỏi kiến
+  // trúc của user): tìm "phát hãn", "Bạc hà" (chữ đó CHỈ nằm trong `caution_vi` — 1 CẢNH BÁO tác
+  // dụng phụ) lại xếp TRƯỚC "Ma hoàng"/"Hương nhu" (chữ đó LÀ công năng chính trong `action_vi`)
+  // chỉ vì trước đây 2 field này bị coi ngang nhau rồi tie-break rơi về abc ("B" < "H"/"M").
+  const { primary, secondary } = buildSearchFieldGroups(t);
+  const primaryHay = norm(primary.filter(Boolean).join(' '));
+  if(primaryHay.includes(nq)) return 3; // field CHÍNH (tên/công năng/chủ trị) chứa NGUYÊN VĂN query
+  const fullHay = norm(primary.concat(secondary).filter(Boolean).join(' '));
+  if(fullHay.includes(nq)) return 4; // CHỈ field PHỤ (liều dùng/kiêng kỵ/tính vị...) chứa nguyên văn
+  if(haystackHasSynonymOf(fullHay, nq)) return 5; // CHỈ khớp qua đồng nghĩa, không có chữ nguyên văn ở đâu cả
+  return 4; // các trường hợp khác đã qua được matchQuery (vd. khớp theo cụm tách dấu phẩy/AND-NOT) nhưng không rơi vào nhánh nào ở trên — coi ngang bậc nội dung phụ
 }
 function sortByRelevance(list, q, isFuzzy){
   return list
