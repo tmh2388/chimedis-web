@@ -79,6 +79,8 @@
     {"id": "laxative", "terms": ["nhuận tràng", "thông tiện", "laxative", "relieve constipation", "moisten the intestines", "润肠"], "reviewed": false},
     {"id": "stop_bleeding", "terms": ["cầm máu", "chỉ huyết", "stop bleeding", "stanch bleeding", "stop hemorrhage", "止血"], "reviewed": false},
     {"id": "strengthen_spleen", "terms": ["kiện tỳ", "bổ tỳ", "strengthen the spleen", "tonify the spleen", "fortify the spleen", "健脾"], "reviewed": false},
-    {"id": "relieve_wheezing", "terms": ["bình suyễn", "giảm khó thở", "relieve wheezing", "relieve asthma", "calm panting", "平喘"], "reviewed": false}
+    {"id": "relieve_wheezing", "terms": ["bình suyễn", "giảm khó thở", "relieve wheezing", "relieve asthma", "calm panting", "平喘"], "reviewed": false},
+    {"id": "inhale", "terms": ["hít vào", "thở vào", "inhale", "inhalation", "breathe in", "breathing in", "吸气"], "reviewed": false},
+    {"id": "exhale", "terms": ["thở ra", "exhale", "exhalation", "breathe out", "breathing out", "呼气"], "reviewed": false}
   ]
 }
