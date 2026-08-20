@@ -269,3 +269,42 @@ CREATE TABLE IF NOT EXISTS acupoints (
 --                kb_formula_ingredients, kb_formula_indication_claims...)
 --   Bệnh lý (pathology) — needs a readable source first; see note above
 -- ---------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------
+-- users / user_favorites / user_settings — đăng nhập người dùng (Firebase Auth).
+-- Firebase Auth tự quản lý password/social login ở phía client — server KHÔNG lưu
+-- password, chỉ lưu 1 bản ghi "profile" ứng với mỗi firebase_uid để join với dữ liệu
+-- riêng của user (favorites, settings đồng bộ đa thiết bị). Xem backend/firebase-admin.js.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS users (
+  id             INT AUTO_INCREMENT PRIMARY KEY,
+  firebase_uid   VARCHAR(128) NOT NULL UNIQUE,
+  email          VARCHAR(255),
+  display_name   VARCHAR(255),
+  photo_url      TEXT,
+  created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  last_login_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- term_id + term_category (= group1 của term, vd. 'Dược liệu'/'Huyệt vị'...) đủ để tra
+-- ngược ra term thật qua /api/terms phía frontend — không lưu trùng nội dung term ở đây.
+CREATE TABLE IF NOT EXISTS user_favorites (
+  id              INT AUTO_INCREMENT PRIMARY KEY,
+  user_id         INT NOT NULL,
+  term_id         VARCHAR(32) NOT NULL,
+  term_category   VARCHAR(32) NOT NULL,
+  created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_user_term (user_id, term_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Đồng bộ đa thiết bị cho các cài đặt hiện đang chỉ lưu localStorage phía frontend
+-- (state.lang, state.contentLangs, state.hanScript) — xem loadContentLangs() trong index.html.
+CREATE TABLE IF NOT EXISTS user_settings (
+  user_id         INT PRIMARY KEY,
+  lang            VARCHAR(8),    -- 'vi' | 'zh' | 'en'
+  content_langs   VARCHAR(32),   -- vd. 'zh,vi,en' — danh sách ngôn ngữ nội dung đang bật
+  han_script      VARCHAR(16),   -- 'simplified' | 'traditional'
+  updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

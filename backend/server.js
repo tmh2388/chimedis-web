@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import mysql from 'mysql2/promise';
 import { runImport } from './import-herbal-sheets.js';
 import { buildAPI } from './build-api.js';
+import { verifyFirebaseToken, isFirebaseConfigured } from './firebase-admin.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -260,6 +261,139 @@ async function getWordElementTerms() {
   }
 }
 
+/**
+ * Tìm hoặc tạo bản ghi `users` ứng với 1 firebase_uid đã xác thực — gọi ngay sau khi
+ * verifyFirebaseToken pass, trước khi dùng user.id cho favorites/settings. Cập nhật lại
+ * email/display_name/photo_url mỗi lần gọi (đồng bộ nếu user đổi thông tin bên Firebase/
+ * Google/Facebook) và bump last_login_at.
+ */
+async function getOrCreateUser(firebaseUser) {
+  const { uid, email, name, picture } = firebaseUser;
+  await mysqlPool.query(
+    `INSERT INTO users (firebase_uid, email, display_name, photo_url)
+     VALUES (?, ?, ?, ?)
+     ON DUPLICATE KEY UPDATE email = VALUES(email), display_name = VALUES(display_name),
+       photo_url = VALUES(photo_url), last_login_at = CURRENT_TIMESTAMP`,
+    [uid, email, name, picture]
+  );
+  const [rows] = await mysqlPool.query('SELECT * FROM users WHERE firebase_uid = ?', [uid]);
+  return rows[0];
+}
+
+// Middleware dùng chung cho mọi route /api/auth/*, /api/favorites, /api/settings — yêu cầu
+// MySQL đã cấu hình (users/favorites/settings đều sống trong MySQL, không có bản offline).
+function requireMysql(req, res, next) {
+  if (!mysqlPool) {
+    return res.status(503).json({ success: false, error: 'Tính năng đăng nhập chưa sẵn sàng (MySQL chưa cấu hình)' });
+  }
+  next();
+}
+
+/**
+ * POST /api/auth/sync
+ * Gọi ngay sau khi client đăng nhập thành công qua Firebase — đảm bảo có bản ghi `users`
+ * tương ứng trước khi dùng các API favorites/settings bên dưới.
+ */
+app.post('/api/auth/sync', requireMysql, verifyFirebaseToken, async (req, res) => {
+  try {
+    const user = await getOrCreateUser(req.firebaseUser);
+    res.json({ success: true, data: user });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * GET /api/favorites
+ * Danh sách term_id/term_category đã lưu của user hiện tại.
+ */
+app.get('/api/favorites', requireMysql, verifyFirebaseToken, async (req, res) => {
+  try {
+    const user = await getOrCreateUser(req.firebaseUser);
+    const [rows] = await mysqlPool.query(
+      'SELECT term_id, term_category, created_at FROM user_favorites WHERE user_id = ? ORDER BY created_at DESC',
+      [user.id]
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * POST /api/favorites
+ * Body: { term_id, term_category }. Idempotent (UNIQUE KEY uniq_user_term).
+ */
+app.post('/api/favorites', requireMysql, verifyFirebaseToken, async (req, res) => {
+  const { term_id, term_category } = req.body || {};
+  if (!term_id || !term_category) {
+    return res.status(400).json({ success: false, error: 'Thiếu term_id hoặc term_category' });
+  }
+  try {
+    const user = await getOrCreateUser(req.firebaseUser);
+    await mysqlPool.query(
+      'INSERT IGNORE INTO user_favorites (user_id, term_id, term_category) VALUES (?, ?, ?)',
+      [user.id, term_id, term_category]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * DELETE /api/favorites/:termId
+ */
+app.delete('/api/favorites/:termId', requireMysql, verifyFirebaseToken, async (req, res) => {
+  try {
+    const user = await getOrCreateUser(req.firebaseUser);
+    await mysqlPool.query(
+      'DELETE FROM user_favorites WHERE user_id = ? AND term_id = ?',
+      [user.id, req.params.termId]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * GET /api/settings
+ * Cài đặt hiển thị đã đồng bộ của user (lang/content_langs/han_script) — null nếu user
+ * chưa từng lưu (client giữ nguyên localStorage hiện tại làm mặc định).
+ */
+app.get('/api/settings', requireMysql, verifyFirebaseToken, async (req, res) => {
+  try {
+    const user = await getOrCreateUser(req.firebaseUser);
+    const [rows] = await mysqlPool.query('SELECT * FROM user_settings WHERE user_id = ?', [user.id]);
+    res.json({ success: true, data: rows[0] || null });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * PUT /api/settings
+ * Body: { lang, content_langs, han_script } — content_langs là mảng, lưu dạng chuỗi "a,b,c".
+ */
+app.put('/api/settings', requireMysql, verifyFirebaseToken, async (req, res) => {
+  const { lang, content_langs, han_script } = req.body || {};
+  try {
+    const user = await getOrCreateUser(req.firebaseUser);
+    const contentLangsStr = Array.isArray(content_langs) ? content_langs.join(',') : content_langs;
+    await mysqlPool.query(
+      `INSERT INTO user_settings (user_id, lang, content_langs, han_script)
+       VALUES (?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE lang = VALUES(lang), content_langs = VALUES(content_langs),
+         han_script = VALUES(han_script)`,
+      [user.id, lang || null, contentLangsStr || null, han_script || null]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Frontend static assets live in backend/public/ (synced from ../frontend via
 // `npm run build` locally — see sync-frontend.js) so a deploy that only ships
 // the backend/ directory still serves the PWA.
@@ -504,6 +638,12 @@ app.get('/api', (req, res) => {
       'GET /api/groups': 'Fetch unique groups',
       'GET /api/metadata': 'Fetch API metadata',
       'POST /api/build-now': 'Trigger build (requires webhook_secret)',
+      'POST /api/auth/sync': 'Sync Firebase user into MySQL (requires Bearer ID token)',
+      'GET /api/favorites': 'List current user favorites (requires Bearer ID token)',
+      'POST /api/favorites': 'Add a favorite (requires Bearer ID token)',
+      'DELETE /api/favorites/:termId': 'Remove a favorite (requires Bearer ID token)',
+      'GET /api/settings': 'Get synced display settings (requires Bearer ID token)',
+      'PUT /api/settings': 'Update synced display settings (requires Bearer ID token)',
       'GET /health': 'Health check',
     },
     documentation: 'https://github.com/tmh2388/chimedis-web',
