@@ -760,10 +760,13 @@ let state = {
   authMode: 'signin', // 'signin' | 'signup' — form nào đang hiện trong modal đăng nhập
 };
 const FAVORITES_SENTINEL = '__favorites__';
-// Facebook Login: tạo Facebook App từng bị Meta chặn tạm thời do thiết bị lạ (2026-08-20),
-// đã hoàn tất sau đó (App ID/Secret đã cấu hình + provider Facebook đã bật trong Firebase
-// Console > Authentication) — bật lại nút này 2026-08-20.
-const FACEBOOK_LOGIN_ENABLED = true;
+// Facebook Login: TẠM ẨN LẠI (2026-09-03) — hoá ra chưa thực sự tạo Facebook App (mới có tài
+// khoản Meta for Developers, chưa có app + App ID/Secret thật), nên provider Facebook trong
+// Firebase Console đang lưu App ID/Secret không hợp lệ → user bấm nút không có phản hồi gì
+// (không popup, không lỗi rõ ràng). Bật lại: đổi thành true SAU KHI đã tạo app thật trên
+// developers.facebook.com, lấy App ID/Secret, dán lại đúng vào Firebase Console > Authentication
+// > Sign-in method > Facebook, và xác nhận đăng nhập thử thành công.
+const FACEBOOK_LOGIN_ENABLED = false;
 
 // ===== NGÔN NGỮ HIỂN THỊ NỘI DUNG (độc lập với ngôn ngữ giao diện state.lang) =====
 const CONTENT_LANGS_KEY = 'chimedis_content_langs_v1';
