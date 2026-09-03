@@ -374,21 +374,88 @@ app.get('/api/settings', requireMysql, verifyFirebaseToken, async (req, res) => 
 
 /**
  * PUT /api/settings
- * Body: { lang, content_langs, han_script } — content_langs là mảng, lưu dạng chuỗi "a,b,c".
+ * Body: { lang, content_langs, han_script, tts_autoplay, daily_goal } — content_langs là mảng,
+ * lưu dạng chuỗi "a,b,c". tts_autoplay/daily_goal có thể vắng mặt (giữ giá trị cũ trong DB).
  */
 app.put('/api/settings', requireMysql, verifyFirebaseToken, async (req, res) => {
-  const { lang, content_langs, han_script } = req.body || {};
+  const { lang, content_langs, han_script, tts_autoplay, daily_goal } = req.body || {};
   try {
     const user = await getOrCreateUser(req.firebaseUser);
     const contentLangsStr = Array.isArray(content_langs) ? content_langs.join(',') : content_langs;
+    const ttsVal = (tts_autoplay === undefined || tts_autoplay === null) ? null : (tts_autoplay ? 1 : 0);
+    const goalVal = (daily_goal === undefined || daily_goal === null) ? null : Number(daily_goal);
     await mysqlPool.query(
-      `INSERT INTO user_settings (user_id, lang, content_langs, han_script)
-       VALUES (?, ?, ?, ?)
+      `INSERT INTO user_settings (user_id, lang, content_langs, han_script, tts_autoplay, daily_goal)
+       VALUES (?, ?, ?, ?, COALESCE(?, FALSE), COALESCE(?, 10))
        ON DUPLICATE KEY UPDATE lang = VALUES(lang), content_langs = VALUES(content_langs),
-         han_script = VALUES(han_script)`,
-      [user.id, lang || null, contentLangsStr || null, han_script || null]
+         han_script = VALUES(han_script),
+         tts_autoplay = COALESCE(?, tts_autoplay),
+         daily_goal = COALESCE(?, daily_goal)`,
+      [user.id, lang || null, contentLangsStr || null, han_script || null, ttsVal, goalVal, ttsVal, goalVal]
     );
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * GET /api/progress
+ * Toàn bộ tiến độ ôn luyện của user hiện tại (spaced repetition). Mảng rỗng nếu chưa học từ nào.
+ */
+app.get('/api/progress', requireMysql, verifyFirebaseToken, async (req, res) => {
+  try {
+    const user = await getOrCreateUser(req.firebaseUser);
+    const [rows] = await mysqlPool.query(
+      `SELECT term_id, status, cycle_idx, wrong_count, next_review_at, updated_at
+         FROM user_progress WHERE user_id = ?`,
+      [user.id]
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * PUT /api/progress
+ * Body: { items: [{ term_id, status, cycle_idx, wrong_count, next_review_at, updated_at }] }
+ * Upsert theo lô, HỢP NHẤT last-write-wins theo updated_at TỪNG TỪ (một máy offline lâu ngày
+ * đẩy bản cũ lên sẽ không đè bản mới hơn ở máy khác). updated_at/next_review_at nhận ISO string.
+ */
+app.put('/api/progress', requireMysql, verifyFirebaseToken, async (req, res) => {
+  const items = (req.body && Array.isArray(req.body.items)) ? req.body.items : null;
+  if (!items) return res.status(400).json({ success: false, error: 'Thiếu items[]' });
+  try {
+    const user = await getOrCreateUser(req.firebaseUser);
+    const toDate = (v) => {
+      if (!v) return null;
+      const d = new Date(v);
+      return isNaN(d.getTime()) ? null : d;
+    };
+    for (const it of items) {
+      if (!it || !it.term_id) continue;
+      const upd = toDate(it.updated_at) || new Date();
+      await mysqlPool.query(
+        `INSERT INTO user_progress (user_id, term_id, status, cycle_idx, wrong_count, next_review_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE
+           status         = IF(VALUES(updated_at) >= updated_at, VALUES(status), status),
+           cycle_idx      = IF(VALUES(updated_at) >= updated_at, VALUES(cycle_idx), cycle_idx),
+           wrong_count    = IF(VALUES(updated_at) >= updated_at, VALUES(wrong_count), wrong_count),
+           next_review_at = IF(VALUES(updated_at) >= updated_at, VALUES(next_review_at), next_review_at),
+           updated_at     = IF(VALUES(updated_at) >= updated_at, VALUES(updated_at), updated_at)`,
+        [
+          user.id, String(it.term_id),
+          String(it.status || 'new'),
+          Number.isFinite(it.cycle_idx) ? it.cycle_idx : 0,
+          Number.isFinite(it.wrong_count) ? it.wrong_count : 0,
+          toDate(it.next_review_at),
+          upd,
+        ]
+      );
+    }
+    res.json({ success: true, count: items.length });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -644,6 +711,8 @@ app.get('/api', (req, res) => {
       'DELETE /api/favorites/:termId': 'Remove a favorite (requires Bearer ID token)',
       'GET /api/settings': 'Get synced display settings (requires Bearer ID token)',
       'PUT /api/settings': 'Update synced display settings (requires Bearer ID token)',
+      'GET /api/progress': 'List spaced-repetition progress (requires Bearer ID token)',
+      'PUT /api/progress': 'Bulk-upsert spaced-repetition progress, last-write-wins (requires Bearer ID token)',
       'GET /health': 'Health check',
     },
     documentation: 'https://github.com/tmh2388/chimedis-web',

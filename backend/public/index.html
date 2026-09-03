@@ -446,6 +446,64 @@ header{transition:padding .2s ease}
   align-items:center;justify-content:center;cursor:pointer}
 .pp-fav svg{width:17px;height:17px;transition:.15s}
 .pp-fav.on svg{color:var(--son);fill:var(--son)}
+
+/* ===== Phát âm (TTS) + Học tập ===== */
+.pp-speak{position:absolute;top:calc(20px + env(safe-area-inset-top));right:92px;width:30px;height:30px;
+  border-radius:50%;background:rgba(255,255,255,.16);border:0;color:var(--ngua);display:flex;
+  align-items:center;justify-content:center;cursor:pointer;padding:0}
+.pp-speak svg{width:16px;height:16px}
+.pp-speak.speaking{background:var(--son);color:#fff}
+.fld-speak,.fc-speak{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;
+  width:24px;height:24px;margin-left:6px;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:var(--ngua-am,#efe7d8);color:var(--tham-2,#7a6a58);flex:0 0 24px;-webkit-tap-highlight-color:transparent}
+.fld-speak svg,.fc-speak svg{width:14px;height:14px}
+.fld-speak.speaking,.fc-speak.speaking{background:var(--son,#c2410c);color:#fff}
+.fld-speak:active,.fc-speak:active{transform:scale(.9)}
+.field .ft{display:flex;align-items:center}
+.tts-lang-pop{position:fixed;z-index:9999;background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,.18);padding:5px;display:flex;flex-direction:column;min-width:132px}
+.tts-lang-pop button{border:0;background:none;text-align:left;padding:9px 12px;border-radius:8px;font-size:14px;
+  color:var(--muc,#2a2118);cursor:pointer;font-family:inherit}
+.tts-lang-pop button:active{background:var(--ngua-am,#efe7d8)}
+.fc-ex{margin-top:12px;font-size:12px;color:var(--muc-mo,#8a7d6a);display:flex;align-items:center;justify-content:center}
+
+.drawer-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--son,#c2410c);
+  color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.drawer-toggle{cursor:pointer}
+.drawer-toggle input{margin-left:auto;width:38px;height:22px;-webkit-appearance:none;appearance:none;border-radius:11px;
+  background:var(--vien,#d9cfbc);position:relative;cursor:pointer;transition:.15s;flex:0 0 38px}
+.drawer-toggle input:checked{background:var(--son,#c2410c)}
+.drawer-toggle input::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+  background:#fff;transition:.15s}
+.drawer-toggle input:checked::after{left:18px}
+
+.study-screen{padding:14px 16px 30px}
+.study-top{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.study-top h2{margin:0;font-size:22px;color:var(--muc,#2a2118)}
+.study-meta{display:flex;gap:14px;font-size:12.5px;color:var(--muc-mo,#8a7d6a);flex-wrap:wrap}
+.study-hint{background:var(--ngua-am,#efe7d8);color:var(--tham-2,#7a6a58);font-size:12px;padding:9px 12px;border-radius:10px;margin-bottom:12px}
+.study-today{background:var(--thamthm,#3a2f24);color:#fff;border-radius:18px;padding:20px;text-align:center;margin-bottom:14px}
+.study-today .st-n{font-size:40px;font-weight:800;line-height:1}
+.study-today .st-l{font-size:13px;opacity:.85;margin-top:4px}
+.study-today.has .st-go{margin-top:14px;background:var(--son,#c2410c);color:#fff;border:0;border-radius:12px;
+  padding:12px 26px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.study-decks{display:flex;gap:10px;margin-bottom:12px}
+.study-deck{flex:1;background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:14px;padding:14px 6px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:inherit}
+.study-deck.on{border-color:var(--son,#c2410c);background:var(--ngua-am,#efe7d8)}
+.study-deck .sd-n{font-size:22px;font-weight:800;color:var(--muc,#2a2118)}
+.study-deck .sd-l{font-size:11.5px;color:var(--muc-mo,#8a7d6a)}
+.study-modes{display:flex;gap:10px;margin-bottom:10px}
+.study-modes button{flex:1;background:var(--ngua-am,#efe7d8);border:0;border-radius:12px;padding:12px;font-size:14px;
+  font-weight:700;color:var(--tham-2,#7a6a58);cursor:pointer;font-family:inherit}
+.study-backbar{display:inline-flex;align-items:center;gap:4px;background:none;border:0;color:var(--tham-2,#7a6a58);
+  font-size:13px;font-weight:700;padding:10px 4px;cursor:pointer;font-family:inherit}
+.study-backbar svg{width:16px;height:16px}
+.review-bar{display:flex;align-items:center;gap:10px;background:var(--ngua-am,#efe7d8);border-radius:12px;
+  padding:10px 14px;margin:4px 0 12px;font-size:13px;color:var(--tham-2,#7a6a58)}
+.review-bar button{margin-left:auto;background:var(--son,#c2410c);color:#fff;border:0;border-radius:9px;
+  padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.review-bar .rb-x{background:none;color:var(--muc-mo,#8a7d6a);padding:4px 8px}
 </style>
 </head>
 <body>
@@ -518,8 +576,9 @@ header{transition:padding .2s ease}
       <div class="drawer-sec" data-i18n="dr_account">Tài khoản</div>
       <div class="drawer-item" id="drawerLoginItem" onclick="openAuthModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span data-i18n="dr_login" id="drawerLoginLabel">Đăng nhập / Đăng ký</span></div>
       <div class="drawer-item" id="drawerFavItem" onclick="openFavoritesView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.8C.7 8.4 2.4 5 6 5c2 0 3.3 1 6 3.5C14.7 6 16 5 18 5c3.6 0 5.3 3.4 3.5 7.2C19 16.65 12 21 12 21z"/></svg><span data-i18n="dr_favorites">Từ đã lưu</span></div>
-      <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="dr_progress">Tiến độ học tập</span><span class="soon" data-i18n="soon">Sắp có</span></div>
+      <div class="drawer-item" id="drawerStudyItem" onclick="openStudyView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="dr_progress">Tiến độ học tập</span><span class="drawer-badge" id="studyDueBadge" hidden>0</span></div>
       <div class="drawer-sec" data-i18n="dr_settings">Cài đặt</div>
+      <label class="drawer-item drawer-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg><span data-i18n="tts_autoplay">Tự động đọc từ khi ôn</span><input type="checkbox" id="ttsAutoplayChk" onchange="setTtsAutoplay(this.checked)"></label>
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1l-.3-2.5h-4l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h4l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"/></svg><span data-i18n="dr_sys">Cài đặt hệ thống</span><span class="soon" data-i18n="soon">Sắp có</span></div>
       <div class="drawer-item" onclick="toggleContentLangPanel()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span data-i18n="dr_display">Tuỳ chỉnh hiển thị</span><svg class="chev" id="clpChev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg></div>
       <div class="content-lang-panel" id="contentLangPanel">
@@ -758,6 +817,10 @@ let state = {
                                // syncFavoritesWithServer() gọi trong onAuthStateChanged bên dưới).
   user: null, // { uid, email, name, picture } khi đã đăng nhập Firebase, null khi chưa — xem authStateChanged().
   authMode: 'signin', // 'signin' | 'signup' — form nào đang hiện trong modal đăng nhập
+  ttsAutoplay: (localStorage.getItem('chimedis_tts_autoplay') === '1'), // tự đọc từ khi ôn (mặc định tắt)
+  dailyGoal: (parseInt(localStorage.getItem('chimedis_daily_goal'),10) || 10),
+  _studyList: null,   // danh sách từ của phiên ôn đang chạy khi mở từ màn hình "Học tập"
+  _studyDeck: 'saved',// deck đang chọn trong màn hình "Học tập"
 };
 const FAVORITES_SENTINEL = '__favorites__';
 // Facebook Login: bật lại 2026-09-03 — đã tạo app Facebook thật (App ID 1765529687916023),
@@ -804,9 +867,14 @@ async function toggleFavorite(termId, category){
   const wasOn = state.favorites.has(termId);
   if(wasOn) state.favorites.delete(termId); else state.favorites.add(termId);
   saveFavoritesLocal();
+  // GỘP "Lưu" = "Học": bật ❤ đồng thời đưa từ vào danh sách ôn luyện (nếu chưa có tiến độ).
+  // Bỏ ❤ chỉ rút khỏi các deck học (deck lấy từ favorites) — vẫn giữ lịch sử tiến độ trong
+  // localStorage để nếu lưu lại thì học tiếp từ chỗ cũ.
+  if(!wasOn && !progress[termId]) setStatus(termId, 'new');
+  updateStudyBadge();
   const btn = document.getElementById('ppFavBtn');
   if(btn) btn.classList.toggle('on', !wasOn);
-  if(state.group1 === FAVORITES_SENTINEL) render();
+  if(state.group1 === FAVORITES_SENTINEL || state.group1 === STUDY_SENTINEL) render();
   if(!state.user) return; // chưa đăng nhập -> chỉ lưu local, đồng bộ lên server khi đăng nhập sau
   try{
     if(wasOn){
@@ -875,6 +943,10 @@ async function syncSettingsWithServer(){
         saveContentLangs();
       }
       if(saved.han_script) { state.hanScript = saved.han_script; localStorage.setItem('chimedis_han_script', saved.han_script); }
+      if(saved.tts_autoplay !== undefined && saved.tts_autoplay !== null){
+        state.ttsAutoplay = !!saved.tts_autoplay; localStorage.setItem('chimedis_tts_autoplay', state.ttsAutoplay ? '1' : '0');
+      }
+      if(saved.daily_goal){ state.dailyGoal = Number(saved.daily_goal) || 10; localStorage.setItem('chimedis_daily_goal', String(state.dailyGoal)); }
       render();
     } else {
       pushSettingsIfLoggedIn();
@@ -886,7 +958,8 @@ function pushSettingsIfLoggedIn(){
   const contentLangsStr = Object.entries(state.contentLangs).filter(([,v])=>v).map(([k])=>k).join(',');
   authFetch('/api/settings', {
     method: 'PUT',
-    body: JSON.stringify({ lang: state.lang, content_langs: contentLangsStr, han_script: state.hanScript }),
+    body: JSON.stringify({ lang: state.lang, content_langs: contentLangsStr, han_script: state.hanScript,
+      tts_autoplay: !!state.ttsAutoplay, daily_goal: state.dailyGoal || 10 }),
   }).catch(e => console.warn('[Chimedis] Không lưu được cài đặt hiển thị lên server:', e.message));
 }
 
@@ -999,6 +1072,7 @@ window.chimedisAuthStateChanged = async function(user){
       await authFetch('/api/auth/sync', { method: 'POST' });
       await syncFavoritesWithServer();
       await syncSettingsWithServer();
+      await syncProgressWithServer();
     }catch(e){ console.warn('[Chimedis] Lỗi đồng bộ sau đăng nhập:', e.message); }
   }
 };
@@ -1073,26 +1147,367 @@ let progress = loadProgress(); // { [id]: {status:'new'|'review'|'known', next: 
 function getStatus(id){ return (progress[id] && progress[id].status) || 'new'; }
 function setStatus(id, status){
   const today = new Date();
-  let nextDays = 1;
+  const cur = progress[id] || {};
   if(status === 'known'){
-    const cur = progress[id] || {};
-    const cycle = [1,3,7,14,30];
-    const idx = Math.min((cur.cycleIdx||0)+1, cycle.length-1);
-    nextDays = cycle[idx];
-    progress[id] = {status:'known', cycleIdx: idx, next: addDays(today, nextDays).toISOString(), wrongCount: cur.wrongCount||0};
+    // Đã qua hết chu kỳ (đang ở bước cuối) mà vẫn tích thuộc lần nữa -> "mastered": ngừng nhắc ôn,
+    // vẫn giữ trong kho "Đã thuộc". Đây là hành vi "bỏ khi đã tích thuộc" theo yêu cầu.
+    if(cur.status === 'known' && (cur.cycleIdx||0) >= SRS_CYCLE.length - 1){
+      progress[id] = {status:'mastered', cycleIdx: SRS_CYCLE.length - 1, next: null, wrongCount: cur.wrongCount||0};
+    } else {
+      const idx = Math.min((cur.cycleIdx||0) + 1, SRS_CYCLE.length - 1);
+      progress[id] = {status:'known', cycleIdx: idx, next: addDays(today, SRS_CYCLE[idx]).toISOString(), wrongCount: cur.wrongCount||0};
+    }
   } else if(status === 'review'){
-    const cur = progress[id] || {};
     progress[id] = {status:'review', cycleIdx:0, next: addDays(today,1).toISOString(), wrongCount:(cur.wrongCount||0)+1};
-  } else if(status === 'new'){
-    progress[id] = {status:'new', cycleIdx:0, next:null, wrongCount:(progress[id]&&progress[id].wrongCount)||0};
+  } else if(status === 'known-again' || status === 'mastered'){
+    progress[id] = {status:'mastered', cycleIdx: SRS_CYCLE.length - 1, next: null, wrongCount: cur.wrongCount||0};
+  } else { // 'new'
+    progress[id] = {status:'new', cycleIdx:0, next:null, wrongCount: cur.wrongCount||0};
   }
+  progress[id].updated = new Date().toISOString();
   saveProgress(progress);
+  pushProgressItem(id);
+  updateStudyBadge();
+}
+// Đẩy 1 mục tiến độ lên server (fire-and-forget) khi đã đăng nhập — gộp nhiều lần gọi liên tiếp.
+let _progressPushTimer = null, _progressPushSet = new Set();
+function pushProgressItem(id){
+  if(!state.user) return;
+  _progressPushSet.add(id);
+  clearTimeout(_progressPushTimer);
+  _progressPushTimer = setTimeout(() => {
+    const ids = [..._progressPushSet]; _progressPushSet.clear();
+    const items = ids.filter(x => progress[x]).map(x => ({
+      term_id: x, status: progress[x].status || 'new', cycle_idx: progress[x].cycleIdx || 0,
+      wrong_count: progress[x].wrongCount || 0, next_review_at: progress[x].next || null,
+      updated_at: progress[x].updated || new Date().toISOString(),
+    }));
+    if(items.length) authFetch('/api/progress', { method:'PUT', body: JSON.stringify({ items }) })
+      .catch(e => console.warn('[Chimedis] Không đẩy được tiến độ:', e.message));
+  }, 800);
+}
+// Hợp nhất 2 chiều khi đăng nhập — last-write-wins theo `updated` từng từ (giống favorites).
+async function syncProgressWithServer(){
+  if(!state.user) return;
+  try{
+    const res = await authFetch('/api/progress');
+    if(!res.ok) return;
+    const json = await res.json();
+    const rows = json.data || [];
+    let changed = false;
+    for(const r of rows){
+      const loc = progress[r.term_id];
+      const sT = new Date(r.updated_at || 0).getTime();
+      const lT = (loc && loc.updated) ? new Date(loc.updated).getTime() : 0;
+      if(!loc || sT > lT){
+        progress[r.term_id] = {
+          status: r.status || 'new', cycleIdx: r.cycle_idx || 0, wrongCount: r.wrong_count || 0,
+          next: r.next_review_at ? new Date(r.next_review_at).toISOString() : null,
+          updated: r.updated_at ? new Date(r.updated_at).toISOString() : new Date().toISOString(),
+        };
+        changed = true;
+      }
+    }
+    if(changed) saveProgress(progress);
+    const items = Object.entries(progress).map(([term_id, p]) => ({
+      term_id, status: p.status || 'new', cycle_idx: p.cycleIdx || 0, wrong_count: p.wrongCount || 0,
+      next_review_at: p.next || null, updated_at: p.updated || new Date().toISOString(),
+    }));
+    if(items.length) await authFetch('/api/progress', { method:'PUT', body: JSON.stringify({ items }) });
+    updateStudyBadge();
+    if(state.group1 === STUDY_SENTINEL) render();
+  }catch(e){ console.warn('[Chimedis] Không đồng bộ được tiến độ:', e.message); }
 }
 function addDays(date, n){ const d = new Date(date); d.setDate(d.getDate()+n); return d; }
 function isDueToday(id){
   const p = progress[id];
   if(!p || !p.next) return false;
+  if(p.status === 'mastered') return false;
   return new Date(p.next) <= new Date();
+}
+
+// ===================================================================
+// ÔN LUYỆN v1 — bổ sung i18n, phát âm (TTS), màn hình "Học tập"
+// ===================================================================
+Object.assign(I18N.vi, {
+  speak: 'Phát âm', tts_pick: 'Chọn ngôn ngữ đọc', tts_no_voice: 'Thiết bị chưa có giọng đọc ngôn ngữ này',
+  tts_autoplay: 'Tự động đọc từ khi ôn', study_home: 'Học tập', study_today: 'Hôm nay cần ôn',
+  study_start: 'Bắt đầu ôn', study_none_today: 'Hôm nay không có từ nào cần ôn — quay lại sau nhé.',
+  deck_saved: 'Đã lưu', deck_learning: 'Đang học', deck_learned: 'Đã thuộc',
+  study_deck_empty: 'Chưa có từ nào ở đây. Bấm ❤ ở một thuật ngữ để thêm vào danh sách học.',
+  study_streak: 'Chuỗi ngày', study_goal_today: 'Hôm nay đã ôn', study_back: 'Học tập',
+  learn_this: 'Lưu & học', learning_on: 'Đang học ✓', review_bar: '{n} từ cần ôn hôm nay',
+  review_bar_go: 'Ôn ngay', study_login_hint: 'Đăng nhập để đồng bộ tiến độ học trên mọi thiết bị.',
+});
+Object.assign(I18N.zh, {
+  speak: '朗读', tts_pick: '选择朗读语言', tts_no_voice: '此设备暂无该语言的朗读语音',
+  tts_autoplay: '复习时自动朗读', study_home: '学习', study_today: '今日待复习',
+  study_start: '开始复习', study_none_today: '今天没有待复习的词——稍后再来。',
+  deck_saved: '已收藏', deck_learning: '学习中', deck_learned: '已掌握',
+  study_deck_empty: '这里还没有词。点击词条上的 ❤ 即可加入学习列表。',
+  study_streak: '连续天数', study_goal_today: '今日已复习', study_back: '学习',
+  learn_this: '收藏并学习', learning_on: '学习中 ✓', review_bar: '今日有 {n} 个词待复习',
+  review_bar_go: '立即复习', study_login_hint: '登录后可在多设备间同步学习进度。',
+});
+Object.assign(I18N.en, {
+  speak: 'Speak', tts_pick: 'Choose reading language', tts_no_voice: 'This device has no voice for this language',
+  tts_autoplay: 'Auto-read word while reviewing', study_home: 'Study', study_today: 'Due today',
+  study_start: 'Start review', study_none_today: 'Nothing due today — check back later.',
+  deck_saved: 'Saved', deck_learning: 'Learning', deck_learned: 'Learned',
+  study_deck_empty: 'No terms here yet. Tap ❤ on a term to add it to your study list.',
+  study_streak: 'Day streak', study_goal_today: 'Reviewed today', study_back: 'Study',
+  learn_this: 'Save & learn', learning_on: 'Learning ✓', review_bar: '{n} terms due today',
+  review_bar_go: 'Review now', study_login_hint: 'Sign in to sync study progress across devices.',
+});
+
+// ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
+const TTS = {
+  supported: (typeof window !== 'undefined') && ('speechSynthesis' in window),
+  voices: [],
+  byLang: { zh: null, vi: null, en: null },
+  speakingKey: null,
+  store: {},   // key -> {vi,zh,en} hoặc {segs:[...]} — tránh nhét text có dấu nháy vào onclick
+  _seq: 0,
+  loadVoices(){
+    if(!this.supported) return;
+    this.voices = window.speechSynthesis.getVoices() || [];
+    const norm = v => (v.lang || '').toLowerCase().replace('_', '-');
+    const pick = tags => {
+      for(const tg of tags){ const hit = this.voices.find(v => norm(v) === tg); if(hit) return hit; }
+      for(const tg of tags){ const base = tg.split('-')[0]; const hit = this.voices.find(v => norm(v).split('-')[0] === base); if(hit) return hit; }
+      return null;
+    };
+    this.byLang.zh = pick(['zh-cn','zh-hans','zh','cmn-hans-cn','zh-tw','zh-hk']);
+    this.byLang.vi = pick(['vi-vn','vi']);
+    this.byLang.en = pick(['en-us','en-gb','en-au','en']);
+  },
+  hasLang(l){ return !!this.byLang[l]; },
+  tagOf(l){ return l === 'zh' ? 'zh-CN' : l === 'vi' ? 'vi-VN' : 'en-US'; },
+  stop(){ if(this.supported){ try{ window.speechSynthesis.cancel(); }catch(e){} } this.speakingKey = null; },
+  // segments: [{text, lang}] đọc lần lượt. key: để toggle (chạm lại = dừng) + tô sáng nút.
+  speakSegments(segments, key){
+    if(!this.supported) return;
+    segments = (segments || []).filter(s => s && s.text && String(s.text).trim());
+    if(!segments.length) return;
+    if(this.speakingKey && this.speakingKey === key){ this.stop(); updateSpeakingUI(); return; }
+    this.stop();
+    this.speakingKey = key || ('k' + (++this._seq));
+    updateSpeakingUI();
+    const myKey = this.speakingKey;
+    const run = i => {
+      if(myKey !== this.speakingKey) return;       // đã bị dừng / thay bằng lượt khác
+      if(i >= segments.length){ this.speakingKey = null; updateSpeakingUI(); return; }
+      const seg = segments[i];
+      const u = new SpeechSynthesisUtterance(String(seg.text));
+      const v = this.byLang[seg.lang];
+      if(v){ u.voice = v; u.lang = v.lang; } else { u.lang = this.tagOf(seg.lang); }
+      u.rate = 0.88;
+      u.onend = () => run(i + 1);
+      u.onerror = () => run(i + 1);
+      try{ window.speechSynthesis.speak(u); }catch(e){ run(i + 1); }
+    };
+    run(0);
+  },
+};
+if(TTS.supported){
+  TTS.loadVoices();
+  window.speechSynthesis.onvoiceschanged = () => {
+    TTS.loadVoices();
+    if(state.popupId) openPopup(state.popupId);
+    if(state.tab === 'flashcard' || state.tab === 'studyhome') renderTabContent();
+  };
+}
+
+// Thứ tự đọc = đúng thứ tự xếp chồng hiển thị (zh -> vi -> en) và CHỈ các ngôn ngữ đang bật
+// trong state.contentLangs (khớp renderMultiLang) — người dùng đang xem tiếng nào thì nghe tiếng đó.
+function ttsSegments(vi, zh, en){
+  const order = [ ['zh', zh], ['vi', vi], ['en', en] ];
+  return order
+    .filter(([l, txt]) => state.contentLangs[l] && txt && String(txt).trim() && TTS.hasLang(l))
+    .map(([l, txt]) => ({ lang: l, text: String(txt).replace(/<[^>]*>/g, ' ').trim() }));
+}
+// Nút loa cho 1 field trong popup. Lưu vi/zh/en vào TTS.store theo key sinh tự động — chạm đọc
+// chuỗi ngôn ngữ đang bật; nhấn giữ mở menu chọn 1 ngôn ngữ (xem attachTtsLongpress).
+function ttsFieldBtn(vi, zh, en){
+  if(!TTS.supported) return '';
+  if(!ttsSegments(vi, zh, en).length) return '';
+  const key = 'f' + (++TTS._seq);
+  TTS.store[key] = { vi, zh, en };
+  return `<button type="button" class="fld-speak" data-ttskey="${key}" onclick="event.stopPropagation();ttsPlayKey('${key}')" aria-label="${t('speak')}">${TTS_ICON}</button>`;
+}
+// Định nghĩa / ví dụ đại diện của 1 term (dùng cho mặt sau flashcard) — tách theo domain.
+function termDefinition(term){
+  if(term.category === 'word_element') return { vi: term.vi, zh: hzOf(term), en: term.en };
+  if(term.category === 'herb') return { vi: term.action_vi || term.indication_vi, zh: term.action_zh || term.indication_zh, en: term.action_en || term.indication_en };
+  if(term.category === 'acupoint') return { vi: term.indication_vi || term.action_vi, zh: term.indication_zh || term.action_zh, en: term.indication_en || term.action_en };
+  return { vi: term.congnang || term.vitri, zh: term.congnang_cn || term.vitri_cn, en: term.congnang_en || term.vitri_en };
+}
+function termExample(term){
+  if(term.category === 'word_element' && (term.example || term.example_cn || term.example_en))
+    return { vi: term.example, zh: term.example_cn, en: term.example_en };
+  return null;
+}
+const TTS_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>`;
+function ttsPlayKey(key){
+  const rec = TTS.store[key];
+  if(!rec) return;
+  if(rec.segs){ TTS.speakSegments(rec.segs, key); return; }
+  TTS.speakSegments(ttsSegments(rec.vi, rec.zh, rec.en), key);
+}
+function ttsPlayOne(key, lang){
+  closeTtsLangMenu();
+  const rec = TTS.store[key];
+  if(!rec) return;
+  const txt = rec.segs ? (rec.segs.find(s => s.lang === lang) || {}).text : rec[lang];
+  if(!txt || !TTS.hasLang(lang)) return;
+  TTS.speakSegments([{ lang, text: String(txt).replace(/<[^>]*>/g, ' ').trim() }], key + ':' + lang);
+}
+function speakHeadword(termId){
+  const term = TERMS.find(x => x.id === termId);
+  if(!term) return;
+  const key = 'hw:' + termId;
+  TTS.store[key] = { vi: term.vi, zh: hzOf(term), en: term.en };
+  TTS.speakSegments(ttsSegments(term.vi, hzOf(term), term.en), key);
+}
+// Cập nhật trạng thái "đang đọc" cho mọi nút loa hiện có trên DOM.
+function updateSpeakingUI(){
+  document.querySelectorAll('.fld-speak,.pp-speak,.fc-speak').forEach(el => {
+    const k = el.getAttribute('data-ttskey') || '';
+    el.classList.toggle('speaking', !!TTS.speakingKey && (k === TTS.speakingKey || TTS.speakingKey.indexOf(k + ':') === 0));
+  });
+}
+// Menu chọn 1 ngôn ngữ (nhấn giữ nút loa). Chỉ hiện ngôn ngữ có giọng trên thiết bị.
+let _ttsMenuEl = null;
+function closeTtsLangMenu(){ if(_ttsMenuEl){ _ttsMenuEl.remove(); _ttsMenuEl = null; } }
+function openTtsLangMenu(key, anchorEl){
+  closeTtsLangMenu();
+  const rec = TTS.store[key]; if(!rec) return;
+  const langs = [ ['zh', '中'], ['vi', 'Tiếng Việt'], ['en', 'English'] ].filter(([l]) => {
+    const has = rec.segs ? rec.segs.some(s => s.lang === l) : (rec[l] && String(rec[l]).trim());
+    return has && TTS.hasLang(l);
+  });
+  if(langs.length < 2){ return; }
+  const m = document.createElement('div');
+  m.className = 'tts-lang-pop';
+  m.innerHTML = langs.map(([l, lab]) => `<button type="button" onclick="ttsPlayOne('${key}','${l}')">${lab}</button>`).join('');
+  document.body.appendChild(m);
+  const r = anchorEl.getBoundingClientRect();
+  m.style.top = (r.bottom + 6) + 'px';
+  m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - m.offsetWidth - 8)) + 'px';
+  _ttsMenuEl = m;
+  setTimeout(() => document.addEventListener('pointerdown', _ttsMenuOutside, { once: true }), 0);
+}
+function _ttsMenuOutside(e){ if(_ttsMenuEl && !_ttsMenuEl.contains(e.target)) closeTtsLangMenu(); }
+// Gắn nhấn-giữ cho mọi nút loa trong 1 container (gọi sau khi render popup/flashcard).
+function attachTtsLongpress(container){
+  if(!container) return;
+  container.querySelectorAll('.fld-speak,.pp-speak,.fc-speak').forEach(el => {
+    if(el._lpBound) return;
+    el._lpBound = true;
+    let timer = null;
+    const start = () => { timer = setTimeout(() => { timer = null; openTtsLangMenu(el.getAttribute('data-ttskey'), el); }, 480); };
+    const cancel = () => { if(timer){ clearTimeout(timer); timer = null; } };
+    el.addEventListener('touchstart', start, { passive: true });
+    el.addEventListener('touchend', cancel);
+    el.addEventListener('touchmove', cancel, { passive: true });
+    el.addEventListener('contextmenu', e => { e.preventDefault(); openTtsLangMenu(el.getAttribute('data-ttskey'), el); });
+  });
+}
+
+// ===== "HỌC TẬP" — màn hình riêng (mở từ drawer). Gộp: bấm ❤ = đưa vào danh sách học luôn. =====
+const STUDY_SENTINEL = '__study__';
+const SRS_CYCLE = [1, 3, 7, 14, 30];
+const STUDY_STATS_KEY = 'chimedis_study_stats_v1';
+function loadStudyStats(){
+  try{ return JSON.parse(localStorage.getItem(STUDY_STATS_KEY)) || {}; }catch(e){ return {}; }
+}
+let studyStats = loadStudyStats(); // { streak, lastDay:'YYYY-MM-DD', todayDay, todayCount }
+function todayKey(){ const d = new Date(); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
+function bumpStudyActivity(){
+  const tk = todayKey();
+  if(studyStats.todayDay !== tk){ studyStats.todayDay = tk; studyStats.todayCount = 0; }
+  studyStats.todayCount = (studyStats.todayCount || 0) + 1;
+  if(studyStats.lastDay !== tk){
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    const yk = y.getFullYear() + '-' + (y.getMonth()+1) + '-' + y.getDate();
+    studyStats.streak = (studyStats.lastDay === yk) ? (studyStats.streak || 0) + 1 : 1;
+    studyStats.lastDay = tk;
+  }
+  try{ localStorage.setItem(STUDY_STATS_KEY, JSON.stringify(studyStats)); }catch(e){}
+}
+// Danh sách học đều LẤY TỪ favorites (gộp Lưu = Học). Sắp: due trước, rồi abc.
+function studyTerms(){ return TERMS.filter(x => state.favorites.has(x.id)); }
+function studyDeckList(deck){
+  const base = studyTerms();
+  if(deck === 'due') return sortTermsAlpha(base.filter(x => isDueToday(x.id)));
+  if(deck === 'learning') return sortTermsAlpha(base.filter(x => { const s = getStatus(x.id); return s === 'new' || s === 'review'; }));
+  if(deck === 'learned') return sortTermsAlpha(base.filter(x => { const s = getStatus(x.id); return s === 'known' || s === 'mastered'; }));
+  return sortTermsAlpha(base); // 'saved'
+}
+function studyScopedList(){
+  if(state.group1 === STUDY_SENTINEL && state._studyList) return state._studyList;
+  return getFiltered();
+}
+function openStudyView(){
+  closeDrawer();
+  state.group1 = STUDY_SENTINEL;
+  state.group2 = null;
+  state.tab = 'studyhome';
+  state._studyList = null;
+  render();
+  scrollToTop();
+}
+function studyHome(){ state.tab = 'studyhome'; state._studyList = null; TTS.stop(); render(); scrollToTop(); }
+function startStudySession(deck, mode){
+  const list = studyDeckList(deck);
+  if(!list.length){ return; }
+  state._studyList = list;
+  state._studyDeck = deck;
+  state.tab = mode || 'flashcard';
+  state.fcIndex = 0; state.fcFlipped = false;
+  if(state.tab === 'quiz') initQuiz();
+  render(); scrollToTop();
+}
+function updateStudyBadge(){
+  const el = document.getElementById('studyDueBadge');
+  if(!el) return;
+  const n = studyTerms().filter(x => isDueToday(x.id)).length;
+  el.textContent = n > 99 ? '99+' : String(n);
+  el.hidden = n === 0;
+}
+function renderStudyHome(){
+  const due = studyDeckList('due');
+  const saved = studyTerms();
+  const learning = studyDeckList('learning');
+  const learned = studyDeckList('learned');
+  const tk = todayKey();
+  const todayCount = (studyStats.todayDay === tk) ? (studyStats.todayCount || 0) : 0;
+  const streak = studyStats.streak || 0;
+  const goal = state.dailyGoal || 10;
+  const loginHint = state.user ? '' : `<div class="study-hint">${t('study_login_hint')}</div>`;
+  const todayCard = due.length
+    ? `<div class="study-today has"><div class="st-n">${due.length}</div><div class="st-l">${t('study_today')}</div>
+         <button class="st-go" onclick="startStudySession('due','flashcard')">${t('study_start')}</button></div>`
+    : `<div class="study-today"><div class="st-l">${t('study_none_today')}</div></div>`;
+  const deckRow = (key, label, list) => `<button class="study-deck ${state._studyDeck===key?'on':''}" onclick="startStudySession('${key}','flashcard')">
+      <span class="sd-n">${list.length}</span><span class="sd-l">${label}</span></button>`;
+  return `<div class="study-screen">
+    <div class="study-top"><h2>${t('study_home')}</h2>
+      <div class="study-meta"><span>🔥 ${streak} ${t('study_streak')}</span><span>${t('study_goal_today')}: ${todayCount}/${goal}</span></div>
+    </div>
+    ${loginHint}
+    ${todayCard}
+    <div class="study-decks">
+      ${deckRow('saved', t('deck_saved'), saved)}
+      ${deckRow('learning', t('deck_learning'), learning)}
+      ${deckRow('learned', t('deck_learned'), learned)}
+    </div>
+    <div class="study-modes">
+      <button onclick="startStudySession('${state._studyDeck||'saved'}','flashcard')">${t('tab_fc')}</button>
+      <button onclick="startStudySession('${state._studyDeck||'saved'}','quiz')">${t('tab_quiz')}</button>
+    </div>
+    ${saved.length === 0 ? `<div class="empty">${t('study_deck_empty')}</div>` : ''}
+  </div>`;
 }
 
 // ===== CHUẨN HOÁ TÌM KIẾM (bỏ dấu, hoa/thường) =====
@@ -1339,11 +1754,10 @@ function matchQuery(t, q){
 // còn lại chỉ hiện khi TERMS thực sự có ít nhất 1 mục — tự ẩn Huyệt vị/Thang
 // phương/... khi chưa có nguồn dữ liệu, không cần sửa code khi thêm domain
 // mới hay khi domain rỗng có dữ liệu trở lại (chỉ cần TERMS cập nhật).
-const ALWAYS_SHOW_GROUPS = ['all'];
-// 'Ôn luyện' tạm ẩn khỏi menu (2026-08) — ưu tiên tra cứu từ điển làm chính,
-// tính năng ôn tập chưa thực sự cần thiết ở giai đoạn này. Code flashcard/quiz
-// vẫn giữ nguyên bên dưới, chỉ cần thêm lại {key:'Ôn luyện', label:t('g_review')}
-// vào mảng `all` (và 'Ôn luyện' vào ALWAYS_SHOW_GROUPS) để bật lại.
+// 'Ôn luyện' bật lại 2026-09 (song song với màn hình "Học tập" mở từ drawer) — ưu tiên tra cứu
+// vẫn là chính, nhưng ôn luyện giờ là tính năng chính thức của v1. 'all'/'Ôn luyện' luôn hiện
+// (không phải domain dữ liệu thật).
+const ALWAYS_SHOW_GROUPS = ['all', 'Ôn luyện'];
 function GROUP1(){
   const all = [
     {key:'all', label:t('g_all')},
@@ -1354,6 +1768,7 @@ function GROUP1(){
     {key:'Huyệt vị', label:t('g_acu')},
     {key:'Thang phương', label:t('g_form')},
     {key:'Từ ghép Y Khoa', label:t('g_wordelem')},
+    {key:'Ôn luyện', label:t('g_review')},
   ];
   return all.filter(g => ALWAYS_SHOW_GROUPS.includes(g.key) || TERMS.some(x => x.group1 === g.key));
 }
@@ -1567,7 +1982,8 @@ function render(){
   applyStaticI18n();
   renderMenu1();
   const menu1El = document.getElementById('menu1');
-  if(menu1El) menu1El.classList.toggle('hide', state.group1 === FAVORITES_SENTINEL);
+  if(menu1El) menu1El.classList.toggle('hide', state.group1 === FAVORITES_SENTINEL || state.group1 === STUDY_SENTINEL);
+  updateStudyBadge();
   const area = document.getElementById('mainArea');
   const footer = document.getElementById('footerArea');
 
@@ -1635,10 +2051,22 @@ function selectTab(tab){
 
 function renderTabContent(){
   const el = document.getElementById('tabContent');
-  if(state.tab === 'vocab') el.innerHTML = renderVocabTab();
-  else if(state.tab === 'flashcard') el.innerHTML = renderFlashcardTab();
-  else if(state.tab === 'quiz') el.innerHTML = renderQuizTab();
-  else if(state.tab === 'done') el.innerHTML = renderDoneTab();
+  if(state.tab === 'studyhome'){ el.innerHTML = renderStudyHome(); return; }
+  // Phiên ôn mở từ màn hình "Học tập": có thanh quay lại phía trên nội dung tab.
+  const backBar = (state.group1 === STUDY_SENTINEL && state.tab !== 'studyhome')
+    ? `<button class="study-backbar" onclick="studyHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>${t('study_back')}</button>` : '';
+  let body = '';
+  if(state.tab === 'vocab') body = renderVocabTab();
+  else if(state.tab === 'flashcard') body = renderFlashcardTab();
+  else if(state.tab === 'quiz') body = renderQuizTab();
+  else if(state.tab === 'done') body = renderDoneTab();
+  el.innerHTML = backBar + body;
+  attachTtsLongpress(el);
+  updateSpeakingUI();
+  if(state.ttsAutoplay && state.tab === 'flashcard' && !state.fcFlipped){
+    const term = studyScopedList()[state.fcIndex];
+    if(term) speakHeadword(term.id);
+  }
 }
 
 // ===== TAB: TỪ VỰNG =====
@@ -1681,12 +2109,27 @@ function renderVocabTab(){
   const loadMore = visibleCount < list.length
     ? `<button class="loadmore" onclick="loadMoreVocab()">${t('load_more')} (${visibleCount}/${list.length})</button>`
     : '';
-  return `<div class="vocab"><div class="vmeta">${metaLabel} — ${list.length} ${t('words')}</div>${rows}${loadMore}</div>`;
+  return `<div class="vocab">${reviewReminderBar()}<div class="vmeta">${metaLabel} — ${list.length} ${t('words')}</div>${rows}${loadMore}</div>`;
+}
+// Nhắc ôn nhẹ nhàng NGAY TRONG APP (v1) — hiện ở đầu danh sách "Toàn bộ", ẩn được trong ngày.
+function reviewReminderBar(){
+  if(state.searchQuery || state.group1 !== 'all') return '';
+  const n = studyTerms().filter(x => isDueToday(x.id)).length;
+  if(!n) return '';
+  if(localStorage.getItem('chimedis_reviewbar_dismiss') === todayKey()) return '';
+  return `<div class="review-bar"><span>⏰ ${t('review_bar').replace('{n}', n)}</span>
+    <button onclick="openStudyView()">${t('review_bar_go')}</button>
+    <button class="rb-x" onclick="dismissReviewBar(event)" aria-label="×">✕</button></div>`;
+}
+function dismissReviewBar(ev){
+  if(ev) ev.stopPropagation();
+  try{ localStorage.setItem('chimedis_reviewbar_dismiss', todayKey()); }catch(e){}
+  renderTabContent();
 }
 
 // ===== TAB: FLASHCARD =====
 function renderFlashcardTab(){
-  const list = getFiltered();
+  const list = studyScopedList();
   if(list.length===0){
     return `<div class="fc-screen"><div class="fc-empty">${t('fc_empty')}</div></div>`;
   }
@@ -1694,19 +2137,30 @@ function renderFlashcardTab(){
   const term = list[state.fcIndex];
   const pct = Math.round(((state.fcIndex+1)/list.length)*100);
   const status = getStatus(term.id);
+  const hwKey = 'fchw:' + term.id;
+  if(TTS.supported) TTS.store[hwKey] = { vi: term.vi, zh: hzOf(term), en: term.en };
+  const hwBtn = (TTS.supported && ttsSegments(term.vi, hzOf(term), term.en).length)
+    ? `<button type="button" class="fc-speak" data-ttskey="${hwKey}" onclick="event.stopPropagation();ttsPlayKey('${hwKey}')" aria-label="${t('speak')}">${TTS_ICON}</button>` : '';
+  const def = termDefinition(term);
+  const defBtn = (TTS.supported && ttsSegments(def.vi, def.zh, def.en).length)
+    ? ttsFieldBtn(def.vi, def.zh, def.en) : '';
+  const ex = termExample(term);
+  const exBtn = (ex && TTS.supported && ttsSegments(ex.vi, ex.zh, ex.en).length)
+    ? `<div class="fc-ex">${t('f_example')} ${ttsFieldBtn(ex.vi, ex.zh, ex.en)}</div>` : '';
   const cardHtml = state.fcFlipped ? `
     <div class="card back" onclick="flipCard()">
       <span class="corner">${t('fc_back')}</span>
       <span class="flip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${t('fc_flipback')}</span>
-      <div class="vi">${term.vi}</div>
+      <div class="vi">${term.vi} ${defBtn}</div>
       <div class="en">${term.en||''}</div>
       <div class="desc">${term.congnang||''}</div>
       ${term.vitri_cn?`<div class="cn han">${term.vitri_cn}</div>`:''}
+      ${exBtn}
     </div>` : `
     <div class="card front" onclick="flipCard()">
       <span class="corner">${t('fc_front')}</span>
       <span class="flip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${t('fc_flip')}</span>
-      <div class="hz han">${hzOf(term)}</div>
+      <div class="hz han">${hzOf(term)} ${hwBtn}</div>
       <div class="py">${term.py}</div>
       <div class="small">${group1Label(term.group1)}${term.group2?` · ${termGroup2Label(term)}`:''}</div>
     </div>`;
@@ -1723,8 +2177,10 @@ function renderFlashcardTab(){
 }
 function flipCard(){ state.fcFlipped = !state.fcFlipped; renderTabContent(); }
 function markCard(id, status){
+  TTS.stop();
   setStatus(id, status);
-  const list = getFiltered();
+  bumpStudyActivity();
+  const list = studyScopedList();
   state.fcIndex = Math.min(state.fcIndex+1, list.length-1 >= 0 ? state.fcIndex+1 : 0);
   if(state.fcIndex >= list.length-1 && state.fcIndex !== 0){
     // giữ nguyên hoặc quay lại đầu nếu hết
@@ -1737,14 +2193,14 @@ function markCard(id, status){
 
 // ===== TAB: QUIZ =====
 function initQuiz(){
-  const list = getFiltered();
+  const list = studyScopedList();
   state.qzOrder = list.slice(0, Math.min(10, list.length));
   state.qzIndex = 0;
   state.qzScore = 0;
   state.qzAnswered = false;
 }
 function renderQuizTab(){
-  const list = state.qzOrder.length ? state.qzOrder : getFiltered().slice(0,10);
+  const list = state.qzOrder.length ? state.qzOrder : studyScopedList().slice(0,10);
   if(list.length===0){
     return `<div class="qz-screen"><div class="fc-empty">${t('qz_empty')}</div></div>`;
   }
@@ -1777,7 +2233,7 @@ function renderQuizTab(){
     <div class="qz-bar"><i style="width:${pct}%"></i></div>
     <div class="qz-q">
       <div class="lbl">${t('qz_choose')}</div>
-      <div class="hz han">${hzOf(term)}</div>
+      <div class="hz han">${hzOf(term)} ${qzSpeakBtn(term)}</div>
       <div class="ask">"${hzOf(term)}" ${t('qz_mean')}</div>
     </div>
     ${optHtml}
@@ -1785,6 +2241,13 @@ function renderQuizTab(){
   </div>`;
 }
 function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
+function qzSpeakBtn(term){
+  if(!TTS.supported) return '';
+  const k = 'qz:' + term.id;
+  TTS.store[k] = { vi: term.vi, zh: hzOf(term), en: term.en };
+  if(!ttsSegments(term.vi, hzOf(term), term.en).length) return '';
+  return `<button type="button" class="fc-speak" data-ttskey="${k}" onclick="ttsPlayKey('${k}')" aria-label="${t('speak')}">${TTS_ICON}</button>`;
+}
 function answerQuiz(correctId, pickedId){
   if(state.qzAnswered) return;
   state.qzAnswered = true;
@@ -1795,6 +2258,7 @@ function answerQuiz(correctId, pickedId){
   } else {
     setStatus(correctId, 'review');
   }
+  bumpStudyActivity();
   renderTabContent();
 }
 function nextQuiz(){
@@ -1860,6 +2324,8 @@ function openPopup(id){
   const term = TERMS.find(x=>x.id===id);
   if(!term) return;
   state.popupId = id;
+  TTS.stop();
+  if(TTS.supported) TTS.store['hw:' + term.id] = { vi: term.vi, zh: hzOf(term), en: term.en };
   const list = getFiltered();
   const idx = list.findIndex(x=>x.id===id);
   const prev = list[idx-1], next = list[idx+1];
@@ -1869,6 +2335,7 @@ function openPopup(id){
     <div class="grip"></div>
     <button class="close" onclick="closePopup()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <button class="pp-fav ${state.favorites.has(term.id)?'on':''}" id="ppFavBtn" onclick="toggleFavorite('${term.id}','${term.group1}')" aria-label="Lưu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.8C.7 8.4 2.4 5 6 5c2 0 3.3 1 6 3.5C14.7 6 16 5 18 5c3.6 0 5.3 3.4 3.5 7.2C19 16.65 12 21 12 21z"/></svg></button>
+    ${(TTS.supported && ttsSegments(term.vi, hzOf(term), term.en).length) ? `<button class="pp-speak" id="ppSpeakBtn" data-ttskey="hw:${term.id}" onclick="speakHeadword('${term.id}')" aria-label="${t('speak')}">${TTS_ICON}</button>` : ''}
     <div class="pp-head">
       <button class="pp-arrow left ${prev?'':'hidden'}" id="ppArrowL" aria-label="Từ trước" onclick="openPopup('${prev?prev.id:''}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
       <button class="pp-arrow right ${next?'':'hidden'}" id="ppArrowR" aria-label="Từ sau" onclick="openPopup('${next?next.id:''}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg></button>
@@ -1906,7 +2373,7 @@ function openPopup(id){
       const body = renderMultiLangEnFirst(exVi[i], exZh[i], exEn[i], exIpa[i]);
       if(body) exampleBody += `<div${i>0?' style="margin-top:10px"':''}>${body}</div>`;
     }
-    if(exampleBody) html += `<div class="field tcm"><div class="ft">${t('f_example')}</div>${exampleBody}</div>`;
+    if(exampleBody) html += `<div class="field tcm"><div class="ft">${t('f_example')}${ttsFieldBtn(exVi.join(' / '), exZh.join(' / '), exEn.join(' / '))}</div>${exampleBody}</div>`;
   } else if(term.category === 'herb'){
     // Tính vị/quy kinh: chỉ có VI+ZH. Công năng: có bản dịch VI/EN chuẩn (nguồn).
     // Chủ trị/liều dùng/kiêng kỵ: dịch máy VI/EN — hiển thị kèm ghi chú "cần rà soát".
@@ -1918,28 +2385,28 @@ function openPopup(id){
       const zh = [term.temperature_zh,term.taste_zh].filter(Boolean).join('、');
       const en = [term.temperature_en,term.taste_en].filter(Boolean).join(', ');
       const body = renderMultiLang(vi, zh, en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_taste')}</div>${body}</div>`;
+      if(body) html += `<div class="field"><div class="ft">${t('f_taste')}${ttsFieldBtn(vi, zh, en)}</div>${body}</div>`;
     }
     if(term.meridian_vi || term.meridian_zh){
       const body = renderMultiLang(term.meridian_vi, term.meridian_zh, term.meridian_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_meridian')}</div>${body}</div>`;
+      if(body) html += `<div class="field"><div class="ft">${t('f_meridian')}${ttsFieldBtn(term.meridian_vi, term.meridian_zh, term.meridian_en)}</div>${body}</div>`;
     }
     if(term.action_zh || term.action_vi || term.action_en){
       const body = renderMultiLang(term.action_vi, term.action_zh, term.action_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_func')}</div>${body}</div>`;
+      if(body) html += `<div class="field"><div class="ft">${t('f_func')}${ttsFieldBtn(term.action_vi, term.action_zh, term.action_en)}</div>${body}</div>`;
     }
     if(term.indication_zh || term.indication_vi || term.indication_en){
       const body = renderMultiLang(term.indication_vi, term.indication_zh, term.indication_en);
-      if(body) html += `<div class="field tcm"><div class="ft">${t('f_indication')}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field tcm"><div class="ft">${t('f_indication')}${ttsFieldBtn(term.indication_vi, term.indication_zh, term.indication_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.dose_text_zh || term.dose_min_g){
       const body = renderMultiLang(term.dose_text_vi, term.dose_text_zh, term.dose_text_en);
       const range = (term.dose_min_g && term.dose_max_g) ? `<p>${term.dose_min_g}–${term.dose_max_g}g</p>` : '';
-      html += `<div class="field"><div class="ft">${t('f_dose')}</div>${range}${body}${mtNote}</div>`;
+      html += `<div class="field"><div class="ft">${t('f_dose')}${ttsFieldBtn(term.dose_text_vi, term.dose_text_zh, term.dose_text_en)}</div>${range}${body}${mtNote}</div>`;
     }
     if(term.caution_zh){
       const body = renderMultiLang(term.caution_vi, term.caution_zh, term.caution_en);
-      if(body) html += `<div class="field verify"><div class="ft">${t('f_caution')}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field verify"><div class="ft">${t('f_caution')}${ttsFieldBtn(term.caution_vi, term.caution_zh, term.caution_en)}</div>${body}${mtNote}</div>`;
     }
   } else if(term.category === 'acupoint'){
     // vi/zh luôn là nội dung thật (không dịch máy) — chỉ EN của Vị trí/Lâm sàng có thể là dịch
@@ -1950,15 +2417,15 @@ function openPopup(id){
     // (xem specialClassTags()), không lặp lại thành field riêng ở đây nữa.
     if(term.location_zh || term.location_vi){
       const body = renderMultiLang(term.location_vi, term.location_zh, term.location_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_pos')}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field"><div class="ft">${t('f_pos')}${ttsFieldBtn(term.location_vi, term.location_zh, term.location_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.indication_zh || term.indication_vi){
       const body = renderMultiLang(term.indication_vi, term.indication_zh, term.indication_en);
-      if(body) html += `<div class="field tcm"><div class="ft">${t('f_indication')}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field tcm"><div class="ft">${t('f_indication')}${ttsFieldBtn(term.indication_vi, term.indication_zh, term.indication_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.action_zh || term.action_vi){
       const body = renderMultiLang(term.action_vi, term.action_zh, term.action_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_func')}</div>${body}</div>`;
+      if(body) html += `<div class="field"><div class="ft">${t('f_func')}${ttsFieldBtn(term.action_vi, term.action_zh, term.action_en)}</div>${body}</div>`;
     }
   } else {
     // Dùng renderMultiLang(vi, zh, en) để xếp chồng các bản dịch đã bật đúng thứ tự
@@ -1968,19 +2435,19 @@ function openPopup(id){
     const mtNote = (term.cn_machine && (state.contentLangs.vi || state.contentLangs.en)) ? `<p class="src" style="padding:2px 0 0">(${t('f_mt_note')})</p>` : '';
     if(term.vitri || term.vitri_en || term.vitri_cn){
       const body = renderMultiLang(term.vitri, term.vitri_cn, term.vitri_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_pos')}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field"><div class="ft">${t('f_pos')}${ttsFieldBtn(term.vitri, term.vitri_cn, term.vitri_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.congnang || term.congnang_en || term.congnang_cn){
       const body = renderMultiLang(term.congnang, term.congnang_cn, term.congnang_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_func')}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field"><div class="ft">${t('f_func')}${ttsFieldBtn(term.congnang, term.congnang_cn, term.congnang_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.tcm || term.tcm_en || term.tcm_cn){
       const body = renderMultiLang(term.tcm, term.tcm_cn, term.tcm_en);
-      if(body) html += `<div class="field tcm"><div class="ft">${t('f_tcm')}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field tcm"><div class="ft">${t('f_tcm')}${ttsFieldBtn(term.tcm, term.tcm_cn, term.tcm_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.lamsang || term.lamsang_en || term.lamsang_cn){
       const body = renderMultiLang(term.lamsang, term.lamsang_cn, term.lamsang_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_clin')}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field"><div class="ft">${t('f_clin')}${ttsFieldBtn(term.lamsang, term.lamsang_cn, term.lamsang_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.verify){
       html += `<div class="field verify"><div class="ft">${t('f_verify')}</div><p>${term.verify_note||'Nội dung này cần Hạ Vân Minh kiểm chứng trước khi dùng làm dữ liệu chính thức.'}</p></div>`;
@@ -1991,28 +2458,30 @@ function openPopup(id){
   // này chỉ đánh dấu vi/en (Huyệt vị: chỉ EN) chưa rà soát, không liên quan tiếng Trung.
   if(term.category !== 'herb' && term.category !== 'acupoint' && term.cn_machine){ html += `<div class="src" style="color:#A8401F">${t('f_cnwarn')}</div>`; }
   html += `<div class="src">${t('f_source')}: ${term.nguon||'(chưa xác định)'}</div>`;
+  // GỘP "Lưu" = "Học": nút ❤ ở góc trên đã đảm nhiệm việc đưa từ vào danh sách ôn luyện,
+  // nên bỏ nút "Thêm vào ôn tập" cũ (gây nhầm với "trả lời sai"). Chỉ giữ 1 nút tự chấm
+  // "Đã thuộc" + 1 nút lưu&học (đổi trạng thái ❤) để thao tác nhanh ngay trong popup.
+  const isFav = state.favorites.has(term.id);
   html += `<div class="pp-actions">
-      <button class="btn btn-primary ${status==='known'?'active':''}" onclick="togglePopupKnown('${term.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>${status==='known'?t('btn_known_on'):t('btn_known')}</button>
-      <button class="btn btn-ghost ${status==='review'?'active':''}" onclick="togglePopupReview('${term.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>${t('btn_review')}</button>
+      <button class="btn btn-primary ${status==='known'||status==='mastered'?'active':''}" onclick="togglePopupKnown('${term.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>${(status==='known'||status==='mastered')?t('btn_known_on'):t('btn_known')}</button>
+      <button class="btn btn-ghost ${isFav?'active':''}" onclick="toggleFavorite('${term.id}','${term.group1}');openPopup('${term.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 21s-7-4.35-9.5-8.8C.7 8.4 2.4 5 6 5c2 0 3.3 1 6 3.5C14.7 6 16 5 18 5c3.6 0 5.3 3.4 3.5 7.2C19 16.65 12 21 12 21z"/></svg>${isFav?t('learning_on'):t('learn_this')}</button>
     </div>`;
   html += `</div>`;
 
   document.getElementById('ppContent').innerHTML = html;
   document.getElementById('ppOverlay').classList.add('show');
   document.getElementById('ppContent').scrollTop = 0;
+  attachTtsLongpress(document.getElementById('ppContent'));
+  updateSpeakingUI();
 }
 function closePopup(){
   document.getElementById('ppOverlay').classList.remove('show');
   state.popupId = null;
+  TTS.stop();
 }
 function togglePopupKnown(id){
   const cur = getStatus(id);
-  setStatus(id, cur==='known' ? 'new' : 'known');
-  openPopup(id);
-}
-function togglePopupReview(id){
-  const cur = getStatus(id);
-  setStatus(id, cur==='review' ? 'new' : 'review');
+  setStatus(id, (cur==='known' || cur==='mastered') ? 'new' : 'known');
   openPopup(id);
 }
 
@@ -2105,6 +2574,14 @@ function openDrawer(){
   syncContentLangPanel();
   syncIfaceLangPanel();
   syncHanScriptPanel();
+  const chk = document.getElementById('ttsAutoplayChk');
+  if(chk){ chk.checked = !!state.ttsAutoplay; chk.closest('.drawer-item').style.display = TTS.supported ? '' : 'none'; }
+  updateStudyBadge();
+}
+function setTtsAutoplay(on){
+  state.ttsAutoplay = !!on;
+  localStorage.setItem('chimedis_tts_autoplay', on ? '1' : '0');
+  pushSettingsIfLoggedIn();
 }
 function closeDrawer(){
   document.getElementById('drawer').classList.remove('show');

@@ -305,6 +305,39 @@ CREATE TABLE IF NOT EXISTS user_settings (
   lang            VARCHAR(8),    -- 'vi' | 'zh' | 'en'
   content_langs   VARCHAR(32),   -- vd. 'zh,vi,en' — danh sách ngôn ngữ nội dung đang bật
   han_script      VARCHAR(16),   -- 'simplified' | 'traditional'
+  tts_autoplay    BOOLEAN DEFAULT FALSE, -- tự động đọc từ khi lật/chuyển thẻ (ôn luyện)
+  daily_goal      INT DEFAULT 10,        -- số thẻ mục tiêu mỗi ngày (hiển thị tiến độ, chưa ép buộc)
   updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Nếu bảng user_settings đã tồn tại từ trước (đã chạy schema bản cũ trên production),
+-- thêm 2 cột mới mà không phá dữ liệu sẵn có.
+--   • Hostinger dùng MariaDB → cú pháp `ADD COLUMN IF NOT EXISTS` bên dưới chạy được, idempotent.
+--   • Nếu chạy trên MySQL thuần (không hỗ trợ IF NOT EXISTS cho ADD COLUMN): bỏ `IF NOT EXISTS`,
+--     chạy 1 lần (lần 2 sẽ báo "Duplicate column" — bỏ qua an toàn).
+ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS tts_autoplay BOOLEAN DEFAULT FALSE;
+ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS daily_goal INT DEFAULT 10;
+
+-- ---------------------------------------------------------------------
+-- user_progress — tiến độ ôn luyện (spaced repetition) đồng bộ đa thiết bị.
+-- Trước đây chỉ lưu localStorage (chimedis_progress_v1). status:
+--   'new'      — đã đưa vào danh sách học, chưa ôn lần nào
+--   'review'   — trả lời sai gần nhất, cần ôn lại sớm
+--   'known'    — đang trong chu kỳ ngắt quãng (1·3·7·14·30 ngày)
+--   'mastered' — đã qua hết chu kỳ + tích thuộc lần cuối → ngừng nhắc ôn
+-- Hợp nhất khi đăng nhập: last-write-wins theo updated_at từng từ (xem syncProgressWithServer).
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS user_progress (
+  id              INT AUTO_INCREMENT PRIMARY KEY,
+  user_id         INT NOT NULL,
+  term_id         VARCHAR(32) NOT NULL,
+  status          VARCHAR(16) NOT NULL DEFAULT 'new',
+  cycle_idx       INT NOT NULL DEFAULT 0,      -- vị trí trong chu kỳ [1,3,7,14,30]
+  wrong_count     INT NOT NULL DEFAULT 0,
+  next_review_at  DATETIME,                    -- NULL = không có lịch ôn (new chưa lên lịch / mastered)
+  updated_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_user_progress (user_id, term_id),
+  KEY idx_user_next (user_id, next_review_at),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
