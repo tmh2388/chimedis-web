@@ -760,11 +760,10 @@ let state = {
   authMode: 'signin', // 'signin' | 'signup' — form nào đang hiện trong modal đăng nhập
 };
 const FAVORITES_SENTINEL = '__favorites__';
-// Tạm ẩn nút "Đăng nhập bằng Facebook" (2026-08-20) — tạo Facebook App bị Meta chặn do thiết bị
-// lạ ("Bạn không thể thực hiện thay đổi này ngay bây giờ"), chưa lấy được App ID/Secret nên
-// provider Facebook chưa bật trong Firebase Console. Bật lại: đổi thành true SAU KHI đã hoàn tất
-// Bước 3 (Facebook App) + bật provider Facebook trong Firebase Console > Authentication.
-const FACEBOOK_LOGIN_ENABLED = false;
+// Facebook Login: tạo Facebook App từng bị Meta chặn tạm thời do thiết bị lạ (2026-08-20),
+// đã hoàn tất sau đó (App ID/Secret đã cấu hình + provider Facebook đã bật trong Firebase
+// Console > Authentication) — bật lại nút này 2026-08-20.
+const FACEBOOK_LOGIN_ENABLED = true;
 
 // ===== NGÔN NGỮ HIỂN THỊ NỘI DUNG (độc lập với ngôn ngữ giao diện state.lang) =====
 const CONTENT_LANGS_KEY = 'chimedis_content_langs_v1';
