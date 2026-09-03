@@ -760,13 +760,14 @@ let state = {
   authMode: 'signin', // 'signin' | 'signup' — form nào đang hiện trong modal đăng nhập
 };
 const FAVORITES_SENTINEL = '__favorites__';
-// Facebook Login: TẠM ẨN LẠI (2026-09-03) — hoá ra chưa thực sự tạo Facebook App (mới có tài
-// khoản Meta for Developers, chưa có app + App ID/Secret thật), nên provider Facebook trong
-// Firebase Console đang lưu App ID/Secret không hợp lệ → user bấm nút không có phản hồi gì
-// (không popup, không lỗi rõ ràng). Bật lại: đổi thành true SAU KHI đã tạo app thật trên
-// developers.facebook.com, lấy App ID/Secret, dán lại đúng vào Firebase Console > Authentication
-// > Sign-in method > Facebook, và xác nhận đăng nhập thử thành công.
-const FACEBOOK_LOGIN_ENABLED = false;
+// Facebook Login: bật lại 2026-09-03 — đã tạo app Facebook thật (App ID 1765529687916023),
+// thêm sản phẩm "Đăng nhập bằng Facebook", cấu hình redirect URI
+// (https://chimedis.firebaseapp.com/__/auth/handler) và dán App ID/Secret vào Firebase Console.
+// ⚠️ App Facebook đang ở chế độ "Phát triển" (Development) — CHỈ admin/tester của app mới đăng
+// nhập được cho tới khi user tự chuyển app sang "Chính thức" (Live) trong Facebook Developer
+// console. Nếu user thường báo lại "bấm Facebook không có phản hồi", kiểm tra lại chế độ này
+// trước khi nghi ngờ code.
+const FACEBOOK_LOGIN_ENABLED = true;
 
 // ===== NGÔN NGỮ HIỂN THỊ NỘI DUNG (độc lập với ngôn ngữ giao diện state.lang) =====
 const CONTENT_LANGS_KEY = 'chimedis_content_langs_v1';
