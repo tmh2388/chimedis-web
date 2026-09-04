@@ -1109,13 +1109,27 @@ function toggleContentLangPanel(){
 // phân biệt bằng kiểu chữ thay vì nhãn chữ (Trung: chữ gốc; Việt: chữ thường; Anh: chữ nghiêng).
 // Nếu không có ngôn ngữ nào đang bật có nội dung, fallback về ngôn ngữ đầu tiên có sẵn để
 // tránh field trống hẳn.
+// So khớp "cùng một nội dung" bỏ qua khác biệt vụn (hoa/thường, khoảng trắng, kiểu gạch nối,
+// dấu câu cuối) — dùng để KHÔNG hiện lặp cùng 1 chuỗi ở nhiều dòng ngôn ngữ (hay gặp ở
+// "Liều dùng": dịch máy để nguyên "9-15g" cho cả vi/en/zh → trước đây hiện 3 lần).
+function ttsSameText(a, b){
+  const n = s => String(s == null ? '' : s).toLowerCase().replace(/\s+/g, '').replace(/[–—−-]/g, '-').replace(/[。．.,，、;；:：!！?？…]+$/,'');
+  return n(a) && n(a) === n(b);
+}
 function renderMultiLang(vi, zh, en){
   const parts = [
     { on: state.contentLangs.zh, text: zh, cls: 'han' },
     { on: state.contentLangs.vi, text: vi, cls: 'lang-vi' },
     { on: state.contentLangs.en, text: en, cls: 'lang-en' },
   ];
-  let html = parts.filter(p => p.on && p.text).map(p => `<p class="${p.cls}">${p.text}</p>`).join('');
+  const seen = [];
+  const pick = parts.filter(p => {
+    if(!p.on || !p.text) return false;
+    if(seen.some(s => ttsSameText(s, p.text))) return false; // đã có dòng nội dung y hệt
+    seen.push(p.text);
+    return true;
+  });
+  let html = pick.map(p => `<p class="${p.cls}">${p.text}</p>`).join('');
   if(!html){
     const fb = parts.find(p => p.text);
     if(fb) html = `<p class="${fb.cls}">${fb.text}</p>`;
@@ -1292,19 +1306,40 @@ const TTS = {
   // Tách 1 đoạn dài thành các mệnh đề theo dấu câu — đọc từng mệnh đề là utterance riêng, có
   // khoảng nghỉ ngắn ở giữa. Mục đích: (1) né bug speechSynthesis tự dừng khi câu quá dài
   // (~15s), (2) có nhịp ngắt/nghỉ ở dấu câu nghe tự nhiên hơn thay vì đọc một mạch rồi cụt.
+  // Chỉ tách ở dấu KẾT CÂU (. ! ? ; … và xuống dòng) — KHÔNG tách ở dấu phẩy/hai chấm:
+  // tách vụn ở dấu phẩy làm giọng bị "reset" prosody, nghe như hụt hơi. Dấu phẩy để engine
+  // tự ngắt hơi trong 1 utterance. Câu ngắn (<160 ký tự, không xuống dòng) đọc luôn 1 hơi.
   _clauses(text){
-    // Không dùng lookbehind (Safari cũ chưa hỗ trợ) — gom "cụm chữ + dấu câu đi kèm" bằng match.
-    const m = String(text).match(/[^。！？!?…；;：:.,，、\n]+[。！？!?…；;：:.,，、\n]*|[。！？!?…；;：:.,，、\n]+/g);
-    const out = (m || [String(text)]).map(s => s.trim()).filter(Boolean);
-    return out.length ? out : [String(text).trim()].filter(Boolean);
+    const s = String(text).trim();
+    if(!s) return [];
+    if(s.length <= 160 && s.indexOf('\n') === -1) return [this._ensureStop(s)];
+    const ENDERS = '!?;\u2026\u3002\uFF01\uFF1F\uFF1B\n';   // dau KET CAU (khong gom phay/hai cham)
+    const out = [];
+    let buf = '';
+    for(let i = 0; i < s.length; i++){
+      const c = s[i];
+      buf += c;
+      let isEnd = ENDERS.indexOf(c) !== -1;
+      if(c === '.'){ const nxt = s[i + 1] || ''; isEnd = (nxt === '' || /\s/.test(nxt)); }
+      if(isEnd){ const tt = buf.trim(); if(tt) out.push(tt); buf = ''; }
+    }
+    if(buf.trim()) out.push(buf.trim());
+    const res = out.map(x => this._ensureStop(x)).filter(Boolean);
+    return res.length ? res : [this._ensureStop(s)];
   },
+  // Thêm dấu kết câu nếu thiếu — để giọng có ngữ điệu xuống + nghỉ ở cuối thay vì cụt lửng.
+  _ensureStop(s){
+    if(/[。．.!！?？…:：;；]$/.test(s)) return s;
+    return /[一-鿿]$/.test(s) ? s + '。' : s + '.';
+  },
+  rateFor(lang){ return lang === 'vi' ? 0.9 : lang === 'zh' ? 0.98 : 0.95; },
   // segments: [{text, lang}] đọc lần lượt. key: để toggle (chạm lại = dừng) + tô sáng nút.
   // opts.gap: nghỉ giữa 2 mệnh đề cùng ngôn ngữ (ms). opts.langGap: nghỉ khi ĐỔI ngôn ngữ (ms).
   speakSegments(segments, key, opts){
     if(!this.supported) return;
     opts = opts || {};
-    const gap = opts.gap == null ? 260 : opts.gap;
-    const langGap = opts.langGap == null ? 620 : opts.langGap;
+    const gap = opts.gap == null ? 180 : opts.gap;
+    const langGap = opts.langGap == null ? 650 : opts.langGap;
     segments = (segments || []).filter(s => s && s.text && String(s.text).trim());
     if(!segments.length) return;
     if(this.speakingKey && this.speakingKey === key){ this.stop(); updateSpeakingUI(); return; }
@@ -1332,7 +1367,7 @@ const TTS = {
       const u = new SpeechSynthesisUtterance(seg.text);
       const v = this.byLang[seg.lang];
       if(v){ u.voice = v; u.lang = v.lang; } else { u.lang = this.tagOf(seg.lang); }
-      u.rate = 0.96; u.pitch = 1;
+      u.rate = this.rateFor(seg.lang); u.pitch = 1;
       u.onend = () => {
         if(myKey !== this.speakingKey) return;
         const nextGap = (i + 1 < queue.length && queue[i + 1].langBoundary) ? langGap : gap;
@@ -2456,9 +2491,14 @@ function openPopup(id){
       if(body) html += `<div class="field tcm"><div class="ft">${t('f_indication')}${ttsFieldBtn(term.indication_vi, term.indication_zh, term.indication_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.dose_text_zh || term.dose_min_g){
-      const body = renderMultiLang(term.dose_text_vi, term.dose_text_zh, term.dose_text_en);
-      const range = (term.dose_min_g && term.dose_max_g) ? `<p>${term.dose_min_g}–${term.dose_max_g}g</p>` : '';
-      html += `<div class="field"><div class="ft">${t('f_dose')}${ttsFieldBtn(term.dose_text_vi, term.dose_text_zh, term.dose_text_en)}</div>${range}${body}${mtNote}</div>`;
+      // "Liều dùng" hay bị lặp: dịch máy để nguyên chuỗi số (vd "9-15g") cho cả vi/zh/en, cộng
+      // thêm dòng khoảng liều tự tính -> hiện 3-4 lần cùng nội dung. Bỏ dòng văn bản nào TRÙNG
+      // với khoảng liều số; renderMultiLang() cũng đã tự gộp các dòng ngôn ngữ trùng nhau.
+      const rangeTxt = (term.dose_min_g && term.dose_max_g) ? `${term.dose_min_g}–${term.dose_max_g}g` : '';
+      const dropIfRange = v => (rangeTxt && ttsSameText(v, rangeTxt)) ? '' : v;
+      const body = renderMultiLang(dropIfRange(term.dose_text_vi), dropIfRange(term.dose_text_zh), dropIfRange(term.dose_text_en));
+      const range = rangeTxt ? `<p>${rangeTxt}</p>` : '';
+      if(range || body) html += `<div class="field"><div class="ft">${t('f_dose')}${ttsFieldBtn(term.dose_text_vi, term.dose_text_zh, term.dose_text_en)}</div>${range}${body}${body ? mtNote : ''}</div>`;
     }
     if(term.caution_zh){
       const body = renderMultiLang(term.caution_vi, term.caution_zh, term.caution_en);
