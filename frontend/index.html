@@ -448,11 +448,14 @@ header{transition:padding .2s ease}
 .pp-fav.on svg{color:var(--son);fill:var(--son)}
 
 /* ===== Phát âm (TTS) + Học tập ===== */
-.pp-speak{position:absolute;top:calc(20px + env(safe-area-inset-top));right:92px;width:30px;height:30px;
-  border-radius:50%;background:rgba(255,255,255,.16);border:0;color:var(--ngua);display:flex;
-  align-items:center;justify-content:center;cursor:pointer;padding:0}
-.pp-speak svg{width:16px;height:16px}
-.pp-speak.speaking{background:var(--son);color:#fff}
+/* Nút nghe phát âm CHỮ CHÍNH — nằm nổi bật trong khối tiêu đề tối, có cả nhãn chữ. */
+.pp-hw-speak{display:inline-flex;align-items:center;gap:7px;margin:10px auto 0;padding:7px 16px;border:0;
+  border-radius:999px;background:rgba(255,255,255,.16);color:#fff;font-size:12.5px;font-weight:700;
+  font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pp-hw-speak svg{width:16px;height:16px}
+.pp-hw-speak.speaking{background:var(--son,#c2410c)}
+.pp-hw-speak:active{transform:scale(.96)}
+.pp-head{display:flex;flex-direction:column;align-items:center}
 .fld-speak,.fc-speak{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;
   width:24px;height:24px;margin-left:6px;padding:0;border:0;border-radius:50%;cursor:pointer;
   background:var(--ngua-am,#efe7d8);color:var(--tham-2,#7a6a58);flex:0 0 24px;-webkit-tap-highlight-color:transparent}
@@ -461,10 +464,11 @@ header{transition:padding .2s ease}
 .fld-speak:active,.fc-speak:active{transform:scale(.9)}
 .field .ft{display:flex;align-items:center}
 .tts-lang-pop{position:fixed;z-index:9999;background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:12px;
-  box-shadow:0 10px 30px rgba(0,0,0,.18);padding:5px;display:flex;flex-direction:column;min-width:132px}
+  box-shadow:0 10px 30px rgba(0,0,0,.18);padding:5px;display:flex;flex-direction:column;min-width:150px}
 .tts-lang-pop button{border:0;background:none;text-align:left;padding:9px 12px;border-radius:8px;font-size:14px;
   color:var(--muc,#2a2118);cursor:pointer;font-family:inherit}
 .tts-lang-pop button:active{background:var(--ngua-am,#efe7d8)}
+.tts-lang-pop .tts-all{border-top:1px solid var(--vien,#e5ddcc);margin-top:3px;font-weight:700;color:var(--tham-2,#7a6a58)}
 .fc-ex{margin-top:12px;font-size:12px;color:var(--muc-mo,#8a7d6a);display:flex;align-items:center;justify-content:center}
 
 .drawer-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--son,#c2410c);
@@ -1230,7 +1234,7 @@ function isDueToday(id){
 // ÔN LUYỆN v1 — bổ sung i18n, phát âm (TTS), màn hình "Học tập"
 // ===================================================================
 Object.assign(I18N.vi, {
-  speak: 'Phát âm', tts_pick: 'Chọn ngôn ngữ đọc', tts_no_voice: 'Thiết bị chưa có giọng đọc ngôn ngữ này',
+  speak: 'Phát âm', tts_pick: 'Chọn ngôn ngữ đọc', tts_no_voice: 'Thiết bị chưa có giọng đọc ngôn ngữ này', tts_all: 'Cả 3 thứ tiếng',
   tts_autoplay: 'Tự động đọc từ khi ôn', study_home: 'Học tập', study_today: 'Hôm nay cần ôn',
   study_start: 'Bắt đầu ôn', study_none_today: 'Hôm nay không có từ nào cần ôn — quay lại sau nhé.',
   deck_saved: 'Đã lưu', deck_learning: 'Đang học', deck_learned: 'Đã thuộc',
@@ -1240,7 +1244,7 @@ Object.assign(I18N.vi, {
   review_bar_go: 'Ôn ngay', study_login_hint: 'Đăng nhập để đồng bộ tiến độ học trên mọi thiết bị.',
 });
 Object.assign(I18N.zh, {
-  speak: '朗读', tts_pick: '选择朗读语言', tts_no_voice: '此设备暂无该语言的朗读语音',
+  speak: '朗读', tts_pick: '选择朗读语言', tts_no_voice: '此设备暂无该语言的朗读语音', tts_all: '中·越·英 全部',
   tts_autoplay: '复习时自动朗读', study_home: '学习', study_today: '今日待复习',
   study_start: '开始复习', study_none_today: '今天没有待复习的词——稍后再来。',
   deck_saved: '已收藏', deck_learning: '学习中', deck_learned: '已掌握',
@@ -1250,7 +1254,7 @@ Object.assign(I18N.zh, {
   review_bar_go: '立即复习', study_login_hint: '登录后可在多设备间同步学习进度。',
 });
 Object.assign(I18N.en, {
-  speak: 'Speak', tts_pick: 'Choose reading language', tts_no_voice: 'This device has no voice for this language',
+  speak: 'Speak', tts_pick: 'Choose reading language', tts_no_voice: 'This device has no voice for this language', tts_all: 'All 3 languages',
   tts_autoplay: 'Auto-read word while reviewing', study_home: 'Study', study_today: 'Due today',
   study_start: 'Start review', study_none_today: 'Nothing due today — check back later.',
   deck_saved: 'Saved', deck_learning: 'Learning', deck_learned: 'Learned',
@@ -1283,10 +1287,24 @@ const TTS = {
   },
   hasLang(l){ return !!this.byLang[l]; },
   tagOf(l){ return l === 'zh' ? 'zh-CN' : l === 'vi' ? 'vi-VN' : 'en-US'; },
-  stop(){ if(this.supported){ try{ window.speechSynthesis.cancel(); }catch(e){} } this.speakingKey = null; },
+  stop(){ if(this.supported){ try{ window.speechSynthesis.cancel(); }catch(e){} } this.speakingKey = null; if(this._keepAlive){ clearInterval(this._keepAlive); this._keepAlive = null; } },
+  _keepAlive: null,
+  // Tách 1 đoạn dài thành các mệnh đề theo dấu câu — đọc từng mệnh đề là utterance riêng, có
+  // khoảng nghỉ ngắn ở giữa. Mục đích: (1) né bug speechSynthesis tự dừng khi câu quá dài
+  // (~15s), (2) có nhịp ngắt/nghỉ ở dấu câu nghe tự nhiên hơn thay vì đọc một mạch rồi cụt.
+  _clauses(text){
+    // Không dùng lookbehind (Safari cũ chưa hỗ trợ) — gom "cụm chữ + dấu câu đi kèm" bằng match.
+    const m = String(text).match(/[^。！？!?…；;：:.,，、\n]+[。！？!?…；;：:.,，、\n]*|[。！？!?…；;：:.,，、\n]+/g);
+    const out = (m || [String(text)]).map(s => s.trim()).filter(Boolean);
+    return out.length ? out : [String(text).trim()].filter(Boolean);
+  },
   // segments: [{text, lang}] đọc lần lượt. key: để toggle (chạm lại = dừng) + tô sáng nút.
-  speakSegments(segments, key){
+  // opts.gap: nghỉ giữa 2 mệnh đề cùng ngôn ngữ (ms). opts.langGap: nghỉ khi ĐỔI ngôn ngữ (ms).
+  speakSegments(segments, key, opts){
     if(!this.supported) return;
+    opts = opts || {};
+    const gap = opts.gap == null ? 260 : opts.gap;
+    const langGap = opts.langGap == null ? 620 : opts.langGap;
     segments = (segments || []).filter(s => s && s.text && String(s.text).trim());
     if(!segments.length) return;
     if(this.speakingKey && this.speakingKey === key){ this.stop(); updateSpeakingUI(); return; }
@@ -1294,19 +1312,37 @@ const TTS = {
     this.speakingKey = key || ('k' + (++this._seq));
     updateSpeakingUI();
     const myKey = this.speakingKey;
+    // Dựng hàng đợi mệnh đề phẳng, đánh dấu chỗ đổi ngôn ngữ để chèn khoảng nghỉ dài hơn.
+    const queue = [];
+    segments.forEach((seg, si) => {
+      this._clauses(seg.text).forEach((clause, ci) => {
+        queue.push({ text: clause, lang: seg.lang, langBoundary: si > 0 && ci === 0 });
+      });
+    });
+    // Chrome tự dừng phát sau ~15s — nhịp pause()/resume() giữ cho dòng đọc không bị cụt giữa chừng.
+    // (WKWebView iOS bỏ qua vô hại: không ở trạng thái paused thì resume() là no-op.)
+    this._keepAlive = setInterval(() => {
+      if(myKey !== this.speakingKey){ clearInterval(this._keepAlive); this._keepAlive = null; return; }
+      try{ window.speechSynthesis.pause(); window.speechSynthesis.resume(); }catch(e){}
+    }, 9000);
     const run = i => {
-      if(myKey !== this.speakingKey) return;       // đã bị dừng / thay bằng lượt khác
-      if(i >= segments.length){ this.speakingKey = null; updateSpeakingUI(); return; }
-      const seg = segments[i];
-      const u = new SpeechSynthesisUtterance(String(seg.text));
+      if(myKey !== this.speakingKey) return;      // đã bị dừng / thay bằng lượt khác
+      if(i >= queue.length){ this.stop(); updateSpeakingUI(); return; }
+      const seg = queue[i];
+      const u = new SpeechSynthesisUtterance(seg.text);
       const v = this.byLang[seg.lang];
       if(v){ u.voice = v; u.lang = v.lang; } else { u.lang = this.tagOf(seg.lang); }
-      u.rate = 0.88;
-      u.onend = () => run(i + 1);
-      u.onerror = () => run(i + 1);
-      try{ window.speechSynthesis.speak(u); }catch(e){ run(i + 1); }
+      u.rate = 0.96; u.pitch = 1;
+      u.onend = () => {
+        if(myKey !== this.speakingKey) return;
+        const nextGap = (i + 1 < queue.length && queue[i + 1].langBoundary) ? langGap : gap;
+        setTimeout(() => run(i + 1), nextGap);
+      };
+      u.onerror = () => { if(myKey === this.speakingKey) setTimeout(() => run(i + 1), gap); };
+      try{ window.speechSynthesis.speak(u); }catch(e){ setTimeout(() => run(i + 1), gap); }
     };
-    run(0);
+    // Một số bản WebKit nuốt utterance nếu speak() gọi ngay sau cancel() — chờ 1 nhịp ngắn.
+    setTimeout(() => { if(myKey === this.speakingKey) run(0); }, 140);
   },
 };
 if(TTS.supported){
@@ -1348,30 +1384,49 @@ function termExample(term){
   return null;
 }
 const TTS_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>`;
+// Ngôn ngữ MẶC ĐỊNH khi chạm 1 lần = ngôn ngữ ĐẦU TIÊN đang bật + có giọng (zh→vi→en).
+// KHÔNG đọc liền cả 3 thứ tiếng nữa — muốn nghe ngôn ngữ khác / cả 3 thì nhấn giữ chọn trong menu.
+function ttsPrimaryLang(rec){
+  const segs = rec.segs || ttsSegments(rec.vi, rec.zh, rec.en);
+  return segs.length ? segs[0].lang : null;
+}
 function ttsPlayKey(key){
   const rec = TTS.store[key];
   if(!rec) return;
-  if(rec.segs){ TTS.speakSegments(rec.segs, key); return; }
-  TTS.speakSegments(ttsSegments(rec.vi, rec.zh, rec.en), key);
+  const lang = ttsPrimaryLang(rec);
+  if(!lang) return;
+  ttsSpeakLang(key, lang);
 }
-function ttsPlayOne(key, lang){
-  closeTtsLangMenu();
+function ttsSpeakLang(key, lang){
   const rec = TTS.store[key];
   if(!rec) return;
   const txt = rec.segs ? (rec.segs.find(s => s.lang === lang) || {}).text : rec[lang];
   if(!txt || !TTS.hasLang(lang)) return;
   TTS.speakSegments([{ lang, text: String(txt).replace(/<[^>]*>/g, ' ').trim() }], key + ':' + lang);
 }
+function ttsPlayOne(key, lang){ closeTtsLangMenu(); ttsSpeakLang(key, lang); }
+function ttsPlayAll(key){
+  closeTtsLangMenu();
+  const rec = TTS.store[key];
+  if(!rec) return;
+  const segs = rec.segs || ttsSegments(rec.vi, rec.zh, rec.en);
+  TTS.speakSegments(segs, key + ':all');
+}
 function speakHeadword(termId){
   const term = TERMS.find(x => x.id === termId);
   if(!term) return;
   const key = 'hw:' + termId;
   TTS.store[key] = { vi: term.vi, zh: hzOf(term), en: term.en };
-  TTS.speakSegments(ttsSegments(term.vi, hzOf(term), term.en), key);
+  // Chữ chính: domain thường = chữ Hán; domain "Từ ghép Y Khoa" headword là tiếng Anh.
+  // Nếu ngôn ngữ ưu tiên bị tắt/không có giọng thì lùi về ngôn ngữ khả dụng đầu tiên.
+  const pref = term.category === 'word_element' ? ['en','zh','vi'] : ['zh','vi','en'];
+  const lang = pref.find(l => TTS.store[key][l] && String(TTS.store[key][l]).trim() && TTS.hasLang(l))
+            || ttsPrimaryLang(TTS.store[key]);
+  if(lang) ttsSpeakLang(key, lang);
 }
 // Cập nhật trạng thái "đang đọc" cho mọi nút loa hiện có trên DOM.
 function updateSpeakingUI(){
-  document.querySelectorAll('.fld-speak,.pp-speak,.fc-speak').forEach(el => {
+  document.querySelectorAll('.fld-speak,.pp-speak,.pp-hw-speak,.fc-speak').forEach(el => {
     const k = el.getAttribute('data-ttskey') || '';
     el.classList.toggle('speaking', !!TTS.speakingKey && (k === TTS.speakingKey || TTS.speakingKey.indexOf(k + ':') === 0));
   });
@@ -1389,7 +1444,8 @@ function openTtsLangMenu(key, anchorEl){
   if(langs.length < 2){ return; }
   const m = document.createElement('div');
   m.className = 'tts-lang-pop';
-  m.innerHTML = langs.map(([l, lab]) => `<button type="button" onclick="ttsPlayOne('${key}','${l}')">${lab}</button>`).join('');
+  m.innerHTML = langs.map(([l, lab]) => `<button type="button" onclick="ttsPlayOne('${key}','${l}')">${lab}</button>`).join('')
+    + `<button type="button" class="tts-all" onclick="ttsPlayAll('${key}')">${t('tts_all')}</button>`;
   document.body.appendChild(m);
   const r = anchorEl.getBoundingClientRect();
   m.style.top = (r.bottom + 6) + 'px';
@@ -1401,7 +1457,7 @@ function _ttsMenuOutside(e){ if(_ttsMenuEl && !_ttsMenuEl.contains(e.target)) cl
 // Gắn nhấn-giữ cho mọi nút loa trong 1 container (gọi sau khi render popup/flashcard).
 function attachTtsLongpress(container){
   if(!container) return;
-  container.querySelectorAll('.fld-speak,.pp-speak,.fc-speak').forEach(el => {
+  container.querySelectorAll('.fld-speak,.pp-speak,.pp-hw-speak,.fc-speak').forEach(el => {
     if(el._lpBound) return;
     el._lpBound = true;
     let timer = null;
@@ -2335,7 +2391,6 @@ function openPopup(id){
     <div class="grip"></div>
     <button class="close" onclick="closePopup()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <button class="pp-fav ${state.favorites.has(term.id)?'on':''}" id="ppFavBtn" onclick="toggleFavorite('${term.id}','${term.group1}')" aria-label="Lưu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.8C.7 8.4 2.4 5 6 5c2 0 3.3 1 6 3.5C14.7 6 16 5 18 5c3.6 0 5.3 3.4 3.5 7.2C19 16.65 12 21 12 21z"/></svg></button>
-    ${(TTS.supported && ttsSegments(term.vi, hzOf(term), term.en).length) ? `<button class="pp-speak" id="ppSpeakBtn" data-ttskey="hw:${term.id}" onclick="speakHeadword('${term.id}')" aria-label="${t('speak')}">${TTS_ICON}</button>` : ''}
     <div class="pp-head">
       <button class="pp-arrow left ${prev?'':'hidden'}" id="ppArrowL" aria-label="Từ trước" onclick="openPopup('${prev?prev.id:''}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
       <button class="pp-arrow right ${next?'':'hidden'}" id="ppArrowR" aria-label="Từ sau" onclick="openPopup('${next?next.id:''}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg></button>
@@ -2350,6 +2405,7 @@ function openPopup(id){
       <div class="vi">${term.vi}</div>
       <div class="en">${term.en||''}</div>
       `}
+      ${TTS.supported ? `<button type="button" class="pp-hw-speak" id="ppSpeakBtn" data-ttskey="hw:${term.id}" onclick="speakHeadword('${term.id}')">${TTS_ICON}<span>${t('speak')}</span></button>` : ''}
       <div class="tags"><span class="tag">${group1Label(term.group1)}</span>${term.group2?`<span class="tag">${termGroup2Label(term)}</span>`:''}${specialClassTags(term)}</div>
     </div>
     <div class="pp-body">`;
