@@ -262,6 +262,49 @@ async function getWordElementTerms() {
 }
 
 /**
+ * GĐ2 (từ điển tự học của cổng chimedis.vn): những cụm do LLM dịch từ lưu lượng tìm y văn thật
+ * và đã được editor DUYỆT (dict_candidates.status='approved') — đưa vào /api/terms để làm giàu
+ * kho từ điển. Nhóm riêng "Thuật ngữ bổ sung", verify=true (đã có người duyệt).
+ * Bảng dict_candidates do repo chimedis-home tạo; ở đây chỉ ĐỌC (không lỗi nếu bảng chưa tồn tại).
+ */
+async function getApprovedCandidateTerms() {
+  if (!mysqlPool) return [];
+  try {
+    const [rows] = await mysqlPool.query(
+      "SELECT id, term_display, term_norm, lang, en, syn FROM dict_candidates WHERE status = 'approved'"
+    );
+    return rows.map((r) => {
+      let syn = [];
+      try { syn = Array.isArray(r.syn) ? r.syn : JSON.parse(r.syn || '[]'); } catch { syn = []; }
+      const isHan = /[㐀-鿿]/.test(r.term_display || '');
+      return {
+        id: `AUTO-${String(r.id).padStart(6, '0')}`,
+        hz: isHan ? r.term_display : null,
+        hz_traditional: null,
+        py: r.lang === 'zh' ? null : null,
+        vi: isHan ? null : r.term_display,
+        en: r.en,
+        group1: 'Thuật ngữ bổ sung',
+        group2: null,
+        group2_vi: null,
+        group2_en: null,
+        vitri: null,
+        nguon: 'Tự học (LLM) — đã duyệt',
+        verify: true,
+        category: null,
+        en_synonyms: syn,
+      };
+    });
+  } catch (err) {
+    // ER_NO_SUCH_TABLE khi chưa chạy schema bên chimedis-home → coi như rỗng.
+    if (err.code !== 'ER_NO_SUCH_TABLE') {
+      console.error('⚠️  Không đọc được dict_candidates:', err.message);
+    }
+    return [];
+  }
+}
+
+/**
  * Tìm hoặc tạo bản ghi `users` ứng với 1 firebase_uid đã xác thực — gọi ngay sau khi
  * verifyFirebaseToken pass, trước khi dùng user.id cho favorites/settings. Cập nhật lại
  * email/display_name/photo_url mỗi lần gọi (đồng bộ nếu user đổi thông tin bên Firebase/
@@ -489,7 +532,8 @@ app.get('/api/terms', async (req, res) => {
     const anatomyTerms = await getAnatomyTerms();
     const wordElementTerms = await getWordElementTerms();
     const acupointTerms = await getAcupointTerms();
-    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms];
+    const autoTerms = await getApprovedCandidateTerms(); // GĐ2: cụm tự học đã duyệt
+    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms];
 
     if (terms.length === 0) {
       return res.status(404).json({
@@ -555,7 +599,8 @@ app.get('/api/groups', async (req, res) => {
     const anatomyTerms = await getAnatomyTerms();
     const wordElementTerms = await getWordElementTerms();
     const acupointTerms = await getAcupointTerms();
-    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms];
+    const autoTerms = await getApprovedCandidateTerms(); // GĐ2: cụm tự học đã duyệt
+    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms];
 
     if (terms.length === 0) {
       return res.status(404).json({
