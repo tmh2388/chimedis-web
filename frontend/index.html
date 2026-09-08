@@ -1880,11 +1880,14 @@ function GROUP1(){
   ];
   return all.filter(g => ALWAYS_SHOW_GROUPS.includes(g.key) || TERMS.some(x => x.group1 === g.key));
 }
-// Giải phẫu/Sinh lý giờ có dữ liệu thật (MySQL anatomy_terms) nên dùng cơ chế
-// data-driven giống Dược liệu (group2/group2_vi/group2_en lấy từ TERMS thực
-// tế) — chỉ Bệnh lý còn dùng danh sách hardcode SYS_OPTIONS vì chưa có nguồn
-// dữ liệu thật (xem backend/db/schema.sql).
-const ANATOMY_GROUPS = ['Bệnh lý'];
+// Giải phẫu/Sinh lý/Bệnh lý đều đã có dữ liệu thật (MySQL anatomy_terms, 3 domain
+// dùng chung bảng qua cột `domain`) nên CẢ 3 dùng cơ chế data-driven giống Dược
+// liệu/Huyệt vị (group2/group2_vi/group2_en lấy từ TERMS thực tế, xem nhánh cuối
+// getGroup2Options()) — không domain nào còn dùng danh sách hardcode SYS_OPTIONS
+// nữa (sửa 2026-08-19: Bệnh lý trước đó vẫn kẹt ở SYS_OPTIONS chỉ 4 mục cứng,
+// khiến 12/16 nhóm bệnh mới thêm không hiện trong dropdown, còn Sinh lý hiện ra
+// cả những mục hệ cơ quan chưa có dữ liệu Sinh lý nào — xem project_chimedis_pathology_domain).
+const ANATOMY_GROUPS = [];
 // Từ ghép Y Khoa: dropdown 2 lọc theo LOẠI (tiền tố/hậu tố/từ căn/thuật ngữ
 // ghép), không phải hệ cơ quan — tiền tố/hậu tố gần như không gắn hệ cơ quan
 // cụ thể trong nguồn (xem backend/db/schema.sql), nên hệ cơ quan không phải
