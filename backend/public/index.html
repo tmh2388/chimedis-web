@@ -426,6 +426,7 @@ header{transition:padding .2s ease}
   color:var(--muc);cursor:pointer}
 .auth-social svg,.auth-social img{width:18px;height:18px;flex:0 0 18px}
 .auth-social.fb{background:#1877F2;border-color:#1877F2;color:#fff}
+.auth-social.apple{background:#000;border-color:#000;color:#fff}
 .auth-divider{display:flex;align-items:center;gap:10px;color:var(--muc-mo);font-size:11px;margin:2px 0}
 .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--vien)}
 .auth-field{padding:11px 13px;border-radius:10px;border:1px solid var(--vien);font-size:13.5px;
@@ -658,7 +659,25 @@ function hzOf(term){
   return (state.hanScript === 'traditional') ? (hzTradOf(term) || term.hz) : term.hz;
 }
 const I18N = {"vi": {"sub": "Tiếng Trung Y Khoa", "search_ph": "Nhập 汉字 / pinyin / tiếng Việt / tiếng Anh để tra cứu", "search_hint": "Dùng dấu + để tìm nhiều triệu chứng cùng lúc (VD: đau lưng + đau bụng). Dấu , để khớp 1 trong nhiều cụm. Dấu - trước 1 cụm để loại trừ (VD: đau lưng - sốt).","g_all": "Toàn bộ", "g_anat": "Giải phẫu", "g_phys": "Sinh lý", "g_path": "Bệnh lý", "g_mer": "Kinh mạch", "g_acu": "Huyệt vị", "g_form": "Thang phương", "g_herb": "Dược liệu", "g_wordelem": "Từ ghép Y Khoa", "wt_prefix": "Tiền tố", "wt_suffix": "Hậu tố", "wt_root": "Từ căn", "wt_term": "Thuật ngữ ghép", "f_meaning": "Ý nghĩa", "f_example": "Ví dụ", "g_review": "Ôn luyện", "dd_all": "Toàn bộ", "sys_resp": "Hô hấp", "sys_circ": "Tuần hoàn", "sys_dige": "Tiêu hoá", "sys_nerv": "Thần kinh", "intro_resp": "Hệ cơ quan đảm nhiệm trao đổi khí giữa cơ thể và môi trường. Cấu trúc chính gồm mũi, hầu, thanh quản, khí quản, phế quản, phổi và phế nang.", "tab_vocab": "Từ vựng", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Đã thuộc", "all_terms": "Toàn bộ thuật ngữ", "results_for": "Kết quả cho", "words": "từ", "choose_sys": "Chọn một hệ cơ quan ở trên để xem giới thiệu và lọc từ vựng tương ứng.", "flow_title": "Đường đi giải phẫu", "detail": "Chi tiết", "f_pos": "Vị trí", "f_func": "Công năng", "f_tcm": "Ghi chú Trung Y", "f_clin": "Lâm sàng", "f_indication": "Chủ trị", "f_taste": "Tính vị", "f_meridian": "Quy kinh", "f_pointclass": "Loại huyệt", "f_dose": "Liều dùng", "f_caution": "Kiêng kỵ", "f_mt_note": "Dịch máy — cần rà soát", "f_verify": "⚠ Cần xác thực", "f_source": "Nguồn", "f_cnwarn": "⚠ Phần tiếng Trung là bản dịch tạm cho demo — cần Hạ Vân Y Đạo rà soát.", "btn_known": "Đã thuộc", "btn_known_on": "Đã thuộc ✓", "btn_review": "Thêm vào ôn tập", "fc_front": "MẶT TRƯỚC", "fc_back": "MẶT SAU", "fc_flip": "Chạm để lật", "fc_flipback": "Lật lại", "fc_no": "Chưa nhớ", "fc_mid": "Cần ôn lại", "fc_yes": "Đã thuộc", "fc_empty": "Không có từ nào trong phạm vi này để học.", "qz_choose": "Chọn nghĩa tiếng Việt", "qz_mean": "nghĩa là gì?", "qz_q": "Câu", "qz_pts": "điểm", "qz_correct": "✓ Đúng", "qz_wrong": "✗ Sai", "qz_next": "Câu tiếp theo", "qz_result": "Xem kết quả", "qz_done_lab": "câu trả lời đúng", "qz_retry": "Làm lại", "qz_empty": "Không có từ nào trong phạm vi này để làm quiz.", "done_title": "Đã thuộc", "done_sub": "Ôn lại theo chu kỳ ngắt quãng — 1 · 3 · 7 · 14 · 30 ngày", "st_known": "Đã thuộc", "st_review": "Cần ôn lại", "st_today": "Hôm nay", "fl_today": "Hôm nay cần ôn", "fl_known": "Đã thuộc", "fl_review": "Cần ôn lại", "next_review": "Ôn tiếp", "today": "Hôm nay", "after": "sau", "days": "ngày", "no_words": "Chưa có từ nào trong nhóm này.", "review_today": "Ôn hôm nay", "dr_account": "Tài khoản", "dr_login": "Đăng nhập / Đăng ký", "dr_progress": "Tiến độ học tập", "dr_favorites": "Từ đã lưu", "favorites_empty": "Chưa lưu từ nào. Bấm vào biểu tượng ❤ trong 1 thuật ngữ để lưu.", "auth_title": "Chimedis", "auth_subtitle": "Đăng nhập để lưu từ vựng và đồng bộ trên mọi thiết bị", "auth_google": "Tiếp tục với Google", "auth_facebook": "Tiếp tục với Facebook", "auth_or": "hoặc", "auth_email_ph": "Email", "auth_password_ph": "Mật khẩu", "auth_name_ph": "Tên hiển thị", "auth_signin": "Đăng nhập", "auth_signup": "Tạo tài khoản", "auth_no_account": "Chưa có tài khoản?", "auth_have_account": "Đã có tài khoản?", "auth_switch_signup": "Đăng ký", "auth_switch_signin": "Đăng nhập", "auth_signout": "Đăng xuất", "auth_err_generic": "Có lỗi xảy ra, vui lòng thử lại.", "auth_err_invalid": "Email hoặc mật khẩu không đúng.", "auth_err_email_in_use": "Email này đã được đăng ký.", "auth_err_weak_password": "Mật khẩu cần ít nhất 6 ký tự.", "dr_settings": "Cài đặt", "dr_sys": "Cài đặt hệ thống", "dr_display": "Tuỳ chỉnh hiển thị", "dr_content_lang": "Ngôn ngữ hiển thị nội dung", "dr_lang": "Ngôn ngữ giao diện", "dr_han_script": "Chữ Hán hiển thị", "han_simplified": "简体 — Giản thể", "han_traditional": "繁體 — Phồn thể", "dr_other": "Khác", "dr_source": "Nguồn học thuật", "dr_about": "Giới thiệu Hạ Vân Y Đạo", "soon": "Sắp có", "empty_vocab": "Không tìm thấy thuật ngữ phù hợp.", "data_fallback_note": "⚠ Chưa tải được đầy đủ cơ sở dữ liệu (mất mạng hoặc máy chủ đang lỗi) — kết quả này chỉ dựa trên dữ liệu rút gọn ngoại tuyến. Kiểm tra kết nối mạng và thử tải lại trang.", "fuzzy_note": "Không có kết quả khớp chính xác — đang hiện gợi ý gần đúng cho", "load_more": "Xem thêm", "showing_count": "Đang hiện {n}/{total}", "footer_desc": "Ứng dụng tra cứu và ghi nhớ thuật ngữ y khoa, từ y học hiện đại đến kinh điển Trung Y."}, "zh": {"sub": "中医汉语", "search_ph": "输入 汉字 / 拼音 / 越南语 / 英语 进行查询", "search_hint": "输入 + 可同时查询多个症状（例：腰痛 + 腹痛）。逗号 , 表示任意一个符合即可。词前加 - 可排除该词（例：腰痛 - 发热）。","g_all": "全部", "g_anat": "解剖", "g_phys": "生理", "g_path": "病理", "g_mer": "经络", "g_acu": "腧穴", "g_form": "汤方", "g_herb": "药材", "g_wordelem": "词素合成", "wt_prefix": "前缀", "wt_suffix": "后缀", "wt_root": "词根", "wt_term": "复合词", "f_meaning": "含义", "f_example": "例词", "g_review": "复习", "dd_all": "全部", "sys_resp": "呼吸", "sys_circ": "循环", "sys_dige": "消化", "sys_nerv": "神经", "intro_resp": "人体与外界进行气体交换的系统，主要包括鼻、咽、喉、气管、支气管、肺和肺泡。", "tab_vocab": "词汇", "tab_fc": "卡片", "tab_quiz": "测验", "tab_done": "已掌握", "all_terms": "全部术语", "results_for": "查询结果", "words": "个词", "choose_sys": "请选择上方的器官系统以查看简介并筛选相应词汇。", "flow_title": "解剖路径", "detail": "详情", "f_pos": "位置", "f_func": "功能", "f_tcm": "中医注释", "f_clin": "临床", "f_indication": "主治", "f_taste": "性味", "f_meridian": "归经", "f_pointclass": "穴位分类", "f_dose": "用量", "f_caution": "使用注意", "f_mt_note": "机器翻译 — 待审核", "f_verify": "⚠ 待核实", "f_source": "来源", "f_cnwarn": "⚠ 中文部分为演示用临时翻译——需夏雲醫道审核。", "btn_known": "已掌握", "btn_known_on": "已掌握 ✓", "btn_review": "加入复习", "fc_front": "正面", "fc_back": "背面", "fc_flip": "点击翻转", "fc_flipback": "翻回", "fc_no": "未记住", "fc_mid": "需复习", "fc_yes": "已掌握", "fc_empty": "此范围内暂无可学习的词。", "qz_choose": "选择越南语释义", "qz_mean": "是什么意思？", "qz_q": "第", "qz_pts": "分", "qz_correct": "✓ 正确", "qz_wrong": "✗ 错误", "qz_next": "下一题", "qz_result": "查看结果", "qz_done_lab": "题答对", "qz_retry": "重做", "qz_empty": "此范围内暂无可测验的词。", "done_title": "已掌握", "done_sub": "按间隔周期复习 — 1 · 3 · 7 · 14 · 30 天", "st_known": "已掌握", "st_review": "需复习", "st_today": "今天", "fl_today": "今日待复习", "fl_known": "已掌握", "fl_review": "需复习", "next_review": "下次复习", "today": "今天", "after": "", "days": "天后", "no_words": "该组暂无词。", "review_today": "今日复习", "dr_account": "账户", "dr_login": "登录 / 注册", "dr_progress": "学习进度", "dr_favorites": "已收藏", "favorites_empty": "还没有收藏任何词条。点击词条中的 ❤ 图标即可收藏。", "auth_title": "Chimedis", "auth_subtitle": "登录以收藏词条并在多设备间同步", "auth_google": "使用 Google 继续", "auth_facebook": "使用 Facebook 继续", "auth_or": "或", "auth_email_ph": "邮箱", "auth_password_ph": "密码", "auth_name_ph": "显示名称", "auth_signin": "登录", "auth_signup": "创建账户", "auth_no_account": "还没有账户？", "auth_have_account": "已有账户？", "auth_switch_signup": "注册", "auth_switch_signin": "登录", "auth_signout": "退出登录", "auth_err_generic": "发生错误，请重试。", "auth_err_invalid": "邮箱或密码不正确。", "auth_err_email_in_use": "该邮箱已被注册。", "auth_err_weak_password": "密码至少需要6个字符。", "dr_settings": "设置", "dr_sys": "系统设置", "dr_display": "显示自定义", "dr_content_lang": "内容显示语言", "dr_lang": "界面语言", "dr_han_script": "汉字显示", "han_simplified": "简体", "han_traditional": "繁體", "dr_other": "其他", "dr_source": "学术来源", "dr_about": "关于夏雲醫道", "soon": "即将推出", "empty_vocab": "未找到匹配的术语。", "data_fallback_note": "⚠ 未能加载完整数据库（网络中断或服务器出错）——此结果仅基于精简的离线数据。请检查网络连接并重新加载页面。", "fuzzy_note": "没有完全匹配的结果 — 正在显示近似建议，针对", "load_more": "查看更多", "showing_count": "显示 {n}/{total}", "footer_desc": "医学术语查询与记忆应用，涵盖现代医学与中医经典。"}, "en": {"sub": "Medical Chinese", "search_ph": "Type 汉字 / pinyin / Vietnamese / English to search", "search_hint": "Use + to search multiple symptoms at once (e.g. back pain + stomach ache). Use , for either match. Use - before a phrase to exclude it (e.g. back pain - fever).","g_all": "All", "g_anat": "Anatomy", "g_phys": "Physiology", "g_path": "Pathology", "g_mer": "Meridians", "g_acu": "Acupoints", "g_form": "Formulas", "g_herb": "Herbs", "g_wordelem": "Word elements", "wt_prefix": "Prefix", "wt_suffix": "Suffix", "wt_root": "Root", "wt_term": "Compound term", "f_meaning": "Meaning", "f_example": "Example", "g_review": "Review", "dd_all": "All", "sys_resp": "Respiratory", "sys_circ": "Circulatory", "sys_dige": "Digestive", "sys_nerv": "Nervous", "intro_resp": "The system responsible for gas exchange between the body and the environment. Main structures: nose, pharynx, larynx, trachea, bronchi, lungs and alveoli.", "tab_vocab": "Vocabulary", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Learned", "all_terms": "All terms", "results_for": "Results for", "words": "words", "choose_sys": "Select an organ system above to see its intro and filter related terms.", "flow_title": "Anatomical pathway", "detail": "Details", "f_pos": "Location", "f_func": "Function", "f_tcm": "TCM notes", "f_clin": "Clinical", "f_indication": "Indications", "f_taste": "Taste & temperature", "f_meridian": "Meridians", "f_pointclass": "Point classification", "f_dose": "Dosage", "f_caution": "Cautions", "f_mt_note": "Machine translated — needs review", "f_verify": "⚠ Needs verification", "f_source": "Source", "f_cnwarn": "⚠ The Chinese text is a draft translation for demo — pending review by Hạ Vân Y Đạo.", "btn_known": "Learned", "btn_known_on": "Learned ✓", "btn_review": "Add to review", "fc_front": "FRONT", "fc_back": "BACK", "fc_flip": "Tap to flip", "fc_flipback": "Flip back", "fc_no": "Not yet", "fc_mid": "Review", "fc_yes": "Learned", "fc_empty": "No words in this scope to study.", "qz_choose": "Choose the Vietnamese meaning", "qz_mean": "means?", "qz_q": "Question", "qz_pts": "pts", "qz_correct": "✓ Correct", "qz_wrong": "✗ Wrong", "qz_next": "Next", "qz_result": "See results", "qz_done_lab": "correct answers", "qz_retry": "Retry", "qz_empty": "No words in this scope for a quiz.", "done_title": "Learned", "done_sub": "Spaced repetition — 1 · 3 · 7 · 14 · 30 days", "st_known": "Learned", "st_review": "To review", "st_today": "Today", "fl_today": "Due today", "fl_known": "Learned", "fl_review": "To review", "next_review": "Next review", "today": "Today", "after": "in", "days": "days", "no_words": "No words in this group yet.", "review_today": "Review today", "dr_account": "Account", "dr_login": "Sign in / Sign up", "dr_progress": "Learning progress", "dr_favorites": "Saved terms", "favorites_empty": "No saved terms yet. Tap the ❤ icon on a term to save it.", "auth_title": "Chimedis", "auth_subtitle": "Sign in to save terms and sync across devices", "auth_google": "Continue with Google", "auth_facebook": "Continue with Facebook", "auth_or": "or", "auth_email_ph": "Email", "auth_password_ph": "Password", "auth_name_ph": "Display name", "auth_signin": "Sign in", "auth_signup": "Create account", "auth_no_account": "No account yet?", "auth_have_account": "Already have an account?", "auth_switch_signup": "Sign up", "auth_switch_signin": "Sign in", "auth_signout": "Sign out", "auth_err_generic": "Something went wrong, please try again.", "auth_err_invalid": "Incorrect email or password.", "auth_err_email_in_use": "This email is already registered.", "auth_err_weak_password": "Password must be at least 6 characters.", "dr_settings": "Settings", "dr_sys": "System settings", "dr_display": "Display options", "dr_content_lang": "Content display language", "dr_lang": "Interface language", "dr_han_script": "Chinese script", "han_simplified": "Simplified (简体)", "han_traditional": "Traditional (繁體)", "dr_other": "Other", "dr_source": "Academic sources", "dr_about": "About Hạ Vân Y Đạo", "soon": "Soon", "empty_vocab": "No matching terms found.", "data_fallback_note": "⚠ The full database couldn't be loaded (no connection or server issue) — this result is based on a limited offline dataset only. Check your connection and try reloading the page.", "fuzzy_note": "No exact match — showing close suggestions for", "load_more": "Show more", "showing_count": "Showing {n}/{total}", "footer_desc": "An app for looking up and memorizing medical terminology, from modern medicine to classical TCM."}};
+I18N.vi.auth_apple = 'Tiếp tục với Apple'; I18N.zh.auth_apple = '使用 Apple 继续'; I18N.en.auth_apple = 'Continue with Apple';
 function t(key){ return (I18N[state.lang] && I18N[state.lang][key]) || I18N.vi[key] || key; }
+// Bệnh lý dùng chung 4 field slot với Giải phẫu/Sinh lý (vitri/congnang/tcm/lamsang,
+// xem ANATOMY_GROUPS) nhưng ý nghĩa nội dung khác hẳn (định nghĩa/bệnh nhân-bệnh cơ/
+// thể bệnh/triệu chứng-pháp trị thay vì vị trí/công năng cơ thể) — đổi NHÃN hiển thị
+// khi term.group1 === 'Bệnh lý', không đổi cấu trúc dữ liệu hay field slot nào
+// (quyết định 2026-08-19, xem project_chimedis_pathology_domain).
+const PATHOLOGY_LABELS = {
+  f_pos:  {vi:'Định nghĩa', zh:'定义', en:'Definition'},
+  f_func: {vi:'Bệnh nhân — Bệnh cơ', zh:'病因病机', en:'Etiology & pathogenesis'},
+  f_tcm:  {vi:'Thể bệnh (biện chứng)', zh:'证型', en:'Syndrome patterns'},
+  f_clin: {vi:'Triệu chứng & Pháp trị', zh:'症状与治法', en:'Symptoms & treatment principle'},
+};
+function fieldLabel(key, term){
+  if(term && term.group1==='Bệnh lý' && PATHOLOGY_LABELS[key]){
+    return PATHOLOGY_LABELS[key][state.lang] || PATHOLOGY_LABELS[key].vi;
+  }
+  return t(key);
+}
 // Chọn nội dung theo ngôn ngữ đang hiển thị (dữ liệu chỉ có VI + ZH, chưa có EN cho trường này).
 // zh === 'zh': ưu tiên tiếng Trung. Còn lại (vi/en): ưu tiên tiếng Việt, tiếng Trung làm dòng phụ.
 function pickLang(vi, zh){
@@ -835,6 +854,8 @@ const FAVORITES_SENTINEL = '__favorites__';
 // console. Nếu user thường báo lại "bấm Facebook không có phản hồi", kiểm tra lại chế độ này
 // trước khi nghi ngờ code.
 const FACEBOOK_LOGIN_ENABLED = true;
+const APPLE_LOGIN_ENABLED = true;
+const IN_NATIVE_APP = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 
 // ===== NGÔN NGỮ HIỂN THỊ NỘI DUNG (độc lập với ngôn ngữ giao diện state.lang) =====
 const CONTENT_LANGS_KEY = 'chimedis_content_langs_v1';
@@ -1013,6 +1034,7 @@ function renderAuthModal(){
     <div class="auth-body">
       <button class="auth-social" onclick="doSignInGoogle()"><svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.6 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.4 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.5-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.4 6.1 29.5 4 24 4c-7.6 0-14.1 4.3-17.4 10.7z"/><path fill="#4CAF50" d="M24 44c5.4 0 10.2-2.1 13.9-5.4l-6.4-5.4C29.4 34.9 26.8 36 24 36c-5.3 0-9.6-3.4-11.2-8.1l-6.5 5C9.8 39.6 16.4 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.9 36 44 30.6 44 24c0-1.3-.1-2.5-.4-3.5z"/></svg><span>${t('auth_google')}</span></button>
       ${FACEBOOK_LOGIN_ENABLED ? `<button class="auth-social fb" onclick="doSignInFacebook()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg><span>${t('auth_facebook')}</span></button>` : ''}
+      ${APPLE_LOGIN_ENABLED ? `<button class="auth-social apple" onclick="doSignInApple()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.468 2.276-1.223 3.09-.813.87-2.144 1.54-3.253 1.45-.132-1.1.45-2.28 1.174-3.03.81-.85 2.204-1.47 3.302-1.51.019.16.019.32 0 0zM20.5 17.29c-.61 1.4-.9 2.02-1.68 3.26-1.09 1.72-2.63 3.87-4.53 3.88-1.69.02-2.12-1.11-4.42-1.1-2.3.01-2.77 1.12-4.46 1.1-1.9-.01-3.35-1.94-4.44-3.66C-.42 16.42-.83 10.3 1.66 7.04c1.16-1.53 2.98-2.5 4.71-2.5 1.76 0 2.86 1.12 4.32 1.12 1.41 0 2.27-1.12 4.31-1.12 1.53 0 3.16.83 4.32 2.27-3.8 2.08-3.18 7.5.98 8.4z"/></svg><span>${t('auth_apple')}</span></button>` : ''}
       <div class="auth-divider">${t('auth_or')}</div>
       ${isSignup ? `<input class="auth-field" id="authName" placeholder="${t('auth_name_ph')}">` : ''}
       <input class="auth-field" id="authEmail" type="email" autocomplete="email" placeholder="${t('auth_email_ph')}">
@@ -1030,6 +1052,14 @@ async function doSignInGoogle(){
 async function doSignInFacebook(){
   try{ await window.chimedisFirebase.signInFacebook(); closeAuthModal(); }
   catch(err){ if(err && err.code !== 'auth/popup-closed-by-user') showAuthError(authErrorMessage(err)); }
+}
+async function doSignInApple(){
+  try{ await window.chimedisFirebase.signInApple(); closeAuthModal(); }
+  catch(err){
+    const c = err && err.code;
+    if(c === 'auth/popup-closed-by-user' || c === '1001' || err.message === 'The user canceled the authorization attempt.') return;
+    showAuthError(authErrorMessage(err));
+  }
 }
 async function doSignInEmail(){
   const email = document.getElementById('authEmail').value.trim();
@@ -1863,11 +1893,14 @@ function GROUP1(){
   ];
   return all.filter(g => ALWAYS_SHOW_GROUPS.includes(g.key) || TERMS.some(x => x.group1 === g.key));
 }
-// Giải phẫu/Sinh lý giờ có dữ liệu thật (MySQL anatomy_terms) nên dùng cơ chế
-// data-driven giống Dược liệu (group2/group2_vi/group2_en lấy từ TERMS thực
-// tế) — chỉ Bệnh lý còn dùng danh sách hardcode SYS_OPTIONS vì chưa có nguồn
-// dữ liệu thật (xem backend/db/schema.sql).
-const ANATOMY_GROUPS = ['Bệnh lý'];
+// Giải phẫu/Sinh lý/Bệnh lý đều đã có dữ liệu thật (MySQL anatomy_terms, 3 domain
+// dùng chung bảng qua cột `domain`) nên CẢ 3 dùng cơ chế data-driven giống Dược
+// liệu/Huyệt vị (group2/group2_vi/group2_en lấy từ TERMS thực tế, xem nhánh cuối
+// getGroup2Options()) — không domain nào còn dùng danh sách hardcode SYS_OPTIONS
+// nữa (sửa 2026-08-19: Bệnh lý trước đó vẫn kẹt ở SYS_OPTIONS chỉ 4 mục cứng,
+// khiến 12/16 nhóm bệnh mới thêm không hiện trong dropdown, còn Sinh lý hiện ra
+// cả những mục hệ cơ quan chưa có dữ liệu Sinh lý nào — xem project_chimedis_pathology_domain).
+const ANATOMY_GROUPS = [];
 // Từ ghép Y Khoa: dropdown 2 lọc theo LOẠI (tiền tố/hậu tố/từ căn/thuật ngữ
 // ghép), không phải hệ cơ quan — tiền tố/hậu tố gần như không gắn hệ cơ quan
 // cụ thể trong nguồn (xem backend/db/schema.sql), nên hệ cơ quan không phải
@@ -2531,19 +2564,19 @@ function openPopup(id){
     const mtNote = (term.cn_machine && (state.contentLangs.vi || state.contentLangs.en)) ? `<p class="src" style="padding:2px 0 0">(${t('f_mt_note')})</p>` : '';
     if(term.vitri || term.vitri_en || term.vitri_cn){
       const body = renderMultiLang(term.vitri, term.vitri_cn, term.vitri_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_pos')}${ttsFieldBtn(term.vitri, term.vitri_cn, term.vitri_en)}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field"><div class="ft">${fieldLabel('f_pos',term)}${ttsFieldBtn(term.vitri, term.vitri_cn, term.vitri_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.congnang || term.congnang_en || term.congnang_cn){
       const body = renderMultiLang(term.congnang, term.congnang_cn, term.congnang_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_func')}${ttsFieldBtn(term.congnang, term.congnang_cn, term.congnang_en)}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field"><div class="ft">${fieldLabel('f_func',term)}${ttsFieldBtn(term.congnang, term.congnang_cn, term.congnang_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.tcm || term.tcm_en || term.tcm_cn){
       const body = renderMultiLang(term.tcm, term.tcm_cn, term.tcm_en);
-      if(body) html += `<div class="field tcm"><div class="ft">${t('f_tcm')}${ttsFieldBtn(term.tcm, term.tcm_cn, term.tcm_en)}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field tcm"><div class="ft">${fieldLabel('f_tcm',term)}${ttsFieldBtn(term.tcm, term.tcm_cn, term.tcm_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.lamsang || term.lamsang_en || term.lamsang_cn){
       const body = renderMultiLang(term.lamsang, term.lamsang_cn, term.lamsang_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_clin')}${ttsFieldBtn(term.lamsang, term.lamsang_cn, term.lamsang_en)}</div>${body}${mtNote}</div>`;
+      if(body) html += `<div class="field"><div class="ft">${fieldLabel('f_clin',term)}${ttsFieldBtn(term.lamsang, term.lamsang_cn, term.lamsang_en)}</div>${body}${mtNote}</div>`;
     }
     if(term.verify){
       html += `<div class="field verify"><div class="ft">${t('f_verify')}</div><p>${term.verify_note||'Nội dung này cần Hạ Vân Minh kiểm chứng trước khi dùng làm dữ liệu chính thức.'}</p></div>`;
@@ -2850,7 +2883,8 @@ if('serviceWorker' in navigator){
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
   import {
-    getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider,
+    getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult,
+    GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithCredential,
     signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut,
   } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
@@ -2880,6 +2914,8 @@ if('serviceWorker' in navigator){
     });
   }
 
+  if(auth){ getRedirectResult(auth).catch((e) => console.warn('[Chimedis] redirect result:', e && e.message)); }
+
   window.chimedisFirebase = {
     signInGoogle(){
       if(!auth) return Promise.reject(new Error('Firebase chưa cấu hình'));
@@ -2888,6 +2924,31 @@ if('serviceWorker' in navigator){
     signInFacebook(){
       if(!auth) return Promise.reject(new Error('Firebase chưa cấu hình'));
       return signInWithPopup(auth, new FacebookAuthProvider());
+    },
+    async signInApple(){
+      if(!auth) throw new Error('Firebase chưa cấu hình');
+      const inNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+      if(inNative && window.Capacitor.Plugins && window.Capacitor.Plugins.SignInWithApple){
+        // App iOS: dùng sheet Apple NATIVE (Guideline 4.8). Tạo rawNonce, gửi SHA256(nonce) cho Apple,
+        // giữ rawNonce cho Firebase signInWithCredential.
+        const rawNonce = Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');
+        const hashBuf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(rawNonce));
+        const hashed = Array.from(new Uint8Array(hashBuf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+        const res = await window.Capacitor.Plugins.SignInWithApple.authorize({ scopes: 'email name', nonce: hashed });
+        const idToken = (res && (res.response ? res.response.identityToken : res.identityToken));
+        if(!idToken) throw new Error('Apple không trả identityToken');
+        const cred = new OAuthProvider('apple.com').credential({ idToken, rawNonce });
+        return signInWithCredential(auth, cred);
+      }
+      // Trình duyệt web: popup, chặn popup thì redirect.
+      const provider = new OAuthProvider('apple.com'); provider.addScope('email'); provider.addScope('name');
+      try{ return await signInWithPopup(auth, provider); }
+      catch(e){
+        if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment','auth/cancelled-popup-request'].includes(e.code)){
+          return signInWithRedirect(auth, provider);
+        }
+        throw e;
+      }
     },
     signInEmail(email, password){
       if(!auth) return Promise.reject(new Error('Firebase chưa cấu hình'));
