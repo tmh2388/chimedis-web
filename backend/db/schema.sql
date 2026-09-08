@@ -91,9 +91,24 @@ CREATE TABLE IF NOT EXISTS import_log (
 -- manually extracted/curated into backend/data/anatomy-raw.json, then
 -- imported via import-anatomy-terms.js (machine-translating vi/en where
 -- the source has none, via translate.js — same MyMemory pipeline as
--- herbs). Bệnh lý (Pathology) is NOT covered — no readable source found
--- for it yet (the full TCM textbooks in Drive returned empty content,
--- likely scanned images without an OCR text layer).
+-- herbs).
+--
+-- Bệnh lý (Pathology/disease category) ALSO lives in this table, as a 3rd
+-- `domain` value — added 2026-08-19 via import-pathology-terms.js /
+-- backend/data/pathology-raw.json. Content is hand-composed from standard
+-- TCM curriculum knowledge (中医内科学/外科学/妇科学/儿科学/五官科学/骨伤
+-- 科学 nosology + the readable textbooks in Drive folder
+-- 1kob-z4R-70KKWWwfi38XcNPQdgmrGqvJ: 温病学/金匮要略/伤寒论选读) — the
+-- primary Nội khoa/Chẩn đoán học source scans in that folder have NO OCR
+-- layer and could not be read directly (user approved proceeding with
+-- readable sources + standard TCM knowledge instead of blocking, 2026-08-19,
+-- see project_chimedis_pathology_domain). machine_translated=FALSE (hand-
+-- authored), verify=TRUE (phase 1 — flagged for Hạ Vân Y Đạo to spot-check,
+-- not transcribed from a specific vetted core DB the way herbs/acupoints
+-- are). The 4 shared field slots are reused with DIFFERENT MEANING for this
+-- domain (position→định nghĩa, function→bệnh nhân-bệnh cơ, tcm_note→thể
+-- bệnh/biện chứng, clinical→triệu chứng & pháp trị) — see PATHOLOGY_LABELS
+-- in frontend/index.html for the relabeled UI text.
 --
 -- organ_system_zh is the stable filter key (raw Chinese, mirrors herbs'
 -- group2 convention); organ_system_vi/en are display-only labels from
@@ -105,7 +120,7 @@ CREATE TABLE IF NOT EXISTS import_log (
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS anatomy_terms (
   term_id            VARCHAR(32) PRIMARY KEY,   -- e.g. 'an-resp-001'
-  domain             VARCHAR(16) NOT NULL,      -- 'Giải phẫu' | 'Sinh lý'
+  domain             VARCHAR(16) NOT NULL,      -- 'Giải phẫu' | 'Sinh lý' | 'Bệnh lý'
   organ_system_zh    VARCHAR(64) NOT NULL,      -- khoá lọc gốc, vd. '呼吸系统'
   organ_system_vi    VARCHAR(64),
   organ_system_en    VARCHAR(64),
