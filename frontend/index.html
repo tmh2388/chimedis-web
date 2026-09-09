@@ -501,6 +501,10 @@ header{transition:padding .2s ease}
 .voice-cur .vc-v.none{color:var(--son,#c2410c)}
 .voice-cur .vc-hi{color:var(--la,#2f7d55);font-weight:800;white-space:nowrap}
 .voice-cur .vc-lo{color:var(--muc-mo,#9a8c78)}
+.voice-refresh{display:inline-flex;vertical-align:middle;margin-left:6px;padding:2px;border:0;background:transparent;
+  color:var(--tham-2,#7a6a58);cursor:pointer;border-radius:50%;-webkit-tap-highlight-color:transparent}
+.voice-refresh svg{width:14px;height:14px;transition:transform .5s}
+.voice-refresh.spun svg{transform:rotate(360deg)}
 .voice-test-btn{display:inline-flex;align-items:center;gap:7px;margin:2px 20px 12px;padding:8px 14px;border:1px solid var(--vien,#e5ddcc);
   border-radius:10px;background:#fff;color:var(--tham-2,#7a6a58);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
 .voice-test-btn svg{width:14px;height:14px;fill:currentColor}
@@ -759,7 +763,18 @@ function toggleHanScriptPanel(){
 function toggleVoiceHelpPanel(){
   document.getElementById('voiceHelpPanel').classList.toggle('show');
   document.getElementById('voiceHelpChev').classList.toggle('open');
+  if(TTS.supported) TTS.loadVoices(); // quét lại danh sách giọng mỗi lần mở
   syncVoiceHelpPanel();
+}
+// Bấm "↻" trong panel — buộc quét lại + báo kết quả. iOS đôi khi không cập nhật danh sách
+// giọng cho tới khi app được TẮT HẲN rồi mở lại (không phải chỉ chuyển nền).
+function refreshVoices(){
+  if(!TTS.supported) return;
+  TTS.loadVoices();
+  syncVoiceHelpPanel();
+  if(state.popupId) openPopup(state.popupId);
+  const btn = document.getElementById('voiceRefreshBtn');
+  if(btn){ btn.classList.add('spun'); setTimeout(() => btn.classList.remove('spun'), 500); }
 }
 function syncVoiceHelpPanel(){
   const box = document.getElementById('voiceCurList');
@@ -775,10 +790,12 @@ function syncVoiceHelpPanel(){
     const tag = v && v.localService === false ? ' · online' : '';
     return `<div class="vc-row"><span class="vc-l">${lab}</span><span class="vc-v${v ? '' : ' none'}">${name}${tag}${q}</span></div>`;
   };
-  box.innerHTML = `<div class="clp-hint">${t('voice_current')}</div>` +
+  box.innerHTML = `<div class="clp-hint">${t('voice_current')}` +
+      ` <button type="button" id="voiceRefreshBtn" class="voice-refresh" onclick="refreshVoices()" aria-label="${t('voice_reload')}" title="${t('voice_reload')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button></div>` +
     row('中', TTS.byLang.zh) + row('VI', TTS.byLang.vi) + row('EN', TTS.byLang.en);
 }
 function voiceSampleTest(){
+  if(TTS.supported) TTS.loadVoices();
   // 1 câu mẫu mỗi ngôn ngữ đang bật, để nghe ngay chất lượng giọng hiện tại.
   TTS.store['voicetest'] = {
     zh: '这是当前朗读语音的示范。',
@@ -1364,7 +1381,7 @@ Object.assign(I18N.vi, {
   voice_android: 'Android: Cài đặt › Quản lý chung › Văn bản thành giọng nói › đặt công cụ là "Giọng nói Google" › cài đặt › tải gói ngôn ngữ tương ứng.',
   voice_current: 'Giọng đang dùng',
   voice_none: '(chưa có)',
-  voice_test: 'Nghe thử', voice_hi: 'Nâng cao', voice_basic: '· cơ bản',
+  voice_test: 'Nghe thử', voice_hi: 'Nâng cao', voice_basic: '· cơ bản', voice_reload: 'Quét lại danh sách giọng',
 });
 Object.assign(I18N.zh, {
   speak: '朗读', tts_pick: '选择朗读语言', tts_no_voice: '此设备暂无该语言的朗读语音', tts_all: '中·越·英 全部',
@@ -1381,7 +1398,7 @@ Object.assign(I18N.zh, {
   voice_android: 'Android：设置 › 通用管理 › 文字转语音 › 引擎设为「Google 文字转语音」› 设置 › 下载对应语言包。',
   voice_current: '当前语音',
   voice_none: '（无）',
-  voice_test: '试听', voice_hi: '增强', voice_basic: '· 基础',
+  voice_test: '试听', voice_hi: '增强', voice_basic: '· 基础', voice_reload: '重新扫描语音列表',
 });
 Object.assign(I18N.en, {
   speak: 'Speak', tts_pick: 'Choose reading language', tts_no_voice: 'This device has no voice for this language', tts_all: 'All 3 languages',
@@ -1398,7 +1415,7 @@ Object.assign(I18N.en, {
   voice_android: 'Android: Settings › General management › Text-to-speech › set engine to “Google Text-to-speech” › settings › install the matching language data.',
   voice_current: 'Voice in use',
   voice_none: '(none)',
-  voice_test: 'Test', voice_hi: 'Enhanced', voice_basic: '· basic',
+  voice_test: 'Test', voice_hi: 'Enhanced', voice_basic: '· basic', voice_reload: 'Rescan voice list',
 });
 
 // ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
@@ -1522,11 +1539,17 @@ const TTS = {
 };
 if(TTS.supported){
   TTS.loadVoices();
-  window.speechSynthesis.onvoiceschanged = () => {
+  const rescanVoices = () => {
     TTS.loadVoices();
+    if(document.getElementById('voiceHelpPanel') && typeof syncVoiceHelpPanel === 'function') syncVoiceHelpPanel();
     if(state.popupId) openPopup(state.popupId);
     if(state.tab === 'flashcard' || state.tab === 'studyhome') renderTabContent();
   };
+  window.speechSynthesis.onvoiceschanged = rescanVoices;
+  // Người dùng thường sang Cài đặt cài giọng rồi quay lại app — iOS đôi khi chỉ nạp danh
+  // sách giọng mới khi app quay lại tiền cảnh (hoặc phải tắt hẳn app). Quét lại ở đây.
+  document.addEventListener('visibilitychange', () => { if(!document.hidden) rescanVoices(); });
+  window.addEventListener('focus', rescanVoices);
 }
 
 // Thứ tự đọc = đúng thứ tự xếp chồng hiển thị (zh -> vi -> en) và CHỈ các ngôn ngữ đang bật
