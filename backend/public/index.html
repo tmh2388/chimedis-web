@@ -464,6 +464,17 @@ header{transition:padding .2s ease}
 .fld-speak.speaking,.fc-speak.speaking{background:var(--son,#c2410c);color:#fff}
 .fld-speak:active,.fc-speak:active{transform:scale(.9)}
 .field .ft{display:flex;align-items:center}
+/* Loa nhỏ CUỐI mỗi dòng ngôn ngữ — bấm đọc riêng dòng đó */
+.ln-speak{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;
+  width:20px;height:20px;margin:0 0 1px 5px;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:transparent;color:var(--muc-mo,#9a8c78);opacity:.75;-webkit-tap-highlight-color:transparent;flex:0 0 20px}
+.ln-speak svg{width:14px;height:14px}
+.ln-speak:active{transform:scale(.86)}
+.ln-speak.speaking{opacity:1;color:var(--son,#c2410c)}
+.pp-head .ln-speak{color:#fff;opacity:.6}
+.pp-head .ln-speak.speaking{opacity:1;color:var(--ngua,#E7C9A0)}
+.pp-head .hz .ln-speak{width:24px;height:24px;flex-basis:24px;margin-left:8px}
+.pp-head .hz .ln-speak svg{width:17px;height:17px}
 .tts-lang-pop{position:fixed;z-index:9999;background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:12px;
   box-shadow:0 10px 30px rgba(0,0,0,.18);padding:5px;display:flex;flex-direction:column;min-width:150px}
 .tts-lang-pop button{border:0;background:none;text-align:left;padding:9px 12px;border-radius:8px;font-size:14px;
@@ -1193,11 +1204,14 @@ function ttsSameText(a, b){
   const n = s => String(s == null ? '' : s).toLowerCase().replace(/\s+/g, '').replace(/[–—−-]/g, '-').replace(/[。．.,，、;；:：!！?？…]+$/,'');
   return n(a) && n(a) === n(b);
 }
-function renderMultiLang(vi, zh, en){
+// opts.speak = true -> mỗi DÒNG ngôn ngữ có 1 loa nhỏ RIÊNG (người dùng tự bấm nghe đúng
+// ngôn ngữ mình muốn). Không đọc gộp nhiều ngôn ngữ liền mạch nữa (gây rối).
+function renderMultiLang(vi, zh, en, opts){
+  opts = opts || {};
   const parts = [
-    { on: state.contentLangs.zh, text: zh, cls: 'han' },
-    { on: state.contentLangs.vi, text: vi, cls: 'lang-vi' },
-    { on: state.contentLangs.en, text: en, cls: 'lang-en' },
+    { on: state.contentLangs.zh, text: zh, cls: 'han', lang: 'zh' },
+    { on: state.contentLangs.vi, text: vi, cls: 'lang-vi', lang: 'vi' },
+    { on: state.contentLangs.en, text: en, cls: 'lang-en', lang: 'en' },
   ];
   const seen = [];
   const pick = parts.filter(p => {
@@ -1206,27 +1220,30 @@ function renderMultiLang(vi, zh, en){
     seen.push(p.text);
     return true;
   });
-  let html = pick.map(p => `<p class="${p.cls}">${p.text}</p>`).join('');
+  const line = p => `<p class="${p.cls}">${p.text}${opts.speak ? speakLineBtn(p.text, p.lang) : ''}</p>`;
+  let html = pick.map(line).join('');
   if(!html){
     const fb = parts.find(p => p.text);
-    if(fb) html = `<p class="${fb.cls}">${fb.text}</p>`;
+    if(fb) html = line(fb);
   }
   return html;
 }
 // Riêng "Ví dụ" của Từ ghép Y Khoa: đảo thứ tự Anh->Việt->Trung (thay vì Trung->Việt->Anh
 // như mọi nơi khác) vì tiếng Anh mới là vai trò chủ đạo của domain này — Anh in đậm, đứng
 // thẳng (không nghiêng) để nổi bật, Việt/Trung xuống thành chú giải phụ.
-function renderMultiLangEnFirst(vi, zh, en, ipa){
+function renderMultiLangEnFirst(vi, zh, en, ipa, opts){
+  opts = opts || {};
   const ipaHtml = (en && ipa) ? ` <span class="ex-ipa">/${ipa}/</span>` : '';
   const parts = [
-    { on: state.contentLangs.en, text: en ? en+ipaHtml : en, cls: 'lang-en-lead' },
-    { on: state.contentLangs.vi, text: vi, cls: 'lang-vi' },
-    { on: state.contentLangs.zh, text: zh, cls: 'han' },
+    { on: state.contentLangs.en, text: en ? en+ipaHtml : en, raw: en, cls: 'lang-en-lead', lang: 'en' },
+    { on: state.contentLangs.vi, text: vi, raw: vi, cls: 'lang-vi', lang: 'vi' },
+    { on: state.contentLangs.zh, text: zh, raw: zh, cls: 'han', lang: 'zh' },
   ];
-  let html = parts.filter(p => p.on && p.text).map(p => `<p class="${p.cls}">${p.text}</p>`).join('');
+  const line = p => `<p class="${p.cls}">${p.text}${opts.speak ? speakLineBtn(p.raw, p.lang) : ''}</p>`;
+  let html = parts.filter(p => p.on && p.text).map(line).join('');
   if(!html){
     const fb = parts.find(p => p.text);
-    if(fb) html = `<p class="${fb.cls}">${fb.text}</p>`;
+    if(fb) html = line(fb);
   }
   return html;
 }
@@ -1517,6 +1534,21 @@ function termExample(term){
   return null;
 }
 const TTS_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>`;
+const TTS_ICON_SM = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>`;
+// 1 loa nhỏ cho ĐÚNG 1 dòng ngôn ngữ — bấm là đọc riêng dòng đó, không đọc gộp.
+function speakLineBtn(text, lang){
+  if(!TTS.supported || !text || !TTS.hasLang(lang)) return '';
+  const clean = String(text).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  if(!clean) return '';
+  const key = 'L' + (++TTS._seq);
+  TTS.store[key] = { lang, text: clean };
+  return ` <button type="button" class="ln-speak" data-ttskey="${key}" onclick="event.stopPropagation();ttsLine('${key}')" aria-label="${t('speak')}">${TTS_ICON_SM}</button>`;
+}
+function ttsLine(key){
+  const rec = TTS.store[key];
+  if(!rec || !rec.text) return;
+  TTS.speakSegments([{ lang: rec.lang, text: rec.text }], key);
+}
 // Ngôn ngữ MẶC ĐỊNH khi chạm 1 lần = ngôn ngữ ĐẦU TIÊN đang bật + có giọng (zh→vi→en).
 // KHÔNG đọc liền cả 3 thứ tiếng nữa — muốn nghe ngôn ngữ khác / cả 3 thì nhấn giữ chọn trong menu.
 function ttsPrimaryLang(rec){
@@ -1559,7 +1591,7 @@ function speakHeadword(termId){
 }
 // Cập nhật trạng thái "đang đọc" cho mọi nút loa hiện có trên DOM.
 function updateSpeakingUI(){
-  document.querySelectorAll('.fld-speak,.pp-speak,.pp-hw-speak,.fc-speak').forEach(el => {
+  document.querySelectorAll('.ln-speak,.fld-speak,.pp-speak,.pp-hw-speak,.fc-speak').forEach(el => {
     const k = el.getAttribute('data-ttskey') || '';
     el.classList.toggle('speaking', !!TTS.speakingKey && (k === TTS.speakingKey || TTS.speakingKey.indexOf(k + ':') === 0));
   });
@@ -2253,7 +2285,6 @@ function renderTabContent(){
   else if(state.tab === 'quiz') body = renderQuizTab();
   else if(state.tab === 'done') body = renderDoneTab();
   el.innerHTML = backBar + body;
-  attachTtsLongpress(el);
   updateSpeakingUI();
   if(state.ttsAutoplay && state.tab === 'flashcard' && !state.fcFlipped){
     const term = studyScopedList()[state.fcIndex];
@@ -2531,17 +2562,16 @@ function openPopup(id){
       <button class="pp-arrow left ${prev?'':'hidden'}" id="ppArrowL" aria-label="Từ trước" onclick="openPopup('${prev?prev.id:''}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
       <button class="pp-arrow right ${next?'':'hidden'}" id="ppArrowR" aria-label="Từ sau" onclick="openPopup('${next?next.id:''}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg></button>
       ${term.category === 'word_element' ? `
-      <div class="hz" style="font-family:'EB Garamond',serif;font-style:italic;font-size:34px">${term.en}</div>
+      <div class="hz" style="font-family:'EB Garamond',serif;font-style:italic;font-size:34px">${term.en}${speakLineBtn(term.en,'en')}</div>
       <div class="py">${term.ipa||''}</div>
-      <div class="vi">${hzOf(term)||''}${term.hz&&term.py?' · ':''}${term.py||''}</div>
-      <div class="en" style="font-style:normal">${term.vi||''}</div>
+      <div class="vi">${hzOf(term)||''}${term.hz&&term.py?' · ':''}${term.py||''}${speakLineBtn(hzOf(term),'zh')}</div>
+      <div class="en" style="font-style:normal">${term.vi||''}${speakLineBtn(term.vi,'vi')}</div>
       ` : `
-      <div class="hz han">${hzOf(term)}</div>
+      <div class="hz han">${hzOf(term)}${speakLineBtn(hzOf(term),'zh')}</div>
       <div class="py">${term.py}</div>
-      <div class="vi">${term.vi}</div>
-      <div class="en">${term.en||''}</div>
+      <div class="vi">${term.vi}${speakLineBtn(term.vi,'vi')}</div>
+      <div class="en">${term.en||''}${speakLineBtn(term.en,'en')}</div>
       `}
-      ${TTS.supported ? `<button type="button" class="pp-hw-speak" id="ppSpeakBtn" data-ttskey="hw:${term.id}" onclick="speakHeadword('${term.id}')">${TTS_ICON}<span>${t('speak')}</span></button>` : ''}
       <div class="tags"><span class="tag">${group1Label(term.group1)}</span>${term.group2?`<span class="tag">${termGroup2Label(term)}</span>`:''}${specialClassTags(term)}</div>
     </div>
     <div class="pp-body">`;
@@ -2562,10 +2592,10 @@ function openPopup(id){
     const n = Math.max(exVi.length, exZh.length, exEn.length);
     let exampleBody = '';
     for(let i=0; i<n; i++){
-      const body = renderMultiLangEnFirst(exVi[i], exZh[i], exEn[i], exIpa[i]);
+      const body = renderMultiLangEnFirst(exVi[i], exZh[i], exEn[i], exIpa[i], {speak:true});
       if(body) exampleBody += `<div${i>0?' style="margin-top:10px"':''}>${body}</div>`;
     }
-    if(exampleBody) html += `<div class="field tcm"><div class="ft">${t('f_example')}${ttsFieldBtn(exVi.join(' / '), exZh.join(' / '), exEn.join(' / '))}</div>${exampleBody}</div>`;
+    if(exampleBody) html += `<div class="field tcm"><div class="ft">${t('f_example')}</div>${exampleBody}</div>`;
   } else if(term.category === 'herb'){
     // Tính vị/quy kinh: chỉ có VI+ZH. Công năng: có bản dịch VI/EN chuẩn (nguồn).
     // Chủ trị/liều dùng/kiêng kỵ: dịch máy VI/EN — hiển thị kèm ghi chú "cần rà soát".
@@ -2576,20 +2606,20 @@ function openPopup(id){
       const vi = [term.temperature_vi,term.taste_vi].filter(Boolean).join(', ');
       const zh = [term.temperature_zh,term.taste_zh].filter(Boolean).join('、');
       const en = [term.temperature_en,term.taste_en].filter(Boolean).join(', ');
-      const body = renderMultiLang(vi, zh, en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_taste')}${ttsFieldBtn(vi, zh, en)}</div>${body}</div>`;
+      const body = renderMultiLang(vi, zh, en, {speak:true});
+      if(body) html += `<div class="field"><div class="ft">${t('f_taste')}</div>${body}</div>`;
     }
     if(term.meridian_vi || term.meridian_zh){
-      const body = renderMultiLang(term.meridian_vi, term.meridian_zh, term.meridian_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_meridian')}${ttsFieldBtn(term.meridian_vi, term.meridian_zh, term.meridian_en)}</div>${body}</div>`;
+      const body = renderMultiLang(term.meridian_vi, term.meridian_zh, term.meridian_en, {speak:true});
+      if(body) html += `<div class="field"><div class="ft">${t('f_meridian')}</div>${body}</div>`;
     }
     if(term.action_zh || term.action_vi || term.action_en){
-      const body = renderMultiLang(term.action_vi, term.action_zh, term.action_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_func')}${ttsFieldBtn(term.action_vi, term.action_zh, term.action_en)}</div>${body}</div>`;
+      const body = renderMultiLang(term.action_vi, term.action_zh, term.action_en, {speak:true});
+      if(body) html += `<div class="field"><div class="ft">${t('f_func')}</div>${body}</div>`;
     }
     if(term.indication_zh || term.indication_vi || term.indication_en){
-      const body = renderMultiLang(term.indication_vi, term.indication_zh, term.indication_en);
-      if(body) html += `<div class="field tcm"><div class="ft">${t('f_indication')}${ttsFieldBtn(term.indication_vi, term.indication_zh, term.indication_en)}</div>${body}${mtNote}</div>`;
+      const body = renderMultiLang(term.indication_vi, term.indication_zh, term.indication_en, {speak:true});
+      if(body) html += `<div class="field tcm"><div class="ft">${t('f_indication')}</div>${body}${mtNote}</div>`;
     }
     if(term.dose_text_zh || term.dose_min_g){
       // "Liều dùng" hay bị lặp: dịch máy để nguyên chuỗi số (vd "9-15g") cho cả vi/zh/en, cộng
@@ -2597,13 +2627,13 @@ function openPopup(id){
       // với khoảng liều số; renderMultiLang() cũng đã tự gộp các dòng ngôn ngữ trùng nhau.
       const rangeTxt = (term.dose_min_g && term.dose_max_g) ? `${term.dose_min_g}–${term.dose_max_g}g` : '';
       const dropIfRange = v => (rangeTxt && ttsSameText(v, rangeTxt)) ? '' : v;
-      const body = renderMultiLang(dropIfRange(term.dose_text_vi), dropIfRange(term.dose_text_zh), dropIfRange(term.dose_text_en));
+      const body = renderMultiLang(dropIfRange(term.dose_text_vi), dropIfRange(term.dose_text_zh), dropIfRange(term.dose_text_en), {speak:true});
       const range = rangeTxt ? `<p>${rangeTxt}</p>` : '';
-      if(range || body) html += `<div class="field"><div class="ft">${t('f_dose')}${ttsFieldBtn(term.dose_text_vi, term.dose_text_zh, term.dose_text_en)}</div>${range}${body}${body ? mtNote : ''}</div>`;
+      if(range || body) html += `<div class="field"><div class="ft">${t('f_dose')}</div>${range}${body}${body ? mtNote : ''}</div>`;
     }
     if(term.caution_zh){
-      const body = renderMultiLang(term.caution_vi, term.caution_zh, term.caution_en);
-      if(body) html += `<div class="field verify"><div class="ft">${t('f_caution')}${ttsFieldBtn(term.caution_vi, term.caution_zh, term.caution_en)}</div>${body}${mtNote}</div>`;
+      const body = renderMultiLang(term.caution_vi, term.caution_zh, term.caution_en, {speak:true});
+      if(body) html += `<div class="field verify"><div class="ft">${t('f_caution')}</div>${body}${mtNote}</div>`;
     }
   } else if(term.category === 'acupoint'){
     // vi/zh luôn là nội dung thật (không dịch máy) — chỉ EN của Vị trí/Lâm sàng có thể là dịch
@@ -2613,16 +2643,16 @@ function openPopup(id){
     // Loại huyệt đặc hiệu (Du/Nguyên/Bát hội huyệt...) giờ hiện ở hàng tag đầu popup
     // (xem specialClassTags()), không lặp lại thành field riêng ở đây nữa.
     if(term.location_zh || term.location_vi){
-      const body = renderMultiLang(term.location_vi, term.location_zh, term.location_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_pos')}${ttsFieldBtn(term.location_vi, term.location_zh, term.location_en)}</div>${body}${mtNote}</div>`;
+      const body = renderMultiLang(term.location_vi, term.location_zh, term.location_en, {speak:true});
+      if(body) html += `<div class="field"><div class="ft">${t('f_pos')}</div>${body}${mtNote}</div>`;
     }
     if(term.indication_zh || term.indication_vi){
-      const body = renderMultiLang(term.indication_vi, term.indication_zh, term.indication_en);
-      if(body) html += `<div class="field tcm"><div class="ft">${t('f_indication')}${ttsFieldBtn(term.indication_vi, term.indication_zh, term.indication_en)}</div>${body}${mtNote}</div>`;
+      const body = renderMultiLang(term.indication_vi, term.indication_zh, term.indication_en, {speak:true});
+      if(body) html += `<div class="field tcm"><div class="ft">${t('f_indication')}</div>${body}${mtNote}</div>`;
     }
     if(term.action_zh || term.action_vi){
-      const body = renderMultiLang(term.action_vi, term.action_zh, term.action_en);
-      if(body) html += `<div class="field"><div class="ft">${t('f_func')}${ttsFieldBtn(term.action_vi, term.action_zh, term.action_en)}</div>${body}</div>`;
+      const body = renderMultiLang(term.action_vi, term.action_zh, term.action_en, {speak:true});
+      if(body) html += `<div class="field"><div class="ft">${t('f_func')}</div>${body}</div>`;
     }
   } else {
     // Dùng renderMultiLang(vi, zh, en) để xếp chồng các bản dịch đã bật đúng thứ tự
@@ -2631,20 +2661,20 @@ function openPopup(id){
     // cn_machine (dịch máy) và đang có ít nhất 1 ngôn ngữ dịch máy (vi/en) được bật.
     const mtNote = (term.cn_machine && (state.contentLangs.vi || state.contentLangs.en)) ? `<p class="src" style="padding:2px 0 0">(${t('f_mt_note')})</p>` : '';
     if(term.vitri || term.vitri_en || term.vitri_cn){
-      const body = renderMultiLang(term.vitri, term.vitri_cn, term.vitri_en);
-      if(body) html += `<div class="field"><div class="ft">${fieldLabel('f_pos',term)}${ttsFieldBtn(term.vitri, term.vitri_cn, term.vitri_en)}</div>${body}${mtNote}</div>`;
+      const body = renderMultiLang(term.vitri, term.vitri_cn, term.vitri_en, {speak:true});
+      if(body) html += `<div class="field"><div class="ft">${fieldLabel('f_pos',term)}</div>${body}${mtNote}</div>`;
     }
     if(term.congnang || term.congnang_en || term.congnang_cn){
-      const body = renderMultiLang(term.congnang, term.congnang_cn, term.congnang_en);
-      if(body) html += `<div class="field"><div class="ft">${fieldLabel('f_func',term)}${ttsFieldBtn(term.congnang, term.congnang_cn, term.congnang_en)}</div>${body}${mtNote}</div>`;
+      const body = renderMultiLang(term.congnang, term.congnang_cn, term.congnang_en, {speak:true});
+      if(body) html += `<div class="field"><div class="ft">${fieldLabel('f_func',term)}</div>${body}${mtNote}</div>`;
     }
     if(term.tcm || term.tcm_en || term.tcm_cn){
-      const body = renderMultiLang(term.tcm, term.tcm_cn, term.tcm_en);
-      if(body) html += `<div class="field tcm"><div class="ft">${fieldLabel('f_tcm',term)}${ttsFieldBtn(term.tcm, term.tcm_cn, term.tcm_en)}</div>${body}${mtNote}</div>`;
+      const body = renderMultiLang(term.tcm, term.tcm_cn, term.tcm_en, {speak:true});
+      if(body) html += `<div class="field tcm"><div class="ft">${fieldLabel('f_tcm',term)}</div>${body}${mtNote}</div>`;
     }
     if(term.lamsang || term.lamsang_en || term.lamsang_cn){
-      const body = renderMultiLang(term.lamsang, term.lamsang_cn, term.lamsang_en);
-      if(body) html += `<div class="field"><div class="ft">${fieldLabel('f_clin',term)}${ttsFieldBtn(term.lamsang, term.lamsang_cn, term.lamsang_en)}</div>${body}${mtNote}</div>`;
+      const body = renderMultiLang(term.lamsang, term.lamsang_cn, term.lamsang_en, {speak:true});
+      if(body) html += `<div class="field"><div class="ft">${fieldLabel('f_clin',term)}</div>${body}${mtNote}</div>`;
     }
     if(term.verify){
       html += `<div class="field verify"><div class="ft">${t('f_verify')}</div><p>${term.verify_note||'Nội dung này cần Hạ Vân Minh kiểm chứng trước khi dùng làm dữ liệu chính thức.'}</p></div>`;
@@ -2668,7 +2698,6 @@ function openPopup(id){
   document.getElementById('ppContent').innerHTML = html;
   document.getElementById('ppOverlay').classList.add('show');
   document.getElementById('ppContent').scrollTop = 0;
-  attachTtsLongpress(document.getElementById('ppContent'));
   updateSpeakingUI();
 }
 function closePopup(){
