@@ -481,6 +481,17 @@ header{transition:padding .2s ease}
 .drawer-toggle input::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
   background:#fff;transition:.15s}
 .drawer-toggle input:checked::after{left:18px}
+#voiceHelpPanel.show{max-height:460px;overflow-y:auto}
+#voiceHelpPanel .clp-hint{line-height:1.5;padding-bottom:8px}
+.voice-cur{padding:2px 20px 6px}
+.voice-cur .vc-row{display:flex;gap:10px;font-size:12px;padding:2px 0;align-items:baseline}
+.voice-cur .vc-l{flex:0 0 26px;color:var(--muc-mo,#8a7d6a);font-weight:700}
+.voice-cur .vc-v{color:var(--muc,#2a2118);word-break:break-word}
+.voice-cur .vc-v.none{color:var(--son,#c2410c)}
+.voice-test-btn{display:inline-flex;align-items:center;gap:7px;margin:2px 20px 12px;padding:8px 14px;border:1px solid var(--vien,#e5ddcc);
+  border-radius:10px;background:#fff;color:var(--tham-2,#7a6a58);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.voice-test-btn svg{width:14px;height:14px;fill:currentColor}
+.voice-steps{font-size:12px;line-height:1.55;color:var(--muc-mo,#8a7d6a);margin:0 20px 10px}
 
 .study-screen{padding:14px 16px 30px}
 .study-top{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
@@ -583,7 +594,15 @@ header{transition:padding .2s ease}
       <div class="drawer-item" id="drawerFavItem" onclick="openFavoritesView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.8C.7 8.4 2.4 5 6 5c2 0 3.3 1 6 3.5C14.7 6 16 5 18 5c3.6 0 5.3 3.4 3.5 7.2C19 16.65 12 21 12 21z"/></svg><span data-i18n="dr_favorites">Từ đã lưu</span></div>
       <div class="drawer-item" id="drawerStudyItem" onclick="openStudyView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="dr_progress">Tiến độ học tập</span><span class="drawer-badge" id="studyDueBadge" hidden>0</span></div>
       <div class="drawer-sec" data-i18n="dr_settings">Cài đặt</div>
-      <label class="drawer-item drawer-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg><span data-i18n="tts_autoplay">Tự động đọc từ khi ôn</span><input type="checkbox" id="ttsAutoplayChk" onchange="setTtsAutoplay(this.checked)"></label>
+      <label class="drawer-item drawer-toggle" id="ttsAutoplayRow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg><span data-i18n="tts_autoplay">Tự động đọc từ khi ôn</span><input type="checkbox" id="ttsAutoplayChk" onchange="setTtsAutoplay(this.checked)"></label>
+      <div class="drawer-item" id="voiceHelpRow" onclick="toggleVoiceHelpPanel()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg><span data-i18n="dr_voice_quality">Giọng đọc chất lượng cao</span><svg class="chev" id="voiceHelpChev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="content-lang-panel" id="voiceHelpPanel">
+        <div class="clp-hint" data-i18n="voice_intro">App dùng giọng đọc có sẵn của thiết bị.</div>
+        <div class="voice-cur" id="voiceCurList"></div>
+        <button type="button" class="voice-test-btn" onclick="voiceSampleTest()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 5v14l11-7z"/></svg><span data-i18n="voice_test">Nghe thử</span></button>
+        <p class="voice-steps" data-i18n="voice_ios"></p>
+        <p class="voice-steps" data-i18n="voice_android"></p>
+      </div>
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1l-.3-2.5h-4l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h4l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"/></svg><span data-i18n="dr_sys">Cài đặt hệ thống</span><span class="soon" data-i18n="soon">Sắp có</span></div>
       <div class="drawer-item" onclick="toggleContentLangPanel()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span data-i18n="dr_display">Tuỳ chỉnh hiển thị</span><svg class="chev" id="clpChev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg></div>
       <div class="content-lang-panel" id="contentLangPanel">
@@ -720,6 +739,34 @@ function toggleHanScriptPanel(){
   document.getElementById('hanScriptPanel').classList.toggle('show');
   document.getElementById('hanScriptChev').classList.toggle('open');
   syncHanScriptPanel();
+}
+
+// Hướng dẫn cài giọng đọc chất lượng cao (miễn phí, của HĐH) — TTS Web Speech API tự dùng
+// giọng "Nâng cao/Premium" ngay khi thiết bị có, không cần đổi code.
+function toggleVoiceHelpPanel(){
+  document.getElementById('voiceHelpPanel').classList.toggle('show');
+  document.getElementById('voiceHelpChev').classList.toggle('open');
+  syncVoiceHelpPanel();
+}
+function syncVoiceHelpPanel(){
+  const box = document.getElementById('voiceCurList');
+  if(!box) return;
+  const row = (lab, v) => {
+    const name = v ? (v.name || v.voiceURI) : t('voice_none');
+    const tag = v && v.localService === false ? ' · online' : '';
+    return `<div class="vc-row"><span class="vc-l">${lab}</span><span class="vc-v${v ? '' : ' none'}">${name}${tag}</span></div>`;
+  };
+  box.innerHTML = `<div class="clp-hint">${t('voice_current')}</div>` +
+    row('中', TTS.byLang.zh) + row('VI', TTS.byLang.vi) + row('EN', TTS.byLang.en);
+}
+function voiceSampleTest(){
+  // 1 câu mẫu mỗi ngôn ngữ đang bật, để nghe ngay chất lượng giọng hiện tại.
+  TTS.store['voicetest'] = {
+    zh: '这是当前朗读语音的示范。',
+    vi: 'Đây là giọng đọc hiện tại của thiết bị.',
+    en: 'This is your device’s current reading voice.',
+  };
+  TTS.speakSegments(ttsSegments(TTS.store.voicetest.vi, TTS.store.voicetest.zh, TTS.store.voicetest.en), 'voicetest');
 }
 
 // Bỏ tiền tố cấp chương ("Toàn chương — " / "Whole chapter — " / "全章 " / "第X节 ")
@@ -1286,6 +1333,13 @@ Object.assign(I18N.vi, {
   study_streak: 'Chuỗi ngày', study_goal_today: 'Hôm nay đã ôn', study_back: 'Học tập',
   learn_this: 'Lưu & học', learning_on: 'Đang học ✓', review_bar: '{n} từ cần ôn hôm nay',
   review_bar_go: 'Ôn ngay', study_login_hint: 'Đăng nhập để đồng bộ tiến độ học trên mọi thiết bị.',
+  dr_voice_quality: 'Giọng đọc chất lượng cao',
+  voice_intro: 'App dùng giọng đọc có sẵn của thiết bị. Cài thêm giọng "Nâng cao / Cao cấp" (miễn phí) để nghe tự nhiên hơn nhiều:',
+  voice_ios: 'iPhone/iPad: Cài đặt › Trợ năng › Nội dung nói › Giọng nói › chọn Tiếng Việt (và Tiếng Trung, Tiếng Anh) › tải giọng có nhãn "Nâng cao" hoặc "Cao cấp", rồi đặt làm mặc định.',
+  voice_android: 'Android: Cài đặt › Quản lý chung › Văn bản thành giọng nói › đặt công cụ là "Giọng nói Google" › cài đặt › tải gói ngôn ngữ tương ứng.',
+  voice_current: 'Giọng đang dùng',
+  voice_none: '(chưa có)',
+  voice_test: 'Nghe thử',
 });
 Object.assign(I18N.zh, {
   speak: '朗读', tts_pick: '选择朗读语言', tts_no_voice: '此设备暂无该语言的朗读语音', tts_all: '中·越·英 全部',
@@ -1296,6 +1350,13 @@ Object.assign(I18N.zh, {
   study_streak: '连续天数', study_goal_today: '今日已复习', study_back: '学习',
   learn_this: '收藏并学习', learning_on: '学习中 ✓', review_bar: '今日有 {n} 个词待复习',
   review_bar_go: '立即复习', study_login_hint: '登录后可在多设备间同步学习进度。',
+  dr_voice_quality: '高音质朗读语音',
+  voice_intro: 'App 使用设备自带的朗读语音。免费安装「增强 / 高级」语音可获得更自然的效果：',
+  voice_ios: 'iPhone/iPad：设置 › 辅助功能 › 朗读内容 › 语音 › 选择越南语（以及中文、英文）› 下载标有「增强」或「高级」的语音，并设为默认。',
+  voice_android: 'Android：设置 › 通用管理 › 文字转语音 › 引擎设为「Google 文字转语音」› 设置 › 下载对应语言包。',
+  voice_current: '当前语音',
+  voice_none: '（无）',
+  voice_test: '试听',
 });
 Object.assign(I18N.en, {
   speak: 'Speak', tts_pick: 'Choose reading language', tts_no_voice: 'This device has no voice for this language', tts_all: 'All 3 languages',
@@ -1306,6 +1367,13 @@ Object.assign(I18N.en, {
   study_streak: 'Day streak', study_goal_today: 'Reviewed today', study_back: 'Study',
   learn_this: 'Save & learn', learning_on: 'Learning ✓', review_bar: '{n} terms due today',
   review_bar_go: 'Review now', study_login_hint: 'Sign in to sync study progress across devices.',
+  dr_voice_quality: 'Higher-quality voices',
+  voice_intro: 'The app uses your device’s built-in speech voices. Installing an “Enhanced / Premium” voice (free) sounds much more natural:',
+  voice_ios: 'iPhone/iPad: Settings › Accessibility › Spoken Content › Voices › pick Vietnamese (and Chinese, English) › download the voice labelled “Enhanced” or “Premium”, then set it as default.',
+  voice_android: 'Android: Settings › General management › Text-to-speech › set engine to “Google Text-to-speech” › settings › install the matching language data.',
+  voice_current: 'Voice in use',
+  voice_none: '(none)',
+  voice_test: 'Test',
 });
 
 // ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
@@ -2705,6 +2773,9 @@ function openDrawer(){
   syncHanScriptPanel();
   const chk = document.getElementById('ttsAutoplayChk');
   if(chk){ chk.checked = !!state.ttsAutoplay; chk.closest('.drawer-item').style.display = TTS.supported ? '' : 'none'; }
+  const vhr = document.getElementById('voiceHelpRow');
+  if(vhr){ vhr.style.display = TTS.supported ? '' : 'none'; }
+  syncVoiceHelpPanel();
   updateStudyBadge();
 }
 function setTtsAutoplay(on){
