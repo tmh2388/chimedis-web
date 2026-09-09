@@ -1513,6 +1513,17 @@ const TTS = {
   hasLang(l){ return this.native ? !!this.byLang[l] : !!this.byLang[l]; },
   tagOf(l){ return l === 'zh' ? 'zh-CN' : l === 'vi' ? 'vi-VN' : 'en-US'; },
   langTag(l){ const v = this.byLang[l]; return (v && v.lang) ? v.lang : this.tagOf(l); },
+  // Làm sạch văn bản trước khi đọc. Với tiếng Trung: BỎ HẾT chữ Latinh / pinyin (kèm dấu
+  // thanh) — giọng zh gặp pinyin sẽ lỗi hoặc đọc sai; chỉ đọc chữ Hán. Nếu sau khi bỏ mà
+  // không còn chữ Hán nào -> trả chuỗi rỗng (không đọc, không hiện nút).
+  forLang(text, lang){
+    let s = String(text == null ? '' : text).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    if(lang === 'zh'){
+      s = s.replace(/[A-Za-zÀ-ɏḀ-ỿ]+/g, ' ').replace(/[·・]/g, ' ').replace(/\s+/g, ' ').trim();
+      if(!/[㐀-鿿豈-﫿]/.test(s)) return '';
+    }
+    return s;
+  },
   stop(){
     if(this.native){ try{ this.native.stop(); }catch(e){} }
     if(this.supported){ try{ window.speechSynthesis.cancel(); }catch(e){} }
@@ -1557,7 +1568,9 @@ const TTS = {
     opts = opts || {};
     const gap = opts.gap == null ? 180 : opts.gap;
     const langGap = opts.langGap == null ? 650 : opts.langGap;
-    segments = (segments || []).filter(s => s && s.text && String(s.text).trim());
+    segments = (segments || [])
+      .map(s => ({ lang: (s && s.lang) || 'zh', text: this.forLang(s && s.text, s && s.lang) }))
+      .filter(s => s.text);
     if(!segments.length) return;
     if(this.speakingKey && this.speakingKey === key){ this.stop(); updateSpeakingUI(); return; }
     this.stop();
@@ -1640,8 +1653,9 @@ if(TTS.native || TTS.supported){
 function ttsSegments(vi, zh, en){
   const order = [ ['zh', zh], ['vi', vi], ['en', en] ];
   return order
-    .filter(([l, txt]) => state.contentLangs[l] && txt && String(txt).trim() && TTS.hasLang(l))
-    .map(([l, txt]) => ({ lang: l, text: String(txt).replace(/<[^>]*>/g, ' ').trim() }));
+    .filter(([l]) => state.contentLangs[l] && TTS.hasLang(l))
+    .map(([l, txt]) => ({ lang: l, text: TTS.forLang(txt, l) }))   // zh: bỏ pinyin/Latinh
+    .filter(s => s.text);
 }
 // Nút loa cho 1 field trong popup. Lưu vi/zh/en vào TTS.store theo key sinh tự động — chạm đọc
 // chuỗi ngôn ngữ đang bật; nhấn giữ mở menu chọn 1 ngôn ngữ (xem attachTtsLongpress).
@@ -1668,8 +1682,8 @@ const TTS_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 const TTS_ICON_SM = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>`;
 // 1 loa nhỏ cho ĐÚNG 1 dòng ngôn ngữ — bấm là đọc riêng dòng đó, không đọc gộp.
 function speakLineBtn(text, lang){
-  if(!TTS.supported || !text || !TTS.hasLang(lang)) return '';
-  const clean = String(text).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  if((!TTS.supported && !TTS.native) || !text || !TTS.hasLang(lang)) return '';
+  const clean = TTS.forLang(text, lang);   // zh: bỏ pinyin/Latinh; rỗng nếu không còn chữ Hán
   if(!clean) return '';
   const key = 'L' + (++TTS._seq);
   TTS.store[key] = { lang, text: clean };
