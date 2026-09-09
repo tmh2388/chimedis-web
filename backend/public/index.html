@@ -513,6 +513,8 @@ header{transition:padding .2s ease}
 .voice-diag .vd-item i{opacity:.6;font-style:normal}
 .voice-diag .vd-item.vd-on{color:var(--son,#c2410c);font-weight:700}
 .voice-diag .vd-none{color:var(--son,#c2410c)}
+.voice-cur .vc-mode{font-size:10px;font-weight:700;color:var(--muc-mo,#9a8c78)}
+.voice-cur .vc-mode.native{color:var(--la,#2f7d55)}
 .voice-test-btn{display:inline-flex;align-items:center;gap:7px;margin:2px 20px 12px;padding:8px 14px;border:1px solid var(--vien,#e5ddcc);
   border-radius:10px;background:#fff;color:var(--tham-2,#7a6a58);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
 .voice-test-btn svg{width:14px;height:14px;fill:currentColor}
@@ -808,7 +810,8 @@ function syncVoiceHelpPanel(){
       return `<div class="vd-item${on}">${mk}${v.name || v.voiceURI} <i>${(v.lang||'')}${v.localService === false ? ' · online' : ''}</i></div>`;
     }).join('');
   };
-  box.innerHTML = `<div class="clp-hint">${t('voice_current')}` +
+  const mode = TTS.native ? `<span class="vc-mode native">${t('voice_mode_app')}</span>` : `<span class="vc-mode">${t('voice_mode_web')}</span>`;
+  box.innerHTML = `<div class="clp-hint">${t('voice_current')} ${mode}` +
       ` <button type="button" id="voiceRefreshBtn" class="voice-refresh" onclick="refreshVoices()" aria-label="${t('voice_reload')}" title="${t('voice_reload')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button></div>` +
     row('中', TTS.byLang.zh) + row('VI', TTS.byLang.vi) + row('EN', TTS.byLang.en) +
     `<details class="voice-diag"><summary>${t('voice_diag')}</summary>` +
@@ -1404,7 +1407,7 @@ Object.assign(I18N.vi, {
   voice_android: 'Android: Cài đặt › Quản lý chung › Văn bản thành giọng nói › đặt công cụ là "Giọng nói Google" › cài đặt › tải gói ngôn ngữ tương ứng.',
   voice_current: 'Giọng đang dùng',
   voice_none: '(chưa có)',
-  voice_test: 'Nghe thử', voice_hi: 'Nâng cao', voice_basic: '· cơ bản', voice_reload: 'Quét lại danh sách giọng', voice_diag: 'Xem tất cả giọng thiết bị trả về',
+  voice_test: 'Nghe thử', voice_hi: 'Nâng cao', voice_basic: '· cơ bản', voice_reload: 'Quét lại danh sách giọng', voice_diag: 'Xem tất cả giọng thiết bị trả về', voice_mode_app: '• chế độ Ứng dụng', voice_mode_web: '• chế độ Trình duyệt',
 });
 Object.assign(I18N.zh, {
   speak: '朗读', tts_pick: '选择朗读语言', tts_no_voice: '此设备暂无该语言的朗读语音', tts_all: '中·越·英 全部',
@@ -1421,7 +1424,7 @@ Object.assign(I18N.zh, {
   voice_android: 'Android：设置 › 通用管理 › 文字转语音 › 引擎设为「Google 文字转语音」› 设置 › 下载对应语言包。',
   voice_current: '当前语音',
   voice_none: '（无）',
-  voice_test: '试听', voice_hi: '增强', voice_basic: '· 基础', voice_reload: '重新扫描语音列表', voice_diag: '查看设备返回的全部语音',
+  voice_test: '试听', voice_hi: '增强', voice_basic: '· 基础', voice_reload: '重新扫描语音列表', voice_diag: '查看设备返回的全部语音', voice_mode_app: '• 应用模式', voice_mode_web: '• 浏览器模式',
 });
 Object.assign(I18N.en, {
   speak: 'Speak', tts_pick: 'Choose reading language', tts_no_voice: 'This device has no voice for this language', tts_all: 'All 3 languages',
@@ -1438,20 +1441,28 @@ Object.assign(I18N.en, {
   voice_android: 'Android: Settings › General management › Text-to-speech › set engine to “Google Text-to-speech” › settings › install the matching language data.',
   voice_current: 'Voice in use',
   voice_none: '(none)',
-  voice_test: 'Test', voice_hi: 'Enhanced', voice_basic: '· basic', voice_reload: 'Rescan voice list', voice_diag: 'Show all voices the device exposes',
+  voice_test: 'Test', voice_hi: 'Enhanced', voice_basic: '· basic', voice_reload: 'Rescan voice list', voice_diag: 'Show all voices the device exposes', voice_mode_app: '• app mode', voice_mode_web: '• browser mode',
 });
 
 // ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
 const TTS = {
   supported: (typeof window !== 'undefined') && ('speechSynthesis' in window),
+  native: null,   // Capacitor plugin @capacitor-community/text-to-speech (app iOS) — gán ở init.
+                  // Khi có: dùng AVSpeechSynthesizer native (THẤY được giọng Nâng cao/Premium).
   voices: [],
   byLang: { zh: null, vi: null, en: null },
+  voiceIdx: { zh: -1, vi: -1, en: -1 }, // vị trí trong this.voices — plugin native speak() cần index
   speakingKey: null,
   store: {},   // key -> {vi,zh,en} hoặc {segs:[...]} — tránh nhét text có dấu nháy vào onclick
   _seq: 0,
-  loadVoices(){
-    if(!this.supported) return;
-    this.voices = window.speechSynthesis.getVoices() || [];
+  // list: mảng giọng (web: speechSynthesis.getVoices(); native: plugin.getSupportedVoices()).
+  loadVoices(list){
+    // Nếu đang ở chế độ native mà gọi loadVoices() không tham số (từ UI) -> chuyển sang
+    // nạp qua plugin, KHÔNG ghi đè bằng danh sách nghèo nàn của speechSynthesis web.
+    if(!list && this.native){ this.loadVoicesNative(); return; }
+    if(list) this.voices = list;
+    else if(this.supported) this.voices = window.speechSynthesis.getVoices() || [];
+    else return;
     const norm = v => (v.lang || '').toLowerCase().replace('_', '-');
     // Chọn giọng TỐT NHẤT trong số giọng khớp ngôn ngữ: ưu tiên giọng "Nâng cao/Cao cấp"
     // (iOS Enhanced/Premium, Android neural) và giọng cài trên máy; tránh giọng "compact"
@@ -1482,6 +1493,16 @@ const TTS = {
     this.byLang.zh = pick(['zh-cn','zh-hans','cmn-hans-cn','zh','zh-tw','zh-hk']);
     this.byLang.vi = pick(['vi-vn','vi']);
     this.byLang.en = pick(['en-us','en-gb','en-au','en']);
+    ['zh','vi','en'].forEach(l => { this.voiceIdx[l] = this.byLang[l] ? this.voices.indexOf(this.byLang[l]) : -1; });
+  },
+  // App iOS: nạp danh sách giọng từ plugin native (bao gồm giọng Nâng cao/Premium).
+  loadVoicesNative(){
+    if(!this.native) return;
+    Promise.resolve(this.native.getSupportedVoices()).then(res => {
+      const list = (res && res.voices) ? res.voices : [];
+      this.loadVoices(list);
+      if(typeof syncVoiceHelpPanel === 'function' && document.getElementById('voiceHelpPanel')) syncVoiceHelpPanel();
+    }).catch(e => console.warn('[TTS] getSupportedVoices lỗi:', e && e.message));
   },
   // Danh sách đầy đủ giọng theo ngôn ngữ (để chẩn đoán khi máy có giọng Nâng cao mà app
   // không nhận — thường do WKWebView của iOS không trả giọng đó cho web).
@@ -1489,9 +1510,15 @@ const TTS = {
     const tag = l === 'zh' ? 'zh' : l === 'vi' ? 'vi' : 'en';
     return (this.voices || []).filter(v => (v.lang || '').toLowerCase().split('-')[0] === tag);
   },
-  hasLang(l){ return !!this.byLang[l]; },
+  hasLang(l){ return this.native ? !!this.byLang[l] : !!this.byLang[l]; },
   tagOf(l){ return l === 'zh' ? 'zh-CN' : l === 'vi' ? 'vi-VN' : 'en-US'; },
-  stop(){ if(this.supported){ try{ window.speechSynthesis.cancel(); }catch(e){} } this.speakingKey = null; if(this._keepAlive){ clearInterval(this._keepAlive); this._keepAlive = null; } },
+  langTag(l){ const v = this.byLang[l]; return (v && v.lang) ? v.lang : this.tagOf(l); },
+  stop(){
+    if(this.native){ try{ this.native.stop(); }catch(e){} }
+    if(this.supported){ try{ window.speechSynthesis.cancel(); }catch(e){} }
+    this.speakingKey = null;
+    if(this._keepAlive){ clearInterval(this._keepAlive); this._keepAlive = null; }
+  },
   _keepAlive: null,
   // Tách 1 đoạn dài thành các mệnh đề theo dấu câu — đọc từng mệnh đề là utterance riêng, có
   // khoảng nghỉ ngắn ở giữa. Mục đích: (1) né bug speechSynthesis tự dừng khi câu quá dài
@@ -1526,7 +1553,7 @@ const TTS = {
   // segments: [{text, lang}] đọc lần lượt. key: để toggle (chạm lại = dừng) + tô sáng nút.
   // opts.gap: nghỉ giữa 2 mệnh đề cùng ngôn ngữ (ms). opts.langGap: nghỉ khi ĐỔI ngôn ngữ (ms).
   speakSegments(segments, key, opts){
-    if(!this.supported) return;
+    if(!this.supported && !this.native) return;
     opts = opts || {};
     const gap = opts.gap == null ? 180 : opts.gap;
     const langGap = opts.langGap == null ? 650 : opts.langGap;
@@ -1544,6 +1571,7 @@ const TTS = {
         queue.push({ text: clause, lang: seg.lang, langBoundary: si > 0 && ci === 0 });
       });
     });
+    if(this.native){ this._speakNative(queue, myKey, gap, langGap); return; }
     // Chrome tự dừng phát sau ~15s — nhịp pause()/resume() giữ cho dòng đọc không bị cụt giữa chừng.
     // (WKWebView iOS bỏ qua vô hại: không ở trạng thái paused thì resume() là no-op.)
     this._keepAlive = setInterval(() => {
@@ -1569,18 +1597,40 @@ const TTS = {
     // Một số bản WebKit nuốt utterance nếu speak() gọi ngay sau cancel() — chờ 1 nhịp ngắn.
     setTimeout(() => { if(myKey === this.speakingKey) run(0); }, 140);
   },
+  // Đọc qua plugin native (app iOS): mỗi mệnh đề 1 lời gọi speak() nối tiếp nhau, có khoảng
+  // nghỉ giữa mệnh đề / khi đổi ngôn ngữ. Không cần keepAlive (native không có bug 15s).
+  _speakNative(queue, myKey, gap, langGap){
+    const runNext = i => {
+      if(myKey !== this.speakingKey) return;
+      if(i >= queue.length){ this.speakingKey = null; updateSpeakingUI(); return; }
+      const seg = queue[i];
+      const idx = this.voiceIdx[seg.lang];
+      const opt = { text: seg.text, lang: this.langTag(seg.lang), rate: this.rateFor(seg.lang), pitch: 1, volume: 1, category: 'playback' };
+      if(typeof idx === 'number' && idx >= 0) opt.voice = idx;
+      const after = () => {
+        if(myKey !== this.speakingKey) return;
+        const nextGap = (i + 1 < queue.length && queue[i + 1].langBoundary) ? langGap : gap;
+        setTimeout(() => runNext(i + 1), nextGap);
+      };
+      Promise.resolve(this.native.speak(opt)).then(after).catch(after);
+    };
+    // native.stop() ở đầu speakSegments đã cắt lượt cũ; chờ 1 nhịp cho chắc rồi phát.
+    setTimeout(() => { if(myKey === this.speakingKey) runNext(0); }, 60);
+  },
 };
-if(TTS.supported){
-  TTS.loadVoices();
+TTS.native = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.TextToSpeech) || null;
+if(TTS.native || TTS.supported){
+  if(TTS.native) TTS.loadVoicesNative(); else TTS.loadVoices();
   const rescanVoices = () => {
-    TTS.loadVoices();
+    if(TTS.native) TTS.loadVoicesNative(); else TTS.loadVoices();
     if(document.getElementById('voiceHelpPanel') && typeof syncVoiceHelpPanel === 'function') syncVoiceHelpPanel();
     if(state.popupId) openPopup(state.popupId);
     if(state.tab === 'flashcard' || state.tab === 'studyhome') renderTabContent();
   };
-  window.speechSynthesis.onvoiceschanged = rescanVoices;
-  // Người dùng thường sang Cài đặt cài giọng rồi quay lại app — iOS đôi khi chỉ nạp danh
-  // sách giọng mới khi app quay lại tiền cảnh (hoặc phải tắt hẳn app). Quét lại ở đây.
+  if(TTS.supported) window.speechSynthesis.onvoiceschanged = rescanVoices;
+  // Người dùng thường sang Cài đặt cài giọng rồi quay lại app — quét lại danh sách giọng
+  // khi app quay lại tiền cảnh (web speechSynthesis đôi khi phải tắt hẳn app; native thì
+  // getSupportedVoices() cập nhật ngay).
   document.addEventListener('visibilitychange', () => { if(!document.hidden) rescanVoices(); });
   window.addEventListener('focus', rescanVoices);
 }
