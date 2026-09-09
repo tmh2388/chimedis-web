@@ -505,6 +505,14 @@ header{transition:padding .2s ease}
   color:var(--tham-2,#7a6a58);cursor:pointer;border-radius:50%;-webkit-tap-highlight-color:transparent}
 .voice-refresh svg{width:14px;height:14px;transition:transform .5s}
 .voice-refresh.spun svg{transform:rotate(360deg)}
+.voice-diag{margin:8px 20px 0;font-size:11px;color:var(--muc-mo,#9a8c78)}
+.voice-diag summary{cursor:pointer;color:var(--tham-2,#7a6a58);font-weight:700;padding:4px 0}
+.voice-diag .vd-g{margin:6px 0}
+.voice-diag .vd-g>b{display:inline-block;min-width:24px;color:var(--muc,#2a2118)}
+.voice-diag .vd-item{padding:1px 0 1px 24px;line-height:1.45;word-break:break-word}
+.voice-diag .vd-item i{opacity:.6;font-style:normal}
+.voice-diag .vd-item.vd-on{color:var(--son,#c2410c);font-weight:700}
+.voice-diag .vd-none{color:var(--son,#c2410c)}
 .voice-test-btn{display:inline-flex;align-items:center;gap:7px;margin:2px 20px 12px;padding:8px 14px;border:1px solid var(--vien,#e5ddcc);
   border-radius:10px;background:#fff;color:var(--tham-2,#7a6a58);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
 .voice-test-btn svg{width:14px;height:14px;fill:currentColor}
@@ -790,9 +798,24 @@ function syncVoiceHelpPanel(){
     const tag = v && v.localService === false ? ' · online' : '';
     return `<div class="vc-row"><span class="vc-l">${lab}</span><span class="vc-v${v ? '' : ' none'}">${name}${tag}${q}</span></div>`;
   };
+  const diagList = l => {
+    const vs = TTS.voicesFor(l);
+    if(!vs.length) return `<div class="vd-item vd-none">— (0)</div>`;
+    return vs.map(v => {
+      const id = (v.name || '') + ' ' + (v.voiceURI || '');
+      const mk = HIQ.test(id) ? '✦ ' : (LOWQ.test(id) ? '· ' : '');
+      const on = TTS.byLang[l] && (TTS.byLang[l].voiceURI === v.voiceURI) ? ' vd-on' : '';
+      return `<div class="vd-item${on}">${mk}${v.name || v.voiceURI} <i>${(v.lang||'')}${v.localService === false ? ' · online' : ''}</i></div>`;
+    }).join('');
+  };
   box.innerHTML = `<div class="clp-hint">${t('voice_current')}` +
       ` <button type="button" id="voiceRefreshBtn" class="voice-refresh" onclick="refreshVoices()" aria-label="${t('voice_reload')}" title="${t('voice_reload')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button></div>` +
-    row('中', TTS.byLang.zh) + row('VI', TTS.byLang.vi) + row('EN', TTS.byLang.en);
+    row('中', TTS.byLang.zh) + row('VI', TTS.byLang.vi) + row('EN', TTS.byLang.en) +
+    `<details class="voice-diag"><summary>${t('voice_diag')}</summary>` +
+      `<div class="vd-g"><b>中</b>${diagList('zh')}</div>` +
+      `<div class="vd-g"><b>VI</b>${diagList('vi')}</div>` +
+      `<div class="vd-g"><b>EN</b>${diagList('en')}</div>` +
+    `</details>`;
 }
 function voiceSampleTest(){
   if(TTS.supported) TTS.loadVoices();
@@ -1381,7 +1404,7 @@ Object.assign(I18N.vi, {
   voice_android: 'Android: Cài đặt › Quản lý chung › Văn bản thành giọng nói › đặt công cụ là "Giọng nói Google" › cài đặt › tải gói ngôn ngữ tương ứng.',
   voice_current: 'Giọng đang dùng',
   voice_none: '(chưa có)',
-  voice_test: 'Nghe thử', voice_hi: 'Nâng cao', voice_basic: '· cơ bản', voice_reload: 'Quét lại danh sách giọng',
+  voice_test: 'Nghe thử', voice_hi: 'Nâng cao', voice_basic: '· cơ bản', voice_reload: 'Quét lại danh sách giọng', voice_diag: 'Xem tất cả giọng thiết bị trả về',
 });
 Object.assign(I18N.zh, {
   speak: '朗读', tts_pick: '选择朗读语言', tts_no_voice: '此设备暂无该语言的朗读语音', tts_all: '中·越·英 全部',
@@ -1398,7 +1421,7 @@ Object.assign(I18N.zh, {
   voice_android: 'Android：设置 › 通用管理 › 文字转语音 › 引擎设为「Google 文字转语音」› 设置 › 下载对应语言包。',
   voice_current: '当前语音',
   voice_none: '（无）',
-  voice_test: '试听', voice_hi: '增强', voice_basic: '· 基础', voice_reload: '重新扫描语音列表',
+  voice_test: '试听', voice_hi: '增强', voice_basic: '· 基础', voice_reload: '重新扫描语音列表', voice_diag: '查看设备返回的全部语音',
 });
 Object.assign(I18N.en, {
   speak: 'Speak', tts_pick: 'Choose reading language', tts_no_voice: 'This device has no voice for this language', tts_all: 'All 3 languages',
@@ -1415,7 +1438,7 @@ Object.assign(I18N.en, {
   voice_android: 'Android: Settings › General management › Text-to-speech › set engine to “Google Text-to-speech” › settings › install the matching language data.',
   voice_current: 'Voice in use',
   voice_none: '(none)',
-  voice_test: 'Test', voice_hi: 'Enhanced', voice_basic: '· basic', voice_reload: 'Rescan voice list',
+  voice_test: 'Test', voice_hi: 'Enhanced', voice_basic: '· basic', voice_reload: 'Rescan voice list', voice_diag: 'Show all voices the device exposes',
 });
 
 // ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
@@ -1434,27 +1457,37 @@ const TTS = {
     // (iOS Enhanced/Premium, Android neural) và giọng cài trên máy; tránh giọng "compact"
     // (giọng mặc định chất lượng thấp của iOS). speechSynthesis không có cờ chất lượng nên
     // đoán qua tên/voiceURI. Nếu người dùng đã cài giọng Nâng cao thì app tự dùng ngay.
-    const HIQ = /premium|enhanced|neural|eloquence|natural|siri|wavenet/i;
-    const LOWQ = /compact/i;
-    const score = v => {
+    const HIQ = /premium|enhanced|neural|eloquence|natural|siri|super-compact/i;
+    const LOWQ = /(^|[^-])compact/i;   // "compact" nhưng KHÔNG phải "super-compact"
+    const score = (v, tags, tier) => {
       const id = (v.name || '') + ' ' + (v.voiceURI || '');
       let s = 0;
       if(HIQ.test(id)) s += 100;
-      if(LOWQ.test(id)) s -= 50;
-      if(v.localService) s += 10;
+      if(LOWQ.test(id) && !/super-compact/i.test(id)) s -= 40;
+      if(v.localService !== false) s += 10;
+      if(tags.indexOf(norm(v)) === 0) s += 6;   // đúng khu vực ưu tiên (vd zh-cn hơn zh-tw)
+      s += tier;                                 // nhóm tag khớp: exact > base
       return s;
     };
+    // pick: thử khớp ĐÚNG tag trước (giữ đúng khu vực), rồi mới nới sang khớp gốc ngôn ngữ.
     const pick = tags => {
       const bases = [...new Set(tags.map(t => t.split('-')[0]))];
-      let cands = this.voices.filter(v => tags.includes(norm(v)));
-      if(!cands.length) cands = this.voices.filter(v => bases.includes(norm(v).split('-')[0]));
-      if(!cands.length) return null;
-      // giữ ổn định: sắp theo điểm giảm dần, cùng điểm thì theo thứ tự gốc
-      return cands.map((v, i) => ({ v, i, s: score(v) })).sort((a, b) => b.s - a.s || a.i - b.i)[0].v;
+      const exact = this.voices.filter(v => tags.includes(norm(v)));
+      const base = this.voices.filter(v => !tags.includes(norm(v)) && bases.includes(norm(v).split('-')[0]));
+      const pool = [...exact.map(v => [v, 20]), ...base.map(v => [v, 0])];
+      if(!pool.length) return null;
+      return pool.map(([v, tier], i) => ({ v, i, s: score(v, tags, tier) }))
+        .sort((a, b) => b.s - a.s || a.i - b.i)[0].v;
     };
-    this.byLang.zh = pick(['zh-cn','zh-hans','zh','cmn-hans-cn','zh-tw','zh-hk']);
+    this.byLang.zh = pick(['zh-cn','zh-hans','cmn-hans-cn','zh','zh-tw','zh-hk']);
     this.byLang.vi = pick(['vi-vn','vi']);
     this.byLang.en = pick(['en-us','en-gb','en-au','en']);
+  },
+  // Danh sách đầy đủ giọng theo ngôn ngữ (để chẩn đoán khi máy có giọng Nâng cao mà app
+  // không nhận — thường do WKWebView của iOS không trả giọng đó cho web).
+  voicesFor(l){
+    const tag = l === 'zh' ? 'zh' : l === 'vi' ? 'vi' : 'en';
+    return (this.voices || []).filter(v => (v.lang || '').toLowerCase().split('-')[0] === tag);
   },
   hasLang(l){ return !!this.byLang[l]; },
   tagOf(l){ return l === 'zh' ? 'zh-CN' : l === 'vi' ? 'vi-VN' : 'en-US'; },
@@ -2374,7 +2407,7 @@ function renderVocabTab(){
     return `<div class="vrow" onclick="openPopup('${term.id}')">
       <span class="stt">${i+1}</span>
       <span class="hz han">${hzOf(term)}</span>
-      <span class="mid"><div class="py">${term.py}</div><div class="vi">${term.vi}</div><div class="en">${term.en||''}</div>${summary?`<div class="summary">${summary}</div>`:''}</span>
+      <span class="mid"><div class="py">${term.py||''}</div><div class="vi">${term.vi}</div><div class="en">${term.en||''}</div>${summary?`<div class="summary">${summary}</div>`:''}</span>
     </div>`;
   }).join('');
   const loadMore = visibleCount < list.length
@@ -2432,7 +2465,7 @@ function renderFlashcardTab(){
       <span class="corner">${t('fc_front')}</span>
       <span class="flip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${t('fc_flip')}</span>
       <div class="hz han">${hzOf(term)} ${hwBtn}</div>
-      <div class="py">${term.py}</div>
+      <div class="py">${term.py||''}</div>
       <div class="small">${group1Label(term.group1)}${term.group2?` · ${termGroup2Label(term)}`:''}</div>
     </div>`;
   return `<div class="fc-screen">
@@ -2563,7 +2596,7 @@ function renderDoneTab(){
     }
     return `<div class="dtrow">
       <span class="hz han">${hzOf(term)}</span>
-      <span><div class="py">${term.py}</div><div class="vi">${term.vi}</div></span>
+      <span><div class="py">${term.py||''}</div><div class="vi">${term.vi}</div></span>
       <span class="next" style="text-align:right"><div style="font-size:10px;color:var(--muc-mo);text-transform:uppercase">${t('next_review')}</div><div style="font-size:13px;font-weight:700;${cls==='today'?'color:var(--son)':'color:var(--tham-2)'}">${label}</div></span>
     </div>`;
   }).join('') || `<div class="empty">${t('no_words')}</div>`;
@@ -2616,7 +2649,7 @@ function openPopup(id){
       <div class="en" style="font-style:normal">${term.vi||''}${speakLineBtn(term.vi,'vi')}</div>
       ` : `
       <div class="hz han">${hzOf(term)}${speakLineBtn(hzOf(term),'zh')}</div>
-      <div class="py">${term.py}</div>
+      <div class="py">${term.py||''}</div>
       <div class="vi">${term.vi}${speakLineBtn(term.vi,'vi')}</div>
       <div class="en">${term.en||''}${speakLineBtn(term.en,'en')}</div>
       `}
