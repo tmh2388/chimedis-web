@@ -2374,7 +2374,7 @@ function renderVocabTab(){
     return `<div class="vrow" onclick="openPopup('${term.id}')">
       <span class="stt">${i+1}</span>
       <span class="hz han">${hzOf(term)}</span>
-      <span class="mid"><div class="py">${term.py}</div><div class="vi">${term.vi}</div><div class="en">${term.en||''}</div>${summary?`<div class="summary">${summary}</div>`:''}</span>
+      <span class="mid"><div class="py">${term.py||''}</div><div class="vi">${term.vi}</div><div class="en">${term.en||''}</div>${summary?`<div class="summary">${summary}</div>`:''}</span>
     </div>`;
   }).join('');
   const loadMore = visibleCount < list.length
@@ -2432,7 +2432,7 @@ function renderFlashcardTab(){
       <span class="corner">${t('fc_front')}</span>
       <span class="flip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${t('fc_flip')}</span>
       <div class="hz han">${hzOf(term)} ${hwBtn}</div>
-      <div class="py">${term.py}</div>
+      <div class="py">${term.py||''}</div>
       <div class="small">${group1Label(term.group1)}${term.group2?` · ${termGroup2Label(term)}`:''}</div>
     </div>`;
   return `<div class="fc-screen">
@@ -2563,7 +2563,7 @@ function renderDoneTab(){
     }
     return `<div class="dtrow">
       <span class="hz han">${hzOf(term)}</span>
-      <span><div class="py">${term.py}</div><div class="vi">${term.vi}</div></span>
+      <span><div class="py">${term.py||''}</div><div class="vi">${term.vi}</div></span>
       <span class="next" style="text-align:right"><div style="font-size:10px;color:var(--muc-mo);text-transform:uppercase">${t('next_review')}</div><div style="font-size:13px;font-weight:700;${cls==='today'?'color:var(--son)':'color:var(--tham-2)'}">${label}</div></span>
     </div>`;
   }).join('') || `<div class="empty">${t('no_words')}</div>`;
@@ -2616,7 +2616,7 @@ function openPopup(id){
       <div class="en" style="font-style:normal">${term.vi||''}${speakLineBtn(term.vi,'vi')}</div>
       ` : `
       <div class="hz han">${hzOf(term)}${speakLineBtn(hzOf(term),'zh')}</div>
-      <div class="py">${term.py}</div>
+      <div class="py">${term.py||''}</div>
       <div class="vi">${term.vi}${speakLineBtn(term.vi,'vi')}</div>
       <div class="en">${term.en||''}${speakLineBtn(term.en,'en')}</div>
       `}
