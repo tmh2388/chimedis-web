@@ -279,10 +279,77 @@ CREATE TABLE IF NOT EXISTS acupoints (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ---------------------------------------------------------------------
--- Future domains follow the same "denormalized read view" pattern:
---   formulas   — from 03_master_data/HVYD Formula Core DB (kb_formulas,
---                kb_formula_ingredients, kb_formula_indication_claims...)
---   Bệnh lý (pathology) — needs a readable source first; see note above
+-- formulas — Thang Phương (方剂). Denormalized 1-row-per-formula view built
+-- from "HVYD Formula Core DB v2.0.0 Clean Baseline" (Google Sheet
+-- 1cuGEQV7wAZ-ldl8tRQsbDYk2WS5cbXvepTuvo0hRf7w — kb_formulas + versions +
+-- ingredients + ingredient_roles + classification_map + source_claims +
+-- safety_rules + aliases). Import: import-formula-sheets.js. Nguồn gốc:
+-- 《方剂学》第五版 2021. Trạng thái nguồn: EXTRACTED / NOT_RELEASED, bản dịch
+-- vi/en đều AI_TRANSLATED chưa human review → machine_translated=TRUE,
+-- verify=TRUE (UI hiện ghi chú "cần rà soát"). ~451 phương có tên; chỉ ~42%
+-- có thành phần, claims/safety phủ 1 phần — phương thiếu nội dung vẫn hiện
+-- tên + loại phương.
+--
+-- ⚠️ GATED: domain này chỉ trả về trong /api/terms khi request có Firebase
+-- ID token hợp lệ (user đã đăng nhập). Xem server.js getFormulaTerms + lọc
+-- trong GET /api/terms, và màn khoá đăng nhập phía frontend.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS formulas (
+  formula_id          VARCHAR(16) PRIMARY KEY,   -- vd. 'FORM-000001'
+  name_zh             VARCHAR(128) NOT NULL,
+  name_zh_traditional VARCHAR(128),
+  py                  VARCHAR(255),              -- pinyin có dấu thanh
+  name_vi             VARCHAR(255),
+  name_en             VARCHAR(255),
+
+  -- Loại phương (dùng làm khoá lọc dropdown 2, mirror herbs' group2 zh-key convention).
+  category_zh         VARCHAR(128),              -- vd. '解表剂 / 辛温解表剂'
+  category_vi         VARCHAR(128),
+  category_en         VARCHAR(128),
+  origin_zh           VARCHAR(255),              -- xuất xứ (tên sách/triều đại) nếu nguồn có
+  origin_vi           VARCHAR(255),
+  origin_en           VARCHAR(255),
+
+  composition_zh      TEXT,                      -- thành phần + liều (nối từ kb_formula_ingredients + roles)
+  composition_vi      TEXT,
+  composition_en      TEXT,
+  functions_zh        TEXT,                      -- công dụng 功用
+  functions_vi        TEXT,
+  functions_en        TEXT,
+  indications_zh      TEXT,                      -- chủ trị 主治
+  indications_vi      TEXT,
+  indications_en      TEXT,
+  analysis_zh         TEXT,                      -- phương giải 方解 / vận dụng 运用 (gộp claim còn lại)
+  analysis_vi         TEXT,
+  analysis_en         TEXT,
+  cautions_zh         TEXT,                      -- kiêng kỵ / cảnh báo an toàn (kb_formula_safety_rules)
+  cautions_vi         TEXT,
+  cautions_en         TEXT,
+  aliases_zh          VARCHAR(255),              -- tên khác, nối bằng '、'
+
+  source              TEXT,
+  machine_translated  BOOLEAN DEFAULT TRUE,      -- vi/en đều AI_TRANSLATED khi import
+  verify              BOOLEAN DEFAULT TRUE,      -- nguồn EXTRACTED, chưa human review
+  verify_note         TEXT,
+  is_active           BOOLEAN DEFAULT TRUE,
+  updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  FULLTEXT INDEX ft_formulas_search (name_zh, name_vi, name_en, py, functions_vi, indications_vi, composition_vi)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- user_domain_unlocks — cơ chế "mở khoá" domain gated theo từng user (mở rộng về sau).
+-- Hiện Thang Phương chỉ gate = "đã đăng nhập" (không cần bản ghi ở đây), nhưng giữ bảng
+-- sẵn cho các cơ chế gate chặt hơn sau này (mã mở khoá, like fanpage...). domain_key vd.
+-- 'thang_phuong'; method 'login' | 'code' | 'honor'.
+CREATE TABLE IF NOT EXISTS user_domain_unlocks (
+  user_id     INT NOT NULL,
+  domain_key  VARCHAR(32) NOT NULL,
+  method      VARCHAR(16) DEFAULT 'login',
+  unlocked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, domain_key),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- (Bệnh lý / pathology nay dùng chung bảng anatomy_terms với domain='Bệnh lý'.)
 -- ---------------------------------------------------------------------
 
 -- ---------------------------------------------------------------------

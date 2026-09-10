@@ -213,6 +213,72 @@ async function getAcupointTerms() {
 }
 
 /**
+ * Maps a `formulas` MySQL row (Thang Phương / 方剂) into the same flat term
+ * shape /api/terms returns for other domains. Popup dùng nhánh riêng
+ * `category === 'formula'` (layout: Thành phần / Công năng / Chủ trị /
+ * Vận dụng / Kiêng kỵ) — xem frontend/index.html.
+ *
+ * ⚠️ GATED: domain này chỉ được đưa vào /api/terms khi request có Firebase
+ * ID token hợp lệ (user đã đăng nhập) — xem lọc trong GET /api/terms.
+ */
+function formulaRowToTerm(f) {
+  return {
+    id: f.formula_id,
+    hz: f.name_zh,
+    hz_traditional: f.name_zh_traditional,
+    py: f.py,
+    vi: f.name_vi,
+    en: f.name_en,
+    group1: 'Thang phương',
+    // group2 = loại phương (zh làm khoá lọc ổn định), giống quy ước Dược liệu/Huyệt vị.
+    group2: f.category_zh,
+    group2_vi: f.category_vi,
+    group2_en: f.category_en,
+    aliases_zh: f.aliases_zh,
+    origin_zh: f.origin_zh, origin_vi: f.origin_vi, origin_en: f.origin_en,
+    composition_zh: f.composition_zh, composition_vi: f.composition_vi, composition_en: f.composition_en,
+    functions_zh: f.functions_zh, functions_vi: f.functions_vi, functions_en: f.functions_en,
+    indications_zh: f.indications_zh, indications_vi: f.indications_vi, indications_en: f.indications_en,
+    analysis_zh: f.analysis_zh, analysis_vi: f.analysis_vi, analysis_en: f.analysis_en,
+    cautions_zh: f.cautions_zh, cautions_vi: f.cautions_vi, cautions_en: f.cautions_en,
+    nguon: f.source || 'HVYD Formula Core DB v2.0.0',
+    verify: !!f.verify,
+    verify_note: f.verify_note,
+    category: 'formula',
+    cn_machine: !!f.machine_translated,
+  };
+}
+
+async function getFormulaTerms() {
+  if (!mysqlPool) return [];
+  try {
+    const [rows] = await mysqlPool.query('SELECT * FROM formulas WHERE is_active = TRUE');
+    return rows.map(formulaRowToTerm);
+  } catch (err) {
+    if (err.code !== 'ER_NO_SUCH_TABLE') {
+      console.error('⚠️  Không đọc được dữ liệu Thang phương từ MySQL:', err.message);
+    }
+    return [];
+  }
+}
+
+/**
+ * Xác thực Firebase token TÙY CHỌN cho các route public (vd. /api/terms): nếu có
+ * `Authorization: Bearer <token>` hợp lệ → trả về decoded user; nếu thiếu/sai/chưa
+ * cấu hình Firebase → trả null (KHÔNG lỗi, route vẫn chạy bình thường cho khách).
+ */
+async function optionalFirebaseUser(req) {
+  if (!isFirebaseConfigured()) return null;
+  const h = req.headers.authorization || '';
+  const token = h.startsWith('Bearer ') ? h.slice(7) : null;
+  if (!token) return null;
+  try {
+    const admin = (await import('firebase-admin')).default;
+    return await admin.auth().verifyIdToken(token);
+  } catch { return null; }
+}
+
+/**
  * Maps a `word_elements` MySQL row ("Từ ghép Y Khoa" — English prefix/
  * suffix/root/compound-term) into the same flat term shape /api/terms
  * returns for other domains. Unlike everywhere else, `en` is the headword
@@ -533,7 +599,14 @@ app.get('/api/terms', async (req, res) => {
     const wordElementTerms = await getWordElementTerms();
     const acupointTerms = await getAcupointTerms();
     const autoTerms = await getApprovedCandidateTerms(); // GĐ2: cụm tự học đã duyệt
-    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms];
+
+    // Thang Phương là domain GATED: chỉ trả về khi request có Firebase token hợp lệ
+    // (user đã đăng nhập). Khách chưa đăng nhập KHÔNG nhận được dữ liệu này trong payload
+    // (không chỉ ẩn ở frontend — lọc luôn ở server để nội dung không bị crawl).
+    const authUser = await optionalFirebaseUser(req);
+    const formulaTerms = authUser ? await getFormulaTerms() : [];
+
+    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms, ...formulaTerms];
 
     if (terms.length === 0) {
       return res.status(404).json({
