@@ -4,20 +4,22 @@ Soạn: 2026-09-10. Trạng thái: **KẾ HOẠCH — chưa code gì.**
 
 ---
 
-## Phần 0 — Kiểm tra dữ liệu nguồn (CẦN USER XÁC NHẬN TRƯỚC)
+## Phần 0 — Nguồn dữ liệu: ĐÃ CHỐT = Formula Core DB **v2.0.0 Clean Baseline**
 
-Đã tra `HVYD Formula Core DB v1.2.0` (Google Sheet `1GewEcHcz8CJk7IEsWjPA2GZV4uvTe5yvYSt3fjMgAWw`, 25 tab chuẩn hoá, nguồn `《方剂学》第五版 2021`). **Chưa khớp với "đã hoàn thiện":**
+User chỉ định (2026-09-10): dùng bản **v2.0**, folder Drive `122DfmLtVqnA426YeWmC-crRvdAjB17NC`.
+Sheet chính: **`HVYD Formula Core DB v2.0.0｜Clean Baseline`** (id `1cuGEQV7wAZ-ldl8tRQsbDYk2WS5cbXvepTuvo0hRf7w`, 15 tab). Bản v1.2.0 (`1GewEcHcz8...`, 37 bài) coi như LEGACY, bỏ.
 
-- `kb_formulas` chỉ có **37 thang phương** có dữ liệu (một cuốn 方剂学 đầy đủ ~200–250 bài).
-- README ghi `status: EXTRACTED｜NOT_RELEASED`, `LOCALIZATION_BACKFILL_PENDING`, `display_default: INTERNAL_QA_ONLY`. Mới ingest batch FB001–FB003 (kế hoạch FB001–FB069).
-- Mẫu có `name_vi` + `pinyin` (vd. "Ma hoàng thang / má huáng tāng") nhưng `formula_type_code`/`origin_period_code` trống, `review_status=EXTRACTED`.
+**Tình trạng dữ liệu v2.0.0 (đã đo trực tiếp):**
+| Tab | Số dòng có data | Ghi chú |
+|---|---|---|
+| `kb_formulas` | **451** | Đủ tên zh / pinyin / vi / en (tất cả `AI_TRANSLATED`, `review_status=EXTRACTED`) — cỡ 1 cuốn 方剂学 đầy đủ |
+| `kb_formula_versions` | 451 | 1:1 với kb_formulas |
+| `kb_formula_ingredients` | 1.199 | chỉ phủ **189/451** phương (42%) có danh sách thành phần |
+| `kb_source_claims` | 1.199 | công dụng/chủ trị/phương giải/vận dụng — có `text_vi`/`text_en`/`text_pinyin` (phủ 1 phần) |
+| `kb_formula_safety_rules` | 72 | rất ít phương có kiêng kỵ |
+| `kb_formula_aliases` / `classification_map` / `relations` | 34 / 450 / 215 | tên khác, phân loại (loại phương), quan hệ (phụ phương...) |
 
-**→ Câu hỏi cho user:** dữ liệu Thang Phương "đã hoàn thiện" mà anh nói là:
-- (a) chính 37 bài trong Formula Core DB này (chấp nhận đưa lên dạng "đợt 1"), hay
-- (b) một nguồn/sheet khác đầy đủ hơn mà Claude chưa được biết ID, hay
-- (c) một workbook do công cụ AI khác điền (giống Bệnh Lý)?
-
-Kế hoạch bên dưới áp dụng cho cả 3 trường hợp — chỉ khác ở bước đọc nguồn.
+**Kết luận:** v2 tốt hơn v1.2.0 nhiều (451 vs 37 tên phương) nhưng **nội dung vẫn từng phần** — ~42% có thành phần, ít hơn có công dụng/chủ trị đầy đủ, ~15% có kiêng kỵ. Toàn bộ `EXTRACTED` / `INTERNAL_QA_ONLY` / `NOT_RELEASED`, bản dịch vi/en đều `AI_TRANSLATED` (chưa human review). → Đưa vào dạng **đợt 1**, `verify=TRUE` + `machine_translated=TRUE` (UI hiện "cần rà soát"); phương chưa có thành phần vẫn hiện tên + phân loại (giống cách xử lý Bệnh Lý đợt 2).
 
 ---
 
