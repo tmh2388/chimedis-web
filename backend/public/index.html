@@ -1626,13 +1626,24 @@ const TTS = {
     if(/[。．.!！?？…:：;；]$/.test(s)) return s;
     return /[一-鿿]$/.test(s) ? s + '。' : s + '.';
   },
-  rateFor(lang){ return lang === 'vi' ? 0.9 : lang === 'zh' ? 0.98 : 0.95; },
+  // long = mệnh đề là CỤM/CÂU (không phải 1 từ tiêu đề) -> đọc chậm lại 1 chút cho khoan thai.
+  rateFor(lang, long){
+    const base = lang === 'vi' ? 0.9 : lang === 'zh' ? 0.98 : 0.95;
+    return long ? base - 0.08 : base;
+  },
+  // Có dấu ngắt trong câu, hoặc dài hơn 1 từ -> coi là cụm/câu.
+  _isPhrase(text, lang){
+    const t = String(text || '');
+    if(/[，、,；;：:]/.test(t)) return true;
+    const bare = t.replace(/[。．.!！?？…\s]/g, '').length;
+    return lang === 'zh' ? bare > 4 : bare > 18;
+  },
   // segments: [{text, lang}] đọc lần lượt. key: để toggle (chạm lại = dừng) + tô sáng nút.
   // opts.gap: nghỉ giữa 2 mệnh đề cùng ngôn ngữ (ms). opts.langGap: nghỉ khi ĐỔI ngôn ngữ (ms).
   speakSegments(segments, key, opts){
     if(!this.supported && !this.native) return;
     opts = opts || {};
-    const gap = opts.gap == null ? 180 : opts.gap;
+    const gap = opts.gap == null ? 340 : opts.gap;      // nghỉ giữa 2 câu cùng ngôn ngữ (thở)
     const langGap = opts.langGap == null ? 650 : opts.langGap;
     segments = (segments || [])
       .map(s => ({ lang: (s && s.lang) || 'zh', text: this.forLang(s && s.text, s && s.lang) }))
@@ -1646,8 +1657,11 @@ const TTS = {
     // Dựng hàng đợi mệnh đề phẳng, đánh dấu chỗ đổi ngôn ngữ để chèn khoảng nghỉ dài hơn.
     const queue = [];
     segments.forEach((seg, si) => {
-      this._clauses(seg.text).forEach((clause, ci) => {
-        queue.push({ text: clause, lang: seg.lang, langBoundary: si > 0 && ci === 0 });
+      const parts = this._clauses(seg.text);
+      const multi = parts.length > 1;
+      parts.forEach((clause, ci) => {
+        queue.push({ text: clause, lang: seg.lang, langBoundary: si > 0 && ci === 0,
+          long: multi || this._isPhrase(clause, seg.lang) });
       });
     });
     if(this.native){ this._speakNative(queue, myKey, gap, langGap); return; }
@@ -1664,7 +1678,7 @@ const TTS = {
       const u = new SpeechSynthesisUtterance(seg.text);
       const v = this.byLang[seg.lang];
       if(v){ u.voice = v; u.lang = v.lang; } else { u.lang = this.tagOf(seg.lang); }
-      u.rate = this.rateFor(seg.lang); u.pitch = 1;
+      u.rate = this.rateFor(seg.lang, seg.long); u.pitch = 1;
       u.onend = () => {
         if(myKey !== this.speakingKey) return;
         const nextGap = (i + 1 < queue.length && queue[i + 1].langBoundary) ? langGap : gap;
@@ -1684,7 +1698,7 @@ const TTS = {
       if(i >= queue.length){ this.speakingKey = null; updateSpeakingUI(); return; }
       const seg = queue[i];
       const idx = this.voiceIdx[seg.lang];
-      const opt = { text: seg.text, lang: this.langTag(seg.lang), rate: this.rateFor(seg.lang), pitch: 1, volume: 1, category: 'playback' };
+      const opt = { text: seg.text, lang: this.langTag(seg.lang), rate: this.rateFor(seg.lang, seg.long), pitch: 1, volume: 1, category: 'playback' };
       if(typeof idx === 'number' && idx >= 0) opt.voice = idx;
       const after = () => {
         if(myKey !== this.speakingKey) return;
