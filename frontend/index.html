@@ -3229,14 +3229,33 @@ if('serviceWorker' in navigator){
 
   if(auth){ getRedirectResult(auth).catch((e) => console.warn('[Chimedis] redirect result:', e && e.message)); }
 
-  // signInWithPopup KHÔNG hoạt động trong WebView của app Capacitor (cửa sổ OAuth mở ở
-  // Safari ngoài, không postMessage credential ngược vào WebView được) — trong app native
-  // đi thẳng signInWithRedirect (điều hướng chính WebView, quay về, getRedirectResult bắt
-  // credential lúc tải lại). Trình duyệt web: vẫn popup, chặn popup thì redirect.
+  // signInWithPopup KHÔNG hoạt động trong WebView app Capacitor (cửa sổ OAuth mở Safari
+  // ngoài, credential không quay ngược vào WebView) — và signInWithRedirect cũng không (app
+  // không điều hướng WebView sang origin ngoài, credential rơi vào Safari). Trong app iOS:
+  //   • Google  -> plugin native @capacitor-firebase/authentication (skipNativeAuth) -> lấy
+  //     idToken -> signInWithCredential (giống nút Apple đang làm với SignInWithApple).
+  //   • Facebook -> chưa có SDK native cấu hình -> tạm redirect (chấp nhận chập chờn), hoặc
+  //     khuyên dùng Google/Apple trên app.
+  // Trình duyệt web: popup, chặn popup thì redirect.
   const IN_NATIVE = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  function fbAuthPlugin(){ return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.FirebaseAuthentication) || null; }
+
+  async function nativeGoogleSignIn(){
+    const p = fbAuthPlugin();
+    if(!p) throw new Error('FirebaseAuthentication plugin không sẵn sàng');
+    const res = await p.signInWithGoogle({ skipNativeAuth: true });
+    const idToken = res && res.credential && res.credential.idToken;
+    const accessToken = res && res.credential && res.credential.accessToken;
+    if(!idToken) throw new Error('Google (native) không trả idToken');
+    return signInWithCredential(auth, GoogleAuthProvider.credential(idToken, accessToken || null));
+  }
+
   async function socialSignIn(provider){
     if(!auth) throw new Error('Firebase chưa cấu hình');
-    if(IN_NATIVE) return signInWithRedirect(auth, provider);
+    if(IN_NATIVE){
+      if(provider instanceof GoogleAuthProvider && fbAuthPlugin()) return nativeGoogleSignIn();
+      return signInWithRedirect(auth, provider); // Facebook trong app: chưa có native, tạm redirect
+    }
     try{ return await signInWithPopup(auth, provider); }
     catch(e){
       if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment','auth/cancelled-popup-request','auth/popup-closed-by-user'].includes(e.code)){
