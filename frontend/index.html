@@ -502,8 +502,13 @@ header{transition:padding .2s ease}
 #voiceHelpPanel.show{max-height:460px;overflow-y:auto}
 #voiceHelpPanel .clp-hint{line-height:1.5;padding-bottom:8px}
 .voice-cur{padding:2px 20px 6px}
-.voice-cur .vc-row{display:flex;gap:10px;font-size:12px;padding:2px 0;align-items:baseline}
+.voice-cur .vc-row{display:flex;gap:10px;font-size:12px;padding:3px 0;align-items:center}
 .voice-cur .vc-l{flex:0 0 26px;color:var(--muc-mo,#8a7d6a);font-weight:700}
+.voice-cur .vc-sel{flex:1;min-width:0;font-size:12.5px;padding:7px 8px;border:1px solid var(--vien,#e5ddcc);
+  border-radius:9px;background:#fff;color:var(--muc,#2a2118);font-family:inherit;-webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a6a58' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;padding-right:26px}
+.voice-cur .vc-sel-empty{opacity:.5}
 .voice-cur .vc-v{color:var(--muc,#2a2118);word-break:break-word}
 .voice-cur .vc-v.none{color:var(--son,#c2410c)}
 .voice-cur .vc-hi{color:var(--la,#2f7d55);font-weight:800;white-space:nowrap}
@@ -799,15 +804,25 @@ function syncVoiceHelpPanel(){
   const HIQ = /premium|enhanced|neural|wavenet/i;
   const NOV = /\b(eddy|flo|reed|rocko|sandy|shelley|grandma|grandpa|bells|boing|bubbles|jester|organ|superstar|trinoids|whisper|wobble|junior|albert|fred|kathy|ralph|zarvox)\b|eloquence|\.speech\.synthesis\.voice\.|bad news|good news/i;
   const LOWQ = /compact/i;
-  const row = (lab, v) => {
-    const name = v ? (v.name || v.voiceURI) : t('voice_none');
-    const id = v ? ((v.name || '') + ' ' + (v.voiceURI || '')) : '';
-    let q = '';
-    if(v && NOV.test(id)) q = ` <span class="vc-lo">${t('voice_basic')}</span>`;
-    else if(v && HIQ.test(id)) q = ` <b class="vc-hi">✦ ${t('voice_hi')}</b>`;
-    else if(v && LOWQ.test(id)) q = ` <span class="vc-lo">${t('voice_basic')}</span>`;
-    const tag = v && v.localService === false ? ' · online' : '';
-    return `<div class="vc-row"><span class="vc-l">${lab}</span><span class="vc-v${v ? '' : ' none'}">${name}${tag}${q}</span></div>`;
+  const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  const mark = v => { const id = (v.name || '') + ' ' + (v.voiceURI || ''); return NOV.test(id) ? ' ·' : (HIQ.test(id) ? ' ✦' : ''); };
+  // 1 ô CHỌN GIỌNG cho mỗi ngôn ngữ — người dùng chọn thẳng trong app, không cần vào Cài đặt.
+  const row = (lab, code) => {
+    const cur = TTS.byLang[code];
+    const pref = (state.voicePref && state.voicePref[code]) || '';
+    let vs = TTS.voicesFor(code).slice();
+    // sắp giọng tốt lên đầu: ✦ trước, giọng vui nhộn (·) xuống cuối
+    vs.sort((a, b) => {
+      const rk = v => { const id = (v.name || '') + ' ' + (v.voiceURI || ''); return NOV.test(id) ? 2 : (HIQ.test(id) ? 0 : 1); };
+      return rk(a) - rk(b);
+    });
+    const autoName = cur && !pref ? ` — ${esc(cur.name || cur.voiceURI)}` : '';
+    const opts = [`<option value="">${t('voice_auto')}${autoName}</option>`].concat(
+      vs.map(v => `<option value="${esc(v.voiceURI)}"${v.voiceURI === pref ? ' selected' : ''}>${esc(v.name || v.voiceURI)}${mark(v)}${v.localService === false ? ' · online' : ''}</option>`)
+    );
+    const none = vs.length ? '' : ' vc-sel-empty';
+    return `<div class="vc-row"><span class="vc-l">${lab}</span>` +
+      `<select class="vc-sel${none}" onchange="setVoicePref('${code}', this.value)">${opts.join('')}</select></div>`;
   };
   const diagList = l => {
     const vs = TTS.voicesFor(l);
@@ -820,9 +835,9 @@ function syncVoiceHelpPanel(){
     }).join('');
   };
   const mode = TTS.native ? `<span class="vc-mode native">${t('voice_mode_app')}</span>` : `<span class="vc-mode">${t('voice_mode_web')}</span>`;
-  box.innerHTML = `<div class="clp-hint">${t('voice_current')} ${mode}` +
+  box.innerHTML = `<div class="clp-hint">${t('voice_pick_hint')} ${mode}` +
       ` <button type="button" id="voiceRefreshBtn" class="voice-refresh" onclick="refreshVoices()" aria-label="${t('voice_reload')}" title="${t('voice_reload')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button></div>` +
-    row('中', TTS.byLang.zh) + row('VI', TTS.byLang.vi) + row('EN', TTS.byLang.en) +
+    row('中', 'zh') + row('VI', 'vi') + row('EN', 'en') +
     `<details class="voice-diag"><summary>${t('voice_diag')}</summary>` +
       `<div class="vd-g"><b>中</b>${diagList('zh')}</div>` +
       `<div class="vd-g"><b>VI</b>${diagList('vi')}</div>` +
@@ -962,6 +977,8 @@ let state = {
   authMode: 'signin', // 'signin' | 'signup' — form nào đang hiện trong modal đăng nhập
   ttsAutoplay: (localStorage.getItem('chimedis_tts_autoplay') === '1'), // tự đọc từ khi ôn (mặc định tắt)
   dailyGoal: (parseInt(localStorage.getItem('chimedis_daily_goal'),10) || 10),
+  voicePref: loadVoicePref(), // { zh, vi, en } = voiceURI người dùng CHỌN trong app; '' = tự động
+
   _studyList: null,   // danh sách từ của phiên ôn đang chạy khi mở từ màn hình "Học tập"
   _studyDeck: 'saved',// deck đang chọn trong màn hình "Học tập"
 };
@@ -989,6 +1006,24 @@ function loadContentLangs(){
   return { zh: true, vi: true, en: true }; // mặc định: hiện đủ cả 3 ngôn ngữ, đỡ phải bật tay
 }
 function saveContentLangs(){ localStorage.setItem(CONTENT_LANGS_KEY, JSON.stringify(state.contentLangs)); }
+
+// ===== GIỌNG ĐỌC NGƯỜI DÙNG TỰ CHỌN TRONG APP (không cần vào Cài đặt thiết bị) =====
+const VOICE_PREF_KEY = 'chimedis_voice_pref_v1';
+function loadVoicePref(){
+  try{
+    const s = JSON.parse(localStorage.getItem(VOICE_PREF_KEY));
+    if(s && typeof s === 'object') return { zh: s.zh || '', vi: s.vi || '', en: s.en || '' };
+  }catch(e){}
+  return { zh: '', vi: '', en: '' };
+}
+function setVoicePref(lang, voiceURI){
+  if(!state.voicePref) state.voicePref = { zh:'', vi:'', en:'' };
+  state.voicePref[lang] = voiceURI || '';
+  try{ localStorage.setItem(VOICE_PREF_KEY, JSON.stringify(state.voicePref)); }catch(e){}
+  if(TTS.native) TTS.loadVoicesNative(); else TTS.loadVoices();
+  syncVoiceHelpPanel();
+  if(state.popupId) openPopup(state.popupId);
+}
 
 // ===== ĐĂNG NHẬP (Firebase Auth) + TỪ ĐÃ LƯU (favorites) =====
 // Firebase SDK thật (module ESM) nằm ở <script type="module"> cuối file — expose qua
@@ -1426,7 +1461,7 @@ Object.assign(I18N.vi, {
   voice_android: 'Android: Cài đặt › Quản lý chung › Văn bản thành giọng nói › đặt công cụ là "Giọng nói Google" › cài đặt › tải gói ngôn ngữ tương ứng.',
   voice_current: 'Giọng đang dùng',
   voice_none: '(chưa có)',
-  voice_test: 'Nghe thử', voice_hi: 'Nâng cao', voice_basic: '· cơ bản', voice_reload: 'Quét lại danh sách giọng', voice_diag: 'Xem tất cả giọng thiết bị trả về', voice_mode_app: '• chế độ Ứng dụng', voice_mode_web: '• chế độ Trình duyệt',
+  voice_test: 'Nghe thử', voice_hi: 'Nâng cao', voice_basic: '· cơ bản', voice_reload: 'Quét lại danh sách giọng', voice_diag: 'Xem tất cả giọng thiết bị trả về', voice_auto: 'Tự động (giọng tốt nhất)', voice_pick_hint: 'Chọn giọng đọc cho từng ngôn ngữ:', voice_mode_app: '• chế độ Ứng dụng', voice_mode_web: '• chế độ Trình duyệt',
 });
 Object.assign(I18N.zh, {
   speak: '朗读', tts_pick: '选择朗读语言', tts_no_voice: '此设备暂无该语言的朗读语音', tts_all: '中·越·英 全部',
@@ -1443,7 +1478,7 @@ Object.assign(I18N.zh, {
   voice_android: 'Android：设置 › 通用管理 › 文字转语音 › 引擎设为「Google 文字转语音」› 设置 › 下载对应语言包。',
   voice_current: '当前语音',
   voice_none: '（无）',
-  voice_test: '试听', voice_hi: '增强', voice_basic: '· 基础', voice_reload: '重新扫描语音列表', voice_diag: '查看设备返回的全部语音', voice_mode_app: '• 应用模式', voice_mode_web: '• 浏览器模式',
+  voice_test: '试听', voice_hi: '增强', voice_basic: '· 基础', voice_reload: '重新扫描语音列表', voice_diag: '查看设备返回的全部语音', voice_auto: '自动（最佳语音）', voice_pick_hint: '为每种语言选择朗读语音：', voice_mode_app: '• 应用模式', voice_mode_web: '• 浏览器模式',
 });
 Object.assign(I18N.en, {
   speak: 'Speak', tts_pick: 'Choose reading language', tts_no_voice: 'This device has no voice for this language', tts_all: 'All 3 languages',
@@ -1460,7 +1495,7 @@ Object.assign(I18N.en, {
   voice_android: 'Android: Settings › General management › Text-to-speech › set engine to “Google Text-to-speech” › settings › install the matching language data.',
   voice_current: 'Voice in use',
   voice_none: '(none)',
-  voice_test: 'Test', voice_hi: 'Enhanced', voice_basic: '· basic', voice_reload: 'Rescan voice list', voice_diag: 'Show all voices the device exposes', voice_mode_app: '• app mode', voice_mode_web: '• browser mode',
+  voice_test: 'Test', voice_hi: 'Enhanced', voice_basic: '· basic', voice_reload: 'Rescan voice list', voice_diag: 'Show all voices the device exposes', voice_auto: 'Automatic (best voice)', voice_pick_hint: 'Pick a voice for each language:', voice_mode_app: '• app mode', voice_mode_web: '• browser mode',
 });
 
 // ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
@@ -1518,7 +1553,13 @@ const TTS = {
     this.byLang.zh = pick(['zh-cn','zh-hans','cmn-hans-cn','zh','zh-tw','zh-hk']);
     this.byLang.vi = pick(['vi-vn','vi']);
     this.byLang.en = pick(['en-us','en-gb','en-au','en']);
-    ['zh','vi','en'].forEach(l => { this.voiceIdx[l] = this.byLang[l] ? this.voices.indexOf(this.byLang[l]) : -1; });
+    // Người dùng đã CHỌN giọng trong app (panel "Giọng đọc chất lượng cao") -> dùng đúng
+    // giọng đó, bỏ qua pick() tự động. '' = để tự động.
+    const pref = (typeof state !== 'undefined' && state.voicePref) || {};
+    ['zh','vi','en'].forEach(l => {
+      if(pref[l]){ const hit = this.voices.find(v => v.voiceURI === pref[l]); if(hit) this.byLang[l] = hit; }
+      this.voiceIdx[l] = this.byLang[l] ? this.voices.indexOf(this.byLang[l]) : -1;
+    });
   },
   // App iOS: nạp danh sách giọng từ plugin native (bao gồm giọng Nâng cao/Premium).
   loadVoicesNative(){
