@@ -1124,7 +1124,8 @@ function authErrorMessage(err){
   if(code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') return t('auth_err_invalid');
   if(code === 'auth/email-already-in-use') return t('auth_err_email_in_use');
   if(code === 'auth/weak-password') return t('auth_err_weak_password');
-  return t('auth_err_generic');
+  // Lỗi lạ (nhất là social login trong app): kèm mã Firebase để dễ báo cáo/gỡ lỗi.
+  return t('auth_err_generic') + (code ? ` (${code})` : (err && err.message ? ` (${String(err.message).slice(0,80)})` : ''));
 }
 
 function renderAuthModal(){
@@ -3228,15 +3229,25 @@ if('serviceWorker' in navigator){
 
   if(auth){ getRedirectResult(auth).catch((e) => console.warn('[Chimedis] redirect result:', e && e.message)); }
 
+  // signInWithPopup KHÔNG hoạt động trong WebView của app Capacitor (cửa sổ OAuth mở ở
+  // Safari ngoài, không postMessage credential ngược vào WebView được) — trong app native
+  // đi thẳng signInWithRedirect (điều hướng chính WebView, quay về, getRedirectResult bắt
+  // credential lúc tải lại). Trình duyệt web: vẫn popup, chặn popup thì redirect.
+  const IN_NATIVE = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  async function socialSignIn(provider){
+    if(!auth) throw new Error('Firebase chưa cấu hình');
+    if(IN_NATIVE) return signInWithRedirect(auth, provider);
+    try{ return await signInWithPopup(auth, provider); }
+    catch(e){
+      if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment','auth/cancelled-popup-request','auth/popup-closed-by-user'].includes(e.code)){
+        return signInWithRedirect(auth, provider);
+      }
+      throw e;
+    }
+  }
   window.chimedisFirebase = {
-    signInGoogle(){
-      if(!auth) return Promise.reject(new Error('Firebase chưa cấu hình'));
-      return signInWithPopup(auth, new GoogleAuthProvider());
-    },
-    signInFacebook(){
-      if(!auth) return Promise.reject(new Error('Firebase chưa cấu hình'));
-      return signInWithPopup(auth, new FacebookAuthProvider());
-    },
+    signInGoogle(){ return socialSignIn(new GoogleAuthProvider()); },
+    signInFacebook(){ return socialSignIn(new FacebookAuthProvider()); },
     async signInApple(){
       if(!auth) throw new Error('Firebase chưa cấu hình');
       const inNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
