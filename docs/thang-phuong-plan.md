@@ -104,3 +104,14 @@ Tái dùng đúng pattern đã làm cho Huyệt vị / Bệnh Lý:
 
 - Sau khi HOÀN TẤT Thang Phương, **quay lại Bệnh Lý** — đang chờ công cụ AI khác điền tiếp workbook (8/9 chương Nội khoa gần như trống, xem `docs/pathology-workbook-assessment.md`).
 - Facebook App vẫn ở chế độ Development — nếu sau này muốn dùng chính Facebook Login làm gate (thay vì mã), phải chuyển app sang Live trước, và vẫn KHÔNG check được việc Like (chỉ biết user đã đăng nhập bằng FB).
+
+
+---
+
+## ✅ ĐÃ THỰC HIỆN (2026-09-10)
+
+- Nguồn: **Formula Core DB v2.0.0** (`1cuGEQV7wAZ-ldl8tRQsbDYk2WS5cbXvepTuvo0hRf7w`). Đọc thực tế: 451 formulas / 3115 ingredients / 6341 claims.
+- **Gate rút gọn theo quyết định user: CHỈ cần đăng nhập** (bỏ Like fanpage — FB không cho check; `facebook.com/havanydao` chỉ làm CTA phụ trên màn khoá).
+- Code push `chimedis-web@79fbaa0`: bảng `formulas` + `user_domain_unlocks` (DDL), `import-formula-sheets.js`, `server.js` (`formulaRowToTerm`/`getFormulaTerms` + `optionalFirebaseUser` lọc `/api/terms`), frontend (màn khoá `.gate`, popup `category==='formula'`, i18n, authFetch, reload khi login đổi).
+- **Đã chạy import vào MySQL production**: 451/451 phương — 451 có thành phần (100%), 434 có công dụng (96%). Category (loại phương) phủ đủ, hiển thị Hán Việt (Tân ôn giải biểu tễ, Hoạt huyết khư ứ tễ...).
+- **CÒN LẠI**: user bấm Redeploy hPanel cho code server/frontend có hiệu lực. Sau redeploy: đăng nhập → 'Thang phương' hiện trong dropdown; chưa đăng nhập → không thấy (lọc cả server lẫn client).
