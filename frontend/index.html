@@ -796,13 +796,15 @@ function refreshVoices(){
 function syncVoiceHelpPanel(){
   const box = document.getElementById('voiceCurList');
   if(!box) return;
-  const HIQ = /premium|enhanced|neural|eloquence|natural|siri|wavenet/i;
+  const HIQ = /premium|enhanced|neural|wavenet/i;
+  const NOV = /\b(eddy|flo|reed|rocko|sandy|shelley|grandma|grandpa|bells|boing|bubbles|jester|organ|superstar|trinoids|whisper|wobble|junior|albert|fred|kathy|ralph|zarvox)\b|eloquence|\.speech\.synthesis\.voice\.|bad news|good news/i;
   const LOWQ = /compact/i;
   const row = (lab, v) => {
     const name = v ? (v.name || v.voiceURI) : t('voice_none');
     const id = v ? ((v.name || '') + ' ' + (v.voiceURI || '')) : '';
     let q = '';
-    if(v && HIQ.test(id)) q = ` <b class="vc-hi">✦ ${t('voice_hi')}</b>`;
+    if(v && NOV.test(id)) q = ` <span class="vc-lo">${t('voice_basic')}</span>`;
+    else if(v && HIQ.test(id)) q = ` <b class="vc-hi">✦ ${t('voice_hi')}</b>`;
     else if(v && LOWQ.test(id)) q = ` <span class="vc-lo">${t('voice_basic')}</span>`;
     const tag = v && v.localService === false ? ' · online' : '';
     return `<div class="vc-row"><span class="vc-l">${lab}</span><span class="vc-v${v ? '' : ' none'}">${name}${tag}${q}</span></div>`;
@@ -812,7 +814,7 @@ function syncVoiceHelpPanel(){
     if(!vs.length) return `<div class="vd-item vd-none">— (0)</div>`;
     return vs.map(v => {
       const id = (v.name || '') + ' ' + (v.voiceURI || '');
-      const mk = HIQ.test(id) ? '✦ ' : (LOWQ.test(id) ? '· ' : '');
+      const mk = NOV.test(id) ? '· ' : (HIQ.test(id) ? '✦ ' : (LOWQ.test(id) ? '· ' : ''));
       const on = TTS.byLang[l] && (TTS.byLang[l].voiceURI === v.voiceURI) ? ' vd-on' : '';
       return `<div class="vd-item${on}">${mk}${v.name || v.voiceURI} <i>${(v.lang||'')}${v.localService === false ? ' · online' : ''}</i></div>`;
     }).join('');
@@ -1485,16 +1487,22 @@ const TTS = {
     // (iOS Enhanced/Premium, Android neural) và giọng cài trên máy; tránh giọng "compact"
     // (giọng mặc định chất lượng thấp của iOS). speechSynthesis không có cờ chất lượng nên
     // đoán qua tên/voiceURI. Nếu người dùng đã cài giọng Nâng cao thì app tự dùng ngay.
-    const HIQ = /premium|enhanced|neural|eloquence|natural|siri|super-compact/i;
-    const LOWQ = /(^|[^-])compact/i;   // "compact" nhưng KHÔNG phải "super-compact"
+    // Bậc chất lượng giọng iOS: premium > enhanced > siri > compact. Giọng "vui nhộn" /
+    // Eloquence (Eddy, Flo, Grandma, Reed, Albert, Fred...) là giọng robot cũ — CHẤT LƯỢNG
+    // THẤP dù voiceURI đôi khi có chữ "enhanced/eloquence" -> phạt nặng, không bao giờ chọn.
+    const NOVELTY = /\b(eddy|flo|reed|rocko|sandy|shelley|grandma|grandpa|bells|boing|bubbles|jester|organ|superstar|trinoids|whisper|wobble|junior|albert|fred|kathy|ralph|bahh|cellos|zarvox|deranged|hysterical|princess|bruce|agnes|vicki|victoria)\b|bad news|good news|pipe organ/i;
+    const ELOQUENCE = /eloquence|\.speech\.synthesis\.voice\./i;
     const score = (v, tags, tier) => {
-      const id = (v.name || '') + ' ' + (v.voiceURI || '');
-      let s = 0;
-      if(HIQ.test(id)) s += 100;
-      if(LOWQ.test(id) && !/super-compact/i.test(id)) s -= 40;
-      if(v.localService !== false) s += 10;
-      if(tags.indexOf(norm(v)) === 0) s += 6;   // đúng khu vực ưu tiên (vd zh-cn hơn zh-tw)
-      s += tier;                                 // nhóm tag khớp: exact > base
+      const name = v.name || '', id = name + ' ' + (v.voiceURI || '');
+      let s = tier;                               // nhóm tag khớp: exact > base
+      if(/premium/i.test(id)) s += 120;
+      else if(/enhanced/i.test(id)) s += 90;
+      else if(/\bneural\b|wavenet/i.test(id)) s += 90;
+      else if(/siri/i.test(id)) s += 60;
+      else if(/compact/i.test(id)) s += 15;
+      if(ELOQUENCE.test(id) || NOVELTY.test(name)) s -= 300;
+      if(v.localService !== false) s += 8;
+      if(tags.indexOf(norm(v)) === 0) s += 6;     // đúng khu vực ưu tiên (vd zh-cn hơn zh-tw)
       return s;
     };
     // pick: thử khớp ĐÚNG tag trước (giữ đúng khu vực), rồi mới nới sang khớp gốc ngôn ngữ.
