@@ -295,6 +295,8 @@ footer .copyright{font-size:10.5px;color:var(--ngua);opacity:.55;margin-top:14px
 .qz-done .lab{font-size:13px;color:var(--muc-mo);margin-top:4px}
 .qz-done button{margin-top:20px;background:var(--thamthm);color:#fff;border:0;border-radius:13px;
   padding:13px 22px;font-size:13.5px;font-weight:700;cursor:pointer}
+.qz-done button.fc-done-home{margin-top:10px;margin-left:8px;background:transparent;color:var(--thamthm);
+  border:1.5px solid var(--thamthm)}
 
 /* DONE / SỔ ÔN TẬP */
 .dt-screen{padding:16px 18px 90px}
@@ -1017,6 +1019,7 @@ let state = {
   fuzzyResults: null, // kết quả fuzzy đã tính xong (debounced), null nghĩa là chưa tính/đang chờ
   fcIndex: 0,
   fcFlipped: false,
+  _fcDone: false, // true khi đã chấm xong thẻ cuối cùng trong phiên flashcard — hiện màn hình hoàn thành
   qzIndex: 0,
   qzScore: 0,
   qzAnswered: false,
@@ -1485,6 +1488,7 @@ Object.assign(I18N.vi, {
   voice_current: 'Giọng đang dùng',
   voice_none: '(chưa có)',
   voice_test: 'Nghe thử', voice_hi: 'Nâng cao', voice_basic: '· cơ bản', voice_reload: 'Quét lại danh sách giọng', voice_diag: 'Xem tất cả giọng thiết bị trả về', voice_auto: 'Tự động (giọng tốt nhất)', voice_pick_hint: 'Chọn giọng đọc cho từng ngôn ngữ:', voice_mode_app: '• chế độ Ứng dụng', voice_mode_web: '• chế độ Trình duyệt', fc_prev: 'Từ trước', fc_next: 'Từ sau',
+  fc_done_lab: 'Đã ôn xong hết thẻ trong phiên này!', fc_done_home: 'Về màn hình Học tập',
 });
 Object.assign(I18N.zh, {
   speak: '朗读', tts_pick: '选择朗读语言', tts_no_voice: '此设备暂无该语言的朗读语音', tts_all: '中·越·英 全部',
@@ -1502,6 +1506,7 @@ Object.assign(I18N.zh, {
   voice_current: '当前语音',
   voice_none: '（无）',
   voice_test: '试听', voice_hi: '增强', voice_basic: '· 基础', voice_reload: '重新扫描语音列表', voice_diag: '查看设备返回的全部语音', voice_auto: '自动（最佳语音）', voice_pick_hint: '为每种语言选择朗读语音：', voice_mode_app: '• 应用模式', voice_mode_web: '• 浏览器模式', fc_prev: '上一个', fc_next: '下一个',
+  fc_done_lab: '本次已复习完全部卡片！', fc_done_home: '返回学习首页',
 });
 Object.assign(I18N.en, {
   speak: 'Speak', tts_pick: 'Choose reading language', tts_no_voice: 'This device has no voice for this language', tts_all: 'All 3 languages',
@@ -1519,6 +1524,7 @@ Object.assign(I18N.en, {
   voice_current: 'Voice in use',
   voice_none: '(none)',
   voice_test: 'Test', voice_hi: 'Enhanced', voice_basic: '· basic', voice_reload: 'Rescan voice list', voice_diag: 'Show all voices the device exposes', voice_auto: 'Automatic (best voice)', voice_pick_hint: 'Pick a voice for each language:', voice_mode_app: '• app mode', voice_mode_web: '• browser mode', fc_prev: 'Previous term', fc_next: 'Next term',
+  fc_done_lab: "You've reviewed every card in this session!", fc_done_home: 'Back to Study home',
 });
 
 // ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
@@ -1969,7 +1975,7 @@ function startStudySession(deck, mode){
   state._studyList = list;
   state._studyDeck = deck;
   state.tab = mode || 'flashcard';
-  state.fcIndex = 0; state.fcFlipped = false;
+  state.fcIndex = 0; state.fcFlipped = false; state._fcDone = false;
   if(state.tab === 'quiz') initQuiz();
   render(); scrollToTop();
 }
@@ -2657,6 +2663,14 @@ function renderFlashcardTab(){
   if(list.length===0){
     return `<div class="fc-screen"><div class="fc-empty">${t('fc_empty')}</div></div>`;
   }
+  if(state._fcDone){
+    return `<div class="fc-screen"><div class="qz-done">
+      <div class="big">${list.length} / ${list.length}</div>
+      <div class="lab">${t('fc_done_lab')}</div>
+      <button onclick="state.fcIndex=0;state.fcFlipped=false;state._fcDone=false;renderTabContent()">${t('qz_retry')}</button>
+      <button class="fc-done-home" onclick="studyHome()">${t('fc_done_home')}</button>
+    </div></div>`;
+  }
   if(state.fcIndex >= list.length) state.fcIndex = 0;
   const term = list[state.fcIndex];
   const pct = Math.round(((state.fcIndex+1)/list.length)*100);
@@ -2729,13 +2743,14 @@ function markCard(id, status){
   setStatus(id, status);
   bumpStudyActivity();
   const list = studyScopedList();
-  state.fcIndex = Math.min(state.fcIndex+1, list.length-1 >= 0 ? state.fcIndex+1 : 0);
-  if(state.fcIndex >= list.length-1 && state.fcIndex !== 0){
-    // giữ nguyên hoặc quay lại đầu nếu hết
-  }
   state.fcFlipped = false;
-  if(state.fcIndex < list.length-0){ /* noop */ }
-  state.fcIndex = Math.min(state.fcIndex, Math.max(list.length-1,0));
+  // Chấm xong thẻ CUỐI cùng -> hiện màn hình hoàn thành thay vì đứng yên im lặng trên thẻ cũ
+  // (trước đây đứng yên không có phản hồi gì khiến giống như nút bấm "không có tác dụng").
+  if(state.fcIndex >= list.length - 1){
+    state._fcDone = true;
+  } else {
+    state.fcIndex += 1;
+  }
   renderTabContent();
 }
 
