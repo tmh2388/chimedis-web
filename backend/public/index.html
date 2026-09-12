@@ -250,6 +250,9 @@ footer .copyright{font-size:10.5px;color:var(--ngua);opacity:.55;margin-top:14px
 .card.back .en{font-size:14px;color:var(--muc-mo);font-style:italic;margin-top:4px}
 .card.back .desc{font-size:13px;color:var(--muc);margin-top:16px;line-height:1.6}
 .card.back .cn{font-size:12px;color:var(--tham-2);margin-top:7px}
+.card.back .fc-def{width:100%;text-align:left;border-bottom:0;padding:10px 0 0;margin-top:8px}
+.card.back .fc-def .ft{justify-content:flex-start}
+.card.back .fc-def p{text-align:left}
 .fc-actions{display:flex;gap:8px;margin-top:18px}
 .fc-actions .a{flex:1;padding:12px 5px;border-radius:13px;font-size:12px;font-weight:700;text-align:center;
   border:1.5px solid;cursor:pointer;background:none}
@@ -1654,12 +1657,38 @@ const TTS = {
     const bare = t.replace(/[。．.!！?？…\s]/g, '').length;
     return lang === 'zh' ? bare > 4 : bare > 18;
   },
+  // Câu TCM kiểu liệt kê (vd "养血凉血，清热解毒，生津止渴") không có dấu KẾT CÂU nào cho tới
+  // hết — _clauses() để nguyên cả cụm, đọc 1 hơi rất dài -> nghe dồn/nuốt chữ. Chỉ khi 1 mệnh
+  // đề đã VƯỢT NGƯỠNG (không phải câu bình thường) mới tách tiếp ở dấu phẩy/liệt kê thành các
+  // mẩu ngắn, nghỉ NGẮN giữa các mẩu (khác nghỉ dài giữa câu) — câu ngắn/vừa vẫn giữ nguyên,
+  // không bị vụn như trước.
+  _splitLong(text, lang){
+    const SEP = '，、,';
+    const s = String(text || '');
+    // Liệt kê TỪ 3 VẾ trở lên (>=2 dấu ngăn) -> mỗi vế 1 hơi riêng, nghỉ ngắn giữa các vế
+    // (câu bình thường chỉ 1-2 vế vẫn đọc liền, giữ đúng bài học cũ: không vụn câu ngắn).
+    // Câu quá dài dù ít dấu ngăn cũng tách theo ngưỡng ký tự để tránh 1 hơi quá dài.
+    const sepCount = [...s].filter(c => SEP.indexOf(c) !== -1).length;
+    const bare = s.replace(/[。．.!！?？…:：;；，、,]/g, '').length;
+    const lenLimit = lang === 'zh' ? 46 : 100;
+    if(sepCount < 2 && bare <= lenLimit) return [text];
+    const out = [];
+    let buf = '';
+    for(let i = 0; i < text.length; i++){
+      buf += text[i];
+      if(SEP.indexOf(text[i]) !== -1){ const tt = buf.trim(); if(tt) out.push(tt); buf = ''; }
+    }
+    if(buf.trim()) out.push(buf.trim());
+    return out.length > 1 ? out : [text];
+  },
   // segments: [{text, lang}] đọc lần lượt. key: để toggle (chạm lại = dừng) + tô sáng nút.
-  // opts.gap: nghỉ giữa 2 mệnh đề cùng ngôn ngữ (ms). opts.langGap: nghỉ khi ĐỔI ngôn ngữ (ms).
+  // opts.gap: nghỉ giữa 2 CÂU cùng ngôn ngữ. opts.microGap: nghỉ giữa 2 MẨU tách từ 1 câu quá
+  // dài (_splitLong). opts.langGap: nghỉ khi ĐỔI ngôn ngữ.
   speakSegments(segments, key, opts){
     if(!this.supported && !this.native) return;
     opts = opts || {};
     const gap = opts.gap == null ? 340 : opts.gap;      // nghỉ giữa 2 câu cùng ngôn ngữ (thở)
+    const microGap = opts.microGap == null ? 140 : opts.microGap;
     const langGap = opts.langGap == null ? 650 : opts.langGap;
     segments = (segments || [])
       .map(s => ({ lang: (s && s.lang) || 'zh', text: this.forLang(s && s.text, s && s.lang) }))
@@ -1670,17 +1699,24 @@ const TTS = {
     this.speakingKey = key || ('k' + (++this._seq));
     updateSpeakingUI();
     const myKey = this.speakingKey;
-    // Dựng hàng đợi mệnh đề phẳng, đánh dấu chỗ đổi ngôn ngữ để chèn khoảng nghỉ dài hơn.
+    // Dựng hàng đợi mệnh đề phẳng, đánh dấu chỗ đổi ngôn ngữ (nghỉ dài) và chỗ tách-vì-quá-dài
+    // trong CÙNG 1 câu (nghỉ ngắn) để chèn khoảng nghỉ đúng loại giữa từng mẩu.
     const queue = [];
     segments.forEach((seg, si) => {
-      const parts = this._clauses(seg.text);
-      const multi = parts.length > 1;
-      parts.forEach((clause, ci) => {
-        queue.push({ text: clause, lang: seg.lang, langBoundary: si > 0 && ci === 0,
-          long: multi || this._isPhrase(clause, seg.lang) });
+      const clauses = this._clauses(seg.text);
+      const multiClause = clauses.length > 1;
+      let firstInSeg = true;
+      clauses.forEach(clause => {
+        const pieces = this._splitLong(clause, seg.lang);
+        const isLong = multiClause || pieces.length > 1 || this._isPhrase(clause, seg.lang);
+        pieces.forEach((piece, pi) => {
+          queue.push({ text: piece, lang: seg.lang, long: isLong,
+            langBoundary: si > 0 && firstInSeg, micro: pi > 0 });
+          firstInSeg = false;
+        });
       });
     });
-    if(this.native){ this._speakNative(queue, myKey, gap, langGap); return; }
+    if(this.native){ this._speakNative(queue, myKey, gap, microGap, langGap); return; }
     // Chrome tự dừng phát sau ~15s — nhịp pause()/resume() giữ cho dòng đọc không bị cụt giữa chừng.
     // (WKWebView iOS bỏ qua vô hại: không ở trạng thái paused thì resume() là no-op.)
     this._keepAlive = setInterval(() => {
@@ -1697,7 +1733,8 @@ const TTS = {
       u.rate = this.rateFor(seg.lang, seg.long); u.pitch = 1;
       u.onend = () => {
         if(myKey !== this.speakingKey) return;
-        const nextGap = (i + 1 < queue.length && queue[i + 1].langBoundary) ? langGap : gap;
+        const nxt = queue[i + 1];
+        const nextGap = nxt ? (nxt.langBoundary ? langGap : (nxt.micro ? microGap : gap)) : gap;
         setTimeout(() => run(i + 1), nextGap);
       };
       u.onerror = () => { if(myKey === this.speakingKey) setTimeout(() => run(i + 1), gap); };
@@ -1708,7 +1745,7 @@ const TTS = {
   },
   // Đọc qua plugin native (app iOS): mỗi mệnh đề 1 lời gọi speak() nối tiếp nhau, có khoảng
   // nghỉ giữa mệnh đề / khi đổi ngôn ngữ. Không cần keepAlive (native không có bug 15s).
-  _speakNative(queue, myKey, gap, langGap){
+  _speakNative(queue, myKey, gap, microGap, langGap){
     const runNext = i => {
       if(myKey !== this.speakingKey) return;
       if(i >= queue.length){ this.speakingKey = null; updateSpeakingUI(); return; }
@@ -1718,7 +1755,8 @@ const TTS = {
       if(typeof idx === 'number' && idx >= 0) opt.voice = idx;
       const after = () => {
         if(myKey !== this.speakingKey) return;
-        const nextGap = (i + 1 < queue.length && queue[i + 1].langBoundary) ? langGap : gap;
+        const nxt = queue[i + 1];
+        const nextGap = nxt ? (nxt.langBoundary ? langGap : (nxt.micro ? microGap : gap)) : gap;
         setTimeout(() => runNext(i + 1), nextGap);
       };
       Promise.resolve(this.native.speak(opt)).then(after).catch(after);
@@ -2623,21 +2661,21 @@ function renderFlashcardTab(){
   if(TTS.supported) TTS.store[hwKey] = { vi: term.vi, zh: hzOf(term), en: term.en };
   const hwBtn = (TTS.supported && ttsSegments(term.vi, hzOf(term), term.en).length)
     ? `<button type="button" class="fc-speak" data-ttskey="${hwKey}" onclick="event.stopPropagation();ttsPlayKey('${hwKey}')" aria-label="${t('speak')}">${TTS_ICON}</button>` : '';
+  // Trước đây có 1 loa cạnh TÊN nhưng lại đọc nội dung Công năng/Chủ trị (khác hẳn cái tên
+  // hiển thị) — và nội dung đó KHÔNG hiện chữ ở đâu cả, chỉ nghe không thấy. Sửa: hiện rõ
+  // chữ (mỗi dòng ngôn ngữ 1 loa riêng, giống popup) thay vì giấu sau loa cạnh tên.
   const def = termDefinition(term);
-  const defBtn = (TTS.supported && ttsSegments(def.vi, def.zh, def.en).length)
-    ? ttsFieldBtn(def.vi, def.zh, def.en) : '';
+  const defBody = renderMultiLang(def.vi, def.zh, def.en, { speak: true });
   const ex = termExample(term);
-  const exBtn = (ex && TTS.supported && ttsSegments(ex.vi, ex.zh, ex.en).length)
-    ? `<div class="fc-ex">${t('f_example')} ${ttsFieldBtn(ex.vi, ex.zh, ex.en)}</div>` : '';
+  const exBody = ex ? renderMultiLang(ex.vi, ex.zh, ex.en, { speak: true }) : '';
   const cardHtml = state.fcFlipped ? `
     <div class="card back" onclick="flipCard()">
       <span class="corner">${t('fc_back')}</span>
       <span class="flip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${t('fc_flipback')}</span>
-      <div class="vi">${term.vi} ${defBtn}</div>
+      <div class="vi">${term.vi}</div>
       <div class="en">${term.en||''}</div>
-      <div class="desc">${term.congnang||''}</div>
-      ${term.vitri_cn?`<div class="cn han">${term.vitri_cn}</div>`:''}
-      ${exBtn}
+      ${defBody ? `<div class="field fc-def">${defBody}</div>` : ''}
+      ${exBody ? `<div class="field fc-def"><div class="ft">${t('f_example')}</div>${exBody}</div>` : ''}
     </div>` : `
     <div class="card front" onclick="flipCard()">
       <span class="corner">${t('fc_front')}</span>
