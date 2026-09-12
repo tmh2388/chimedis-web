@@ -3248,6 +3248,7 @@ if('serviceWorker' in navigator){
     getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult,
     GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithCredential,
     signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut,
+    setPersistence, indexedDBLocalPersistence, browserLocalPersistence,
   } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
   const FIREBASE_CONFIG = {
@@ -3261,6 +3262,15 @@ if('serviceWorker' in navigator){
   try{
     const app = initializeApp(FIREBASE_CONFIG);
     auth = getAuth(app);
+    // Bug thật (2026-09-12, user báo "mỗi lần mở app phải đăng nhập lại"): trong WKWebView của
+    // app iOS (Capacitor), bước tự dò môi trường của Firebase SDK để chọn persistence đôi khi
+    // KHÔNG chọn được IndexedDB (dò lỗi/không ổn định trong webview nhúng) và âm thầm rơi về
+    // inMemoryPersistence — session mất sạch ngay khi đóng app/reload WebView, dù sign-in vẫn
+    // thành công lúc đó. Ép rõ ràng persistence ngay sau getAuth() (trước khi có sign-in/đọc
+    // session nào) để tránh phụ thuộc vào tự dò: ưu tiên IndexedDB (bền nhất, đúng chuẩn SDK
+    // khuyến nghị cho app hybrid/Capacitor), rớt xuống localStorage nếu IndexedDB không dùng
+    // được. Không có persistence nào lỗi thì thôi, giữ mặc định.
+    setPersistence(auth, indexedDBLocalPersistence).catch(() => setPersistence(auth, browserLocalPersistence).catch(() => {}));
   }catch(err){
     console.warn('[Chimedis] Firebase chưa được cấu hình đúng — đăng nhập tạm thời không dùng được:', err.message);
   }
