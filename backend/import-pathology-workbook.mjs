@@ -88,6 +88,16 @@ async function main() {
     database: process.env.MYSQL_DATABASE,
   });
 
+  // Bản cập nhật lần 2 của workbook (sau yêu cầu xử lý lại, xem docs/pathology-workbook-assessment.md)
+  // đã điền context_note cho mọi dòng DISEASE, NHƯNG 229/399 dòng công cụ tự chèn placeholder nội
+  // bộ "NOT_VERIFIED — Đoạn nguồn hiện liên kết với thuật ngữ này chỉ hỗ trợ..." thay vì để trống
+  // khi không đủ bằng chứng nguồn — đây là ghi chú QA của công cụ, KHÔNG phải nội dung y khoa, và
+  // từ khi bỏ badge "cần rà soát" khỏi UI (chimedis-web@97a6c5f) thì không còn cảnh báo nào che
+  // chắn nếu lọt ra production. Coi các dòng này như trống (giữ đúng tinh thần quyết định trước
+  // "để trống nếu chưa có") thay vì nhập nguyên văn placeholder vào field function hiển thị cho user.
+  const isPlaceholder = (s) => typeof s === 'string' && s.startsWith('NOT_VERIFIED');
+  const clean = (s) => (isPlaceholder(s) ? null : (s || null));
+
   const rows = terms.map((t) => {
     const [sysZh, sysVi, sysEn] = organSystemFor(chapterByTermId.get(t.term_id));
     const vi = t.term_vi_hanviet || t.term_vi_standard || null;
@@ -95,7 +105,7 @@ async function main() {
       t.term_id, 'Bệnh lý', sysZh, sysVi, sysEn,
       t.term_zh, t.pinyin || null, vi, t.term_en || null,
       t.definition_short_zh || null, t.definition_short_vi || null, t.definition_short_en || null, // position=Định nghĩa
-      t.context_note_zh || null, t.context_note_vi || null, t.context_note_en || null, // function=Bệnh nhân-Bệnh cơ
+      clean(t.context_note_zh), clean(t.context_note_vi), clean(t.context_note_en), // function=Bệnh nhân-Bệnh cơ
       null, null, null, // tcm_note=Thể bệnh — chưa có dữ liệu
       null, null, null, // clinical=Triệu chứng&Pháp trị — chưa có dữ liệu
       'HVYD Pathology Workbook — trích 内科学 第5版 (中国中医药出版社, 2021), qua công cụ AI đọc+dịch, CHƯA rà soát tay',
