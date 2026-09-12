@@ -351,6 +351,17 @@ header{transition:padding .2s ease}
 .pp-arrow.left{left:6px}
 .pp-arrow.right{right:6px}
 .pp-arrow.hidden{display:none}
+.fc-cardwrap{position:relative}
+.fc-arrow{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,.16);color:#fff;border:0;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:3;-webkit-tap-highlight-color:transparent}
+.fc-arrow:active{background:rgba(255,255,255,.3)}
+.fc-arrow svg{width:17px;height:17px}
+.fc-arrow.left{left:-6px}
+.fc-arrow.right{right:-6px}
+.fc-arrow.hidden{visibility:hidden;pointer-events:none}
+.fc-arrow.onlight{background:var(--ngua-am);color:var(--tham-2)}
+.fc-arrow.onlight:active{background:var(--ngoc-mo)}
 
 
 /* ===== MENU DỌC (DRAWER TRÁI) - VỎ, CHƯA CÓ CHỨC NĂNG ===== */
@@ -1438,8 +1449,13 @@ async function syncProgressWithServer(){
 function addDays(date, n){ const d = new Date(date); d.setDate(d.getDate()+n); return d; }
 function isDueToday(id){
   const p = progress[id];
-  if(!p || !p.next) return false;
+  if(!p) return false;
   if(p.status === 'mastered') return false;
+  // 'new' = vừa lưu/thêm vào học, CHƯA ôn lần nào -> luôn sẵn sàng học ngay, không cần chờ
+  // tới ngày hẹn (progress.next của 'new' luôn null) — trước đây bị tính là "chưa đến hạn"
+  // nên badge/nhắc ôn hiện 0 dù vừa lưu từ mới, gây hiểu lầm.
+  if(p.status === 'new') return true;
+  if(!p.next) return false;
   return new Date(p.next) <= new Date();
 }
 
@@ -1461,7 +1477,7 @@ Object.assign(I18N.vi, {
   voice_android: 'Android: Cài đặt › Quản lý chung › Văn bản thành giọng nói › đặt công cụ là "Giọng nói Google" › cài đặt › tải gói ngôn ngữ tương ứng.',
   voice_current: 'Giọng đang dùng',
   voice_none: '(chưa có)',
-  voice_test: 'Nghe thử', voice_hi: 'Nâng cao', voice_basic: '· cơ bản', voice_reload: 'Quét lại danh sách giọng', voice_diag: 'Xem tất cả giọng thiết bị trả về', voice_auto: 'Tự động (giọng tốt nhất)', voice_pick_hint: 'Chọn giọng đọc cho từng ngôn ngữ:', voice_mode_app: '• chế độ Ứng dụng', voice_mode_web: '• chế độ Trình duyệt',
+  voice_test: 'Nghe thử', voice_hi: 'Nâng cao', voice_basic: '· cơ bản', voice_reload: 'Quét lại danh sách giọng', voice_diag: 'Xem tất cả giọng thiết bị trả về', voice_auto: 'Tự động (giọng tốt nhất)', voice_pick_hint: 'Chọn giọng đọc cho từng ngôn ngữ:', voice_mode_app: '• chế độ Ứng dụng', voice_mode_web: '• chế độ Trình duyệt', fc_prev: 'Từ trước', fc_next: 'Từ sau',
 });
 Object.assign(I18N.zh, {
   speak: '朗读', tts_pick: '选择朗读语言', tts_no_voice: '此设备暂无该语言的朗读语音', tts_all: '中·越·英 全部',
@@ -1478,7 +1494,7 @@ Object.assign(I18N.zh, {
   voice_android: 'Android：设置 › 通用管理 › 文字转语音 › 引擎设为「Google 文字转语音」› 设置 › 下载对应语言包。',
   voice_current: '当前语音',
   voice_none: '（无）',
-  voice_test: '试听', voice_hi: '增强', voice_basic: '· 基础', voice_reload: '重新扫描语音列表', voice_diag: '查看设备返回的全部语音', voice_auto: '自动（最佳语音）', voice_pick_hint: '为每种语言选择朗读语音：', voice_mode_app: '• 应用模式', voice_mode_web: '• 浏览器模式',
+  voice_test: '试听', voice_hi: '增强', voice_basic: '· 基础', voice_reload: '重新扫描语音列表', voice_diag: '查看设备返回的全部语音', voice_auto: '自动（最佳语音）', voice_pick_hint: '为每种语言选择朗读语音：', voice_mode_app: '• 应用模式', voice_mode_web: '• 浏览器模式', fc_prev: '上一个', fc_next: '下一个',
 });
 Object.assign(I18N.en, {
   speak: 'Speak', tts_pick: 'Choose reading language', tts_no_voice: 'This device has no voice for this language', tts_all: 'All 3 languages',
@@ -1495,7 +1511,7 @@ Object.assign(I18N.en, {
   voice_android: 'Android: Settings › General management › Text-to-speech › set engine to “Google Text-to-speech” › settings › install the matching language data.',
   voice_current: 'Voice in use',
   voice_none: '(none)',
-  voice_test: 'Test', voice_hi: 'Enhanced', voice_basic: '· basic', voice_reload: 'Rescan voice list', voice_diag: 'Show all voices the device exposes', voice_auto: 'Automatic (best voice)', voice_pick_hint: 'Pick a voice for each language:', voice_mode_app: '• app mode', voice_mode_web: '• browser mode',
+  voice_test: 'Test', voice_hi: 'Enhanced', voice_basic: '· basic', voice_reload: 'Rescan voice list', voice_diag: 'Show all voices the device exposes', voice_auto: 'Automatic (best voice)', voice_pick_hint: 'Pick a voice for each language:', voice_mode_app: '• app mode', voice_mode_web: '• browser mode', fc_prev: 'Previous term', fc_next: 'Next term',
 });
 
 // ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
@@ -2630,10 +2646,17 @@ function renderFlashcardTab(){
       <div class="py">${term.py||''}</div>
       <div class="small">${group1Label(term.group1)}${term.group2?` · ${termGroup2Label(term)}`:''}</div>
     </div>`;
+  // Mũi tên chuyển từ trước/sau — DUYỆT tự do giữa các thẻ, tách biệt khỏi việc tự chấm
+  // (nút Chưa nhớ/Cần ôn lại/Đã thuộc bên dưới) — trước đây chỉ đi tới được bằng cách chấm.
+  const onlight = state.fcFlipped ? ' onlight' : '';
+  const navArrows = list.length > 1 ? `
+    <button type="button" class="fc-arrow left${onlight}${state.fcIndex<=0?' hidden':''}" aria-label="${t('fc_prev')}" onclick="event.stopPropagation();fcPrev()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button type="button" class="fc-arrow right${onlight}${state.fcIndex>=list.length-1?' hidden':''}" aria-label="${t('fc_next')}" onclick="event.stopPropagation();fcNext()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M9 18l6-6-6-6"/></svg></button>
+  ` : '';
   return `<div class="fc-screen">
     <div class="fc-top"><span class="grp">${group1Label(term.group1)}${term.group2?` · ${termGroup2Label(term)}`:''}</span><span class="cnt">${state.fcIndex+1} / ${list.length}</span></div>
     <div class="fc-bar"><i style="width:${pct}%"></i></div>
-    ${cardHtml}
+    <div class="fc-cardwrap">${cardHtml}${navArrows}</div>
     <div class="fc-actions">
       <div class="a a-no ${status==='review'?'sel':''}" onclick="markCard('${term.id}','review')">${t('fc_no')}</div>
       <div class="a a-mid ${status==='new'?'sel':''}" onclick="markCard('${term.id}','new')">${t('fc_mid')}</div>
@@ -2642,6 +2665,23 @@ function renderFlashcardTab(){
   </div>`;
 }
 function flipCard(){ state.fcFlipped = !state.fcFlipped; renderTabContent(); }
+// Duyệt qua lại giữa các thẻ mà KHÔNG tự chấm (khác markCard) — dừng ở 2 đầu, không vòng lại.
+function fcPrev(){
+  const list = studyScopedList();
+  if(!list.length || state.fcIndex <= 0) return;
+  TTS.stop();
+  state.fcIndex -= 1;
+  state.fcFlipped = false;
+  renderTabContent();
+}
+function fcNext(){
+  const list = studyScopedList();
+  if(!list.length || state.fcIndex >= list.length - 1) return;
+  TTS.stop();
+  state.fcIndex += 1;
+  state.fcFlipped = false;
+  renderTabContent();
+}
 function markCard(id, status){
   TTS.stop();
   setStatus(id, status);
@@ -2755,6 +2795,8 @@ function renderDoneTab(){
       const days = Math.ceil((d - new Date())/86400000);
       if(days<=0){ label=t('today'); cls='today'; }
       else label = `${t('after')} ${days} ${t('days')}`.trim();
+    } else if(p && p.status === 'new'){
+      label = t('today'); cls = 'today'; // mới lưu, chưa có ngày hẹn -> sẵn sàng học ngay hôm nay
     }
     return `<div class="dtrow">
       <span class="hz han">${hzOf(term)}</span>
