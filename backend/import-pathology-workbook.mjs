@@ -98,14 +98,29 @@ async function main() {
   const isPlaceholder = (s) => typeof s === 'string' && s.startsWith('NOT_VERIFIED');
   const clean = (s) => (isPlaceholder(s) ? null : (s || null));
 
+  // 2026-09-12 (phát hiện từ phản hồi user "định nghĩa và bệnh nhân bệnh cơ trùng nhau nhưng
+  // dịch khác nhau"): với 1 số bệnh danh, sách nguồn CHỈ có đúng 1 câu tiếng Trung, và công cụ
+  // AI dùng chung câu đó cho CẢ 2 field (definition_short lẫn context_note) — vì 2 field được
+  // dịch ĐỘC LẬP nhau (không nhớ đã dịch câu này rồi), tiếng Việt thường trùng khớp nhưng tiếng
+  // Anh hay ra 2 cách diễn đạt khác nhau cho cùng 1 ý — gây cảm giác có 2 thông tin trong khi
+  // thực ra chỉ có 1. Khi phát hiện nguồn Hán của context_note giống hệt definition_short, bỏ
+  // trống context_note luôn (thay vì lặp lại cùng 1 nội dung dưới 2 nhãn khác nhau).
+  const dedupeContextNote = (t) => {
+    if ((t.context_note_zh || '').trim() && t.context_note_zh.trim() === (t.definition_short_zh || '').trim()) {
+      return { zh: null, vi: null, en: null };
+    }
+    return { zh: clean(t.context_note_zh), vi: clean(t.context_note_vi), en: clean(t.context_note_en) };
+  };
+
   const rows = terms.map((t) => {
     const [sysZh, sysVi, sysEn] = organSystemFor(chapterByTermId.get(t.term_id));
     const vi = t.term_vi_hanviet || t.term_vi_standard || null;
+    const ctx = dedupeContextNote(t);
     return [
       t.term_id, 'Bệnh lý', sysZh, sysVi, sysEn,
       t.term_zh, t.pinyin || null, vi, t.term_en || null,
       t.definition_short_zh || null, t.definition_short_vi || null, t.definition_short_en || null, // position=Định nghĩa
-      clean(t.context_note_zh), clean(t.context_note_vi), clean(t.context_note_en), // function=Bệnh nhân-Bệnh cơ
+      ctx.zh, ctx.vi, ctx.en, // function=Bệnh nhân-Bệnh cơ
       null, null, null, // tcm_note=Thể bệnh — chưa có dữ liệu
       null, null, null, // clinical=Triệu chứng&Pháp trị — chưa có dữ liệu
       'HVYD Pathology Workbook — trích 内科学 第5版 (中国中医药出版社, 2021), qua công cụ AI đọc+dịch, CHƯA rà soát tay',
