@@ -964,6 +964,49 @@ function rowSummary(term){
 
 // ===== STATE =====
 const VOCAB_PAGE_SIZE = 40; // số từ hiển thị mỗi lượt trong tab Từ vựng, bấm "Xem thêm" để tải thêm
+// ===== NGÔN NGỮ HIỂN THỊ NỘI DUNG (độc lập với ngôn ngữ giao diện state.lang) =====
+const CONTENT_LANGS_KEY = 'chimedis_content_langs_v1';
+function loadContentLangs(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(CONTENT_LANGS_KEY));
+    if(saved && (saved.zh || saved.vi || saved.en)){
+      return { zh: !!saved.zh, vi: !!saved.vi, en: !!saved.en };
+    }
+  }catch(e){}
+  return { zh: true, vi: true, en: true }; // mặc định: hiện đủ cả 3 ngôn ngữ, đỡ phải bật tay
+}
+function saveContentLangs(){ localStorage.setItem(CONTENT_LANGS_KEY, JSON.stringify(state.contentLangs)); }
+
+// ===== GIỌNG ĐỌC NGƯỜI DÙNG TỰ CHỌN TRONG APP (không cần vào Cài đặt thiết bị) =====
+const VOICE_PREF_KEY = 'chimedis_voice_pref_v1';
+function loadVoicePref(){
+  try{
+    const s = JSON.parse(localStorage.getItem(VOICE_PREF_KEY));
+    if(s && typeof s === 'object') return { zh: s.zh || '', vi: s.vi || '', en: s.en || '' };
+  }catch(e){}
+  return { zh: '', vi: '', en: '' };
+}
+function setVoicePref(lang, voiceURI){
+  if(!state.voicePref) state.voicePref = { zh:'', vi:'', en:'' };
+  state.voicePref[lang] = voiceURI || '';
+  try{ localStorage.setItem(VOICE_PREF_KEY, JSON.stringify(state.voicePref)); }catch(e){}
+  if(TTS.native) TTS.loadVoicesNative(); else TTS.loadVoices();
+  syncVoiceHelpPanel();
+  if(state.popupId) openPopup(state.popupId);
+}
+
+const FAVORITES_KEY = 'chimedis_favorites_v1';
+function loadFavorites(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(FAVORITES_KEY));
+    if(Array.isArray(saved)) return new Set(saved);
+  }catch(e){}
+  return new Set();
+}
+function saveFavoritesLocal(){
+  try{ localStorage.setItem(FAVORITES_KEY, JSON.stringify([...state.favorites])); }catch(e){}
+}
+
 let state = {
   group1: 'all',       // nhóm cấp 1 đang chọn
   group2: null,        // nhóm cấp 2 (hệ cơ quan) đang chọn
@@ -1008,36 +1051,7 @@ const FACEBOOK_LOGIN_ENABLED = true;
 const APPLE_LOGIN_ENABLED = true;
 const IN_NATIVE_APP = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 
-// ===== NGÔN NGỮ HIỂN THỊ NỘI DUNG (độc lập với ngôn ngữ giao diện state.lang) =====
-const CONTENT_LANGS_KEY = 'chimedis_content_langs_v1';
-function loadContentLangs(){
-  try{
-    const saved = JSON.parse(localStorage.getItem(CONTENT_LANGS_KEY));
-    if(saved && (saved.zh || saved.vi || saved.en)){
-      return { zh: !!saved.zh, vi: !!saved.vi, en: !!saved.en };
-    }
-  }catch(e){}
-  return { zh: true, vi: true, en: true }; // mặc định: hiện đủ cả 3 ngôn ngữ, đỡ phải bật tay
-}
-function saveContentLangs(){ localStorage.setItem(CONTENT_LANGS_KEY, JSON.stringify(state.contentLangs)); }
 
-// ===== GIỌNG ĐỌC NGƯỜI DÙNG TỰ CHỌN TRONG APP (không cần vào Cài đặt thiết bị) =====
-const VOICE_PREF_KEY = 'chimedis_voice_pref_v1';
-function loadVoicePref(){
-  try{
-    const s = JSON.parse(localStorage.getItem(VOICE_PREF_KEY));
-    if(s && typeof s === 'object') return { zh: s.zh || '', vi: s.vi || '', en: s.en || '' };
-  }catch(e){}
-  return { zh: '', vi: '', en: '' };
-}
-function setVoicePref(lang, voiceURI){
-  if(!state.voicePref) state.voicePref = { zh:'', vi:'', en:'' };
-  state.voicePref[lang] = voiceURI || '';
-  try{ localStorage.setItem(VOICE_PREF_KEY, JSON.stringify(state.voicePref)); }catch(e){}
-  if(TTS.native) TTS.loadVoicesNative(); else TTS.loadVoices();
-  syncVoiceHelpPanel();
-  if(state.popupId) openPopup(state.popupId);
-}
 
 // ===== ĐĂNG NHẬP (Firebase Auth) + TỪ ĐÃ LƯU (favorites) =====
 // Firebase SDK thật (module ESM) nằm ở <script type="module"> cuối file — expose qua
@@ -1045,17 +1059,7 @@ function setVoicePref(lang, voiceURI){
 // Thiết kế "offline-first": favorites LUÔN lưu localStorage trước (hoạt động cả khi chưa đăng
 // nhập/mất mạng), chỉ đồng bộ thêm lên MySQL khi đã đăng nhập — giống triết lý contentLangs/lang
 // đã có (localStorage là nguồn thật tại chỗ, server chỉ là bản sao lưu đồng bộ đa thiết bị).
-const FAVORITES_KEY = 'chimedis_favorites_v1';
-function loadFavorites(){
-  try{
-    const saved = JSON.parse(localStorage.getItem(FAVORITES_KEY));
-    if(Array.isArray(saved)) return new Set(saved);
-  }catch(e){}
-  return new Set();
-}
-function saveFavoritesLocal(){
-  try{ localStorage.setItem(FAVORITES_KEY, JSON.stringify([...state.favorites])); }catch(e){}
-}
+
 
 async function toggleFavorite(termId, category){
   const wasOn = state.favorites.has(termId);
@@ -3208,6 +3212,25 @@ const TERMS_CACHE_KEY = 'chimedis_terms_cache_v1';
 // thật sự không có kết quả — user không cách nào phân biệt "đang lỗi tải CSDL" với "từ này không
 // có trong CSDL", xem project_chimedis_search_architecture mục Tầng 3.
 let dataSource = 'seed';
+// Đọc cache /api/terms ĐẦY ĐỦ đã lưu từ lần tải thành công trước — dùng NGAY lúc khởi động,
+// TRƯỚC lần render() đầu tiên, thay vì luôn bắt đầu bằng 22 mục nhúng sẵn (chỉ Giải phẫu/
+// Sinh lý/Bệnh lý hô hấp) rồi đợi mạng mới có dữ liệu thật.
+// ⚠️ Bug thật đã sửa (báo 2026-09-14): "mỗi lần tắt mở lại app, phần tự học/từ đã lưu biến
+// mất". Nguyên nhân: TERMS luôn khởi động = seed 22 mục; favorites/progress của user thường
+// là Dược liệu/Thang phương/Huyệt vị... — KHÔNG có trong seed đó, nên studyTerms() (lọc theo
+// favorites trên TERMS hiện tại) ra RỖNG suốt khoảng thời gian chờ /api/terms tải xong (có
+// thể vài giây trên mạng di động) — trông y như "mất sạch dữ liệu học" dù favorites/progress
+// trong localStorage vẫn nguyên vẹn, không hề bị xoá. Trước đây cache chỉ được đọc khi fetch
+// THẤT BẠI (catch), không phải ngay khi khởi động.
+function primeTermsFromCache(){
+  try{
+    const cached = JSON.parse(localStorage.getItem(TERMS_CACHE_KEY));
+    if(cached && Array.isArray(cached.terms) && cached.terms.length){
+      TERMS = cached.terms;
+      dataSource = 'cached';
+    }
+  }catch(e){}
+}
 async function loadTermsFromAPI(){
   try{
     // authFetch tự gắn Authorization: Bearer <token> khi đã đăng nhập — server dựa vào đó
@@ -3223,14 +3246,9 @@ async function loadTermsFromAPI(){
     }
   }catch(err){
     console.warn('[Chimedis] Không tải được /api/terms, dùng dữ liệu cache/offline:', err.message);
-    try{
-      const cached = JSON.parse(localStorage.getItem(TERMS_CACHE_KEY));
-      if(cached && Array.isArray(cached.terms) && cached.terms.length){
-        TERMS = cached.terms;
-        dataSource = 'cached';
-        render();
-      }
-    }catch(e){ /* giữ nguyên dữ liệu nhúng sẵn — dataSource vẫn là 'seed' */ }
+    const before = TERMS.length;
+    primeTermsFromCache();
+    if(TERMS.length !== before) render(); // đã prime sẵn lúc khởi động rồi thì khỏi render lại vô ích
   }
 }
 
@@ -3292,6 +3310,7 @@ const copyYearEl = document.getElementById('copyYear');
 if(copyYearEl) copyYearEl.textContent = new Date().getFullYear();
 applyStaticI18n();
 updateAuthUI();
+primeTermsFromCache(); // nạp ngay bộ TERMS đầy đủ đã cache trước khi render lần đầu (xem ghi chú ở loadTermsFromAPI)
 render();
 setupScrollWatch();
 setupPopupSwipe();
@@ -3349,12 +3368,20 @@ if('serviceWorker' in navigator){
     // persistence manager, nên Google/Facebook/Apple đều bấm không phản hồi, kể cả Apple đã
     // qua Face ID xong vẫn đứng yên màn hình cũ (user báo lại ngay sau khi bản đó lên production).
     // Bỏ hẳn indexedDBLocalPersistence — dùng thẳng browserLocalPersistence (chỉ là localStorage,
-    // API đồng bộ/ổn định hơn nhiều trong webview nhúng), và bọc timeout cứng 2s để nếu vẫn có
+    // API đồng bộ/ổn định hơn nhiều trong webview nhúng), và bọc timeout an toàn để nếu vẫn có
     // API nào treo thì KHÔNG BAO GIỜ chặn được luồng đăng nhập — hết giờ thì bỏ qua, dùng
     // persistence mặc định của SDK, còn hơn khoá cứng cả 3 nút đăng nhập.
+    // ⚠️ 2026-09-14: user báo "mỗi lần mở app phải chờ 1 chút mới bấm đăng nhập được" — đúng
+    // như cảnh báo ở bản vá trước: Firebase Auth XẾP HÀNG mọi thao tác đăng nhập phía sau
+    // setPersistence() cho tới khi nó xong. browserLocalPersistence (localStorage) vốn RẤT
+    // NHANH (không có tầng I/O bất đồng bộ dễ treo như IndexedDB) nên hàng đợi này bình thường
+    // chỉ mất vài chục ms — ceiling 2s cũ chỉ để phòng hờ trường hợp hiếm, không phải thời gian
+    // chờ thường thấy. Giảm xuống 500ms (đủ dư so với tốc độ thật của localStorage, vẫn đủ để
+    // KHÔNG bao giờ khoá cứng nút đăng nhập nếu có sự cố) — rút ngắn đáng kể khoảng "bấm sớm
+    // không phản hồi" nếu người dùng bấm đăng nhập ngay khi màn hình chờ vừa biến mất.
     Promise.race([
       setPersistence(auth, browserLocalPersistence),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('setPersistence timeout')), 2000)),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('setPersistence timeout')), 500)),
     ]).catch((e) => console.warn('[Chimedis] setPersistence bỏ qua (lỗi/timeout), dùng mặc định:', e && e.message));
   }catch(err){
     console.warn('[Chimedis] Firebase chưa được cấu hình đúng — đăng nhập tạm thời không dùng được:', err.message);
