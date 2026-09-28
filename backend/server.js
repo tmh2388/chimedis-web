@@ -190,6 +190,15 @@ function acupointRowToTerm(a) {
     special_class_zh: a.special_class_zh,
     special_class_vi: a.special_class_vi,
     special_class_en: a.special_class_en,
+    // Bổ sung 2026-09-28 từ Core DB v2.0: giải phẫu (mô tả lớp cấu trúc, KHÔNG phải hướng dẫn
+    // thao tác châm) + cảnh báo an toàn ngắn. Xem import-acupoint-sheets.js đầu file cho lý do
+    // vì sao KHÔNG có trường thao tác/độ sâu kim (procedure_claims cố ý không nhập vào DB).
+    anatomy_zh: a.anatomy_text_zh,
+    anatomy_vi: a.anatomy_text_vi,
+    anatomy_en: safeEn(a.anatomy_text_en),
+    caution_zh: a.caution_text_zh,
+    caution_vi: a.caution_text_vi,
+    caution_en: safeEn(a.caution_text_en),
     // "Nguồn" ghi tên bộ dữ liệu Hạ Vân Y Đạo tự xây dựng, KHÔNG phải trích dẫn giáo trình gốc
     // từng trang — xem ghi chú trong import-acupoint-sheets.js/schema.sql (quyết định 2026-08-17).
     nguon: 'HVYD Acupoint Core DB',

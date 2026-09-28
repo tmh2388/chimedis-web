@@ -266,10 +266,28 @@ CREATE TABLE IF NOT EXISTS acupoints (
   special_class_vi     VARCHAR(255),  -- "Du huyệt, Nguyên huyệt, Bát hội huyệt (Mạch hội)"
   special_class_en     VARCHAR(255),
 
-  en_machine_translated BOOLEAN DEFAULT FALSE, -- location_text_en/indication_text_en: nguồn không có
-                                       -- sẵn EN cho gần hết 404 huyệt (chỉ 1-3 huyệt có EN thật) —
+  -- Bổ sung 2026-09-28 từ Core DB v2.0 (kb_acupoint_anatomy_claims/kb_acupoint_safety_rules).
+  -- anatomy_text: mô tả lớp cấu trúc giải phẫu tại vị trí huyệt (da → dưới da → cơ...,
+  -- thần kinh/mạch máu nông+sâu) — kiến thức giải phẫu mô tả thuần tuý, CÙNG BẢN CHẤT với
+  -- nội dung domain Giải phẫu đã công khai, KHÔNG phải hướng dẫn thao tác châm (không có
+  -- hướng/độ sâu kim) nên an toàn hiển thị công khai.
+  anatomy_text_zh       TEXT,
+  anatomy_text_vi       TEXT,
+  anatomy_text_en       TEXT,
+
+  -- caution_text: cảnh báo an toàn NGẮN, dạng tổng hợp cho người đọc thường (vd. "Phụ nữ
+  -- mang thai cần thận trọng"), KHÔNG bao gồm chi tiết kỹ thuật châm/độ sâu/hướng kim —
+  -- phần đó (`kb_acupoint_procedure_claims` trong Core DB) CỐ Ý không đưa vào MySQL/app vì
+  -- Core DB tự khoá `patient_export_allowed=FALSE` cho toàn bộ dữ liệu thao tác (xem
+  -- project_chimedis_acupoint_atlas.md mục 2026-09-28).
+  caution_text_zh        TEXT,
+  caution_text_vi        TEXT,
+  caution_text_en        TEXT,
+
+  en_machine_translated BOOLEAN DEFAULT FALSE, -- location_text_en/indication_text_en/anatomy_text_en/
+                                       -- caution_text_en: nguồn không có sẵn EN cho phần lớn huyệt —
                                        -- dịch máy MyMemory bù vào khi thiếu, cờ này bật khi ít nhất 1
-                                       -- trong 2 trường trên là dịch máy. vi/zh KHÔNG bao giờ dịch máy
+                                       -- trong các trường EN trên là dịch máy. vi/zh KHÔNG bao giờ dịch máy
                                        -- (đều là bản dịch/nguyên văn thật từ nguồn).
 
   is_active            BOOLEAN DEFAULT TRUE,

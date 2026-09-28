@@ -1,25 +1,45 @@
 /**
  * import-acupoint-sheets.js
  *
- * Reads the HVYD Acupoint Core DB (Google Sheets, 26+ normalized tables —
- * kb_acupoints, kb_acupoint_names, kb_meridians, kb_acupoint_meridian_map,
- * kb_acupoint_locations, kb_acupoint_indication_claims, kb_acupoint_action_claims,
- * ref_action_codes, kb_acupoint_class_map, ref_acupoint_class_codes,
- * ref_body_regions) and upserts a denormalized "dictionary view" into MySQL,
- * mirroring import-herbal-sheets.js. Safe to re-run: existing rows are
- * updated, not duplicated.
+ * Reads the HVYD Acupoint Core DB (Google Sheets — kb_acupoints, kb_acupoint_names,
+ * kb_meridians, kb_acupoint_meridian_map, kb_acupoint_locations, kb_acupoint_indication_claims,
+ * kb_acupoint_action_claims, ref_action_codes, kb_acupoint_class_map, ref_acupoint_class_codes,
+ * ref_body_regions, kb_acupoint_anatomy_claims, kb_acupoint_safety_rules) and upserts a
+ * denormalized "dictionary view" into MySQL, mirroring import-herbal-sheets.js. Safe to
+ * re-run: existing rows are updated, not duplicated.
  *
- * The source provides real vi/zh translations for name/location/indication
- * (translation_vi/translation_zh columns) but EN is only filled for a
- * handful of points (1-3 out of 404) — location_text_en/indication_text_en
- * are machine-translated (MyMemory, same pipeline as herbs/anatomy) as a
- * fallback when the source has no EN, flagged via en_machine_translated.
- * vi/zh are NEVER machine translated here — both are always real/reviewed
- * content from the source.
+ * The source provides real vi/zh translations for name/location/indication/anatomy/caution
+ * (translation_vi/translation_zh or normalized_summary_vi/zh columns) but EN is only filled
+ * for a handful of rows — the corresponding *_text_en columns are machine-translated
+ * (MyMemory, same pipeline as herbs/anatomy) as a fallback when the source has no EN, flagged
+ * via en_machine_translated. vi/zh are NEVER machine translated here — both are always
+ * real/reviewed content from the source.
  *
- * action_text_* (tác dụng lâm sàng) is genuinely incomplete in the source
- * itself as of 2026-08 (only the Lung meridian batch done) — left NULL for
- * points without a claim, by design, not a bug.
+ * action_text_* (tác dụng lâm sàng, 功效/general point action) is genuinely incomplete in the
+ * source itself as of 2026-09 (only the Lung meridian batch done, 9 claims total) — left NULL
+ * for points without a claim, by design, not a bug.
+ *
+ * ⚠️ 2026-09-28 — Core DB v2.0 (fileId 1k0A6WPfU8RHaZ8mK52lh8c93S3Iaaq7-2uTq0HctM9c): full
+ * schema/content upgrade, ALL 362/362 canonical points (12 chính kinh + Nhâm + Đốc) now have
+ * complete location/anatomy/indication/procedure/safety data — see
+ * project_chimedis_acupoint_atlas.md mục "2026-09-28" cho toàn bộ quá trình review + quyết định
+ * phạm vi. 2 điểm quan trọng CỐ Ý không đưa vào import này:
+ *   1. `kb_acupoint_procedure_claims` (độ sâu/hướng kim/chống chỉ định thao tác) — Core DB tự
+ *      khoá `patient_export_allowed=FALSE` cho toàn bộ 362 dòng; đây là rủi ro an toàn lâm
+ *      sàng thật (app công khai không nên hướng dẫn kỹ thuật châm cho người không giám sát),
+ *      không phải "chưa rà soát dịch máy" như các domain khác.
+ *   2. `kb_source_media_assets`/`kb_source_media_acupoint_map` (87 ảnh scan trực tiếp từ sách
+ *      có bản quyền 《经络腧穴学》) — README Core DB ghi rõ "Copyrighted original figures
+ *      retained internal; product atlas must be separately redesigned" — CHỈ dùng đối chiếu
+ *      nội bộ khi vẽ lại atlas AI (Lớp B), KHÔNG đưa thẳng lên app.
+ * Có đưa vào (an toàn, đúng bản chất mô tả y khoa thuần tuý, không phải hướng dẫn thao tác):
+ *   `kb_acupoint_anatomy_claims` (giải phẫu mô tả lớp cấu trúc — anatomy_text_*) và
+ *   `kb_acupoint_safety_rules.caution_text_*` (cảnh báo an toàn NGẮN dạng tổng hợp, vd. "phụ nữ
+ *   mang thai thận trọng" — không có chi tiết kỹ thuật).
+ * Nhiều bảng claim (locations/indications) còn lẫn cả bản ghi cũ (content_version 0.1.x, từ
+ * đợt v1.1.2 trước) VÀ bản ghi mới (2.0.0) cho CÙNG 1 acupoint_id (chưa dọn/archive bản cũ bên
+ * phía Core DB) — LUÔN ưu tiên bản `content_version==='2.0.0'` khi có, chỉ dùng bản cũ cho các
+ * kỳ huyệt (42 điểm) mà đợt v2.0 chưa làm tới.
  *
  * "Nguồn" (nguon, in server.js) is hardcoded to "HVYD Acupoint Core DB" —
  * NOT a citation of the underlying textbook page — because the Core DB
@@ -120,6 +140,7 @@ export async function runImport() {
     acupoints, names, meridians, meridianMap,
     locations, indications, actionClaims, actionCodes,
     classMap, classCodes, bodyRegions,
+    anatomyClaims, safetyRules,
   ] = await Promise.all([
     readTab(spreadsheetId, 'kb_acupoints'),
     readTab(spreadsheetId, 'kb_acupoint_names'),
@@ -132,8 +153,47 @@ export async function runImport() {
     readTab(spreadsheetId, 'kb_acupoint_class_map'),
     readTab(spreadsheetId, 'ref_acupoint_class_codes'),
     readTab(spreadsheetId, 'ref_body_regions'),
+    readTab(spreadsheetId, 'kb_acupoint_anatomy_claims'),
+    readTab(spreadsheetId, 'kb_acupoint_safety_rules'),
   ]);
-  console.log(`   acupoints=${acupoints.length} names=${names.length} meridians=${meridians.length} meridian_map=${meridianMap.length} locations=${locations.length} indications=${indications.length} action_claims=${actionClaims.length} class_map=${classMap.length}`);
+  console.log(`   acupoints=${acupoints.length} names=${names.length} meridians=${meridians.length} meridian_map=${meridianMap.length} locations=${locations.length} indications=${indications.length} action_claims=${actionClaims.length} class_map=${classMap.length} anatomy_claims=${anatomyClaims.length} safety_rules=${safetyRules.length}`);
+
+  // Nhiều bảng claim (locations/indications) có CẢ bản ghi cũ (content_version 0.1.x, đợt
+  // v1.1.2) lẫn bản mới (2.0.0) cho cùng 1 acupoint_id — nhóm theo acupoint_id rồi ưu tiên
+  // đúng 1 bản '2.0.0' nếu có, else lấy bản có sẵn bất kỳ (đa số các kỳ huyệt v2.0 chưa làm tới).
+  function pickLatestByAcupointId(claimRows) {
+    const groups = new Map();
+    for (const r of claimRows) {
+      if (!r.acupoint_id) continue;
+      const list = groups.get(r.acupoint_id) || [];
+      list.push(r);
+      groups.set(r.acupoint_id, list);
+    }
+    const result = new Map();
+    for (const [id, list] of groups) {
+      const v2 = list.find((r) => r.content_version === '2.0.0');
+      if (!v2) { result.set(id, list[0]); continue; }
+      // ⚠️ Phát hiện 2026-09-28: batch nào sau LU/LI (Phế, Đại Trường) trong Core DB v2.0 CHƯA
+      // dịch tiếng Việt (translation_vi/patient_position_vi/normalized_summary_vi rỗng) dù
+      // tiếng Trung đã đủ và README ghi "CLOSED"/"content enrichment complete" — README chỉ
+      // theo dõi độ đầy đủ trích xuất tiếng Trung, KHÔNG phải độ đầy đủ dịch Việt. Bản ghi CŨ
+      // (content_version khác 2.0.0, còn sót lại trong Sheet) lại CÓ sẵn bản dịch Việt thật từ
+      // đợt trước (v1.1.2) — xác nhận qua khảo sát: 373/373 huyệt ngoài LU/LI có bản cũ đều có
+      // translation_vi. Merge: giữ MỌI field của bản 2.0.0 (mới/đúng hơn, kể cả tiếng Trung đã
+      // sửa), nhưng field nào tên kết thúc "_vi" mà bản 2.0.0 để trống thì lấy từ bản cũ thay vì
+      // bỏ trống — tránh làm MẤT bản dịch Việt đã có sẵn (lỗi thật đã gặp phải ở lần chạy đầu).
+      const legacy = list.find((r) => r !== v2);
+      if (!legacy) { result.set(id, v2); continue; }
+      const merged = { ...v2 };
+      for (const key of Object.keys(v2)) {
+        if (key.endsWith('_vi') && (!merged[key] || !String(merged[key]).trim()) && legacy[key]) {
+          merged[key] = legacy[key];
+        }
+      }
+      result.set(id, merged);
+    }
+    return result;
+  }
 
   const acupointIdSet = new Set(acupoints.map((a) => a.acupoint_id));
   const meridianById = new Map(meridians.map((m) => [m.meridian_id, m]));
@@ -165,9 +225,30 @@ export async function runImport() {
     });
   }
 
-  const locationByAcupointId = new Map(locations.map((l) => [l.acupoint_id, l]));
-  const indicationByAcupointId = new Map(indications.map((i) => [i.acupoint_id, i]));
+  const locationByAcupointId = pickLatestByAcupointId(locations);
+  const indicationByAcupointId = pickLatestByAcupointId(indications);
+  const anatomyByAcupointId = pickLatestByAcupointId(anatomyClaims); // 1:1, không có bản cũ để lẫn
   const bodyRegionById = new Map(bodyRegions.map((b) => [b.body_region_id, b]));
+
+  // An toàn: 1 huyệt có thể có NHIỀU luật (vd. LI-4 vừa cảnh báo thai phụ vừa cảnh báo khác) —
+  // nối lại bằng "; " thay vì chỉ lấy 1 dòng. Chỉ lấy caution_text_* (câu tổng hợp ngắn cho
+  // người đọc thường) — KHÔNG lấy prohibited_action/anatomical_risk_structure/technique_scope
+  // (chi tiết kỹ thuật, xem ghi chú đầu file).
+  const safetyByAcupointId = new Map();
+  for (const s of safetyRules) {
+    if (!s.acupoint_id) continue;
+    const list = safetyByAcupointId.get(s.acupoint_id) || [];
+    list.push(s);
+    safetyByAcupointId.set(s.acupoint_id, list);
+  }
+  function buildCaution(acupointId) {
+    const rules = safetyByAcupointId.get(acupointId);
+    if (!rules || rules.length === 0) return { zh: null, vi: null, en: null };
+    const zh = rules.map((r) => r.caution_text_zh).filter(Boolean).join('; ');
+    const vi = rules.map((r) => r.caution_text_vi).filter(Boolean).join('; ');
+    const en = rules.map((r) => r.caution_text_en).filter(Boolean).join('; ');
+    return { zh: zh || null, vi: vi || null, en: en || null };
+  }
 
   const actionClaimsByAcupointId = new Map();
   for (const c of actionClaims) {
@@ -209,18 +290,28 @@ export async function runImport() {
     return { zh: zh.join('、') || null, vi: vi.join(', ') || null, en: en.join(', ') || null };
   }
 
-  // ----- Bù EN bằng dịch máy cho những huyệt nguồn không có sẵn (~403/404) -----
+  // ----- Bù EN bằng dịch máy cho những huyệt nguồn không có sẵn (đa số) -----
   const locList = acupoints.map((a) => locationByAcupointId.get(a.acupoint_id) || {});
   const indList = acupoints.map((a) => indicationByAcupointId.get(a.acupoint_id) || {});
+  const anatList = acupoints.map((a) => anatomyByAcupointId.get(a.acupoint_id) || {});
+  const cautionList = acupoints.map((a) => buildCaution(a.acupoint_id));
   const locNeedsEn = locList.map((l) => !l.translation_en && l.source_text);
   const indNeedsEn = indList.map((i) => !i.translation_en && i.source_text);
+  // anatomy: dùng normalized_summary_zh làm nguồn dịch (giống normalized_summary_vi đã dùng cho
+  // cột vi) — translation_en/normalized_summary_en gần như luôn trống ở đợt v2.0 hiện tại.
+  const anatNeedsEn = anatList.map((x) => !x.translation_en && !x.normalized_summary_en && x.normalized_summary_zh);
+  const cautionNeedsEn = cautionList.map((c, i) => !c.en && c.zh);
   const locCount = locNeedsEn.filter(Boolean).length;
   const indCount = indNeedsEn.filter(Boolean).length;
-  console.log(`🌐 Dịch máy bù EN: vị trí ${locCount}/${acupoints.length}, chủ trị ${indCount}/${acupoints.length} (MyMemory)...`);
+  const anatCount = anatNeedsEn.filter(Boolean).length;
+  const cautionCount = cautionNeedsEn.filter(Boolean).length;
+  console.log(`🌐 Dịch máy bù EN: vị trí ${locCount}, chủ trị ${indCount}, giải phẫu ${anatCount}, an toàn ${cautionCount} / ${acupoints.length} (MyMemory)...`);
   const progress = (label) => (done, total) => { if (done === total) console.log(`   ${label}: ${done}/${total}`); };
-  const [locEnTranslated, indEnTranslated] = await Promise.all([
+  const [locEnTranslated, indEnTranslated, anatEnTranslated, cautionEnTranslated] = await Promise.all([
     translateBatch(locList.map((l, i) => (locNeedsEn[i] ? l.source_text : '')), 'en', progress('vị trí→en')),
     translateBatch(indList.map((i2, i) => (indNeedsEn[i] ? i2.source_text : '')), 'en', progress('chủ trị→en')),
+    translateBatch(anatList.map((x, i) => (anatNeedsEn[i] ? x.normalized_summary_zh : '')), 'en', progress('giải phẫu→en')),
+    translateBatch(cautionList.map((c, i) => (cautionNeedsEn[i] ? c.zh : '')), 'en', progress('an toàn→en')),
   ]);
 
   const conn = await mysql.createConnection({
@@ -243,13 +334,20 @@ export async function runImport() {
 
     const loc = locList[i];
     const ind = indList[i];
+    const anat = anatList[i];
+    const caution = cautionList[i];
     const bodyRegion = bodyRegionById.get(loc.body_region_id) || {};
     const action = buildAction(a.acupoint_id);
     const specialClass = buildSpecialClass(a.acupoint_id);
 
     const locationEn = loc.translation_en || (locNeedsEn[i] ? locEnTranslated[i] : null) || null;
     const indicationEn = ind.translation_en || (indNeedsEn[i] ? indEnTranslated[i] : null) || null;
-    const enMachineTranslated = (locNeedsEn[i] && !!locEnTranslated[i]) || (indNeedsEn[i] && !!indEnTranslated[i]);
+    const anatomyZh = anat.normalized_summary_zh || anat.translation_zh || null;
+    const anatomyVi = anat.normalized_summary_vi || anat.translation_vi || null;
+    const anatomyEn = anat.translation_en || anat.normalized_summary_en || (anatNeedsEn[i] ? anatEnTranslated[i] : null) || null;
+    const cautionEn = caution.en || (cautionNeedsEn[i] ? cautionEnTranslated[i] : null) || null;
+    const enMachineTranslated = (locNeedsEn[i] && !!locEnTranslated[i]) || (indNeedsEn[i] && !!indEnTranslated[i])
+      || (anatNeedsEn[i] && !!anatEnTranslated[i]) || (cautionNeedsEn[i] && !!cautionEnTranslated[i]);
 
     const nameZh = nameFor(a.acupoint_id, 'zh-CN');
     if (!nameZh) return; // tên là bắt buộc — bỏ qua nếu thiếu, tránh vi phạm NOT NULL
@@ -263,6 +361,8 @@ export async function runImport() {
       ind.source_text || null, annotatePointCodes(ind.translation_vi) || null, indicationEn,
       action.zh, action.vi, action.en,
       specialClass.zh, specialClass.vi, specialClass.en,
+      anatomyZh, annotatePointCodes(anatomyVi), anatomyEn,
+      caution.zh, caution.vi, cautionEn,
       enMachineTranslated,
       true,
     ]);
@@ -280,6 +380,8 @@ export async function runImport() {
          indication_text_zh, indication_text_vi, indication_text_en,
          action_text_zh, action_text_vi, action_text_en,
          special_class_zh, special_class_vi, special_class_en,
+         anatomy_text_zh, anatomy_text_vi, anatomy_text_en,
+         caution_text_zh, caution_text_vi, caution_text_en,
          en_machine_translated,
          is_active
        ) VALUES ?
@@ -292,6 +394,8 @@ export async function runImport() {
          indication_text_zh=VALUES(indication_text_zh), indication_text_vi=VALUES(indication_text_vi), indication_text_en=VALUES(indication_text_en),
          action_text_zh=VALUES(action_text_zh), action_text_vi=VALUES(action_text_vi), action_text_en=VALUES(action_text_en),
          special_class_zh=VALUES(special_class_zh), special_class_vi=VALUES(special_class_vi), special_class_en=VALUES(special_class_en),
+         anatomy_text_zh=VALUES(anatomy_text_zh), anatomy_text_vi=VALUES(anatomy_text_vi), anatomy_text_en=VALUES(anatomy_text_en),
+         caution_text_zh=VALUES(caution_text_zh), caution_text_vi=VALUES(caution_text_vi), caution_text_en=VALUES(caution_text_en),
          en_machine_translated=VALUES(en_machine_translated),
          is_active=VALUES(is_active)`,
       [rows]
