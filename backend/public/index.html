@@ -214,12 +214,14 @@ footer .copyright{font-size:10.5px;color:var(--ngua);opacity:.55;margin-top:14px
 .field.verify .ft::before{background:#A8401F}
 .field.verify p{font-size:12px;color:#7A3318}
 .fig-row{display:flex;gap:10px;overflow-x:auto;padding:4px 0 8px;-webkit-overflow-scrolling:touch}
-.fig-thumb{flex:0 0 auto;margin:0;width:120px;cursor:zoom-in}
-.fig-thumb img{width:120px;height:150px;object-fit:contain;background:#fff;border:1px solid var(--vien);border-radius:8px;display:block}
-.fig-thumb figcaption{font-size:11px;color:var(--muc-mo);margin-top:4px;line-height:1.3}
-.fig-lightbox{position:fixed;inset:0;z-index:200;background:rgba(14,58,58,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}
-.fig-lightbox img{max-width:100%;max-height:82vh;background:#fff;border-radius:6px}
-.fig-lightbox .fig-cap{color:#F5F0E6;font-size:13px;margin-top:10px;text-align:center}
+.fig-thumb{flex:0 0 auto;width:120px;margin:0;padding:0;border:0;background:none;text-align:left;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.fig-thumb img{width:120px;height:150px;object-fit:contain;background:#fff;border:1px solid var(--vien);border-radius:8px;display:block;pointer-events:none}
+.fig-thumb .fig-cap-s{display:block;font-size:11px;color:var(--muc-mo);margin-top:4px;line-height:1.3}
+.fig-lightbox{position:fixed;inset:0;z-index:300;background:rgba(14,58,58,.94);overflow:auto;-webkit-overflow-scrolling:touch;padding:56px 12px 24px;text-align:center}
+.fig-lightbox img{max-width:100%;background:#fff;border-radius:6px;cursor:zoom-in;touch-action:manipulation}
+.fig-lightbox.zoomed img{max-width:none;width:220%;cursor:zoom-out}
+.fig-lightbox .fig-cap{color:#F5F0E6;font-size:13px;margin-top:10px}
+.fig-lightbox .fig-x{position:fixed;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(245,240,230,.9);color:#0E3A3A;font-size:22px;line-height:1;cursor:pointer;z-index:301}
 .src{font-size:11px;color:var(--muc-mo);padding:13px 0 4px;font-style:italic}
 .pp-actions{display:flex;gap:10px;padding:16px 20px 4px}
 .btn{flex:1;padding:13px;border-radius:12px;font-size:13px;font-weight:700;border:0;cursor:pointer;
@@ -1732,6 +1734,12 @@ const TTS = {
   forLang(text, lang){
     let s = String(text == null ? '' : text).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
     if(lang === 'zh'){
+      // Giọng zh tự đoán âm sai ở vài chữ đa âm trong tên huyệt (user báo 2026-10-07: 膀胱俞 đọc
+      // "yú" thay vì "shù"). Thay bằng chữ ĐỒNG ÂM không đa nghĩa CHỈ cho lúc đọc (không đổi chữ
+      // hiển thị): 俞→腧 (luôn shù); các tên còn lại chỉ có 1 cách đọc đúng nên thay nguyên cụm.
+      // Chưa xử lý được: 攒竹 (cuán — không có chữ đồng âm phổ thông để thay).
+      const ZH_TTS_FIX = [['俞','腧'],['膻中','淡中'],['神阙','神却'],['巨阙','巨却'],['仆参','蒲餐'],['四缝','四奉'],['曲差','屈插'],['五处','五触'],['瘈脉','赤脉']];
+      for(const [a,b] of ZH_TTS_FIX) s = s.split(a).join(b);
       s = s.replace(/[A-Za-zÀ-ɏḀ-ỿ]+/g, ' ').replace(/[·・]/g, ' ').replace(/\s+/g, ' ').trim();
       if(!/[㐀-鿿豈-﫿]/.test(s)) return '';
     }
@@ -3399,7 +3407,8 @@ function openPopup(id){
     // trong lúc chưa có atlas riêng. Server chỉ gửi term.figures khi SOURCE_FIGURES_ENABLED != 'false'
     // (công tắc tắt nhanh), thứ tự: hình chi tiết huyệt trước, hình cả đường kinh sau cùng.
     if(term.figures && term.figures.length){
-      const thumbs = term.figures.map(f => `<figure class="fig-thumb" onclick="openFigure('${f.src}','${(f.fig||'')} ${(f.cap||'')}')"><img src="${f.src}" alt="${f.cap||''}" loading="lazy"><figcaption>${f.fig||''} ${f.cap||''}</figcaption></figure>`).join('');
+      const esc = x => String(x||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+      const thumbs = term.figures.map(f => `<button type="button" class="fig-thumb" data-src="${esc(f.src)}" data-cap="${esc(((f.fig||'')+' '+(f.cap||'')).trim())}" onclick="openFigure(this)"><img src="${esc(f.src)}" alt="${esc(f.cap)}" loading="lazy"><span class="fig-cap-s">${esc(((f.fig||'')+' '+(f.cap||'')).trim())}</span></button>`).join('');
       html += `<div class="field"><div class="ft">${t('f_figures')}</div><div class="fig-row">${thumbs}</div><div class="src">${t('figure_credit')}</div></div>`;
     }
   } else if(term.category === 'formula'){
@@ -3527,6 +3536,8 @@ function setupPopupSwipe(){
   const pp = document.getElementById('ppContent');
   const overlay = document.getElementById('ppOverlay');
   pp.addEventListener('touchstart', e=>{
+    // Vuốt ngang trên dải hình minh hoạ là để cuộn dải hình, KHÔNG được tính là chuyển từ/đóng popup.
+    if(e.target.closest && e.target.closest('.fig-row')){ _ppTouch.active = false; return; }
     _ppTouch.x = e.touches[0].clientX;
     _ppTouch.y = e.touches[0].clientY;
     _ppTouch.active = true;
@@ -3612,12 +3623,19 @@ document.addEventListener('click', (e)=>{
 
 
 // ===== ÁP DỤNG NHÃN TĨNH (drawer, header, footer, nút nổi) =====
-function openFigure(src, cap){
+function closeFigure(){ const d=document.querySelector('.fig-lightbox'); if(d) d.remove(); }
+function openFigure(el){
+  closeFigure();
+  const src = el.dataset.src, cap = el.dataset.cap || '';
   const d=document.createElement('div'); d.className='fig-lightbox';
-  d.onclick=()=>d.remove();
+  const x=document.createElement('button'); x.type='button'; x.className='fig-x'; x.textContent='×'; x.setAttribute('aria-label','Close');
+  x.onclick=(e)=>{ e.stopPropagation(); closeFigure(); };
   const i=document.createElement('img'); i.src=src; i.alt=cap;
+  // Chạm vào hình = phóng to/thu nhỏ (cuộn để xem phần khác); chạm nền hoặc nút × = đóng.
+  i.onclick=(e)=>{ e.stopPropagation(); d.classList.toggle('zoomed'); };
   const c=document.createElement('div'); c.className='fig-cap'; c.textContent=cap;
-  d.appendChild(i); d.appendChild(c); document.body.appendChild(d);
+  d.onclick=()=>closeFigure();
+  d.appendChild(x); d.appendChild(i); d.appendChild(c); document.body.appendChild(d);
 }
 function applyStaticI18n(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{

@@ -85,8 +85,21 @@ const PINYIN_OVERRIDES = {
                 // Ảnh hưởng: 意舍 BL-49, 府舍 SP-13, 气舍 ST-11.
   '郄': 'xì',   // KHÔNG phải 'qiè' — "郄穴" (huyệt khích) luôn đọc 'xì'.
                 // Ảnh hưởng: 浮郄 BL-38, 阴郄 HT-6, 郄门 PC-4.
+  // ---- Bổ sung 2026-10-07 (user báo "Bàng Quang Du" pinyin sai). Rà soát lại toàn bộ 404 tên:
+  // (a) so âm gốc không dấu với romanization của nguồn (kb_acupoint_names locale 'en') → 4 tên sai
+  // âm gốc; (b) duyệt tay 83 chữ đa âm theo cách đọc TCM chuẩn → thêm 5 chữ sai thanh/âm. Lỗi
+  // KHÔNG toàn bộ: chỉ ~10/404 huyệt, đều do thư viện `pinyin` chọn âm phổ thông.
+  '膀': 'páng', // 膀胱俞 BL-28 (thư viện cho 'bǎng').
+  '攒': 'cuán', // 攒竹 BL-2 (thư viện cho 'zǎn').
+  '瘈': 'chì',  // 瘈脉 TE-18 (thư viện cho 'zhì').
+  '膻': 'dàn',  // 膻中 CV-17 (thư viện cho 'shān').
+  '差': 'chā',  // 曲差 BL-4 (thư viện cho 'chà').
+  '处': 'chù',  // 五处 BL-5 (thư viện cho 'chǔ').
+  '仆': 'pú',   // 仆参 BL-61 (thư viện cho 'pū').
+  '阙': 'què',  // 神阙 CV-8, 巨阙 CV-14 (thư viện cho 'quē').
+  '缝': 'fèng', // 四缝 EX-UE-10 (thư viện cho 'féng').
 };
-function toPinyin(hanzi) {
+export function toPinyin(hanzi) {
   if (!hanzi) return null;
   const chars = Array.from(hanzi);
   const syllables = pinyin(hanzi, { style: 'tone' }).map((syll) => syll[0]);
@@ -274,7 +287,9 @@ export async function runImport() {
   for (const m of classMap) {
     if (!m.acupoint_id || !m.class_code) continue;
     const list = classMapByAcupointId.get(m.acupoint_id) || [];
-    list.push(m.class_code);
+    // Core DB v2.0 còn sót cả dòng class_map cũ lẫn mới cho CÙNG (huyệt, class_code) — 163 huyệt bị
+    // lặp nhãn (vd. "Bối du huyệt, Bối du huyệt"). Khử trùng theo class_code (user báo 2026-10-07).
+    if (!list.includes(m.class_code)) list.push(m.class_code);
     classMapByAcupointId.set(m.acupoint_id, list);
   }
   function buildSpecialClass(acupointId) {
