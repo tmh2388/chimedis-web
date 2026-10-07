@@ -1,0 +1,57 @@
+{
+  "id": "hd-02-tuctamly",
+  "category": "huyet_vi",
+  "title": "Túc Tam Lý (ST-36) — vị trí và chủ trị",
+  "note_source": "Nội dung do Claude soạn dựa trên kiến thức TCM phổ thông, KHÔNG trích nguyên văn giáo trình bản quyền. Cần user rà soát lại trước khi coi là chuẩn giảng dạy.",
+  "lines": [
+    {
+      "seq": 1,
+      "speaker": "teacher",
+      "text_zh": "足三里是临床上非常重要的强壮穴。它属于哪条经络？",
+      "text_vi": "Túc Tam Lý là huyệt cường tráng rất quan trọng trên lâm sàng. Huyệt này thuộc kinh nào?",
+      "text_en": "Zusanli is a very important tonifying point in clinical practice. Which meridian does it belong to?"
+    },
+    {
+      "seq": 2,
+      "speaker": "student",
+      "text_zh": "足三里属于足阳明胃经，代码是ST-36。",
+      "text_vi": "Túc Tam Lý thuộc kinh Túc Dương Minh Vị, mã ST-36.",
+      "text_en": "Zusanli belongs to the Foot Yangming Stomach meridian, code ST-36."
+    },
+    {
+      "seq": 3,
+      "speaker": "teacher",
+      "text_zh": "怎么定位足三里？",
+      "text_vi": "Làm sao xác định vị trí Túc Tam Lý?",
+      "text_en": "How do we locate Zusanli?"
+    },
+    {
+      "seq": 4,
+      "speaker": "student",
+      "text_zh": "在小腿前外侧，犊鼻穴下三寸，距胫骨前缘一横指。",
+      "text_vi": "Ở mặt trước ngoài cẳng chân, dưới huyệt Độc Tỵ 3 thốn, cách bờ trước xương chày 1 khoát ngón tay.",
+      "text_en": "On the anterolateral side of the lower leg, three cun below Dubi, one finger-width lateral to the anterior border of the tibia."
+    },
+    {
+      "seq": 5,
+      "speaker": "teacher",
+      "text_zh": "足三里主要用于治疗什么？",
+      "text_vi": "Túc Tam Lý chủ yếu dùng điều trị gì?",
+      "text_en": "What is Zusanli mainly used to treat?"
+    },
+    {
+      "seq": 6,
+      "speaker": "student",
+      "text_zh": "足三里可以健脾和胃，常用于胃痛、消化不良，也常用于扶正培元、增强体质。",
+      "text_vi": "Túc Tam Lý có thể kiện tỳ hòa vị, thường dùng cho đau dạ dày, khó tiêu, cũng thường dùng để phù chính bồi nguyên, tăng cường thể chất.",
+      "text_en": "Zusanli strengthens the spleen and harmonizes the stomach; commonly used for stomach pain and indigestion, and also for general tonification to boost overall health."
+    },
+    {
+      "seq": 7,
+      "speaker": "teacher",
+      "text_zh": "对，所以民间有句话叫‘常灸足三里，胜吃老母鸡’。",
+      "text_vi": "Đúng vậy, nên dân gian có câu 'Thường cứu Túc Tam Lý, hơn ăn gà mái già'.",
+      "text_en": "Right — that's why there's a folk saying: 'Regularly moxa Zusanli, better than eating an old hen.'"
+    }
+  ]
+}

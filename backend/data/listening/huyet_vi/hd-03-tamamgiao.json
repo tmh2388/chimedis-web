@@ -1,0 +1,57 @@
+{
+  "id": "hd-03-tamamgiao",
+  "category": "huyet_vi",
+  "title": "Tam Âm Giao (SP-6) — vị trí và chủ trị",
+  "note_source": "Nội dung do Claude soạn dựa trên kiến thức TCM phổ thông, KHÔNG trích nguyên văn giáo trình bản quyền. Cần user rà soát lại trước khi coi là chuẩn giảng dạy.",
+  "lines": [
+    {
+      "seq": 1,
+      "speaker": "teacher",
+      "text_zh": "三阴交这个名字是什么意思？",
+      "text_vi": "Tên gọi Tam Âm Giao có nghĩa là gì?",
+      "text_en": "What does the name Sanyinjiao mean?"
+    },
+    {
+      "seq": 2,
+      "speaker": "student",
+      "text_zh": "因为足太阴脾经、足少阴肾经、足厥阴肝经三条阴经在这里交会，所以叫三阴交，代码是SP-6。",
+      "text_vi": "Vì ba kinh âm là Túc Thái Âm Tỳ, Túc Thiếu Âm Thận, Túc Quyết Âm Can giao nhau tại đây, nên gọi là Tam Âm Giao, mã SP-6.",
+      "text_en": "Because the three yin meridians — Spleen, Kidney, and Liver — intersect here, it's called Sanyinjiao, code SP-6."
+    },
+    {
+      "seq": 3,
+      "speaker": "teacher",
+      "text_zh": "它的位置在哪里？",
+      "text_vi": "Vị trí huyệt này ở đâu?",
+      "text_en": "Where is this point located?"
+    },
+    {
+      "seq": 4,
+      "speaker": "student",
+      "text_zh": "在小腿内侧，内踝尖上三寸，胫骨内侧缘后方。",
+      "text_vi": "Ở mặt trong cẳng chân, trên đỉnh mắt cá trong 3 thốn, phía sau bờ trong xương chày.",
+      "text_en": "On the medial side of the lower leg, three cun above the tip of the medial malleolus, posterior to the medial border of the tibia."
+    },
+    {
+      "seq": 5,
+      "speaker": "teacher",
+      "text_zh": "三阴交常用于治疗哪些方面？",
+      "text_vi": "Tam Âm Giao thường dùng điều trị những phương diện nào?",
+      "text_en": "What is Sanyinjiao commonly used to treat?"
+    },
+    {
+      "seq": 6,
+      "speaker": "student",
+      "text_zh": "三阴交常用于妇科疾病，比如月经不调、痛经，也常用于失眠和脾胃虚弱。",
+      "text_vi": "Tam Âm Giao thường dùng cho các bệnh phụ khoa như kinh nguyệt không đều, đau bụng kinh, cũng thường dùng cho mất ngủ và tỳ vị hư nhược.",
+      "text_en": "Sanyinjiao is commonly used for gynecological conditions such as irregular menstruation and dysmenorrhea, as well as insomnia and spleen-stomach weakness."
+    },
+    {
+      "seq": 7,
+      "speaker": "teacher",
+      "text_zh": "要特别提醒大家，孕妇要慎用三阴交，因为有可能引起宫缩。",
+      "text_vi": "Cần đặc biệt lưu ý, phụ nữ mang thai phải thận trọng với Tam Âm Giao, vì có thể gây co bóp tử cung.",
+      "text_en": "One important caution: pregnant women should use Sanyinjiao with care, as it may induce uterine contractions."
+    }
+  ]
+}

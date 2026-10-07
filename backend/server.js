@@ -579,6 +579,96 @@ app.put('/api/progress', requireMysql, verifyFirebaseToken, async (req, res) => 
   }
 });
 
+// ===== Luyện nghe (module Listening) =====
+// Nội dung hội thoại lưu JSON tĩnh (không qua MySQL — số lượng ít, soạn tay,
+// không cần full-text search), audio mp3 serve tĩnh qua express.static bên dưới
+// (backend/public/audio/listening/...). Điểm chấm "Nghe & nhắc lại" mới cần MySQL.
+const LISTENING_DATA_DIR = path.join(__dirname, 'data', 'listening');
+
+function listListeningDialogues(category) {
+  if (!fs.existsSync(LISTENING_DATA_DIR)) return [];
+  const categories = category
+    ? [category]
+    : fs.readdirSync(LISTENING_DATA_DIR, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name);
+  const result = [];
+  for (const cat of categories) {
+    const dir = path.join(LISTENING_DATA_DIR, cat);
+    if (!fs.existsSync(dir)) continue;
+    for (const file of fs.readdirSync(dir)) {
+      if (!file.endsWith('.json')) continue;
+      const data = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8'));
+      result.push({ id: data.id, category: data.category, title: data.title });
+    }
+  }
+  return result;
+}
+
+function findListeningDialogue(id) {
+  if (!fs.existsSync(LISTENING_DATA_DIR)) return null;
+  const categories = fs.readdirSync(LISTENING_DATA_DIR, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name);
+  for (const cat of categories) {
+    const dir = path.join(LISTENING_DATA_DIR, cat);
+    for (const file of fs.readdirSync(dir)) {
+      if (!file.endsWith('.json')) continue;
+      const data = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8'));
+      if (data.id === id) return data;
+    }
+  }
+  return null;
+}
+
+app.get('/api/listening/dialogues', (req, res) => {
+  res.json({ success: true, data: listListeningDialogues(req.query.category) });
+});
+
+app.get('/api/listening/dialogues/:id', (req, res) => {
+  const dialogue = findListeningDialogue(req.params.id);
+  if (!dialogue) return res.status(404).json({ success: false, error: 'not_found' });
+  res.json({ success: true, data: dialogue });
+});
+
+app.get('/api/listening-progress', requireMysql, verifyFirebaseToken, async (req, res) => {
+  try {
+    const user = await getOrCreateUser(req.firebaseUser);
+    const [rows] = await mysqlPool.query(
+      `SELECT dialogue_id, line_seq, target_lang, spoken_text, score, attempt_count, updated_at
+         FROM user_listening_progress WHERE user_id = ?`,
+      [user.id]
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * PUT /api/listening-progress
+ * Body: { dialogue_id, line_seq, target_lang, spoken_text, score }
+ * Upsert 1 lần chấm — same last-write-wins idiom as /api/progress, nhưng chấm
+ * điểm xảy ra ngay lúc gọi (không cần so sánh updated_at phía client).
+ */
+app.put('/api/listening-progress', requireMysql, verifyFirebaseToken, async (req, res) => {
+  const { dialogue_id, line_seq, target_lang, spoken_text, score } = req.body || {};
+  if (!dialogue_id || !line_seq || !target_lang) {
+    return res.status(400).json({ success: false, error: 'missing_fields' });
+  }
+  try {
+    const user = await getOrCreateUser(req.firebaseUser);
+    await mysqlPool.query(
+      `INSERT INTO user_listening_progress (user_id, dialogue_id, line_seq, target_lang, spoken_text, score, attempt_count)
+       VALUES (?, ?, ?, ?, ?, ?, 1)
+       ON DUPLICATE KEY UPDATE
+         spoken_text = VALUES(spoken_text),
+         score = VALUES(score),
+         attempt_count = attempt_count + 1`,
+      [user.id, String(dialogue_id), Number(line_seq), String(target_lang), spoken_text || '', Number(score) || 0]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Frontend static assets live in backend/public/ (synced from ../frontend via
 // `npm run build` locally — see sync-frontend.js) so a deploy that only ships
 // the backend/ directory still serves the PWA.

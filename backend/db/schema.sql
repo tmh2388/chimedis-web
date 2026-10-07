@@ -441,3 +441,25 @@ CREATE TABLE IF NOT EXISTS user_progress (
   KEY idx_user_next (user_id, next_review_at),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ---------------------------------------------------------------------
+-- user_listening_progress — kết quả chấm điểm chế độ "Nghe & nhắc lại"
+-- của module Luyện nghe (hội thoại Huyệt Vị/Chẩn Đoán/Bệnh Án). Mỗi dòng
+-- = lần nhắc lại gần nhất của 1 user cho đúng 1 câu (dialogue_id+line_seq
+-- +target_lang). Hợp nhất khi đăng nhập: last-write-wins theo updated_at,
+-- cùng pattern user_progress ở trên.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS user_listening_progress (
+  id              INT AUTO_INCREMENT PRIMARY KEY,
+  user_id         INT NOT NULL,
+  dialogue_id     VARCHAR(64) NOT NULL,
+  line_seq        INT NOT NULL,
+  target_lang     VARCHAR(16) NOT NULL,         -- 'text_vi' / 'text_en'
+  spoken_text     TEXT,
+  score           INT NOT NULL DEFAULT 0,       -- 0-100
+  attempt_count   INT NOT NULL DEFAULT 1,
+  updated_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_user_listening (user_id, dialogue_id, line_seq, target_lang),
+  KEY idx_user_dialogue (user_id, dialogue_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

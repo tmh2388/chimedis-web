@@ -1,0 +1,57 @@
+{
+  "id": "hd-09-thandu",
+  "category": "huyet_vi",
+  "title": "Thận Du (BL-23) — vị trí và chủ trị",
+  "note_source": "Nội dung do Claude soạn dựa trên kiến thức TCM phổ thông, KHÔNG trích nguyên văn giáo trình bản quyền. Cần user rà soát lại trước khi coi là chuẩn giảng dạy.",
+  "lines": [
+    {
+      "seq": 1,
+      "speaker": "teacher",
+      "text_zh": "肾俞穴属于哪条经络？它是什么类型的穴位？",
+      "text_vi": "Thận Du thuộc kinh nào? Đây là loại huyệt gì?",
+      "text_en": "Which meridian does Shenshu belong to? What type of point is it?"
+    },
+    {
+      "seq": 2,
+      "speaker": "student",
+      "text_zh": "肾俞属于足太阳膀胱经，代码是BL-23，是肾的背俞穴。",
+      "text_vi": "Thận Du thuộc kinh Túc Thái Dương Bàng Quang, mã BL-23, là bối du huyệt của Thận.",
+      "text_en": "Shenshu belongs to the Foot Taiyang Bladder meridian, code BL-23, and is the Back-Shu point of the Kidney."
+    },
+    {
+      "seq": 3,
+      "speaker": "teacher",
+      "text_zh": "怎么定位肾俞穴？",
+      "text_vi": "Làm sao xác định vị trí Thận Du?",
+      "text_en": "How do we locate Shenshu?"
+    },
+    {
+      "seq": 4,
+      "speaker": "student",
+      "text_zh": "在腰部，第二腰椎棘突下，旁开一点五寸。",
+      "text_vi": "Ở vùng thắt lưng, dưới gai đốt sống thắt lưng thứ hai, cách ngang 1,5 thốn.",
+      "text_en": "In the lumbar region, below the spinous process of the second lumbar vertebra, 1.5 cun lateral to the midline."
+    },
+    {
+      "seq": 5,
+      "speaker": "teacher",
+      "text_zh": "肾俞穴主要用于治疗什么？",
+      "text_vi": "Thận Du chủ yếu dùng điều trị gì?",
+      "text_en": "What is Shenshu mainly used to treat?"
+    },
+    {
+      "seq": 6,
+      "speaker": "student",
+      "text_zh": "肾俞可以补肾益精，常用于腰膝酸软、耳鸣，也常用于遗尿和月经不调。",
+      "text_vi": "Thận Du có thể bổ thận ích tinh, thường dùng cho lưng gối mỏi yếu, ù tai, cũng thường dùng cho đái dầm và kinh nguyệt không đều.",
+      "text_en": "Shenshu tonifies the kidney and boosts essence; commonly used for lower back and knee weakness, tinnitus, as well as enuresis and irregular menstruation."
+    },
+    {
+      "seq": 7,
+      "speaker": "teacher",
+      "text_zh": "对，肾俞是补肾最常用的穴位之一，临床应用很广。",
+      "text_vi": "Đúng vậy, Thận Du là một trong những huyệt bổ thận thường dùng nhất, ứng dụng lâm sàng rất rộng.",
+      "text_en": "Correct — Shenshu is one of the most commonly used points for tonifying the kidney, with very broad clinical application."
+    }
+  ]
+}

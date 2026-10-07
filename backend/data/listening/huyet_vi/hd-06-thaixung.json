@@ -1,0 +1,57 @@
+{
+  "id": "hd-06-thaixung",
+  "category": "huyet_vi",
+  "title": "Thái Xung (LR-3) — vị trí và chủ trị",
+  "note_source": "Nội dung do Claude soạn dựa trên kiến thức TCM phổ thông, KHÔNG trích nguyên văn giáo trình bản quyền. Cần user rà soát lại trước khi coi là chuẩn giảng dạy.",
+  "lines": [
+    {
+      "seq": 1,
+      "speaker": "teacher",
+      "text_zh": "太冲穴属于哪条经络？",
+      "text_vi": "Thái Xung thuộc kinh nào?",
+      "text_en": "Which meridian does Taichong belong to?"
+    },
+    {
+      "seq": 2,
+      "speaker": "student",
+      "text_zh": "太冲属于足厥阴肝经，代码是LR-3，是肝经的原穴。",
+      "text_vi": "Thái Xung thuộc kinh Túc Quyết Âm Can, mã LR-3, là nguyên huyệt của kinh Can.",
+      "text_en": "Taichong belongs to the Foot Jueyin Liver meridian, code LR-3, and is the Source point of the Liver meridian."
+    },
+    {
+      "seq": 3,
+      "speaker": "teacher",
+      "text_zh": "怎么定位太冲穴？",
+      "text_vi": "Làm sao xác định vị trí Thái Xung?",
+      "text_en": "How do we locate Taichong?"
+    },
+    {
+      "seq": 4,
+      "speaker": "student",
+      "text_zh": "在足背，第一、第二跖骨结合部之前的凹陷处。",
+      "text_vi": "Ở mu bàn chân, trong chỗ lõm phía trước nơi tiếp giáp xương bàn chân thứ nhất và thứ hai.",
+      "text_en": "On the dorsum of the foot, in the depression distal to the junction of the first and second metatarsal bones."
+    },
+    {
+      "seq": 5,
+      "speaker": "teacher",
+      "text_zh": "太冲穴常用于治疗什么？",
+      "text_vi": "Thái Xung thường dùng điều trị gì?",
+      "text_en": "What is Taichong commonly used for?"
+    },
+    {
+      "seq": 6,
+      "speaker": "student",
+      "text_zh": "太冲可以平肝息风，常用于头痛、眩晕、易怒，也常用于月经不调。",
+      "text_vi": "Thái Xung có thể bình can tức phong, thường dùng cho đau đầu, chóng mặt, dễ cáu gắt, cũng thường dùng cho kinh nguyệt không đều.",
+      "text_en": "Taichong calms the liver and extinguishes wind; commonly used for headache, dizziness, and irritability, as well as irregular menstruation."
+    },
+    {
+      "seq": 7,
+      "speaker": "teacher",
+      "text_zh": "对，太冲配合谷，中医称为‘四关穴’，临床常一起使用。",
+      "text_vi": "Đúng vậy, Thái Xung phối hợp với Hợp Cốc, Trung y gọi là 'Tứ Quan huyệt', trên lâm sàng thường dùng chung.",
+      "text_en": "Correct — Taichong paired with Hegu is called the 'Four Gates' in TCM, and they are often used together clinically."
+    }
+  ]
+}

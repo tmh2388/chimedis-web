@@ -1,0 +1,57 @@
+{
+  "id": "hd-07-khuctri",
+  "category": "huyet_vi",
+  "title": "Khúc Trì (LI-11) — vị trí và chủ trị",
+  "note_source": "Nội dung do Claude soạn dựa trên kiến thức TCM phổ thông, KHÔNG trích nguyên văn giáo trình bản quyền. Cần user rà soát lại trước khi coi là chuẩn giảng dạy.",
+  "lines": [
+    {
+      "seq": 1,
+      "speaker": "teacher",
+      "text_zh": "曲池穴属于哪条经络？",
+      "text_vi": "Khúc Trì thuộc kinh nào?",
+      "text_en": "Which meridian does Quchi belong to?"
+    },
+    {
+      "seq": 2,
+      "speaker": "student",
+      "text_zh": "曲池属于手阳明大肠经，代码是LI-11。",
+      "text_vi": "Khúc Trì thuộc kinh Thủ Dương Minh Đại Trường, mã LI-11.",
+      "text_en": "Quchi belongs to the Hand Yangming Large Intestine meridian, code LI-11."
+    },
+    {
+      "seq": 3,
+      "speaker": "teacher",
+      "text_zh": "怎么取曲池穴？",
+      "text_vi": "Làm sao lấy huyệt Khúc Trì?",
+      "text_en": "How do we locate Quchi?"
+    },
+    {
+      "seq": 4,
+      "speaker": "student",
+      "text_zh": "屈肘成直角，在肘横纹外侧端凹陷处。",
+      "text_vi": "Gập khuỷu tay thành góc vuông, huyệt ở chỗ lõm đầu ngoài nếp gấp khuỷu tay.",
+      "text_en": "With the elbow flexed at a right angle, it is located in the depression at the lateral end of the elbow crease."
+    },
+    {
+      "seq": 5,
+      "speaker": "teacher",
+      "text_zh": "曲池穴常用于哪些病症？",
+      "text_vi": "Khúc Trì thường dùng cho những bệnh chứng nào?",
+      "text_en": "What conditions is Quchi commonly used for?"
+    },
+    {
+      "seq": 6,
+      "speaker": "student",
+      "text_zh": "曲池可以清热解表，常用于发热、咽喉肿痛，也常用于皮肤病和上肢疼痛。",
+      "text_vi": "Khúc Trì có thể thanh nhiệt giải biểu, thường dùng cho sốt, đau họng sưng, cũng thường dùng cho bệnh ngoài da và đau chi trên.",
+      "text_en": "Quchi clears heat and releases the exterior; commonly used for fever and sore throat, as well as skin conditions and upper limb pain."
+    },
+    {
+      "seq": 7,
+      "speaker": "teacher",
+      "text_zh": "很好，曲池是清热的要穴之一，大家要熟练掌握。",
+      "text_vi": "Tốt lắm, Khúc Trì là một trong những huyệt chủ chốt để thanh nhiệt, các em cần nắm vững.",
+      "text_en": "Good — Quchi is one of the key heat-clearing points, and you should master it well."
+    }
+  ]
+}

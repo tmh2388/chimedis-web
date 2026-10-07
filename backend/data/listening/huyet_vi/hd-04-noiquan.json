@@ -1,0 +1,57 @@
+{
+  "id": "hd-04-noiquan",
+  "category": "huyet_vi",
+  "title": "Nội Quan (PC-6) — vị trí và chủ trị",
+  "note_source": "Nội dung do Claude soạn dựa trên kiến thức TCM phổ thông, KHÔNG trích nguyên văn giáo trình bản quyền. Cần user rà soát lại trước khi coi là chuẩn giảng dạy.",
+  "lines": [
+    {
+      "seq": 1,
+      "speaker": "teacher",
+      "text_zh": "内关穴属于哪条经络？",
+      "text_vi": "Nội Quan thuộc kinh nào?",
+      "text_en": "Which meridian does Neiguan belong to?"
+    },
+    {
+      "seq": 2,
+      "speaker": "student",
+      "text_zh": "内关属于手厥阴心包经，代码是PC-6。",
+      "text_vi": "Nội Quan thuộc kinh Thủ Quyết Âm Tâm Bào, mã PC-6.",
+      "text_en": "Neiguan belongs to the Hand Jueyin Pericardium meridian, code PC-6."
+    },
+    {
+      "seq": 3,
+      "speaker": "teacher",
+      "text_zh": "内关穴怎么取？",
+      "text_vi": "Làm sao lấy huyệt Nội Quan?",
+      "text_en": "How do we locate Neiguan?"
+    },
+    {
+      "seq": 4,
+      "speaker": "student",
+      "text_zh": "在前臂掌侧，腕横纹上二寸，两条肌腱之间。",
+      "text_vi": "Ở mặt trước cẳng tay, trên nếp gấp cổ tay 2 thốn, giữa hai gân cơ.",
+      "text_en": "On the palmar side of the forearm, two cun above the wrist crease, between the two tendons."
+    },
+    {
+      "seq": 5,
+      "speaker": "teacher",
+      "text_zh": "内关穴常用于哪些症状？",
+      "text_vi": "Nội Quan thường dùng cho những triệu chứng nào?",
+      "text_en": "What symptoms is Neiguan commonly used for?"
+    },
+    {
+      "seq": 6,
+      "speaker": "student",
+      "text_zh": "内关穴常用于恶心、呕吐、晕车，也常用于心悸和胸闷。",
+      "text_vi": "Nội Quan thường dùng cho buồn nôn, nôn, say xe, cũng thường dùng cho hồi hộp và tức ngực.",
+      "text_en": "Neiguan is commonly used for nausea, vomiting, and motion sickness, as well as for palpitations and chest tightness."
+    },
+    {
+      "seq": 7,
+      "speaker": "teacher",
+      "text_zh": "没错，内关是止呕要穴，临床应用非常广泛。",
+      "text_vi": "Đúng vậy, Nội Quan là huyệt chủ chốt để chỉ nôn, ứng dụng lâm sàng rất rộng rãi.",
+      "text_en": "Correct — Neiguan is a key point for stopping vomiting and has very broad clinical application."
+    }
+  ]
+}
