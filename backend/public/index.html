@@ -599,9 +599,13 @@ header{transition:padding .2s ease}
 .listen-dialogue .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:12px;font-size:12.5px;color:var(--muc-mo,#8a7d6a)}
 .listen-dialogue select{font-family:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1px solid var(--vien,#e5ddcc)}
 .listen-fullbtn{display:inline-flex;align-items:center;gap:8px;background:var(--thamthm,#0E3A3A);color:#fff;border:0;
-  border-radius:12px;padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:16px}
-.listen-line{display:flex;gap:11px;padding:14px 0;border-bottom:1px solid var(--vien,#e5ddcc)}
+  border-radius:12px;padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px}
+.listen-progress{min-height:18px;font-size:12.5px;font-weight:700;color:var(--son,#C8452F);margin-bottom:8px}
+.listen-line{display:flex;gap:11px;padding:14px 10px;border-bottom:1px solid var(--vien,#e5ddcc);border-radius:10px;
+  transition:background .2s}
 .listen-line:last-child{border-bottom:none}
+.listen-line.active{background:var(--ngua-am,#efe7d8)}
+.listen-line.active .listen-avatar{box-shadow:0 0 0 3px var(--son-mo,#F0D9D2)}
 .listen-avatar{flex:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-size:12px;font-weight:800;color:#fff}
 .listen-avatar.teacher{background:var(--thamthm,#0E3A3A)}
@@ -1617,6 +1621,7 @@ Object.assign(I18N.vi, {
   listen_record_download: 'Tải video vừa quay (.webm)',
   listen_record_unsupported: 'Mở bằng Safari/Chrome trên trình duyệt để dùng tính năng quay video — chưa hỗ trợ trong app.',
   listen_shadow_unsupported: 'Mở bằng trình duyệt (Safari/Chrome) để dùng tính năng nhắc lại có chấm điểm — chưa hỗ trợ trong app.',
+  listen_line_of: 'Câu {n}/{total}',
 });
 Object.assign(I18N.zh, {
   dr_listen: '听力练习', listen_home: '听力练习', listen_back: '听力练习',
@@ -1631,6 +1636,7 @@ Object.assign(I18N.zh, {
   listen_record_download: '下载录制的视频 (.webm)',
   listen_record_unsupported: '请用 Safari/Chrome 浏览器打开以使用录屏功能——App 内暂不支持。',
   listen_shadow_unsupported: '请用浏览器（Safari/Chrome）打开以使用跟读打分功能——App 内暂不支持。',
+  listen_line_of: '第 {n}/{total} 句',
 });
 Object.assign(I18N.en, {
   dr_listen: 'Listening Practice', listen_home: 'Listening Practice', listen_back: 'Listening Practice',
@@ -1645,6 +1651,7 @@ Object.assign(I18N.en, {
   listen_record_download: 'Download recording (.webm)',
   listen_record_unsupported: 'Open with Safari/Chrome in a browser to use screen recording — not supported in-app yet.',
   listen_shadow_unsupported: 'Open with a browser (Safari/Chrome) to use the scored repeat-after-me mode — not supported in-app yet.',
+  listen_line_of: 'Line {n}/{total}',
 });
 
 // ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
@@ -2188,7 +2195,7 @@ function openListenView(){
   loadListenCategory(state._listenCategory);
 }
 function listenHome(){
-  if(listenAudioEl) listenAudioEl.pause();
+  listenStopPlayback();
   state.tab = 'listenhome'; listenCurrentDialogue = null; render(); scrollToTop();
 }
 
@@ -2203,7 +2210,7 @@ async function loadListenCategory(cat){
 }
 
 async function openListenDialogue(id){
-  if(listenAudioEl) listenAudioEl.pause();
+  listenStopPlayback();
   try{
     const res = await fetch(`${API_BASE}/api/listening/dialogues/${encodeURIComponent(id)}`);
     const json = await res.json();
@@ -2211,6 +2218,12 @@ async function openListenDialogue(id){
   }catch(e){ listenCurrentDialogue = null; }
   state.tab = 'listendialogue';
   render(); scrollToTop();
+}
+
+// Tiêu đề theo đúng ngôn ngữ giao diện đang chọn (state.lang) — đồng bộ với hệ thống,
+// không cố định tiếng Việt. Dự phòng title_vi rồi mới tới title thô (nội dung cũ).
+function listenTitle(d){
+  return d['title_' + state.lang] || d.title_vi || d.title || '';
 }
 
 function renderListenHome(){
@@ -2222,7 +2235,7 @@ function renderListenHome(){
   const listHtml = items.length
     ? items.map(d => `<button class="listen-card" onclick="openListenDialogue('${d.id}')">
         <span class="lc-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></span>
-        <strong>${d.title}</strong>
+        <strong>${listenTitle(d)}</strong>
       </button>`).join('')
     : `<div class="empty">${t('listen_empty')}</div>`;
   return `<div class="listen-screen">
@@ -2236,19 +2249,51 @@ function listenAudioUrl(d, seq, lang){
   const padded = String(seq).padStart(2, '0');
   return `/audio/listening/${d.category}/${d.id}/${padded}-${lang}.mp3`;
 }
-function listenFullAudioUrl(d){ return `/audio/listening/${d.category}/${d.id}/full-text_zh.mp3`; }
+
+// Phát nối tiếp từng câu (KHÔNG dùng file full-*.mp3 ghép sẵn nữa) — nhờ vậy luôn biết
+// chính xác đang phát câu nào để tô sáng + hiện "Câu X/N", giải quyết phản hồi "chưa biết
+// đang đến đoạn nào". listenPlayToken chặn chuỗi phát cũ tiếp tục chạy sau khi đã rời màn.
+let listenPlayToken = 0;
+
+function listenStopPlayback(){
+  listenPlayToken++;
+  if(listenAudioEl){ listenAudioEl.pause(); listenAudioEl = null; }
+  listenClearActiveLine();
+}
+function listenClearActiveLine(){
+  document.querySelectorAll('.listen-line.active').forEach(el => el.classList.remove('active'));
+  const prog = document.getElementById('listenProgressLabel');
+  if(prog) prog.textContent = '';
+}
+function listenSetActiveLine(seq){
+  document.querySelectorAll('.listen-line').forEach(el => el.classList.toggle('active', Number(el.dataset.seq) === seq));
+  const d = listenCurrentDialogue;
+  const prog = document.getElementById('listenProgressLabel');
+  if(prog && d) prog.textContent = `${t('listen_line_of').replace('{n}', seq).replace('{total}', d.lines.length)}`;
+}
 
 function listenPlayFull(){
   const d = listenCurrentDialogue; if(!d) return;
-  if(listenAudioEl) listenAudioEl.pause();
-  listenAudioEl = new Audio(listenFullAudioUrl(d));
+  listenStopPlayback();
+  listenPlaySequence(d.lines.map(l => l.seq), 0, listenPlayToken);
+}
+function listenPlaySequence(seqs, idx, token){
+  if(token !== listenPlayToken) return; // đã rời màn/bắt đầu chuỗi khác — dừng im lặng
+  if(idx >= seqs.length){ listenClearActiveLine(); return; }
+  const seq = seqs[idx];
+  listenSetActiveLine(seq);
+  listenAudioEl = new Audio(listenAudioUrl(listenCurrentDialogue, seq, 'text_zh'));
   listenAudioEl.play();
+  listenAudioEl.onended = () => listenPlaySequence(seqs, idx + 1, token);
 }
 function listenPlayLine(seq){
   const d = listenCurrentDialogue; if(!d) return;
-  if(listenAudioEl) listenAudioEl.pause();
+  listenStopPlayback();
+  const token = listenPlayToken;
+  listenSetActiveLine(seq);
   listenAudioEl = new Audio(listenAudioUrl(d, seq, 'text_zh'));
   listenAudioEl.play();
+  listenAudioEl.onended = () => { if(token === listenPlayToken) listenClearActiveLine(); };
 }
 
 // So khớp đơn giản: tỉ lệ từ trùng giữa câu nói và câu tham chiếu (không phân biệt hoa/thường, dấu câu).
@@ -2303,10 +2348,12 @@ function listenShadowLine(seq){
   const line = d.lines.find(l => l.seq === seq); if(!line) return;
   const targetLang = (document.getElementById('listenTargetLang') || {}).value || 'text_vi';
   const reference = line[targetLang];
-  if(listenAudioEl) listenAudioEl.pause();
+  listenStopPlayback();
+  const token = listenPlayToken;
+  listenSetActiveLine(seq);
   listenAudioEl = new Audio(listenAudioUrl(d, seq, 'text_zh'));
   listenAudioEl.play();
-  listenAudioEl.onended = () => listenStartRecognition(seq, targetLang, reference);
+  listenAudioEl.onended = () => { if(token === listenPlayToken){ listenClearActiveLine(); listenStartRecognition(seq, targetLang, reference); } };
 }
 
 function renderListenDialogue(){
@@ -2314,7 +2361,7 @@ function renderListenDialogue(){
   if(!d) return `<div class="empty">${t('listen_empty')}</div>`;
   const feat = listenFeatureSupported();
   const linesHtml = d.lines.map(line => `
-    <div class="listen-line">
+    <div class="listen-line" data-seq="${line.seq}">
       <span class="listen-avatar ${line.speaker}">${(line.speaker||'?').slice(0,1).toUpperCase()}</span>
       <div class="listen-line-body">
         <p class="sub zh">${line.text_zh}</p>
@@ -2331,17 +2378,17 @@ function renderListenDialogue(){
       </div>
     </div>`).join('');
   return `<div class="listen-dialogue">
-    <h2>${d.title}</h2>
-    <div class="toolbar">
+    <h2>${listenTitle(d)}</h2>
+    ${feat.speech ? `<div class="toolbar">
       <label>${t('listen_target_lang')}
         <select id="listenTargetLang"><option value="text_vi">${t('listen_vi')}</option><option value="text_en">${t('listen_en')}</option></select>
       </label>
-    </div>
+    </div>` : `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>`}
     <button class="listen-fullbtn" onclick="listenPlayFull()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>${t('listen_play_full')}
     </button>
+    <div class="listen-progress" id="listenProgressLabel"></div>
     <div>${linesHtml}</div>
-    ${!feat.speech ? `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>` : ''}
   </div>`;
 }
 
