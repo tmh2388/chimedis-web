@@ -159,8 +159,24 @@ async function getAnatomyTerms() {
 function safeEn(en) {
   return (en && /[a-zA-ZÀ-ỹ]/.test(en)) ? en : null;
 }
+// Hình nguồn kinh mạch/định vị huyệt (87 hình trích từ 《经络腧穴学》, xem build-acupoint-figures.mjs).
+// ⚠️ Core DB đánh dấu COPYRIGHTED_SOURCE_REFERENCE/internal_use_only — founder quyết định dùng TẠM
+// (2026-10-07). Tắt nhanh không cần deploy code: đặt env SOURCE_FIGURES_ENABLED=false trên Hostinger.
+const SOURCE_FIGURES_ENABLED = process.env.SOURCE_FIGURES_ENABLED !== 'false';
+let ACUPOINT_FIGURES = { media: {}, byPoint: {} };
+try {
+  ACUPOINT_FIGURES = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'acupoint-figures.json'), 'utf8'));
+} catch { /* chưa build hình — popup đơn giản không có khối hình */ }
+function figuresFor(acupointId) {
+  if (!SOURCE_FIGURES_ENABLED) return undefined;
+  const ids = ACUPOINT_FIGURES.byPoint[acupointId];
+  if (!ids || !ids.length) return undefined;
+  return ids.map((id) => ACUPOINT_FIGURES.media[id]).filter(Boolean)
+    .map((m) => ({ src: m.src, fig: m.figure, cap: m.caption_zh }));
+}
 function acupointRowToTerm(a) {
   return {
+    figures: figuresFor(a.acupoint_id),
     id: a.acupoint_id,
     hz: a.name_zh,
     py: a.py || '', // pinyin có dấu, tự sinh khi import (xem import-acupoint-sheets.js) —
