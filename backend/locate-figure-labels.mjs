@@ -109,7 +109,7 @@ function components(mask, W, H) {
   return comps;
 }
 
-const SC = {}; const labels = {}; let expected = 0, found = 0; const missing = [];
+const RELAXED = []; const ORDER_FILLED = []; const SC = {}; const labels = {}; let expected = 0, found = 0; const missing = [];
 for (const [mid, m] of Object.entries(data.media)) {
   if (process.env.ONLY && !mid.includes(process.env.ONLY)) continue;
   const file = path.join(__dirname, 'public', m.src);
@@ -201,10 +201,10 @@ for (const [mid, m] of Object.entries(data.media)) {
   }
   pairs.sort((a, b) => b.score - a.score);
   if (process.env.VERBOSE) console.log('  dots', dots.length, 'boxes', boxes.length, 'pairs', pairs.length, 'top', pairs.slice(0, 6).map((p) => `${p.t.name}:${p.score.toFixed(2)}`).join(' '));
-  const usedB = new Set(), usedT = new Set();
+  const usedB = new Set(), usedT = new Set(), ANCH = {};
   for (const p of pairs) {
     if (p.score < THRESH || usedB.has(p.bi) || usedT.has(p.t.id)) continue;
-    usedB.add(p.bi); usedT.add(p.t.id);
+    usedB.add(p.bi); usedT.add(p.t.id); ANCH[p.t.id] = p.bi;
     const b = boxes[p.bi];
     L[p.t.id] = [p.rx0 + p.off - 2, p.ry0 + p.vo - 2, p.tw + 4, p.th + 4];
     SC[mid + '|' + p.t.id] = +p.score.toFixed(2);
@@ -230,6 +230,88 @@ for (const [mid, m] of Object.entries(data.media)) {
     usedB.add(p.bi); L[p.t.id] = [...have, nb];
     if (process.env.VERBOSE) console.log('   + trùng tên', p.t.id, p.t.name, p.score.toFixed(2));
   }
+  // Lần ba — điền chỗ trống THEO THỨ TỰ. Nhãn trong 1 cột xếp đúng thứ tự số huyệt (vd. BL-41…BL-54 từ trên xuống), nên
+  // đoạn huyệt chưa khớp mẫu nằm giữa 2 huyệt đã khớp (cùng cột) phải ứng với các khung nhãn còn trống nằm giữa chúng, theo
+  // đúng thứ tự. Chỉ điền khi SỐ khung trống = SỐ huyệt thiếu (chắc chắn, không đoán); đoạn ở đầu/cuối cột (chỉ có 1 neo)
+  // dùng hướng suy từ 2 neo gần nhất. Mọi lần điền đều in "thứ tự" ra log để rà bằng mắt (DEBUG_DIR).
+  {
+    const numOf = (id) => parseInt(String(id).split('-').pop(), 10);
+    const ord = wanted.filter((t) => !isNaN(numOf(t.id))).sort((a, b) => numOf(a.id) - numOf(b.id));
+    const ctr = (bi) => ({ cx: (boxes[bi].x0 + boxes[bi].x1) / 2, cy: (boxes[bi].y0 + boxes[bi].y1) / 2 });
+    const COL = 70;
+    let i = 0;
+    while (i < ord.length) {
+      if (L[ord[i].id]) { i++; continue; }
+      let j = i; while (j < ord.length && !L[ord[j].id]) j++;
+      const run = ord.slice(i, j);
+      const A = i > 0 ? ord[i - 1] : null, B = j < ord.length ? ord[j] : null;
+      const aBi = A && ANCH[A.id] != null ? ANCH[A.id] : null, bBi = B && ANCH[B.id] != null ? ANCH[B.id] : null;
+      let pick = null;
+      // khung trống = chưa dùng, KHÔNG trùng vị trí với khung đã dùng (cùng 1 nhãn có thể bị tìm 2 lần), kích thước giống nhãn,
+      // và đã khử trùng lặp giữa các khung trống với nhau
+      const same = (a, b) => Math.abs(a.x0 - b.x0) < 8 && Math.abs(a.y0 - b.y0) < 8 && Math.abs(a.x1 - b.x1) < 8;
+      const free = (cx) => {
+        const out = [];
+        for (let bi = 0; bi < boxes.length; bi++) {
+          const b = boxes[bi], w = b.x1 - b.x0, h = b.y1 - b.y0;
+          if ((cx != null && Math.abs(ctr(bi).cx - cx) >= COL) || w < 30 || w > 130 || h < 18 || h > 60) continue;
+          if ([...usedB].some((u) => same(boxes[u], b)) || out.some((o) => same(boxes[o], b))) continue;
+          out.push(bi);
+        }
+        // bỏ khung nằm gọn trong khung khác (mảnh nét của cùng 1 nhãn)
+        const inside = (a, b) => a !== b && a.x0 >= b.x0 - 6 && a.x1 <= b.x1 + 6 && a.y0 >= b.y0 - 6 && a.y1 <= b.y1 + 6;
+        return out.filter((bi) => !out.some((o2) => inside(boxes[bi], boxes[o2])));
+      };
+      if (aBi != null && bBi != null && Math.abs(ctr(aBi).cx - ctr(bBi).cx) < COL) {
+        const ya = ctr(aBi).cy, yb = ctr(bBi).cy, lo = Math.min(ya, yb), hi = Math.max(ya, yb);
+        const c = free(ctr(aBi).cx).filter((bi) => ctr(bi).cy > lo + 6 && ctr(bi).cy < hi - 6).sort((p, q) => (ctr(p).cy - ctr(q).cy) * (ya <= yb ? 1 : -1));
+        if (c.length === run.length) pick = c;
+      } else {
+        // 1 neo: hướng lấy từ neo kề + neo kế tiếp ở phía đó
+        const matchedBefore = ord.slice(0, i).filter((t) => ANCH[t.id] != null).reverse(), matchedAfter = ord.slice(j).filter((t) => ANCH[t.id] != null);
+        const near = aBi != null ? matchedBefore.slice(0, 2) : matchedAfter.slice(0, 2); // [neo kề, neo kế]
+        const n1 = near[0] && ANCH[near[0].id], n2 = near[1] && ANCH[near[1].id];
+        if (n1 != null && n2 != null && Math.abs(ctr(n1).cx - ctr(n2).cx) < COL) {
+          const dir = Math.sign(ctr(n1).cy - ctr(n2).cy); // chỗ trống nằm phía n1 so với n2 (xa n2)
+          const y1 = ctr(n1).cy;
+          const c = free(ctr(n1).cx).filter((bi) => (ctr(bi).cy - y1) * dir > 6).sort((p, q) => (ctr(p).cy - ctr(q).cy) * dir);
+          if (process.env.VERBOSE) console.log('  orderfill run', run.map((t) => t.id).join(','), 'cands', c.map((bi) => JSON.stringify(boxes[bi])).join(' '));
+          if (c.length === run.length) pick = aBi != null ? c : c.reverse();
+        }
+      }
+      if (pick) {
+        run.forEach((t, k) => { const b = boxes[pick[k]]; usedB.add(pick[k]); L[t.id] = [b.x0 - 2, b.y0 - 2, b.x1 - b.x0 + 5, b.y1 - b.y0 + 5]; ORDER_FILLED.push(`${t.id}(${t.name})@${m.figure}`); });
+      }
+      i = j;
+    }
+  }
+  // Lần bốn — nới ngưỡng cho phần còn thiếu, CHỈ khi tên và khung "chọn nhau" (mutual best) trong số tên chưa gán và khung
+  // còn trống (khung ít, tên ít nên nhầm lẫn khó xảy ra). Ngưỡng RELAX_MIN, in log để rà bằng mắt.
+  {
+    const RELAX_MIN = parseFloat(process.env.NCC_RELAX || '0.45');
+    const rest = wanted.filter((t) => !L[t.id]);
+    if (rest.length) {
+      const same = (a, b) => Math.abs(a.x0 - b.x0) < 8 && Math.abs(a.y0 - b.y0) < 8 && Math.abs(a.x1 - b.x1) < 8;
+      const freeB = new Set();
+      for (let bi = 0; bi < boxes.length; bi++) {
+        const b = boxes[bi], w = b.x1 - b.x0, h = b.y1 - b.y0;
+        if (w < 30 || w > 130 || h < 18 || h > 60 || usedB.has(bi)) continue;
+        if ([...usedB].some((u) => same(boxes[u], b))) continue;
+        freeB.add(bi);
+      }
+      const cand = pairs.filter((q) => freeB.has(q.bi) && rest.some((t) => t.id === q.t.id) && q.score >= RELAX_MIN);
+      const bestForBox = {}, bestForName = {};
+      for (const q of cand) { if (!bestForBox[q.bi] || q.score > bestForBox[q.bi].score) bestForBox[q.bi] = q; if (!bestForName[q.t.id] || q.score > bestForName[q.t.id].score) bestForName[q.t.id] = q; }
+      for (const q of cand) {
+        if (bestForBox[q.bi] !== q || bestForName[q.t.id] !== q || L[q.t.id] || usedB.has(q.bi)) continue;
+        const dupe = [...usedB].some((u) => same(boxes[u], boxes[q.bi]));
+        if (dupe) continue;
+        usedB.add(q.bi);
+        L[q.t.id] = [q.rx0 + q.off - 2, q.ry0 + q.vo - 2, q.tw + 4, q.th + 4];
+        RELAXED.push(`${q.t.id}(${q.t.name})@${m.figure}:${q.score.toFixed(2)}`);
+      }
+    }
+  }
   labels[mid] = L;
   for (const t of wanted) { expected++; if (L[t.id]) found++; else missing.push(`${t.id}(${t.name})@${m.figure}`); }
   process.stdout.write(`${m.figure} ${Object.keys(L).length}/${wanted.length} · `);
@@ -242,4 +324,6 @@ for (const [mid, m] of Object.entries(data.media)) {
 if (!process.env.ONLY) { data.labels = labels; fs.writeFileSync(JSON_PATH, JSON.stringify(data)); }
 fs.writeFileSync(path.join(os.tmpdir(), 'label-scores.json'), JSON.stringify(SC));
 console.log(`\n✅ Định vị được ${found}/${expected} cặp (huyệt, hình) = ${(100 * found / expected).toFixed(1)}%`);
+console.log('Nới ngưỡng:', RELAXED.join(', '));
+console.log('Điền theo thứ tự:', ORDER_FILLED.join(', '));
 console.log('Thiếu:', missing.slice(0, 40).join(', '), missing.length > 40 ? `… (+${missing.length - 40})` : '');

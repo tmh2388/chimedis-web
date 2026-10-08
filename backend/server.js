@@ -221,8 +221,14 @@ function meridianFiguresFor(acupointId) {
   if (!ids || !ids.length) return undefined;
   return ids.map((id) => figEntry(id, acupointId)).filter(Boolean);
 }
+// Đặc tính huyệt đặc hiệu kèm chi tiết (giao hội với kinh nào, lạc sang kinh nào...) — xem build-acupoint-class-detail.mjs.
+let ACUPOINT_CLASS_DETAIL = { byPoint: {} };
+try {
+  ACUPOINT_CLASS_DETAIL = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'acupoint-class-detail.json'), 'utf8'));
+} catch { /* chưa build — popup chỉ có nhãn loại huyệt */ }
 function acupointRowToTerm(a) {
   return {
+    class_detail: ACUPOINT_CLASS_DETAIL.byPoint[a.acupoint_id],
     figures: figuresFor(a.acupoint_id),
     mfigures: meridianFiguresFor(a.acupoint_id),
     id: a.acupoint_id,
