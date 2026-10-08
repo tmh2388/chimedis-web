@@ -144,6 +144,37 @@ async function getAnatomyTerms() {
 }
 
 /**
+ * "Tổng hợp" — bảng general_terms (cùng cột với anatomy_terms, domain luôn 'Tổng hợp').
+ * Nội dung do repo chimedis-web-home quản lý (scripts/build-general-terms.mjs) — dict chỉ
+ * ĐỌC, không ghi. Quy ước ô: position_* = Định nghĩa, clinical_* = Ứng dụng, function_ và tcm_note_ (mọi ngôn ngữ) để NULL. Tái dùng anatomyRowToTerm nên cờ verify/machine_translated chỉ để nội bộ.
+ */
+async function getGeneralTerms() {
+  if (!mysqlPool) return [];
+  try {
+    const [rows] = await mysqlPool.query('SELECT * FROM general_terms WHERE is_active = 1');
+    return rows.map(r => ({ ...anatomyRowToTerm(r), group1: 'Tổng hợp' }));
+  } catch (err) {
+    console.error('⚠️  Không đọc được dữ liệu Tổng hợp từ MySQL:', err.message);
+    return [];
+  }
+}
+
+/**
+ * Bỏ các mục Tổng hợp trùng với thuật ngữ ĐÃ CÓ ở nhóm khác (cùng id hoặc cùng chữ Hán)
+ * và trùng lẫn nhau — mục đã có được giữ, mục Tổng hợp trùng bị bỏ qua.
+ */
+function dedupeGeneralTerms(generalTerms, existingTerms) {
+  const seenId = new Set(existingTerms.map(t => t.id));
+  const seenHz = new Set(existingTerms.map(t => t.hz).filter(Boolean));
+  return generalTerms.filter(t => {
+    if (seenId.has(t.id) || (t.hz && seenHz.has(t.hz))) return false;
+    seenId.add(t.id);
+    if (t.hz) seenHz.add(t.hz);
+    return true;
+  });
+}
+
+/**
  * Maps an `acupoints` MySQL row (Huyệt vị) into the same flat term shape
  * /api/terms returns for other domains — reuses herb's field names
  * (action_* and indication_*) since the popup template branch for 'acupoint'
@@ -741,7 +772,9 @@ app.get('/api/terms', async (req, res) => {
     const authUser = await optionalFirebaseUser(req);
     const formulaTerms = authUser ? await getFormulaTerms() : [];
 
-    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms, ...formulaTerms];
+    const baseTerms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms, ...formulaTerms];
+    const generalTerms = dedupeGeneralTerms(await getGeneralTerms(), baseTerms);
+    const terms = [...baseTerms, ...generalTerms];
 
     if (terms.length === 0) {
       return res.status(404).json({
@@ -808,7 +841,8 @@ app.get('/api/groups', async (req, res) => {
     const wordElementTerms = await getWordElementTerms();
     const acupointTerms = await getAcupointTerms();
     const autoTerms = await getApprovedCandidateTerms(); // GĐ2: cụm tự học đã duyệt
-    const terms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms];
+    const baseTerms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms];
+    const terms = [...baseTerms, ...dedupeGeneralTerms(await getGeneralTerms(), baseTerms)];
 
     if (terms.length === 0) {
       return res.status(404).json({
