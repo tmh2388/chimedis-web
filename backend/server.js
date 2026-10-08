@@ -167,16 +167,33 @@ let ACUPOINT_FIGURES = { media: {}, byPoint: {} };
 try {
   ACUPOINT_FIGURES = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'acupoint-figures.json'), 'utf8'));
 } catch { /* chưa build hình — popup đơn giản không có khối hình */ }
+// Mỗi hình trả về: src, fig (số hình), cap (chú thích zh), w/h (px gốc), hl ('text' = bôi đỏ chữ, 'box' =
+// khung đỏ khi nền là ảnh chụp), box ([x,y,w,h] px gốc của TÊN huyệt này trong hình — từ
+// locate-figure-labels.mjs; không có = không bôi đỏ).
+function figEntry(mediaId, acupointId) {
+  const m = ACUPOINT_FIGURES.media[mediaId];
+  if (!m) return null;
+  const box = ACUPOINT_FIGURES.labels && ACUPOINT_FIGURES.labels[mediaId] && ACUPOINT_FIGURES.labels[mediaId][acupointId];
+  return { src: m.src, fig: m.figure, cap: m.caption_zh, w: m.w, h: m.h, hl: m.hl, box: box || undefined };
+}
+// Hình CỦA HUYỆT (chi tiết vị trí). Hình cả đường kinh KHÔNG nằm ở đây — xem meridianFiguresFor().
 function figuresFor(acupointId) {
   if (!SOURCE_FIGURES_ENABLED) return undefined;
   const ids = ACUPOINT_FIGURES.byPoint[acupointId];
   if (!ids || !ids.length) return undefined;
-  return ids.map((id) => ACUPOINT_FIGURES.media[id]).filter(Boolean)
-    .map((m) => ({ src: m.src, fig: m.figure, cap: m.caption_zh }));
+  return ids.map((id) => figEntry(id, acupointId)).filter(Boolean);
+}
+// Hình cả đường kinh (14 hình, mỗi kinh 1 hình) — popup huyệt chỉ hiện NÚT "Hình đường kinh", bấm mới mở.
+function meridianFiguresFor(acupointId) {
+  if (!SOURCE_FIGURES_ENABLED) return undefined;
+  const ids = ACUPOINT_FIGURES.byMeridian && ACUPOINT_FIGURES.byMeridian[acupointId.split('-')[0]];
+  if (!ids || !ids.length) return undefined;
+  return ids.map((id) => figEntry(id, acupointId)).filter(Boolean);
 }
 function acupointRowToTerm(a) {
   return {
     figures: figuresFor(a.acupoint_id),
+    mfigures: meridianFiguresFor(a.acupoint_id),
     id: a.acupoint_id,
     hz: a.name_zh,
     py: a.py || '', // pinyin có dấu, tự sinh khi import (xem import-acupoint-sheets.js) —

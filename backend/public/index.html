@@ -213,15 +213,27 @@ footer .copyright{font-size:10.5px;color:var(--ngua);opacity:.55;margin-top:14px
 .field.verify .ft{color:#A8401F}
 .field.verify .ft::before{background:#A8401F}
 .field.verify p{font-size:12px;color:#7A3318}
-.fig-row{display:flex;gap:10px;overflow-x:auto;padding:4px 0 8px;-webkit-overflow-scrolling:touch}
-.fig-thumb{flex:0 0 auto;width:120px;margin:0;padding:0;border:0;background:none;text-align:left;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.fig-thumb img{width:120px;height:150px;object-fit:contain;background:#fff;border:1px solid var(--vien);border-radius:8px;display:block;pointer-events:none}
-.fig-thumb .fig-cap-s{display:block;font-size:11px;color:var(--muc-mo);margin-top:4px;line-height:1.3}
-.fig-lightbox{position:fixed;inset:0;z-index:300;background:rgba(14,58,58,.94);overflow:auto;-webkit-overflow-scrolling:touch;padding:56px 12px 24px;text-align:center}
-.fig-lightbox img{max-width:100%;background:#fff;border-radius:6px;cursor:zoom-in;touch-action:manipulation}
-.fig-lightbox.zoomed img{max-width:none;width:220%;cursor:zoom-out}
-.fig-lightbox .fig-cap{color:#F5F0E6;font-size:13px;margin-top:10px}
-.fig-lightbox .fig-x{position:fixed;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(245,240,230,.9);color:#0E3A3A;font-size:22px;line-height:1;cursor:pointer;z-index:301}
+.fig-row{display:flex;gap:10px;align-items:flex-start;overflow-x:auto;padding:4px 0 8px;-webkit-overflow-scrolling:touch}
+.fig-thumb{flex:0 0 auto;margin:0;padding:0;border:0;background:none;text-align:left;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.fig-thumb .fig-wrap{border:1px solid var(--vien);border-radius:8px;overflow:hidden;background:#fff}
+.fig-thumb .fig-cap-s{display:block;font-size:11px;color:var(--muc-mo);margin-top:4px;line-height:1.3;max-width:260px}
+.fig-wrap{position:relative;isolation:isolate;display:block}
+.fig-wrap img{display:block;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none;user-select:none}
+.fig-hl{position:absolute;pointer-events:none}
+.fig-hl.text{background:#E02424;mix-blend-mode:lighten}
+.fig-hl.box{border:2.5px solid #E02424;background:rgba(224,36,36,.14);border-radius:4px;box-sizing:border-box}
+.fig-mer{display:inline-block;margin:2px 0 6px;padding:7px 12px;border-radius:999px;border:1px solid var(--vien);background:#fff;color:var(--son);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.fv{position:fixed;inset:0;z-index:300;background:rgba(14,58,58,.96);display:flex;flex-direction:column;user-select:none;-webkit-user-select:none}
+.fv-bar{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top))}
+.fv-bar .sp{flex:1}
+.fv-btn{min-width:40px;height:40px;border-radius:50%;border:0;background:rgba(245,240,230,.92);color:#0E3A3A;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 10px;-webkit-tap-highlight-color:transparent}
+.fv-btn[disabled]{opacity:.35;cursor:default}
+.fv-stage{position:relative;flex:1;overflow:hidden;touch-action:none;cursor:grab}
+.fv-stage.drag{cursor:grabbing}
+.fv-canvas{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform;background:#fff;isolation:isolate}
+.fv-canvas img{display:block;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none}
+.fv-foot{flex:0 0 auto;color:#F5F0E6;font-size:13px;text-align:center;padding:8px 12px calc(10px + env(safe-area-inset-bottom));line-height:1.4}
+.fv-foot small{display:block;opacity:.7;font-size:11px;margin-top:2px}
 .src{font-size:11px;color:var(--muc-mo);padding:13px 0 4px;font-style:italic}
 .pp-actions{display:flex;gap:10px;padding:16px 20px 4px}
 .btn{flex:1;padding:13px;border-radius:12px;font-size:13px;font-weight:700;border:0;cursor:pointer;
@@ -810,7 +822,7 @@ function hzOf(term){
   if(!term) return '';
   return (state.hanScript === 'traditional') ? (hzTradOf(term) || term.hz) : term.hz;
 }
-const I18N = {"vi": {"sub": "Tiếng Trung Y Khoa", "search_ph": "Nhập 汉字 / pinyin / tiếng Việt / tiếng Anh để tra cứu", "search_hint": "Dùng dấu + để tìm nhiều triệu chứng cùng lúc (VD: đau lưng + đau bụng). Dấu , để khớp 1 trong nhiều cụm. Dấu - trước 1 cụm để loại trừ (VD: đau lưng - sốt).","g_all": "Toàn bộ", "g_anat": "Giải phẫu", "g_phys": "Sinh lý", "g_path": "Bệnh lý", "g_mer": "Kinh mạch", "g_acu": "Huyệt vị", "g_form": "Thang phương", "g_herb": "Dược liệu", "g_wordelem": "Từ ghép Y Khoa", "wt_prefix": "Tiền tố", "wt_suffix": "Hậu tố", "wt_root": "Từ căn", "wt_term": "Thuật ngữ ghép", "f_meaning": "Ý nghĩa", "f_example": "Ví dụ", "g_review": "Ôn luyện", "dd_all": "Toàn bộ", "sys_resp": "Hô hấp", "sys_circ": "Tuần hoàn", "sys_dige": "Tiêu hoá", "sys_nerv": "Thần kinh", "intro_resp": "Hệ cơ quan đảm nhiệm trao đổi khí giữa cơ thể và môi trường. Cấu trúc chính gồm mũi, hầu, thanh quản, khí quản, phế quản, phổi và phế nang.", "tab_vocab": "Từ vựng", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Đã thuộc", "all_terms": "Toàn bộ thuật ngữ", "results_for": "Kết quả cho", "words": "từ", "choose_sys": "Chọn một hệ cơ quan ở trên để xem giới thiệu và lọc từ vựng tương ứng.", "flow_title": "Đường đi giải phẫu", "detail": "Chi tiết", "f_pos": "Vị trí", "f_anatomy": "Giải phẫu", "f_figures": "Hình minh hoạ", "figure_credit": "Hình: giáo trình 《经络腧穴学》(新世纪第五版, Nhà xuất bản Trung y dược Trung Quốc, 2021) — dùng tạm, chỉ mang tính minh hoạ.", "f_func": "Công năng", "f_tcm": "Ghi chú Trung Y", "f_clin": "Lâm sàng", "f_indication": "Chủ trị", "f_taste": "Tính vị", "f_meridian": "Quy kinh", "f_pointclass": "Loại huyệt", "f_dose": "Liều dùng", "f_caution": "Kiêng kỵ", "f_composition": "Thành phần", "f_functions": "Công dụng", "f_analysis": "Vận dụng / Cách dùng", "f_origin": "Xuất xứ", "f_alias": "Tên khác", "gate_form_title": "Nội dung dành cho thành viên", "gate_form_desc": "Thang Phương chỉ hiển thị sau khi bạn đăng nhập tài khoản Chimedis.", "gate_form_login": "Đăng nhập để xem Thang Phương", "gate_form_fanpage": "Theo dõi Fanpage Hạ Vân Y Đạo →", "f_source": "Nguồn", "btn_known": "Đã thuộc", "btn_known_on": "Đã thuộc ✓", "btn_review": "Thêm vào ôn tập", "fc_front": "MẶT TRƯỚC", "fc_back": "MẶT SAU", "fc_flip": "Chạm để lật", "fc_flipback": "Lật lại", "fc_no": "Chưa nhớ", "fc_mid": "Cần ôn lại", "fc_yes": "Đã thuộc", "fc_empty": "Không có từ nào trong phạm vi này để học.", "qz_choose": "Chọn nghĩa tiếng Việt", "qz_mean": "nghĩa là gì?", "qz_q": "Câu", "qz_pts": "điểm", "qz_correct": "✓ Đúng", "qz_wrong": "✗ Sai", "qz_next": "Câu tiếp theo", "qz_result": "Xem kết quả", "qz_done_lab": "câu trả lời đúng", "qz_retry": "Làm lại", "qz_empty": "Không có từ nào trong phạm vi này để làm quiz.", "done_title": "Đã thuộc", "done_sub": "Ôn lại theo chu kỳ ngắt quãng — 1 · 3 · 7 · 14 · 30 ngày", "st_known": "Đã thuộc", "st_review": "Cần ôn lại", "st_today": "Hôm nay", "fl_today": "Hôm nay cần ôn", "fl_known": "Đã thuộc", "fl_review": "Cần ôn lại", "next_review": "Ôn tiếp", "today": "Hôm nay", "after": "sau", "days": "ngày", "no_words": "Chưa có từ nào trong nhóm này.", "review_today": "Ôn hôm nay", "dr_account": "Tài khoản", "dr_login": "Đăng nhập / Đăng ký", "dr_progress": "Tiến độ học tập", "dr_favorites": "Từ đã lưu", "favorites_empty": "Chưa lưu từ nào. Bấm vào biểu tượng ❤ trong 1 thuật ngữ để lưu.", "auth_title": "Chimedis", "auth_subtitle": "Đăng nhập để lưu từ vựng và đồng bộ trên mọi thiết bị", "auth_google": "Tiếp tục với Google", "auth_facebook": "Tiếp tục với Facebook", "auth_or": "hoặc", "auth_email_ph": "Email", "auth_password_ph": "Mật khẩu", "auth_name_ph": "Tên hiển thị", "auth_signin": "Đăng nhập", "auth_signup": "Tạo tài khoản", "auth_no_account": "Chưa có tài khoản?", "auth_have_account": "Đã có tài khoản?", "auth_switch_signup": "Đăng ký", "auth_switch_signin": "Đăng nhập", "auth_signout": "Đăng xuất", "auth_err_generic": "Có lỗi xảy ra, vui lòng thử lại.", "auth_err_invalid": "Email hoặc mật khẩu không đúng.", "auth_err_email_in_use": "Email này đã được đăng ký.", "auth_err_weak_password": "Mật khẩu cần ít nhất 6 ký tự.", "dr_settings": "Cài đặt", "dr_sys": "Cài đặt hệ thống", "dr_display": "Tuỳ chỉnh hiển thị", "dr_content_lang": "Ngôn ngữ hiển thị nội dung", "dr_lang": "Ngôn ngữ giao diện", "dr_han_script": "Chữ Hán hiển thị", "han_simplified": "简体 — Giản thể", "han_traditional": "繁體 — Phồn thể", "dr_other": "Khác", "dr_source": "Nguồn học thuật", "dr_about": "Giới thiệu Hạ Vân Y Đạo", "soon": "Sắp có", "empty_vocab": "Không tìm thấy thuật ngữ phù hợp.", "data_fallback_note": "⚠ Chưa tải được đầy đủ cơ sở dữ liệu (mất mạng hoặc máy chủ đang lỗi) — kết quả này chỉ dựa trên dữ liệu rút gọn ngoại tuyến. Kiểm tra kết nối mạng và thử tải lại trang.", "fuzzy_note": "Không có kết quả khớp chính xác — đang hiện gợi ý gần đúng cho", "load_more": "Xem thêm", "showing_count": "Đang hiện {n}/{total}", "footer_desc": "Ứng dụng tra cứu và ghi nhớ thuật ngữ y khoa, từ y học hiện đại đến kinh điển Trung Y."}, "zh": {"sub": "中医汉语", "search_ph": "输入 汉字 / 拼音 / 越南语 / 英语 进行查询", "search_hint": "输入 + 可同时查询多个症状（例：腰痛 + 腹痛）。逗号 , 表示任意一个符合即可。词前加 - 可排除该词（例：腰痛 - 发热）。","g_all": "全部", "g_anat": "解剖", "g_phys": "生理", "g_path": "病理", "g_mer": "经络", "g_acu": "腧穴", "g_form": "汤方", "g_herb": "药材", "g_wordelem": "词素合成", "wt_prefix": "前缀", "wt_suffix": "后缀", "wt_root": "词根", "wt_term": "复合词", "f_meaning": "含义", "f_example": "例词", "g_review": "复习", "dd_all": "全部", "sys_resp": "呼吸", "sys_circ": "循环", "sys_dige": "消化", "sys_nerv": "神经", "intro_resp": "人体与外界进行气体交换的系统，主要包括鼻、咽、喉、气管、支气管、肺和肺泡。", "tab_vocab": "词汇", "tab_fc": "卡片", "tab_quiz": "测验", "tab_done": "已掌握", "all_terms": "全部术语", "results_for": "查询结果", "words": "个词", "choose_sys": "请选择上方的器官系统以查看简介并筛选相应词汇。", "flow_title": "解剖路径", "detail": "详情", "f_pos": "位置", "f_anatomy": "解剖", "f_figures": "示意图", "figure_credit": "插图：《经络腧穴学》（新世纪第五版，中国中医药出版社，2021）——暂用，仅作示意。", "f_func": "功能", "f_tcm": "中医注释", "f_clin": "临床", "f_indication": "主治", "f_taste": "性味", "f_meridian": "归经", "f_pointclass": "穴位分类", "f_dose": "用量", "f_caution": "使用注意", "f_composition": "组成", "f_functions": "功用", "f_analysis": "运用／用法", "f_origin": "出处", "f_alias": "别名", "gate_form_title": "会员专属内容", "gate_form_desc": "登录 Chimedis 账户后方可查看「汤方」。", "gate_form_login": "登录以查看汤方", "gate_form_fanpage": "关注 夏雲醫道 主页 →", "f_source": "来源", "btn_known": "已掌握", "btn_known_on": "已掌握 ✓", "btn_review": "加入复习", "fc_front": "正面", "fc_back": "背面", "fc_flip": "点击翻转", "fc_flipback": "翻回", "fc_no": "未记住", "fc_mid": "需复习", "fc_yes": "已掌握", "fc_empty": "此范围内暂无可学习的词。", "qz_choose": "选择越南语释义", "qz_mean": "是什么意思？", "qz_q": "第", "qz_pts": "分", "qz_correct": "✓ 正确", "qz_wrong": "✗ 错误", "qz_next": "下一题", "qz_result": "查看结果", "qz_done_lab": "题答对", "qz_retry": "重做", "qz_empty": "此范围内暂无可测验的词。", "done_title": "已掌握", "done_sub": "按间隔周期复习 — 1 · 3 · 7 · 14 · 30 天", "st_known": "已掌握", "st_review": "需复习", "st_today": "今天", "fl_today": "今日待复习", "fl_known": "已掌握", "fl_review": "需复习", "next_review": "下次复习", "today": "今天", "after": "", "days": "天后", "no_words": "该组暂无词。", "review_today": "今日复习", "dr_account": "账户", "dr_login": "登录 / 注册", "dr_progress": "学习进度", "dr_favorites": "已收藏", "favorites_empty": "还没有收藏任何词条。点击词条中的 ❤ 图标即可收藏。", "auth_title": "Chimedis", "auth_subtitle": "登录以收藏词条并在多设备间同步", "auth_google": "使用 Google 继续", "auth_facebook": "使用 Facebook 继续", "auth_or": "或", "auth_email_ph": "邮箱", "auth_password_ph": "密码", "auth_name_ph": "显示名称", "auth_signin": "登录", "auth_signup": "创建账户", "auth_no_account": "还没有账户？", "auth_have_account": "已有账户？", "auth_switch_signup": "注册", "auth_switch_signin": "登录", "auth_signout": "退出登录", "auth_err_generic": "发生错误，请重试。", "auth_err_invalid": "邮箱或密码不正确。", "auth_err_email_in_use": "该邮箱已被注册。", "auth_err_weak_password": "密码至少需要6个字符。", "dr_settings": "设置", "dr_sys": "系统设置", "dr_display": "显示自定义", "dr_content_lang": "内容显示语言", "dr_lang": "界面语言", "dr_han_script": "汉字显示", "han_simplified": "简体", "han_traditional": "繁體", "dr_other": "其他", "dr_source": "学术来源", "dr_about": "关于夏雲醫道", "soon": "即将推出", "empty_vocab": "未找到匹配的术语。", "data_fallback_note": "⚠ 未能加载完整数据库（网络中断或服务器出错）——此结果仅基于精简的离线数据。请检查网络连接并重新加载页面。", "fuzzy_note": "没有完全匹配的结果 — 正在显示近似建议，针对", "load_more": "查看更多", "showing_count": "显示 {n}/{total}", "footer_desc": "医学术语查询与记忆应用，涵盖现代医学与中医经典。"}, "en": {"sub": "Medical Chinese", "search_ph": "Type 汉字 / pinyin / Vietnamese / English to search", "search_hint": "Use + to search multiple symptoms at once (e.g. back pain + stomach ache). Use , for either match. Use - before a phrase to exclude it (e.g. back pain - fever).","g_all": "All", "g_anat": "Anatomy", "g_phys": "Physiology", "g_path": "Pathology", "g_mer": "Meridians", "g_acu": "Acupoints", "g_form": "Formulas", "g_herb": "Herbs", "g_wordelem": "Word elements", "wt_prefix": "Prefix", "wt_suffix": "Suffix", "wt_root": "Root", "wt_term": "Compound term", "f_meaning": "Meaning", "f_example": "Example", "g_review": "Review", "dd_all": "All", "sys_resp": "Respiratory", "sys_circ": "Circulatory", "sys_dige": "Digestive", "sys_nerv": "Nervous", "intro_resp": "The system responsible for gas exchange between the body and the environment. Main structures: nose, pharynx, larynx, trachea, bronchi, lungs and alveoli.", "tab_vocab": "Vocabulary", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Learned", "all_terms": "All terms", "results_for": "Results for", "words": "words", "choose_sys": "Select an organ system above to see its intro and filter related terms.", "flow_title": "Anatomical pathway", "detail": "Details", "f_pos": "Location", "f_anatomy": "Anatomy", "f_figures": "Illustrations", "figure_credit": "Figures: textbook 《经络腧穴学》 (New Century 5th ed., China Press of Traditional Chinese Medicine, 2021) — temporary use, illustrative only.", "f_func": "Function", "f_tcm": "TCM notes", "f_clin": "Clinical", "f_indication": "Indications", "f_taste": "Taste & temperature", "f_meridian": "Meridians", "f_pointclass": "Point classification", "f_dose": "Dosage", "f_caution": "Cautions", "f_composition": "Composition", "f_functions": "Actions", "f_analysis": "Usage / Application", "f_origin": "Source text", "f_alias": "Also known as", "gate_form_title": "Members-only content", "gate_form_desc": "Formulas are shown after you sign in to a Chimedis account.", "gate_form_login": "Sign in to view Formulas", "gate_form_fanpage": "Follow the Hạ Vân Y Đạo page →", "f_source": "Source", "btn_known": "Learned", "btn_known_on": "Learned ✓", "btn_review": "Add to review", "fc_front": "FRONT", "fc_back": "BACK", "fc_flip": "Tap to flip", "fc_flipback": "Flip back", "fc_no": "Not yet", "fc_mid": "Review", "fc_yes": "Learned", "fc_empty": "No words in this scope to study.", "qz_choose": "Choose the Vietnamese meaning", "qz_mean": "means?", "qz_q": "Question", "qz_pts": "pts", "qz_correct": "✓ Correct", "qz_wrong": "✗ Wrong", "qz_next": "Next", "qz_result": "See results", "qz_done_lab": "correct answers", "qz_retry": "Retry", "qz_empty": "No words in this scope for a quiz.", "done_title": "Learned", "done_sub": "Spaced repetition — 1 · 3 · 7 · 14 · 30 days", "st_known": "Learned", "st_review": "To review", "st_today": "Today", "fl_today": "Due today", "fl_known": "Learned", "fl_review": "To review", "next_review": "Next review", "today": "Today", "after": "in", "days": "days", "no_words": "No words in this group yet.", "review_today": "Review today", "dr_account": "Account", "dr_login": "Sign in / Sign up", "dr_progress": "Learning progress", "dr_favorites": "Saved terms", "favorites_empty": "No saved terms yet. Tap the ❤ icon on a term to save it.", "auth_title": "Chimedis", "auth_subtitle": "Sign in to save terms and sync across devices", "auth_google": "Continue with Google", "auth_facebook": "Continue with Facebook", "auth_or": "or", "auth_email_ph": "Email", "auth_password_ph": "Password", "auth_name_ph": "Display name", "auth_signin": "Sign in", "auth_signup": "Create account", "auth_no_account": "No account yet?", "auth_have_account": "Already have an account?", "auth_switch_signup": "Sign up", "auth_switch_signin": "Sign in", "auth_signout": "Sign out", "auth_err_generic": "Something went wrong, please try again.", "auth_err_invalid": "Incorrect email or password.", "auth_err_email_in_use": "This email is already registered.", "auth_err_weak_password": "Password must be at least 6 characters.", "dr_settings": "Settings", "dr_sys": "System settings", "dr_display": "Display options", "dr_content_lang": "Content display language", "dr_lang": "Interface language", "dr_han_script": "Chinese script", "han_simplified": "Simplified (简体)", "han_traditional": "Traditional (繁體)", "dr_other": "Other", "dr_source": "Academic sources", "dr_about": "About Hạ Vân Y Đạo", "soon": "Soon", "empty_vocab": "No matching terms found.", "data_fallback_note": "⚠ The full database couldn't be loaded (no connection or server issue) — this result is based on a limited offline dataset only. Check your connection and try reloading the page.", "fuzzy_note": "No exact match — showing close suggestions for", "load_more": "Show more", "showing_count": "Showing {n}/{total}", "footer_desc": "An app for looking up and memorizing medical terminology, from modern medicine to classical TCM."}};
+const I18N = {"vi": {"sub": "Tiếng Trung Y Khoa", "search_ph": "Nhập 汉字 / pinyin / tiếng Việt / tiếng Anh để tra cứu", "search_hint": "Dùng dấu + để tìm nhiều triệu chứng cùng lúc (VD: đau lưng + đau bụng). Dấu , để khớp 1 trong nhiều cụm. Dấu - trước 1 cụm để loại trừ (VD: đau lưng - sốt).","g_all": "Toàn bộ", "g_anat": "Giải phẫu", "g_phys": "Sinh lý", "g_path": "Bệnh lý", "g_mer": "Kinh mạch", "g_acu": "Huyệt vị", "g_form": "Thang phương", "g_herb": "Dược liệu", "g_wordelem": "Từ ghép Y Khoa", "wt_prefix": "Tiền tố", "wt_suffix": "Hậu tố", "wt_root": "Từ căn", "wt_term": "Thuật ngữ ghép", "f_meaning": "Ý nghĩa", "f_example": "Ví dụ", "g_review": "Ôn luyện", "dd_all": "Toàn bộ", "sys_resp": "Hô hấp", "sys_circ": "Tuần hoàn", "sys_dige": "Tiêu hoá", "sys_nerv": "Thần kinh", "intro_resp": "Hệ cơ quan đảm nhiệm trao đổi khí giữa cơ thể và môi trường. Cấu trúc chính gồm mũi, hầu, thanh quản, khí quản, phế quản, phổi và phế nang.", "tab_vocab": "Từ vựng", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Đã thuộc", "all_terms": "Toàn bộ thuật ngữ", "results_for": "Kết quả cho", "words": "từ", "choose_sys": "Chọn một hệ cơ quan ở trên để xem giới thiệu và lọc từ vựng tương ứng.", "flow_title": "Đường đi giải phẫu", "detail": "Chi tiết", "f_pos": "Vị trí", "f_anatomy": "Giải phẫu", "f_figures": "Hình minh hoạ", "f_meridian_fig": "Xem hình đường kinh", "fv_hint": "Lăn chuột / chụm hai ngón để phóng to · chạm đúp để zoom · kéo để di chuyển", "figure_credit": "Hình: giáo trình 《经络腧穴学》(新世纪第五版, Nhà xuất bản Trung y dược Trung Quốc, 2021) — dùng tạm, chỉ mang tính minh hoạ.", "f_func": "Công năng", "f_tcm": "Ghi chú Trung Y", "f_clin": "Lâm sàng", "f_indication": "Chủ trị", "f_taste": "Tính vị", "f_meridian": "Quy kinh", "f_pointclass": "Loại huyệt", "f_dose": "Liều dùng", "f_caution": "Kiêng kỵ", "f_composition": "Thành phần", "f_functions": "Công dụng", "f_analysis": "Vận dụng / Cách dùng", "f_origin": "Xuất xứ", "f_alias": "Tên khác", "gate_form_title": "Nội dung dành cho thành viên", "gate_form_desc": "Thang Phương chỉ hiển thị sau khi bạn đăng nhập tài khoản Chimedis.", "gate_form_login": "Đăng nhập để xem Thang Phương", "gate_form_fanpage": "Theo dõi Fanpage Hạ Vân Y Đạo →", "f_source": "Nguồn", "btn_known": "Đã thuộc", "btn_known_on": "Đã thuộc ✓", "btn_review": "Thêm vào ôn tập", "fc_front": "MẶT TRƯỚC", "fc_back": "MẶT SAU", "fc_flip": "Chạm để lật", "fc_flipback": "Lật lại", "fc_no": "Chưa nhớ", "fc_mid": "Cần ôn lại", "fc_yes": "Đã thuộc", "fc_empty": "Không có từ nào trong phạm vi này để học.", "qz_choose": "Chọn nghĩa tiếng Việt", "qz_mean": "nghĩa là gì?", "qz_q": "Câu", "qz_pts": "điểm", "qz_correct": "✓ Đúng", "qz_wrong": "✗ Sai", "qz_next": "Câu tiếp theo", "qz_result": "Xem kết quả", "qz_done_lab": "câu trả lời đúng", "qz_retry": "Làm lại", "qz_empty": "Không có từ nào trong phạm vi này để làm quiz.", "done_title": "Đã thuộc", "done_sub": "Ôn lại theo chu kỳ ngắt quãng — 1 · 3 · 7 · 14 · 30 ngày", "st_known": "Đã thuộc", "st_review": "Cần ôn lại", "st_today": "Hôm nay", "fl_today": "Hôm nay cần ôn", "fl_known": "Đã thuộc", "fl_review": "Cần ôn lại", "next_review": "Ôn tiếp", "today": "Hôm nay", "after": "sau", "days": "ngày", "no_words": "Chưa có từ nào trong nhóm này.", "review_today": "Ôn hôm nay", "dr_account": "Tài khoản", "dr_login": "Đăng nhập / Đăng ký", "dr_progress": "Tiến độ học tập", "dr_favorites": "Từ đã lưu", "favorites_empty": "Chưa lưu từ nào. Bấm vào biểu tượng ❤ trong 1 thuật ngữ để lưu.", "auth_title": "Chimedis", "auth_subtitle": "Đăng nhập để lưu từ vựng và đồng bộ trên mọi thiết bị", "auth_google": "Tiếp tục với Google", "auth_facebook": "Tiếp tục với Facebook", "auth_or": "hoặc", "auth_email_ph": "Email", "auth_password_ph": "Mật khẩu", "auth_name_ph": "Tên hiển thị", "auth_signin": "Đăng nhập", "auth_signup": "Tạo tài khoản", "auth_no_account": "Chưa có tài khoản?", "auth_have_account": "Đã có tài khoản?", "auth_switch_signup": "Đăng ký", "auth_switch_signin": "Đăng nhập", "auth_signout": "Đăng xuất", "auth_err_generic": "Có lỗi xảy ra, vui lòng thử lại.", "auth_err_invalid": "Email hoặc mật khẩu không đúng.", "auth_err_email_in_use": "Email này đã được đăng ký.", "auth_err_weak_password": "Mật khẩu cần ít nhất 6 ký tự.", "dr_settings": "Cài đặt", "dr_sys": "Cài đặt hệ thống", "dr_display": "Tuỳ chỉnh hiển thị", "dr_content_lang": "Ngôn ngữ hiển thị nội dung", "dr_lang": "Ngôn ngữ giao diện", "dr_han_script": "Chữ Hán hiển thị", "han_simplified": "简体 — Giản thể", "han_traditional": "繁體 — Phồn thể", "dr_other": "Khác", "dr_source": "Nguồn học thuật", "dr_about": "Giới thiệu Hạ Vân Y Đạo", "soon": "Sắp có", "empty_vocab": "Không tìm thấy thuật ngữ phù hợp.", "data_fallback_note": "⚠ Chưa tải được đầy đủ cơ sở dữ liệu (mất mạng hoặc máy chủ đang lỗi) — kết quả này chỉ dựa trên dữ liệu rút gọn ngoại tuyến. Kiểm tra kết nối mạng và thử tải lại trang.", "fuzzy_note": "Không có kết quả khớp chính xác — đang hiện gợi ý gần đúng cho", "load_more": "Xem thêm", "showing_count": "Đang hiện {n}/{total}", "footer_desc": "Ứng dụng tra cứu và ghi nhớ thuật ngữ y khoa, từ y học hiện đại đến kinh điển Trung Y."}, "zh": {"sub": "中医汉语", "search_ph": "输入 汉字 / 拼音 / 越南语 / 英语 进行查询", "search_hint": "输入 + 可同时查询多个症状（例：腰痛 + 腹痛）。逗号 , 表示任意一个符合即可。词前加 - 可排除该词（例：腰痛 - 发热）。","g_all": "全部", "g_anat": "解剖", "g_phys": "生理", "g_path": "病理", "g_mer": "经络", "g_acu": "腧穴", "g_form": "汤方", "g_herb": "药材", "g_wordelem": "词素合成", "wt_prefix": "前缀", "wt_suffix": "后缀", "wt_root": "词根", "wt_term": "复合词", "f_meaning": "含义", "f_example": "例词", "g_review": "复习", "dd_all": "全部", "sys_resp": "呼吸", "sys_circ": "循环", "sys_dige": "消化", "sys_nerv": "神经", "intro_resp": "人体与外界进行气体交换的系统，主要包括鼻、咽、喉、气管、支气管、肺和肺泡。", "tab_vocab": "词汇", "tab_fc": "卡片", "tab_quiz": "测验", "tab_done": "已掌握", "all_terms": "全部术语", "results_for": "查询结果", "words": "个词", "choose_sys": "请选择上方的器官系统以查看简介并筛选相应词汇。", "flow_title": "解剖路径", "detail": "详情", "f_pos": "位置", "f_anatomy": "解剖", "f_figures": "示意图", "f_meridian_fig": "查看经络图", "fv_hint": "滚轮/双指缩放 · 双击放大 · 拖动移动", "figure_credit": "插图：《经络腧穴学》（新世纪第五版，中国中医药出版社，2021）——暂用，仅作示意。", "f_func": "功能", "f_tcm": "中医注释", "f_clin": "临床", "f_indication": "主治", "f_taste": "性味", "f_meridian": "归经", "f_pointclass": "穴位分类", "f_dose": "用量", "f_caution": "使用注意", "f_composition": "组成", "f_functions": "功用", "f_analysis": "运用／用法", "f_origin": "出处", "f_alias": "别名", "gate_form_title": "会员专属内容", "gate_form_desc": "登录 Chimedis 账户后方可查看「汤方」。", "gate_form_login": "登录以查看汤方", "gate_form_fanpage": "关注 夏雲醫道 主页 →", "f_source": "来源", "btn_known": "已掌握", "btn_known_on": "已掌握 ✓", "btn_review": "加入复习", "fc_front": "正面", "fc_back": "背面", "fc_flip": "点击翻转", "fc_flipback": "翻回", "fc_no": "未记住", "fc_mid": "需复习", "fc_yes": "已掌握", "fc_empty": "此范围内暂无可学习的词。", "qz_choose": "选择越南语释义", "qz_mean": "是什么意思？", "qz_q": "第", "qz_pts": "分", "qz_correct": "✓ 正确", "qz_wrong": "✗ 错误", "qz_next": "下一题", "qz_result": "查看结果", "qz_done_lab": "题答对", "qz_retry": "重做", "qz_empty": "此范围内暂无可测验的词。", "done_title": "已掌握", "done_sub": "按间隔周期复习 — 1 · 3 · 7 · 14 · 30 天", "st_known": "已掌握", "st_review": "需复习", "st_today": "今天", "fl_today": "今日待复习", "fl_known": "已掌握", "fl_review": "需复习", "next_review": "下次复习", "today": "今天", "after": "", "days": "天后", "no_words": "该组暂无词。", "review_today": "今日复习", "dr_account": "账户", "dr_login": "登录 / 注册", "dr_progress": "学习进度", "dr_favorites": "已收藏", "favorites_empty": "还没有收藏任何词条。点击词条中的 ❤ 图标即可收藏。", "auth_title": "Chimedis", "auth_subtitle": "登录以收藏词条并在多设备间同步", "auth_google": "使用 Google 继续", "auth_facebook": "使用 Facebook 继续", "auth_or": "或", "auth_email_ph": "邮箱", "auth_password_ph": "密码", "auth_name_ph": "显示名称", "auth_signin": "登录", "auth_signup": "创建账户", "auth_no_account": "还没有账户？", "auth_have_account": "已有账户？", "auth_switch_signup": "注册", "auth_switch_signin": "登录", "auth_signout": "退出登录", "auth_err_generic": "发生错误，请重试。", "auth_err_invalid": "邮箱或密码不正确。", "auth_err_email_in_use": "该邮箱已被注册。", "auth_err_weak_password": "密码至少需要6个字符。", "dr_settings": "设置", "dr_sys": "系统设置", "dr_display": "显示自定义", "dr_content_lang": "内容显示语言", "dr_lang": "界面语言", "dr_han_script": "汉字显示", "han_simplified": "简体", "han_traditional": "繁體", "dr_other": "其他", "dr_source": "学术来源", "dr_about": "关于夏雲醫道", "soon": "即将推出", "empty_vocab": "未找到匹配的术语。", "data_fallback_note": "⚠ 未能加载完整数据库（网络中断或服务器出错）——此结果仅基于精简的离线数据。请检查网络连接并重新加载页面。", "fuzzy_note": "没有完全匹配的结果 — 正在显示近似建议，针对", "load_more": "查看更多", "showing_count": "显示 {n}/{total}", "footer_desc": "医学术语查询与记忆应用，涵盖现代医学与中医经典。"}, "en": {"sub": "Medical Chinese", "search_ph": "Type 汉字 / pinyin / Vietnamese / English to search", "search_hint": "Use + to search multiple symptoms at once (e.g. back pain + stomach ache). Use , for either match. Use - before a phrase to exclude it (e.g. back pain - fever).","g_all": "All", "g_anat": "Anatomy", "g_phys": "Physiology", "g_path": "Pathology", "g_mer": "Meridians", "g_acu": "Acupoints", "g_form": "Formulas", "g_herb": "Herbs", "g_wordelem": "Word elements", "wt_prefix": "Prefix", "wt_suffix": "Suffix", "wt_root": "Root", "wt_term": "Compound term", "f_meaning": "Meaning", "f_example": "Example", "g_review": "Review", "dd_all": "All", "sys_resp": "Respiratory", "sys_circ": "Circulatory", "sys_dige": "Digestive", "sys_nerv": "Nervous", "intro_resp": "The system responsible for gas exchange between the body and the environment. Main structures: nose, pharynx, larynx, trachea, bronchi, lungs and alveoli.", "tab_vocab": "Vocabulary", "tab_fc": "Flashcard", "tab_quiz": "Quiz", "tab_done": "Learned", "all_terms": "All terms", "results_for": "Results for", "words": "words", "choose_sys": "Select an organ system above to see its intro and filter related terms.", "flow_title": "Anatomical pathway", "detail": "Details", "f_pos": "Location", "f_anatomy": "Anatomy", "f_figures": "Illustrations", "f_meridian_fig": "View meridian diagram", "fv_hint": "Mouse wheel / pinch to zoom · double-tap to zoom · drag to move", "figure_credit": "Figures: textbook 《经络腧穴学》 (New Century 5th ed., China Press of Traditional Chinese Medicine, 2021) — temporary use, illustrative only.", "f_func": "Function", "f_tcm": "TCM notes", "f_clin": "Clinical", "f_indication": "Indications", "f_taste": "Taste & temperature", "f_meridian": "Meridians", "f_pointclass": "Point classification", "f_dose": "Dosage", "f_caution": "Cautions", "f_composition": "Composition", "f_functions": "Actions", "f_analysis": "Usage / Application", "f_origin": "Source text", "f_alias": "Also known as", "gate_form_title": "Members-only content", "gate_form_desc": "Formulas are shown after you sign in to a Chimedis account.", "gate_form_login": "Sign in to view Formulas", "gate_form_fanpage": "Follow the Hạ Vân Y Đạo page →", "f_source": "Source", "btn_known": "Learned", "btn_known_on": "Learned ✓", "btn_review": "Add to review", "fc_front": "FRONT", "fc_back": "BACK", "fc_flip": "Tap to flip", "fc_flipback": "Flip back", "fc_no": "Not yet", "fc_mid": "Review", "fc_yes": "Learned", "fc_empty": "No words in this scope to study.", "qz_choose": "Choose the Vietnamese meaning", "qz_mean": "means?", "qz_q": "Question", "qz_pts": "pts", "qz_correct": "✓ Correct", "qz_wrong": "✗ Wrong", "qz_next": "Next", "qz_result": "See results", "qz_done_lab": "correct answers", "qz_retry": "Retry", "qz_empty": "No words in this scope for a quiz.", "done_title": "Learned", "done_sub": "Spaced repetition — 1 · 3 · 7 · 14 · 30 days", "st_known": "Learned", "st_review": "To review", "st_today": "Today", "fl_today": "Due today", "fl_known": "Learned", "fl_review": "To review", "next_review": "Next review", "today": "Today", "after": "in", "days": "days", "no_words": "No words in this group yet.", "review_today": "Review today", "dr_account": "Account", "dr_login": "Sign in / Sign up", "dr_progress": "Learning progress", "dr_favorites": "Saved terms", "favorites_empty": "No saved terms yet. Tap the ❤ icon on a term to save it.", "auth_title": "Chimedis", "auth_subtitle": "Sign in to save terms and sync across devices", "auth_google": "Continue with Google", "auth_facebook": "Continue with Facebook", "auth_or": "or", "auth_email_ph": "Email", "auth_password_ph": "Password", "auth_name_ph": "Display name", "auth_signin": "Sign in", "auth_signup": "Create account", "auth_no_account": "No account yet?", "auth_have_account": "Already have an account?", "auth_switch_signup": "Sign up", "auth_switch_signin": "Sign in", "auth_signout": "Sign out", "auth_err_generic": "Something went wrong, please try again.", "auth_err_invalid": "Incorrect email or password.", "auth_err_email_in_use": "This email is already registered.", "auth_err_weak_password": "Password must be at least 6 characters.", "dr_settings": "Settings", "dr_sys": "System settings", "dr_display": "Display options", "dr_content_lang": "Content display language", "dr_lang": "Interface language", "dr_han_script": "Chinese script", "han_simplified": "Simplified (简体)", "han_traditional": "Traditional (繁體)", "dr_other": "Other", "dr_source": "Academic sources", "dr_about": "About Hạ Vân Y Đạo", "soon": "Soon", "empty_vocab": "No matching terms found.", "data_fallback_note": "⚠ The full database couldn't be loaded (no connection or server issue) — this result is based on a limited offline dataset only. Check your connection and try reloading the page.", "fuzzy_note": "No exact match — showing close suggestions for", "load_more": "Show more", "showing_count": "Showing {n}/{total}", "footer_desc": "An app for looking up and memorizing medical terminology, from modern medicine to classical TCM."}};
 I18N.vi.auth_apple = 'Tiếp tục với Apple'; I18N.zh.auth_apple = '使用 Apple 继续'; I18N.en.auth_apple = 'Continue with Apple';
 function t(key){ return (I18N[state.lang] && I18N[state.lang][key]) || I18N.vi[key] || key; }
 // Bệnh lý dùng chung 4 field slot với Giải phẫu/Sinh lý (vitri/congnang/tcm/lamsang,
@@ -3037,6 +3049,17 @@ function renderTabContent(){
 }
 
 // ===== TAB: TỪ VỰNG =====
+// Nút "Xem hình đường kinh" ở đầu danh sách khi đang lọc 1 kinh trong Huyệt vị (hình cả đường kinh không còn
+// nằm trong popup từng huyệt — founder 2026-10-07). Mỗi kinh có đúng 1 hình tổng quan.
+function meridianFigBtn(list){
+  if(state.group1 !== 'Huyệt vị' || !state.group2 || state.searchQuery) return '';
+  const t0 = list.find(x => x.mfigures && x.mfigures.length);
+  return t0 ? `<div class="fig-mer-wrap"><button type="button" class="fig-mer" onclick="openMeridianFromList()">${t('f_meridian_fig')} ›</button></div>` : '';
+}
+function openMeridianFromList(){
+  const t0 = getFiltered().find(x => x.mfigures && x.mfigures.length);
+  if(t0) openFigureList(t0.mfigures.map(f => Object.assign({}, f, {box:undefined})), 0);
+}
 function renderVocabTab(){
   // Màn khoá cho Thang Phương khi chưa đăng nhập — nội dung chỉ mở sau khi có tài khoản
   // Chimedis (cơ chế quản lý người dùng). CTA phụ: theo dõi Fanpage Hạ Vân Y Đạo.
@@ -3087,7 +3110,7 @@ function renderVocabTab(){
   const loadMore = visibleCount < list.length
     ? `<button class="loadmore" onclick="loadMoreVocab()">${t('load_more')} (${visibleCount}/${list.length})</button>`
     : '';
-  return `<div class="vocab">${reviewReminderBar()}<div class="vmeta">${metaLabel} — ${list.length} ${t('words')}</div>${rows}${loadMore}</div>`;
+  return `<div class="vocab">${reviewReminderBar()}<div class="vmeta">${metaLabel} — ${list.length} ${t('words')}</div>${meridianFigBtn(list)}${rows}${loadMore}</div>`;
 }
 // Nhắc ôn nhẹ nhàng NGAY TRONG APP (v1) — hiện ở đầu danh sách "Toàn bộ", ẩn được trong ngày.
 function reviewReminderBar(){
@@ -3454,9 +3477,11 @@ function openPopup(id){
     // trong lúc chưa có atlas riêng. Server chỉ gửi term.figures khi SOURCE_FIGURES_ENABLED != 'false'
     // (công tắc tắt nhanh), thứ tự: hình chi tiết huyệt trước, hình cả đường kinh sau cùng.
     if(term.figures && term.figures.length){
-      const esc = x => String(x||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-      const thumbs = term.figures.map(f => `<button type="button" class="fig-thumb" data-src="${esc(f.src)}" data-cap="${esc(((f.fig||'')+' '+(f.cap||'')).trim())}" onclick="openFigure(this)"><img src="${esc(f.src)}" alt="${esc(f.cap)}" loading="lazy"><span class="fig-cap-s">${esc(((f.fig||'')+' '+(f.cap||'')).trim())}</span></button>`).join('');
-      html += `<div class="field"><div class="ft">${t('f_figures')}</div><div class="fig-row">${thumbs}</div><div class="src">${t('figure_credit')}</div></div>`;
+      FIG_STORE[term.id] = term.figures;
+      FIG_STORE[term.id + ':m'] = term.mfigures || [];
+      const thumbs = term.figures.map((f,i) => `<button type="button" class="fig-thumb" onclick="openFigures('${term.id}',${i})">${figThumbHtml(f)}<span class="fig-cap-s">${escAttr(((f.fig||'')+' '+(f.cap||'')).trim())}</span></button>`).join('');
+      const mer = (term.mfigures && term.mfigures.length) ? `<button type="button" class="fig-mer" onclick="openMeridianFigures('${term.id}')">${t('f_meridian_fig')} ›</button>` : '';
+      html += `<div class="field"><div class="ft">${t('f_figures')}</div><div class="fig-row">${thumbs}</div>${mer}<div class="src">${t('figure_credit')}</div></div>`;
     }
   } else if(term.category === 'formula'){
     // Thang Phương: Thành phần / Công dụng / Chủ trị / Vận dụng / Kiêng kỵ.
@@ -3670,19 +3695,162 @@ document.addEventListener('click', (e)=>{
 
 
 // ===== ÁP DỤNG NHÃN TĨNH (drawer, header, footer, nút nổi) =====
-function closeFigure(){ const d=document.querySelector('.fig-lightbox'); if(d) d.remove(); }
-function openFigure(el){
+// ===== TRÌNH XEM HÌNH: phóng to/thu nhỏ + kéo =====
+// Máy tính: lăn chuột (phóng tại con trỏ) · nút + − · click đúp · kéo để di chuyển.
+// Điện thoại: hai ngón chụm/giãn (phóng quanh điểm giữa 2 ngón) · kéo 1 ngón · chạm đúp.
+const FIG_STORE = {};
+function escAttr(x){ return String(x==null?'':x).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+// Bôi đỏ TÊN huyệt: toạ độ % nên đúng ở mọi kích thước (hình thu nhỏ và trình xem).
+// hl='text' (nền trắng): ô đỏ + mix-blend-mode:lighten → chữ đen thành đỏ, nền trắng giữ nguyên.
+// hl='box' (nền là ảnh chụp): khung đỏ viền quanh tên.
+function figHlHtml(f){
+  if(!f.box || !f.w || !f.h) return '';
+  const [x,y,w,h] = f.box;
+  return `<div class="fig-hl ${f.hl==='box'?'box':'text'}" style="left:${x/f.w*100}%;top:${y/f.h*100}%;width:${w/f.w*100}%;height:${h/f.h*100}%"></div>`;
+}
+function figThumbHtml(f){
+  const ratio = (f.w && f.h) ? f.w/f.h : 0.6;
+  const W = Math.round(Math.min(260, 190*ratio)), H = Math.round(W/ratio);
+  return `<span class="fig-wrap" style="width:${W}px;height:${H}px"><img src="${escAttr(f.src)}" alt="${escAttr(f.cap)}" loading="lazy">${figHlHtml(f)}</span>`;
+}
+const FV = { el:null, items:[], i:0, s:1, x:0, y:0, fit:1, min:.3, max:12, ptrs:new Map(), moved:0, tap:{t:0,x:0,y:0}, raf:0 };
+function openFigures(key, index){ openFigureList(FIG_STORE[key]||[], index||0); }
+function openMeridianFigures(key){ openFigureList(FIG_STORE[key+':m']||[], 0); }
+function openFigureList(items, index){
+  if(!items.length) return;
   closeFigure();
-  const src = el.dataset.src, cap = el.dataset.cap || '';
-  const d=document.createElement('div'); d.className='fig-lightbox';
-  const x=document.createElement('button'); x.type='button'; x.className='fig-x'; x.textContent='×'; x.setAttribute('aria-label','Close');
-  x.onclick=(e)=>{ e.stopPropagation(); closeFigure(); };
-  const i=document.createElement('img'); i.src=src; i.alt=cap;
-  // Chạm vào hình = phóng to/thu nhỏ (cuộn để xem phần khác); chạm nền hoặc nút × = đóng.
-  i.onclick=(e)=>{ e.stopPropagation(); d.classList.toggle('zoomed'); };
-  const c=document.createElement('div'); c.className='fig-cap'; c.textContent=cap;
-  d.onclick=()=>closeFigure();
-  d.appendChild(x); d.appendChild(i); d.appendChild(c); document.body.appendChild(d);
+  FV.items = items; FV.i = index;
+  const d = document.createElement('div'); d.className = 'fv';
+  d.innerHTML = `<div class="fv-bar">
+      <button type="button" class="fv-btn" id="fvPrev" aria-label="Previous">‹</button>
+      <button type="button" class="fv-btn" id="fvNext" aria-label="Next">›</button>
+      <span class="sp"></span>
+      <button type="button" class="fv-btn" id="fvOut" aria-label="Zoom out">−</button>
+      <button type="button" class="fv-btn" id="fvIn" aria-label="Zoom in">+</button>
+      <button type="button" class="fv-btn" id="fvFit" aria-label="Fit">⤢</button>
+      <button type="button" class="fv-btn" id="fvX" aria-label="Close">×</button>
+    </div>
+    <div class="fv-stage" id="fvStage"><div class="fv-canvas" id="fvCanvas"></div></div>
+    <div class="fv-foot"><span id="fvCap"></span><small>${t('fv_hint')}</small></div>`;
+  document.body.appendChild(d); FV.el = d;
+  const $ = id => d.querySelector('#'+id);
+  $('fvX').onclick = closeFigure;
+  $('fvIn').onclick = () => fvZoomBy(1.5);
+  $('fvOut').onclick = () => fvZoomBy(1/1.5);
+  $('fvFit').onclick = fvFit;
+  $('fvPrev').onclick = () => fvGo(-1);
+  $('fvNext').onclick = () => fvGo(1);
+  const st = $('fvStage');
+  st.addEventListener('pointerdown', fvDown);
+  st.addEventListener('pointermove', fvMove);
+  st.addEventListener('pointerup', fvUp);
+  st.addEventListener('pointercancel', fvUp);
+  st.addEventListener('wheel', fvWheel, {passive:false});
+  document.addEventListener('keydown', fvKey);
+  window.addEventListener('resize', fvFit);
+  fvShow();
+}
+function closeFigure(){
+  if(!FV.el) return;
+  FV.el.remove(); FV.el = null; FV.ptrs.clear();
+  document.removeEventListener('keydown', fvKey);
+  window.removeEventListener('resize', fvFit);
+}
+function fvShow(){
+  const it = FV.items[FV.i]; if(!it) return;
+  const canvas = FV.el.querySelector('#fvCanvas');
+  const w = it.w || 600, h = it.h || 900;
+  canvas.style.width = w+'px'; canvas.style.height = h+'px';
+  canvas.innerHTML = `<img src="${escAttr(it.src)}" alt="${escAttr(it.cap)}" draggable="false">` + figHlHtml(it);
+  FV.el.querySelector('#fvCap').textContent = ((it.fig||'')+' '+(it.cap||'')).trim();
+  const multi = FV.items.length > 1;
+  const pv = FV.el.querySelector('#fvPrev'), nx = FV.el.querySelector('#fvNext');
+  pv.disabled = FV.i <= 0; nx.disabled = FV.i >= FV.items.length-1;
+  pv.style.display = nx.style.display = multi ? '' : 'none';
+  fvFit();
+}
+function fvGo(d){ const n = FV.i + d; if(n < 0 || n >= FV.items.length) return; FV.i = n; fvShow(); }
+function fvDims(){ const st = FV.el.querySelector('#fvStage'); const it = FV.items[FV.i]; return { W: st.clientWidth, H: st.clientHeight, w: it.w||600, h: it.h||900 }; }
+function fvFit(){
+  if(!FV.el) return;
+  const {W,H,w,h} = fvDims();
+  FV.fit = Math.min(W/w, H/h) * 0.98;
+  FV.min = FV.fit * 0.8; FV.max = Math.max(FV.fit * 10, 4);
+  FV.s = FV.fit; FV.x = (W - w*FV.s)/2; FV.y = (H - h*FV.s)/2;
+  fvApply();
+}
+function fvClamp(){
+  const {W,H,w,h} = fvDims();
+  const sw = w*FV.s, sh = h*FV.s;
+  FV.x = sw <= W ? (W - sw)/2 : Math.min(0, Math.max(W - sw, FV.x));
+  FV.y = sh <= H ? (H - sh)/2 : Math.min(0, Math.max(H - sh, FV.y));
+}
+function fvApply(){
+  fvClamp();
+  if(FV.raf) return;
+  FV.raf = requestAnimationFrame(() => {
+    FV.raf = 0;
+    const c = FV.el && FV.el.querySelector('#fvCanvas'); if(!c) return;
+    c.style.transform = `translate3d(${FV.x}px,${FV.y}px,0) scale(${FV.s})`;
+  });
+}
+// Phóng/thu quanh điểm (px, py) trong hệ toạ độ stage — điểm ảnh dưới (px,py) đứng yên.
+function fvZoomAt(factor, px, py){
+  const ns = Math.min(FV.max, Math.max(FV.min, FV.s*factor));
+  const k = ns/FV.s; FV.x = px - (px - FV.x)*k; FV.y = py - (py - FV.y)*k; FV.s = ns; fvApply();
+}
+function fvZoomBy(f){ const {W,H} = fvDims(); fvZoomAt(f, W/2, H/2); }
+function fvStagePt(e){ const r = e.currentTarget.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; }
+function fvWheel(e){
+  e.preventDefault();
+  const p = fvStagePt(e);
+  fvZoomAt(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0018)), p.x, p.y);
+}
+function fvDown(e){
+  const st = e.currentTarget; try{ st.setPointerCapture(e.pointerId); }catch(_){}
+  FV.ptrs.set(e.pointerId, fvStagePt(e));
+  if(FV.ptrs.size === 1){ FV.moved = 0; st.classList.add('drag'); }
+}
+function fvMove(e){
+  if(!FV.ptrs.has(e.pointerId)) return;
+  const p = fvStagePt(e), prev = FV.ptrs.get(e.pointerId);
+  if(FV.ptrs.size === 1){
+    FV.x += p.x - prev.x; FV.y += p.y - prev.y; FV.moved += Math.abs(p.x-prev.x)+Math.abs(p.y-prev.y);
+    FV.ptrs.set(e.pointerId, p); fvApply();
+  } else if(FV.ptrs.size === 2){
+    const other = [...FV.ptrs.entries()].find(([id]) => id !== e.pointerId)[1];
+    const d0 = Math.hypot(prev.x-other.x, prev.y-other.y), d1 = Math.hypot(p.x-other.x, p.y-other.y);
+    const m0 = {x:(prev.x+other.x)/2, y:(prev.y+other.y)/2}, m1 = {x:(p.x+other.x)/2, y:(p.y+other.y)/2};
+    FV.ptrs.set(e.pointerId, p); FV.moved += 99;
+    if(d0 > 0){
+      const ns = Math.min(FV.max, Math.max(FV.min, FV.s * d1/d0));
+      // điểm ảnh dưới trung điểm cũ chuyển sang trung điểm mới → vừa phóng vừa kéo, mượt
+      const ix = (m0.x - FV.x)/FV.s, iy = (m0.y - FV.y)/FV.s;
+      FV.s = ns; FV.x = m1.x - ix*ns; FV.y = m1.y - iy*ns; fvApply();
+    }
+  }
+}
+function fvUp(e){
+  const st = e.currentTarget; const wasOne = FV.ptrs.size === 1; const p = FV.ptrs.get(e.pointerId);
+  FV.ptrs.delete(e.pointerId);
+  if(FV.ptrs.size === 0) st.classList.remove('drag');
+  // click đúp / chạm đúp: 2 lần chạm gần nhau, gần như không di chuyển → phóng ×3 tại điểm chạm, hoặc về vừa khung
+  if(wasOne && p && FV.moved < 8){
+    const now = Date.now();
+    if(now - FV.tap.t < 320 && Math.hypot(p.x-FV.tap.x, p.y-FV.tap.y) < 32){
+      if(FV.s > FV.fit*1.4) fvFit(); else fvZoomAt(3, p.x, p.y);
+      FV.tap.t = 0;
+    } else FV.tap = {t:now, x:p.x, y:p.y};
+  }
+}
+function fvKey(e){
+  if(!FV.el) return;
+  if(e.key === 'Escape') closeFigure();
+  else if(e.key === '+' || e.key === '=') fvZoomBy(1.4);
+  else if(e.key === '-' || e.key === '_') fvZoomBy(1/1.4);
+  else if(e.key === '0') fvFit();
+  else if(e.key === 'ArrowRight') fvGo(1);
+  else if(e.key === 'ArrowLeft') fvGo(-1);
 }
 function applyStaticI18n(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{

@@ -11,8 +11,8 @@
  * của chủ sở hữu, rủi ro bản quyền do họ chịu; code luôn kèm dòng ghi nguồn và có công tắc tắt
  * nhanh bằng env SOURCE_FIGURES_ENABLED=false (server.js) mà không cần deploy code mới.
  *
- * Thứ tự hình cho mỗi huyệt: POINT_LOCATION_DETAIL → LOCATION_REFERENCE → MERIDIAN_CONTEXT
- * (chi tiết nhất trước, hình tổng quan cả đường kinh sau cùng).
+ * Thứ tự hình cho mỗi huyệt: POINT_LOCATION_DETAIL → LOCATION_REFERENCE. Hình cả đường kinh
+ * (MERIDIAN_CONTEXT) tách riêng thành byMeridian.
  *
  * Env: GOOGLE_CREDENTIALS_JSON(_B64), GOOGLE_ACUPOINT_CORE_SPREADSHEET_ID
  * Usage: node build-acupoint-figures.mjs
@@ -83,16 +83,25 @@ for (const m of media) {
   };
 }
 
+// Hình CỦA HUYỆT (POINT_LOCATION_DETAIL / LOCATION_REFERENCE) → byPoint.
+// Hình CẢ ĐƯỜNG KINH (MERIDIAN_CONTEXT, 14 hình — mỗi kinh 1 hình) KHÔNG hiện trong popup huyệt (founder
+// 2026-10-07: "chỉ để ảnh của huyệt") mà tách riêng → byMeridian, xem qua nút "Hình đường kinh".
 const byPoint = {};
+const byMeridian = {};
 for (const mp of maps) {
   if (!mediaOut[mp.source_media_id]) continue;
+  if (mp.relation_type === 'MERIDIAN_CONTEXT') {
+    const code = mp.acupoint_id.split('-')[0]; // LU, LI, ... CV, GV
+    (byMeridian[code] ||= new Set()).add(mp.source_media_id);
+    continue;
+  }
   (byPoint[mp.acupoint_id] ||= []).push([mp.source_media_id, mp.relation_type]);
 }
 for (const list of Object.values(byPoint)) {
   list.sort((a, b) => (RANK[a[1]] ?? 9) - (RANK[b[1]] ?? 9) || a[0].localeCompare(b[0]));
 }
-// Chỉ lưu media_id theo thứ tự (relation chỉ để sắp xếp, UI không cần).
 const byPointIds = Object.fromEntries(Object.entries(byPoint).map(([k, v]) => [k, [...new Set(v.map((x) => x[0]))]]));
+const byMeridianIds = Object.fromEntries(Object.entries(byMeridian).map(([k, v]) => [k, [...v]]));
 
-fs.writeFileSync(OUT_JSON, JSON.stringify({ media: mediaOut, byPoint: byPointIds }));
+fs.writeFileSync(OUT_JSON, JSON.stringify({ media: mediaOut, byPoint: byPointIds, byMeridian: byMeridianIds }));
 console.log(`✅ ${Object.keys(mediaOut).length} hình (${(bytes / 1048576).toFixed(1)} MB) · ${Object.keys(byPointIds).length} huyệt có hình → ${OUT_JSON}`);
