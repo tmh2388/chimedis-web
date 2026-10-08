@@ -2424,7 +2424,7 @@ function setListenSpeed(v){
   if(listenAudioEl) listenAudioEl.playbackRate = v;
 }
 function listenNewAudio(url){
-  const a = new Audio(url);
+  const a = new Audio(absUrl(url));
   a.playbackRate = loadListenSpeed();
   return a;
 }
@@ -4044,7 +4044,7 @@ function figThumbHtml(f){
   const ratio = (f.w && f.h) ? f.w/f.h : 0.6;
   let w, h;
   if(ratio >= FIG_FRAME){ w = 100; h = FIG_FRAME/ratio*100; } else { h = 100; w = ratio/FIG_FRAME*100; }
-  return `<span class="fig-frame"><span class="fig-wrap" style="left:${(100-w)/2}%;top:${(100-h)/2}%;width:${w}%;height:${h}%"><img src="${escAttr(f.src)}" alt="${escAttr(f.cap)}" loading="lazy">${figHlHtml(f)}</span></span>`;
+  return `<span class="fig-frame"><span class="fig-wrap" style="left:${(100-w)/2}%;top:${(100-h)/2}%;width:${w}%;height:${h}%"><img src="${escAttr(absUrl(f.src))}" alt="${escAttr(f.cap)}" loading="lazy">${figHlHtml(f)}</span></span>`;
 }
 const FV = { el:null, items:[], i:0, s:1, x:0, y:0, fit:1, min:.3, max:12, ptrs:new Map(), moved:0, tap:{t:0,x:0,y:0}, raf:0 };
 function openFigures(key, index){ openFigureList(FIG_STORE[key]||[], index||0); }
@@ -4094,7 +4094,7 @@ function fvShow(){
   const canvas = FV.el.querySelector('#fvCanvas');
   const w = it.w || 600, h = it.h || 900;
   canvas.style.width = w+'px'; canvas.style.height = h+'px';
-  canvas.innerHTML = `<img src="${escAttr(it.src)}" alt="${escAttr(it.cap)}" draggable="false">` + figHlHtml(it);
+  canvas.innerHTML = `<img src="${escAttr(absUrl(it.src))}" alt="${escAttr(it.cap)}" draggable="false">` + figHlHtml(it);
   FV.el.querySelector('#fvCap').textContent = ((it.fig||'')+' '+(it.cap||'')).trim();
   const multi = FV.items.length > 1;
   const pv = FV.el.querySelector('#fvPrev'), nx = FV.el.querySelector('#fvNext');
@@ -4205,8 +4205,13 @@ function applyStaticI18n(){
 // ===== API: nạp dữ liệu thật, thay cho dữ liệu nhúng sẵn =====
 // Local dev: frontend chạy ở :8000 (python http.server) → gọi thẳng backend ở :3000
 // Production: cùng domain, Nginx reverse-proxy /api/* sang backend → dùng đường dẫn tương đối
-const API_BASE = (location.hostname === 'localhost' && location.port === '8000')
-  ? 'http://localhost:3000' : '';
+// App iOS (Capacitor) chạy giao diện ĐÓNG GÓI SẴN từ máy (capacitor://localhost) — mọi API và tài nguyên
+// (hình, âm thanh) phải gọi tuyệt đối về máy chủ. Trên web thì giữ đường dẫn tương đối như cũ.
+const REMOTE_ORIGIN = 'https://dict.chimedis.vn';
+const API_BASE = IN_NATIVE_APP ? REMOTE_ORIGIN
+  : (location.hostname === 'localhost' && location.port === '8000') ? 'http://localhost:3000' : '';
+function absUrl(u){ return (IN_NATIVE_APP && typeof u === 'string' && u.startsWith('/')) ? REMOTE_ORIGIN + u : u; }
+function relUrl(u){ return (typeof u === 'string' && u.startsWith(REMOTE_ORIGIN)) ? u.slice(REMOTE_ORIGIN.length) : u; }
 const TERMS_CACHE_KEY = 'chimedis_terms_cache_v1';
 
 // 'live' = tải được từ API thật (đầy đủ ~2600 mục). 'cached' = API lỗi nhưng có bản cache
@@ -4285,7 +4290,7 @@ async function offFigUrl(src){
 document.addEventListener('error', e => {
   const el = e.target;
   if(!el || el.tagName !== 'IMG' || el.dataset.offTried) return;
-  const src = el.getAttribute('src') || '';
+  const src = relUrl(el.getAttribute('src') || '');
   if(!src.startsWith('/figures/')) return;
   el.dataset.offTried = '1';
   offFigUrl(src).then(u => { if(u) el.src = u; });
@@ -4320,7 +4325,7 @@ async function downloadOfflinePack(){
     for(const src of srcs){
       offSet(t('off_p_figs').replace('{a}', done).replace('{b}', srcs.length));
       if(!(await OFF.get('fig:' + src))){
-        const r = await fetch(src);
+        const r = await fetch(absUrl(src));
         if(!r.ok) throw new Error('HTTP ' + r.status);
         const buf = await r.arrayBuffer();
         if(!(await OFF.set('fig:' + src, { buf, type: r.headers.get('content-type') || 'image/jpeg' }))) throw new Error('store');
@@ -4425,8 +4430,46 @@ loadTermsFromAPI();
 loadTcmVocabularyFromAPI();
 refreshOfflineStatus();
 
+// ===== LIVE UPDATE giao diện cho app Capacitor (2026-10-08) =====
+// App đóng gói SẴN giao diện (mở được khi mất mạng). Khi lên mạng, hỏi máy chủ phiên bản giao diện mới nhất
+// (/app-bundle/latest.json, dựng từ chính backend/public mỗi lần Redeploy); khác phiên bản đang chạy thì tải
+// gói zip bằng plugin @capgo/capacitor-updater (CHẾ ĐỘ THỦ CÔNG — không dùng Capgo Cloud) và áp dụng, không cần
+// gửi App Store duyệt lại. Phiên bản đang chạy đọc từ bundle-version.txt nằm trong chính gói (cùng thư mục).
+// ⚠️ notifyAppReady() BẮT BUỘC gọi sau khi giao diện khởi động được, nếu không plugin coi bản mới là hỏng và tự
+// quay về bản cũ (cơ chế an toàn: bản lỗi không "brick" app).
+let _luLast = 0, _luBusy = false;
+function luPlugin(){ return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorUpdater) || null; }
+async function checkLiveUpdate(force){
+  const cu = luPlugin();
+  if(!IN_NATIVE_APP || !cu || _luBusy || !navigator.onLine) return;
+  if(!force && Date.now() - _luLast < 30*60*1000) return; // tối đa 1 lần / 30 phút
+  _luBusy = true; _luLast = Date.now();
+  try{
+    const res = await fetch(`${API_BASE}/app-bundle/latest.json`, { cache: 'no-store' });
+    if(!res.ok) return;
+    const latest = await res.json();
+    if(!latest || !latest.version || !latest.url) return;
+    let own = '';
+    try{ own = (await (await fetch('bundle-version.txt', { cache: 'no-store' })).text()).trim(); }catch(e){}
+    if(own === latest.version) return;
+    const b = await cu.download({ url: latest.url, version: latest.version });
+    // Đang rảnh (không mở popup/không đang tìm) → áp dụng ngay (WebView tải lại 1 lần); nếu không → lần mở app sau.
+    const idle = !state.popupId && !state.searchQuery && !document.getElementById('gsOverlay') && !document.querySelector('.fv');
+    if(idle) await cu.set({ id: b.id }); else await cu.next({ id: b.id });
+  }catch(err){ console.warn('[Chimedis] Live update lỗi:', err && err.message); }
+  finally{ _luBusy = false; }
+}
+(function initLiveUpdate(){
+  const cu = luPlugin();
+  if(!IN_NATIVE_APP || !cu) return;
+  Promise.resolve(cu.notifyAppReady()).catch(() => {});
+  setTimeout(() => checkLiveUpdate(false), 4000);
+  document.addEventListener('visibilitychange', () => { if(!document.hidden) checkLiveUpdate(false); });
+})();
+
 // ===== PWA: register service worker =====
-if('serviceWorker' in navigator){
+// (Không đăng ký trong app Capacitor: giao diện đã nằm sẵn trong app, WKWebView cũng không hỗ trợ service worker.)
+if('serviceWorker' in navigator && !IN_NATIVE_APP){
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js').catch(err => {
       console.warn('Service worker registration failed:', err);

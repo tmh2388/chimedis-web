@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { mountAppBundle } from './lib/app-bundle.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -751,6 +752,8 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 app.use(cors());
 app.use(express.json());
 app.use(express.static(PUBLIC_DIR));
+// Gói giao diện cho app iOS (live update) — dựng từ chính PUBLIC_DIR, xem lib/app-bundle.js.
+mountAppBundle(app, PUBLIC_DIR);
 
 // ===== API ENDPOINTS =====
 
