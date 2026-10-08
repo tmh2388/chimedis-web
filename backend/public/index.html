@@ -256,13 +256,6 @@ footer .copyright{font-size:10.5px;color:var(--ngua);opacity:.55;margin-top:14px
 .gs-row .han{font-size:15px;color:var(--muc-mo)}
 .gs-code{margin-left:auto;font-size:11px;color:var(--dong);font-weight:700}
 .gs-l2{font-size:12px;color:var(--muc-mo);line-height:1.35}
-.traits .tr-row{display:flex;gap:10px;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--vien)}
-.traits .tr-row:last-child{border-bottom:0}
-.tr-k{flex:0 0 88px;font-size:11px;color:var(--muc-mo);text-transform:uppercase;letter-spacing:.04em}
-.tr-v{flex:1;display:flex;flex-direction:column;gap:2px}
-.tr-btn{align-self:flex-start;border:0;background:rgba(14,58,58,.08);color:var(--son);font:inherit;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.tr-d{font-size:13px;color:var(--muc);line-height:1.4}
-.tr-s{font-size:11px;color:var(--dong);font-weight:700}
 .gs-meta{font-size:11px;color:var(--muc-mo);margin:4px 0}
 .fig-hl{position:absolute;pointer-events:none}
 .fig-hl.text{background:#E02424;mix-blend-mode:lighten}
@@ -3523,20 +3516,6 @@ function merRank(id){ const i = MER_ORDER.indexOf(String(id).split('-')[0]); ret
 function gsSort(a, b){ return merRank(a.id) - merRank(b.id) || (a.sequence_number||0) - (b.sequence_number||0); }
 function classLabelOf(c){ return pickLang3(c.vi, c.zh, c.en).text; }
 function classDetailText(c){ return c && c.d ? pickLang3(c.d.vi, c.d.zh, c.d.en).text : ''; }
-// Khối "Đặc tính huyệt" (2026-10-08): nói rõ huyệt thuộc kinh nào, là loại huyệt đặc hiệu gì và chi tiết
-// (giao hội với kinh nào, lạc sang kinh nào, bối du/mộ của tạng phủ nào, thông mạch nào...).
-function traitsHtml(term){
-  const rows = [];
-  if(term.group2){
-    const seq = term.sequence_number ? ` <span class="tr-s">${escAttr(term.id)}</span>` : '';
-    rows.push(`<div class="tr-row"><span class="tr-k">${t('tr_meridian')}</span><span class="tr-v"><button type="button" class="tr-btn" onclick="openGroup('meridian','${escAttr(term.group2)}','${escAttr(term.id)}')">${termGroup2Label(term)} ›</button>${seq}</span></div>`);
-  }
-  (term.class_detail || []).forEach(c => {
-    const d = classDetailText(c);
-    rows.push(`<div class="tr-row"><span class="tr-k">${t('tr_class')}</span><span class="tr-v"><button type="button" class="tr-btn" onclick="openGroup('class','${escAttr(c.zh)}','${escAttr(term.id)}')">${escAttr(classLabelOf(c))} ›</button>${d?`<span class="tr-d">${escAttr(d)}</span>`:''}</span></div>`);
-  });
-  return rows.length ? `<div class="field traits"><div class="ft">${t('f_traits')}</div>${rows.join('')}</div>` : '';
-}
 // Dòng trong tờ liên kết: tên huyệt (1 lần, không lặp pinyin/tên ở 2 đầu) + dòng đặc tính: thuộc kinh,
 // và (tờ loại huyệt) chi tiết loại đó / (tờ kinh) các loại huyệt đặc hiệu của huyệt.
 function gsRow(x, curId, mode, key){
@@ -3631,7 +3610,7 @@ function openPopup(id){
       <div class="vi">${term.vi}${speakLineBtn(term.vi,'vi')}</div>
       <div class="en">${term.en||''}${speakLineBtn(term.en,'en')}</div>
       `}
-      <div class="tags"><span class="tag">${group1Label(term.group1)}</span>${term.category==='acupoint'?(term.class_detail?'':specialClassTags(term)):`${term.group2?`<span class="tag">${termGroup2Label(term)}</span>`:''}${specialClassTags(term)}`}</div>
+      <div class="tags"><span class="tag">${group1Label(term.group1)}</span>${term.group2?(term.category==='acupoint'?`<button type="button" class="tag" onclick="openGroup('meridian','${escAttr(term.group2)}','${escAttr(term.id)}')">${termGroup2Label(term)}</button>`:`<span class="tag">${termGroup2Label(term)}</span>`):''}${specialClassTags(term)}</div>
     </div>
     <div class="pp-body">`;
   if(term.category === 'word_element'){
@@ -3691,7 +3670,6 @@ function openPopup(id){
       if(body) html += `<div class="field verify"><div class="ft">${t('f_caution')}</div>${body}</div>`;
     }
   } else if(term.category === 'acupoint'){
-    html += traitsHtml(term);
     // Loại huyệt đặc hiệu (Du/Nguyên/Bát hội huyệt...) giờ hiện ở hàng tag đầu popup
     // (xem specialClassTags()), không lặp lại thành field riêng ở đây nữa.
     {
