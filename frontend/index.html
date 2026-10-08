@@ -663,8 +663,10 @@ header{transition:padding .2s ease}
 .listen-avatar.doctor{background:var(--dong,#B07D4A)}
 .listen-line-body{flex:1;min-width:0}
 .listen-line-body .sub{margin:0 0 4px;line-height:1.5}
+.listen-line-body .sub.hidden{display:none}
 .listen-line-body .sub.zh{font-size:16px;font-weight:600;color:var(--muc,#2a2118)}
 .listen-line-body .sub.vi{font-size:13.5px;color:var(--muc-mo,#5c5346)}
+.listen-line-body .sub.en{font-size:13.5px;color:var(--muc-mo,#5c5346);font-style:italic}
 .listen-line-actions{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
 .listen-iconbtn{width:36px;height:36px;border-radius:50%;border:1px solid var(--vien,#e5ddcc);background:#fff;
   display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--thamthm,#0E3A3A)}
@@ -679,9 +681,11 @@ header{transition:padding .2s ease}
 .listen-hint{font-size:12.5px;color:var(--muc-mo,#8a7d6a);margin-top:14px}
 .listen-source{font-size:11.5px;color:var(--muc-mo,#8a7d6a);font-style:italic;margin-bottom:10px;line-height:1.5}
 .listen-iconbtn.accent{border-color:var(--son,#C8452F);color:var(--son,#C8452F)}
-.listen-xlang-cb{font-family:inherit;font-size:12px;font-weight:600;padding:6px 12px;min-height:32px;
-  border-radius:999px;border:1px solid var(--vien,#e5ddcc);background:#fff;color:var(--muc-mo,#8a7d6a);cursor:pointer;margin-left:6px}
-.listen-xlang-cb.on{background:var(--thamthm,#0E3A3A);color:#fff;border-color:var(--thamthm,#0E3A3A)}
+.listen-cbrow{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.listen-cb{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;
+  color:var(--muc,#2a2118);cursor:pointer;min-height:32px}
+.listen-cb input{width:18px;height:18px;accent-color:var(--thamthm,#0E3A3A);cursor:pointer}
+.sub.pinyin{font-size:12.5px;color:var(--dong,#B07D4A);font-weight:600;letter-spacing:.2px}
 .listen-selfcheck{background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:12px;padding:10px 12px;margin-top:8px}
 .lsc-row{display:flex;flex-direction:column;gap:2px;margin-bottom:6px;font-size:12.5px}
 .lsc-lab{font-weight:700;color:var(--muc-mo,#8a7d6a);font-size:11px}
@@ -1697,7 +1701,7 @@ Object.assign(I18N.vi, {
   dr_listen: 'Luyện nghe', listen_home: 'Luyện nghe', listen_back: 'Luyện nghe',
   listen_cat_y_an: 'Y Án', listen_cat_bao_chi: 'Báo Chí', listen_cat_tu_them: 'Tự Thêm',
   listen_empty: 'Chưa có hội thoại nào trong mục này.',
-  listen_play_full: 'Phát toàn bài', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:',
+  listen_play_full: 'Phát toàn bài', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh',
   listen_target_lang: 'Nhắc lại bằng', listen_vi: 'Tiếng Việt', listen_en: 'Tiếng Anh',
   listen_listening: '🎙 Đang nghe...', listen_points: 'điểm', listen_retry: 'Không nhận diện được, thử lại',
   listen_no_speech: 'Trình duyệt không hỗ trợ ghi âm giọng nói',
@@ -1712,7 +1716,7 @@ Object.assign(I18N.zh, {
   dr_listen: '听力练习', listen_home: '听力练习', listen_back: '听力练习',
   listen_cat_y_an: '医案', listen_cat_bao_chi: '新闻', listen_cat_tu_them: '自建内容',
   listen_empty: '此分类暂无对话。',
-  listen_play_full: '播放全文', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：',
+  listen_play_full: '播放全文', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语',
   listen_target_lang: '跟读语言', listen_vi: '越南语', listen_en: '英语',
   listen_listening: '🎙 正在聆听...', listen_points: '分', listen_retry: '无法识别，请重试',
   listen_no_speech: '此浏览器不支持语音识别',
@@ -1727,7 +1731,7 @@ Object.assign(I18N.en, {
   dr_listen: 'Listening Practice', listen_home: 'Listening Practice', listen_back: 'Listening Practice',
   listen_cat_y_an: 'Case Studies', listen_cat_bao_chi: 'News', listen_cat_tu_them: 'Custom',
   listen_empty: 'No dialogues in this category yet.',
-  listen_play_full: 'Play full dialogue', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:',
+  listen_play_full: 'Play full dialogue', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English',
   listen_target_lang: 'Repeat in', listen_vi: 'Vietnamese', listen_en: 'English',
   listen_listening: '🎙 Listening...', listen_points: 'pts', listen_retry: "Couldn't recognize, try again",
   listen_no_speech: 'This browser does not support speech recognition',
@@ -2305,10 +2309,15 @@ async function openListenDialogue(id){
   render(); scrollToTop();
 }
 
-// Tiêu đề theo đúng ngôn ngữ giao diện đang chọn (state.lang) — đồng bộ với hệ thống,
-// không cố định tiếng Việt. Dự phòng title_vi rồi mới tới title thô (nội dung cũ).
+// Tiêu đề/ghi chú nguồn theo đúng ngôn ngữ giao diện đang chọn (state.lang) — đồng bộ với
+// hệ thống. QUY TẮC BẮT BUỘC: MỌI field hiển thị (kể cả meta như nguồn trích dẫn, không chỉ
+// nội dung chính) phải trilingual — lỗi source_note cứng tiếng Việt đã bị user phát hiện
+// 2026-10-08, không được lặp lại.
 function listenTitle(d){
   return d['title_' + state.lang] || d.title_vi || d.title || '';
+}
+function listenSourceNote(d){
+  return d['source_note_' + state.lang] || d.source_note_vi || d.source_note || '';
 }
 
 function renderListenHome(){
@@ -2381,15 +2390,24 @@ function listenPlayLine(seq){
   listenAudioEl.onended = () => { if(token === listenPlayToken) listenClearActiveLine(); };
 }
 
-// Ngôn ngữ luyện dịch (vi/en) — chọn 1 lần, áp dụng toàn bài, lưu localStorage.
-const LISTEN_XLANG_KEY = 'chimedis_listen_xlang_v1';
-function loadListenTargetLang(){
-  try{ return localStorage.getItem(LISTEN_XLANG_KEY) || 'text_vi'; }catch(e){ return 'text_vi'; }
+// Checkbox hiển thị VĂN BẢN (中/VI/EN/Pinyin) — KHÔNG phải chọn "ngôn ngữ luyện dịch"
+// (bỏ hẳn cơ chế nút VI/EN cũ gây hiểu nhầm — user phản hồi 2026-10-08: phải là checkbox
+// thật, nhiều lựa chọn cùng lúc, điều khiển việc HIỆN/ẨN chữ; không chọn gì thì chỉ còn
+// nút điều khiển play/ghi âm, không hiện chữ nào — đúng tinh thần luyện nghe không nhìn chữ).
+const LISTEN_SUBLANG_KEY = 'chimedis_listen_sublang_v2';
+function loadListenSubLangs(){
+  try{ return Object.assign({ zh:false, vi:false, en:false, pinyin:false }, JSON.parse(localStorage.getItem(LISTEN_SUBLANG_KEY)) || {}); }
+  catch(e){ return { zh:false, vi:false, en:false, pinyin:false }; }
 }
-function setListenTargetLang(v){
-  try{ localStorage.setItem(LISTEN_XLANG_KEY, v); }catch(e){}
-  document.querySelectorAll('.listen-xlang-cb').forEach(el => el.classList.toggle('on', el.dataset.lang === v));
+let listenSubLangs = loadListenSubLangs();
+function toggleListenSubLang(key){
+  listenSubLangs[key] = !listenSubLangs[key];
+  try{ localStorage.setItem(LISTEN_SUBLANG_KEY, JSON.stringify(listenSubLangs)); }catch(e){}
+  document.querySelectorAll(`.sub.${key}`).forEach(el => el.classList.toggle('hidden', !listenSubLangs[key]));
 }
+// Ngôn ngữ dùng cho ghi âm luyện dịch + bản tham chiếu đối chiếu — suy ra từ ngôn ngữ giao
+// diện đang dùng (state.lang), không cần control riêng nữa.
+function listenRecognitionLang(){ return state.lang === 'en' ? 'text_en' : 'text_vi'; }
 
 function listenSetBadge(seq, cls, html){
   const el = document.querySelector(`[data-listen-badge="${seq}"]`);
@@ -2425,7 +2443,7 @@ function listenRenderSelfCheck(seq, spoken, reference){
   listenSetBadge(seq, 'checking', html);
 }
 function listenSelfRate(seq, rating, spoken){
-  const targetLang = loadListenTargetLang();
+  const targetLang = listenRecognitionLang();
   const score = rating === 'good' ? 100 : 40;
   listenSetBadge(seq, rating === 'good' ? 'good' : 'mid', rating === 'good' ? t('listen_self_good') + ' ✓' : t('listen_self_retry') + ' ↻');
   listenPushProgress(listenCurrentDialogue.id, seq, targetLang, spoken, score);
@@ -2449,7 +2467,7 @@ function listenStartRecognition(seq, targetLang, reference){
 function listenTranslateLine(seq){
   const d = listenCurrentDialogue; if(!d) return;
   const seg = d.segments.find(s => s.seq === seq); if(!seg) return;
-  const targetLang = loadListenTargetLang();
+  const targetLang = listenRecognitionLang();
   const reference = seg[targetLang];
   listenStopPlayback();
   const token = listenPlayToken;
@@ -2463,11 +2481,14 @@ function renderListenDialogue(){
   const d = listenCurrentDialogue;
   if(!d) return `<div class="empty">${t('listen_empty')}</div>`;
   const feat = listenFeatureSupported();
-  const curLang = loadListenTargetLang();
+  const sl = listenSubLangs;
   const linesHtml = d.segments.map(seg => `
     <div class="listen-line" data-seq="${seg.seq}">
       <div class="listen-line-body">
-        <p class="sub zh">${seg.text_zh}</p>
+        <p class="sub zh ${sl.zh?'':'hidden'}">${seg.text_zh}</p>
+        <p class="sub pinyin ${sl.pinyin?'':'hidden'}">${seg.text_pinyin||''}</p>
+        <p class="sub vi ${sl.vi?'':'hidden'}">${seg.text_vi}</p>
+        <p class="sub en ${sl.en?'':'hidden'}">${seg.text_en}</p>
         <div class="listen-line-actions">
           <button class="listen-iconbtn" onclick="listenPlayLine(${seg.seq})" aria-label="${t('listen_play_line')}">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -2479,14 +2500,15 @@ function renderListenDialogue(){
         <div class="listen-badge" data-listen-badge="${seg.seq}"></div>
       </div>
     </div>`).join('');
+  const cbRow = (key, labelKey) => `
+    <label class="listen-cb"><input type="checkbox" ${sl[key]?'checked':''} onchange="toggleListenSubLang('${key}')"> ${t(labelKey)}</label>`;
   return `<div class="listen-dialogue">
     <h2>${listenTitle(d)}</h2>
-    ${d.source_note ? `<p class="listen-source">${t('listen_source_label')} ${d.source_note}</p>` : ''}
-    ${feat.speech ? `<div class="toolbar">
-      <span>${t('listen_target_lang')}</span>
-      <button class="listen-xlang-cb ${curLang==='text_vi'?'on':''}" data-lang="text_vi" onclick="setListenTargetLang('text_vi')">${t('listen_vi')}</button>
-      <button class="listen-xlang-cb ${curLang==='text_en'?'on':''}" data-lang="text_en" onclick="setListenTargetLang('text_en')">${t('listen_en')}</button>
-    </div>` : `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>`}
+    ${listenSourceNote(d) ? `<p class="listen-source">${t('listen_source_label')} ${listenSourceNote(d)}</p>` : ''}
+    <div class="listen-cbrow">
+      ${cbRow('zh','listen_cb_zh')}${cbRow('pinyin','listen_cb_pinyin')}${cbRow('vi','listen_cb_vi')}${cbRow('en','listen_cb_en')}
+    </div>
+    ${!feat.speech ? `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>` : ''}
     <button class="listen-fullbtn" onclick="listenPlayFull()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>${t('listen_play_full')}
     </button>
