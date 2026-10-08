@@ -1,0 +1,58 @@
+{
+  "id": "ya-01-cuongke",
+  "category": "y_an",
+  "title_vi": "Y án: Cương kính ở bé gái 13 tuổi",
+  "title_zh": "医案：十三岁女孩刚痉",
+  "title_en": "Case: Rigid Tetany in a 13-Year-Old Girl",
+  "source_note": "Diễn giải lại từ y án thật trong giáo trình 《金匮要略》第五版 (Nhà xuất bản Trung y dược Trung Quốc), mục \"医案举隅\". Tư liệu gốc trích dẫn trong giáo trình: 何任、张志民、连建伟《金匮方百家医案评议》, Nhà xuất bản Khoa học kỹ thuật Chiết Giang, 1991. Không chép nguyên văn giáo trình.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "这是一则记载于《金匮要略》教材医案举隅中的真实病例，原始资料出自《金匮方百家医案评议》一书。",
+      "text_vi": "Đây là một ca bệnh thật được ghi trong mục \"Y án tiêu biểu\" của giáo trình Kim Quỹ Yếu Lược, tư liệu gốc trích từ sách \"Kim Quỹ Phương Bách Gia Y Án Bình Nghị\".",
+      "text_en": "This is a real case recorded in the \"Illustrative Case Studies\" section of the Jin Gui Yao Lue (Essential Prescriptions of the Golden Cabinet) textbook, originally sourced from the book \"Commentary on Classic Cases Using Jin Gui Formulas by a Hundred Physicians.\""
+    },
+    {
+      "seq": 2,
+      "text_zh": "患者是一名十三岁的女孩，一九七七年九月十三日初诊。",
+      "text_vi": "Bệnh nhân là một bé gái 13 tuổi, khám lần đầu vào ngày 13 tháng 9 năm 1977.",
+      "text_en": "The patient was a 13-year-old girl, first examined on September 13, 1977."
+    },
+    {
+      "seq": 3,
+      "text_zh": "发病前曾有轻微外感症状，两天后突然抽搐，先是牙关紧闭，接着颈背部强直，并出现角弓反张。",
+      "text_vi": "Trước khi phát bệnh có triệu chứng cảm nhẹ, 2 ngày sau đột ngột lên cơn co giật, đầu tiên là cứng hàm, sau đó cứng cổ gáy và xuất hiện tư thế ưỡn cong người ra sau (giác cung phản trương).",
+      "text_en": "Before onset she had mild cold-like symptoms; two days later she suddenly developed convulsions — first her jaw locked shut, then her neck and back became rigid, with opisthotonos (an arched, backward-bent posture)."
+    },
+    {
+      "seq": 4,
+      "text_zh": "患者没有出汗，神志清楚，自觉胸闷气短，全身困倦沉重。",
+      "text_vi": "Bệnh nhân không ra mồ hôi, ý thức tỉnh táo, tự cảm thấy tức ngực khó thở, toàn thân mệt mỏi nặng nề.",
+      "text_en": "The patient had no sweating, was fully conscious, felt chest tightness and shortness of breath, and was generally fatigued and heavy-limbed."
+    },
+    {
+      "seq": 5,
+      "text_zh": "检查显示体温三十七点五摄氏度，血压一百一十比七十毫米汞柱，白细胞计数升高，舌苔薄白，脉象紧而数。",
+      "text_vi": "Kết quả khám cho thấy nhiệt độ 37,5 độ C, huyết áp 110 trên 70 mmHg, số lượng bạch cầu tăng cao, rêu lưỡi trắng mỏng, mạch căng và nhanh.",
+      "text_en": "Examination showed a temperature of 37.5°C, blood pressure of 110/70 mmHg, an elevated white blood cell count, a thin white tongue coating, and a tight, rapid pulse."
+    },
+    {
+      "seq": 6,
+      "text_zh": "医生诊断为刚痉，认为是风寒阻滞经络，气血运行不畅，导致筋脉拘急、项背强直。",
+      "text_vi": "Bác sĩ chẩn đoán là \"cương kính\" (một dạng co giật cứng), cho rằng do phong hàn làm tắc trở kinh lạc, khí huyết vận hành không thông, dẫn đến gân mạch co rút, cổ gáy cứng đờ.",
+      "text_en": "The physician diagnosed \"rigid tetany,\" attributing it to wind-cold obstructing the channels and impaired qi-blood circulation, causing muscle spasm and neck-back rigidity."
+    },
+    {
+      "seq": 7,
+      "text_zh": "治疗以祛风散寒、解肌和营为法，方中用了葛根、麻黄、桂枝、白芍等药物，并配合全蝎蜈蚣研末冲服，盖被取汗。",
+      "text_vi": "Phương pháp điều trị là khu phong tán hàn, giải cơ hòa doanh; trong bài thuốc dùng Cát căn, Ma hoàng, Quế chi, Bạch thược..., kết hợp bột toàn yết và ngô công uống kèm, đắp chăn cho ra mồ hôi.",
+      "text_en": "Treatment followed the principle of dispelling wind, scattering cold, releasing the muscle layer and harmonizing nutritive qi; the formula included Pueraria root, Ephedra, Cinnamon twig, and White peony, combined with powdered scorpion and centipede taken separately, with the patient covered in blankets to induce sweating."
+    },
+    {
+      "seq": 8,
+      "text_zh": "服药一剂后，患者全身微微出汗，抽搐随即停止。",
+      "text_vi": "Sau khi uống 1 thang, bệnh nhân toát mồ hôi nhẹ khắp người, cơn co giật liền dừng lại.",
+      "text_en": "After one dose, the patient broke into a light sweat all over and the convulsions stopped immediately."
+    }
+  ]
+}
