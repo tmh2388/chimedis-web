@@ -679,7 +679,8 @@ header{transition:padding .2s ease}
 .listen-badge.mid{background:#FBEFCF;color:#8A5A0F}
 .listen-badge.bad{background:var(--son-mo,#F0D9D2);color:var(--son,#C8452F)}
 .listen-hint{font-size:12.5px;color:var(--muc-mo,#8a7d6a);margin-top:14px}
-.listen-source{font-size:11.5px;color:var(--muc-mo,#8a7d6a);font-style:italic;margin-bottom:10px;line-height:1.5}
+.listen-source{font-size:11.5px;color:var(--muc-mo,#8a7d6a);font-style:italic;margin-top:18px;padding-top:14px;
+  border-top:1px solid var(--vien,#e5ddcc);line-height:1.5}
 .listen-iconbtn.accent{border-color:var(--son,#C8452F);color:var(--son,#C8452F)}
 .listen-cbrow{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
 .listen-playbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
@@ -2386,10 +2387,18 @@ function listenClearActiveLine(){
   if(prog) prog.textContent = '';
 }
 function listenSetActiveLine(seq){
-  document.querySelectorAll('.listen-line').forEach(el => el.classList.toggle('active', Number(el.dataset.seq) === seq));
+  let activeEl = null;
+  document.querySelectorAll('.listen-line').forEach(el => {
+    const on = Number(el.dataset.seq) === seq;
+    el.classList.toggle('active', on);
+    if(on) activeEl = el;
+  });
   const d = listenCurrentDialogue;
   const prog = document.getElementById('listenProgressLabel');
   if(prog && d) prog.textContent = `${t('listen_line_of').replace('{n}', seq).replace('{total}', d.segments.length)}`;
+  // Bài dài phải kéo lên/xuống mới theo kịp câu đang đọc — tự cuộn câu đang phát lên đầu
+  // vùng nhìn thấy, giống phụ đề cuộn theo audio (user phản hồi 2026-10-09).
+  if(activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 function listenStopPlayback(){
   listenPlayToken++;
@@ -2564,7 +2573,6 @@ function renderListenDialogue(){
     <label class="listen-cb"><input type="checkbox" ${sl[key]?'checked':''} onchange="toggleListenSubLang('${key}')"> ${t(labelKey)}</label>`;
   return `<div class="listen-dialogue">
     <h2>${listenTitle(d)}</h2>
-    ${listenSourceNote(d) ? `<p class="listen-source">${t('listen_source_label')} ${listenSourceNote(d)}</p>` : ''}
     <div class="listen-cbrow">
       ${cbRow('zh','listen_cb_zh')}${cbRow('pinyin','listen_cb_pinyin')}${cbRow('vi','listen_cb_vi')}${cbRow('en','listen_cb_en')}
     </div>
@@ -2582,6 +2590,7 @@ function renderListenDialogue(){
     </div>
     <div class="listen-progress" id="listenProgressLabel"></div>
     <div>${linesHtml}</div>
+    ${listenSourceNote(d) ? `<p class="listen-source">${t('listen_source_label')} ${listenSourceNote(d)}</p>` : ''}
   </div>`;
 }
 
