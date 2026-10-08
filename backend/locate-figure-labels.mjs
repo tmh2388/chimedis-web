@@ -210,11 +210,31 @@ for (const [mid, m] of Object.entries(data.media)) {
     SC[mid + '|' + p.t.id] = +p.score.toFixed(2);
     if (process.env.VERBOSE) console.log('  ', p.t.id, p.t.name, p.score.toFixed(2));
   }
+  // Lần hai — cùng 1 tên xuất hiện NHIỀU lần trong hình (vd. hình lưng ghi tên ở cả hai bên): gán thêm các
+  // khung còn trống có điểm ≥ DUP_MIN, bỏ qua khung trùng vị trí với khung đã gán (cùng 1 nhãn bị tìm ra 2 lần).
+  const DUP_MIN = parseFloat(process.env.NCC_DUP || '0.62');
+  // Tên cùng bộ chữ (肺俞/脾俞/肝俞…) có mẫu rất giống nhau → 'vay' nhãn của nhau. Khung trùng CHỈ nhận khi tên đó là
+  // tên khớp NHẤT với chính khung đó (trong mọi tên của hình), nếu không sẽ bôi nhầm sang nhãn của huyệt khác.
+  const bestOfBox = {};
+  for (const q of pairs) if (!bestOfBox[q.bi] || q.score > bestOfBox[q.bi].score) bestOfBox[q.bi] = q;
+  const iou = (a, b) => { const x0 = Math.max(a[0], b[0]), y0 = Math.max(a[1], b[1]), x1 = Math.min(a[0] + a[2], b[0] + b[2]), y1 = Math.min(a[1] + a[3], b[1] + b[3]); const i = Math.max(0, x1 - x0) * Math.max(0, y1 - y0); return i / (a[2] * a[3] + b[2] * b[3] - i || 1); };
+  for (const p of pairs) {
+    if (p.score < DUP_MIN || usedB.has(p.bi) || !L[p.t.id] || bestOfBox[p.bi].t.id !== p.t.id) continue;
+    // Khung trùng phải phủ gần TRỌN nhãn (mẫu rộng 80–125% khung chữ) — tránh khớp một phần, vd. mẫu '肺俞'
+    // trượt lên nửa '阴俞' của nhãn '厥阴俞' (cùng chữ 俞) rồi sinh khung thừa.
+    const bw = boxes[p.bi].x1 - boxes[p.bi].x0 + 1;
+    if (p.tw < 0.8 * bw || p.tw > 1.25 * bw) continue;
+    const nb = [p.rx0 + p.off - 2, p.ry0 + p.vo - 2, p.tw + 4, p.th + 4];
+    const have = Array.isArray(L[p.t.id][0]) ? L[p.t.id] : [L[p.t.id]];
+    if (have.some((h) => iou(h, nb) > 0.15)) continue;
+    usedB.add(p.bi); L[p.t.id] = [...have, nb];
+    if (process.env.VERBOSE) console.log('   + trùng tên', p.t.id, p.t.name, p.score.toFixed(2));
+  }
   labels[mid] = L;
   for (const t of wanted) { expected++; if (L[t.id]) found++; else missing.push(`${t.id}(${t.name})@${m.figure}`); }
   process.stdout.write(`${m.figure} ${Object.keys(L).length}/${wanted.length} · `);
   if (DEBUG_DIR) {
-    const svg = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">${boxes.map((b) => `<rect x="${b.x0}" y="${b.y0}" width="${b.x1 - b.x0}" height="${b.y1 - b.y0}" fill="none" stroke="blue" stroke-width="2"/>`).join('')}${Object.values(L).map(([x, y, w, h]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="red" stroke-width="3"/>`).join('')}</svg>`;
+    const svg = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">${boxes.map((b) => `<rect x="${b.x0}" y="${b.y0}" width="${b.x1 - b.x0}" height="${b.y1 - b.y0}" fill="none" stroke="blue" stroke-width="2"/>`).join('')}${Object.values(L).flatMap((v) => (Array.isArray(v[0]) ? v : [v])).map(([x, y, w, h]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="red" stroke-width="3"/>`).join('')}</svg>`;
     fs.mkdirSync(DEBUG_DIR, { recursive: true });
     await sharp(file).composite([{ input: Buffer.from(svg) }]).jpeg().toFile(path.join(DEBUG_DIR, path.basename(file)));
   }
