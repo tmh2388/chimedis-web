@@ -3,7 +3,8 @@ name: Fetch Y Án tự động (dược + châm)
 # Mở rộng kho Y Án đa mô thức từ backend/data/yaan_source_bank.json (dữ kiện thật, đã
 # trích từ tư liệu Drive của user — xem ghi chú trong file bank), GPT-5-mini diễn giải
 # thành bài luyện nghe-dịch, Google TTS sinh audio tiếng Trung, commit thẳng vào backend/.
-# Giữ tối đa 40 bài tự động (tự xoá bài cũ nhất), không đụng bài Claude soạn tay.
+# KHÔNG tự xoá bài — đây là kho tham khảo lâu dài cho sinh viên, không phải tin tức
+# "cập nhật rồi cũ đi" như hoc_thuat/bao_chi (quyết định 2026-10-09).
 
 on:
   schedule:
@@ -40,7 +41,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python scripts/yaan_fetch.py --max "${{ inputs.max || '1' }}"
 
-      - name: Commit bài mới / xoá bài cũ
+      - name: Commit bài mới
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

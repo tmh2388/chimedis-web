@@ -703,6 +703,90 @@ app.get('/api/listening/dialogues/:id', (req, res) => {
   res.json({ success: true, data: dialogue });
 });
 
+// ===== Chấm điểm phát âm (luyện dịch cabin, chế độ tự do) =====
+// Dùng OpenAI (model nghe-hiểu audio) để vừa phiên âm vừa chấm phát âm/trôi chảy —
+// quyết định 2026-10-09: dùng chung OPENAI_API_KEY đã có (cần set thêm làm env var
+// RUNTIME trên hPanel Hostinger, khác với secret GitHub Actions dùng cho các pipeline
+// tự động — 2 nơi lưu riêng biệt, xem ghi chú requireOpenAI()). Audio gửi lên dạng WAV
+// base64, đã được trình duyệt tự cắt khoảng lặng >3s trước khi gửi.
+function requireOpenAI(req, res, next) {
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(503).json({ success: false, error: 'openai_not_configured' });
+  }
+  next();
+}
+
+// gpt-audio-mini (model nghe-hiểu audio hiện tại, đã verify 2026-10-09 — model cũ
+// "gpt-4o-audio-preview" không còn khả dụng) KHÔNG hỗ trợ response_format/json_schema
+// (trả lỗi 400 "not supported with this model") — phải ép JSON qua prompt rồi tự parse
+// phòng thủ (extractJsonObject bên dưới).
+const PRONUNCIATION_SYSTEM_PROMPT = `Bạn là giám khảo chấm phát âm cho người luyện dịch \
+cabin Trung Y (nghe tiếng Trung, nói lại bản dịch bằng tiếng Việt hoặc tiếng Anh, có thể \
+xen lẫn thuật ngữ tiếng Trung). Nhiệm vụ:
+1. Phiên âm chính xác những gì nghe được trong file audio (giữ nguyên (các) ngôn ngữ \
+được nói, không dịch lại).
+2. Xác định (các) ngôn ngữ xuất hiện trong audio (chỉ trong số: Tiếng Việt, 中文, English).
+3. Với MỖI ngôn ngữ phát hiện được, chấm điểm phát âm + độ trôi chảy từ 0-100, kèm nhận \
+xét ngắn gọn bằng tiếng Việt (2-3 câu, chỉ ra điểm cần cải thiện cụ thể — ví dụ âm nào \
+phát âm chưa chuẩn, tốc độ nói, ngắt nghỉ).
+Nếu audio không có tiếng nói rõ ràng (toàn im lặng/tạp âm), trả về transcript rỗng và \
+mảng scores rỗng.
+CHỈ trả về một object JSON hợp lệ duy nhất, không kèm markdown/giải thích, đúng dạng:
+{"transcript": "...", "scores": [{"language": "...", "score": 0-100, "feedback": "..."}]}`;
+
+function extractJsonObject(text) {
+  const cleaned = String(text || '').replace(/```json|```/g, '').trim();
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if (start === -1 || end === -1) throw new Error('Không tìm thấy JSON trong phản hồi');
+  return JSON.parse(cleaned.slice(start, end + 1));
+}
+
+app.post('/api/pronunciation-score', express.json({ limit: '25mb' }), requireOpenAI, async (req, res) => {
+  try {
+    const { audio_base64, format, reference_zh } = req.body || {};
+    if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
+
+    const userText = reference_zh
+      ? `[CHỈ ĐỂ BẠN HIỂU NGỮ CẢNH — KHÔNG được đưa câu này vào trường "transcript"]\nĐoạn gốc tiếng Trung người này đang luyện dịch: ${reference_zh}\n[HẾT NGỮ CẢNH]\nChấm điểm phát âm đoạn ghi âm đính kèm — "transcript" CHỈ chứa đúng những gì nghe được trong audio, không chứa đoạn gốc tiếng Trung ở trên.`
+      : 'Chấm điểm phát âm đoạn ghi âm sau.';
+
+    const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-audio-mini',
+        modalities: ['text'],
+        messages: [
+          { role: 'system', content: PRONUNCIATION_SYSTEM_PROMPT },
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: userText },
+              { type: 'input_audio', input_audio: { data: audio_base64, format: format === 'wav' ? 'wav' : 'mp3' } },
+            ],
+          },
+        ],
+      }),
+    });
+
+    if (!openaiRes.ok) {
+      const errText = await openaiRes.text();
+      console.error('OpenAI pronunciation-score lỗi:', openaiRes.status, errText.slice(0, 500));
+      return res.status(502).json({ success: false, error: 'openai_error' });
+    }
+    const data = await openaiRes.json();
+    const parsed = extractJsonObject(data.choices[0].message.content);
+    res.json({ success: true, data: parsed });
+  } catch (err) {
+    console.error('Lỗi chấm phát âm:', err);
+    res.status(500).json({ success: false, error: 'internal_error' });
+  }
+});
+
 app.get('/api/listening-progress', requireMysql, verifyFirebaseToken, async (req, res) => {
   try {
     const user = await getOrCreateUser(req.firebaseUser);

@@ -1,12 +1,16 @@
 """Tự động lấy tin tức Trung Y mới (tiếng Trung) → diễn giải → sinh audio → commit thẳng
 vào backend/ — không qua bước thủ công nào.
 
-Nguồn: Google News RSS theo từ khoá (news.google.com/rss/search?hl=zh-CN) — tính năng
-KHÔNG chính thức của Google (không có doc, có thể đổi/hỏng bất cứ lúc nào), nhưng đã
-khảo sát: không có RSS chính thức nào từ 国家中医药管理局/中国中医药报 (xem lịch sử
-nghiên cứu 2026-10-08/09). Chỉ dùng RSS để lấy TIÊU ĐỀ + TÓM TẮT NGẮN (phần snippet
-Google tự tạo để hiển thị kết quả tìm kiếm, không phải nguyên văn bài báo) — không crawl
-toàn văn trang nguồn, tránh rủi ro ToS khi tái sử dụng nội dung.
+2 nguồn:
+1. Google News RSS theo từ khoá (news.google.com/rss/search?hl=zh-CN) — tính năng KHÔNG
+   chính thức của Google (không có doc, có thể đổi/hỏng bất cứ lúc nào), nhưng đã khảo
+   sát: không có RSS chính thức nào từ 国家中医药管理局/中国中医药报. Chỉ lấy TIÊU ĐỀ +
+   TÓM TẮT NGẮN (snippet Google tự tạo), không crawl toàn văn trang nguồn.
+2. Podcast "中醫藥雙語新聞" (Tammy圓兒, nội dung trích từ báo in 《中國醫藥導報》, 30
+   năm tuổi, RSS công khai qua SoundOn — cơ chế CHÍNH THỐNG, khác hẳn Spotify không có
+   RSS công khai và ToS cấm crawl — xem khảo sát 2026-10-09). Feed đã ngừng cập nhật từ
+   03/2024 (66 tập) — không phải nguồn "sống", chỉ dùng để bổ sung 1 lần kho có sẵn, lấy
+   tiêu đề+mô tả tập (không phải nguyên văn báo in).
 
 GPT CHỈ được dùng dữ kiện có trong tiêu đề+tóm tắt để viết lại, không được bịa thêm số
 liệu/tên người/ngày tháng không có trong văn bản gốc (cùng quy tắc với yaan_fetch.py).
@@ -40,6 +44,8 @@ RSS_URL = "https://news.google.com/rss/search"
 # Loại trừ "中药材"/"林业"/"草原" để tránh lẫn tin nông-lâm nghiệp trồng dược liệu (đã
 # gặp thật khi test 2026-10-09) — ưu tiên tin lâm sàng/học thuật/văn hoá Trung y thật.
 DEFAULT_QUERY = "(中医药 OR 针灸学 OR 中西医结合) -中药材 -林业 -草原"
+PODCAST_RSS_URL = "https://feeds.soundon.fm/podcasts/05e9e8e6-f723-4b85-ae6e-7eceee1006d9.xml"
+PODCAST_SOURCE_LABEL = "Podcast 中醫藥雙語新聞 (Tammy圓兒, trích từ 中國醫藥導報)"
 
 
 def fetch_rss(query):
@@ -58,7 +64,25 @@ def fetch_rss(query):
         source_name = (source.text or "").strip() if source is not None else ""
         pub_date = (item.findtext("pubDate") or "").strip()
         if title and link:
-            items.append({"title": title, "link": link, "desc": desc, "source": source_name, "pub_date": pub_date})
+            items.append({"title": title, "link": link, "desc": desc, "source": source_name, "pub_date": pub_date, "item_id": link})
+    return items
+
+
+def fetch_podcast():
+    r = requests.get(PODCAST_RSS_URL, timeout=30)
+    r.raise_for_status()
+    root = ET.fromstring(r.content)
+    items = []
+    for item in root.findall(".//item"):
+        title = (item.findtext("title") or "").strip()
+        desc = re.sub(r"\s+", " ", (item.findtext("description") or "").strip())
+        guid = (item.findtext("guid") or "").strip()
+        link = (item.findtext("link") or "").strip()
+        pub_date = (item.findtext("pubDate") or "").strip()
+        # Chỉ lấy tập tiếng Trung (feed có cả bản tiếng Trung lẫn tiếng Anh cho cùng nội
+        # dung, bản Trung đủ làm nguồn vì GPT tự dịch vi/en) — nhận diện qua ký tự CJK.
+        if title and guid and re.search(r"[一-鿿]", title):
+            items.append({"title": title, "link": link or title, "desc": desc, "source": PODCAST_SOURCE_LABEL, "pub_date": pub_date, "item_id": f"podcast-{guid}"})
     return items
 
 
@@ -112,16 +136,20 @@ def pinyin_of(zh_text):
 def item_hash(item):
     import hashlib
 
-    return hashlib.sha1(item["link"].encode("utf-8")).hexdigest()[:12]
+    return hashlib.sha1(item.get("item_id", item["link"]).encode("utf-8")).hexdigest()[:12]
 
 
 def build_passage_json(item, generated):
     passage_id = f"bc-auto-{item_hash(item)}"
     cite = f"{item['source']}, {item['pub_date']}".strip(", ")
     link = item["link"]
-    source_note_vi = f"Diễn giải tự động (AI) từ tiêu đề + tóm tắt tin thật trên Google News ({cite}). Bản gốc: {link}. Không trích nguyên văn bài báo, chưa qua rà soát thủ công."
-    source_note_zh = f"由 AI 根据 Google News 上真实新闻的标题与摘要自动改写（{cite}）。原文链接：{link}。未摘录原文全文，尚未经人工校对。"
-    source_note_en = f"AI-generated narrative from the real headline + snippet on Google News ({cite}). Original: {link}. Not a verbatim excerpt; not yet human-reviewed."
+    is_podcast = item.get("item_id", "").startswith("podcast-")
+    src_label_vi = "mô tả tập podcast thật" if is_podcast else "tin thật trên Google News"
+    src_label_zh = "播客节目真实简介" if is_podcast else "Google News 上真实新闻的标题与摘要"
+    src_label_en = "a real podcast episode description" if is_podcast else "the real headline + snippet on Google News"
+    source_note_vi = f"Diễn giải tự động (AI) từ tiêu đề + {src_label_vi} ({cite}). Bản gốc: {link}. Không trích nguyên văn, chưa qua rà soát thủ công."
+    source_note_zh = f"由 AI 根据{src_label_zh}自动改写（{cite}）。原文链接：{link}。未摘录原文全文，尚未经人工校对。"
+    source_note_en = f"AI-generated narrative from the real headline + {src_label_en} ({cite}). Original: {link}. Not a verbatim excerpt; not yet human-reviewed."
 
     segments = []
     for i, seg in enumerate(generated["segments"], start=1):
@@ -158,6 +186,10 @@ def main():
     args = parser.parse_args()
 
     items = fetch_rss(args.query)
+    try:
+        items += fetch_podcast()
+    except Exception as exc:
+        print(f"[news] cảnh báo: không lấy được podcast RSS ({exc}), chỉ dùng Google News.", file=sys.stderr)
     seen_ordered = load_seen()
     seen_set = set(seen_ordered)
     candidates = [it for it in items if item_hash(it) not in seen_set][: args.max]

@@ -4,8 +4,10 @@ thành SỰ KIỆN không phải nguyên văn sách), gọi OpenAI (gpt-5-mini) 
 luyện nghe-dịch, sinh audio tiếng Trung (Google TTS), commit thẳng vào backend/ — không
 qua bước thủ công nào.
 
-Giữ tối đa MAX_KEPT_AUTO bài do pipeline này tự thêm (không đụng bài do Claude soạn thủ
-công trong chat, các bài đó không có field "auto": true nên không bị xoá).
+KHÔNG tự xoá bài — khác với hoc_thuat (PubMed)/bao_chi (tin tức), kho Y Án là tài liệu
+tham khảo lâu dài cho sinh viên (quyết định 2026-10-09, user: "kho sử dụng lâu dài").
+Nhịp 1 bài/ngày nên tốc độ tăng dung lượng chậm (audio ~1MB/bài, ~30MB/tháng) — chấp
+nhận đánh đổi này vì giá trị tham khảo lâu dài quan trọng hơn dung lượng git.
 
 Dùng:
     python scripts/yaan_fetch.py --max 1
@@ -13,7 +15,6 @@ Dùng:
 import argparse
 import json
 import sys
-import shutil
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -25,7 +26,6 @@ BANK_FILE = ROOT / "backend" / "data" / "yaan_source_bank.json"
 CONTENT_DIR = ROOT / "backend" / "data" / "listening" / "y_an"
 AUDIO_DIR = ROOT / "backend" / "public" / "audio" / "listening" / "y_an"
 SEEN_FILE = CONTENT_DIR / ".processed_yaan.json"
-MAX_KEPT_AUTO = 40  # chỉ đếm bài "auto": true — bài Claude soạn tay không bị xoá
 
 
 def load_bank():
@@ -41,33 +41,6 @@ def load_seen():
 def save_seen(seen_ordered):
     CONTENT_DIR.mkdir(parents=True, exist_ok=True)
     SEEN_FILE.write_text(json.dumps(seen_ordered, ensure_ascii=False, indent=2), encoding="utf-8")
-
-
-def list_auto_passage_ids():
-    if not CONTENT_DIR.exists():
-        return []
-    ids = []
-    for f in CONTENT_DIR.glob("ya-auto-*.json"):
-        data = json.loads(f.read_text(encoding="utf-8"))
-        if data.get("auto"):
-            ids.append((data["id"], f))
-    return ids
-
-
-def prune_oldest(seen_ordered):
-    auto_ids = list_auto_passage_ids()
-    while len(auto_ids) > MAX_KEPT_AUTO and seen_ordered:
-        oldest_bank_id = seen_ordered.pop(0)
-        passage_id = f"ya-auto-{oldest_bank_id}"
-        json_path = CONTENT_DIR / f"{passage_id}.json"
-        if json_path.exists():
-            json_path.unlink()
-        audio_path = AUDIO_DIR / passage_id
-        if audio_path.exists():
-            shutil.rmtree(audio_path)
-        auto_ids = [x for x in auto_ids if x[0] != passage_id]
-        print(f"[yaan] đã xoá bài cũ {passage_id} (vượt ngưỡng {MAX_KEPT_AUTO} bài tự động)", file=sys.stderr)
-    return seen_ordered
 
 
 def pinyin_of(zh_text):
@@ -149,7 +122,6 @@ def main():
         print(f"[yaan] sinh audio tiếng Trung cho {passage['id']}...", file=sys.stderr)
         audio_build.build_passage(out_path, lang="text_zh", voice_key="narrator")
 
-    seen_ordered = prune_oldest(seen_ordered)
     save_seen(seen_ordered)
 
 
