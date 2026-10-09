@@ -1,0 +1,65 @@
+{
+  "id": "ya-auto-yaan-004",
+  "category": "y_an",
+  "modality": "duoc",
+  "level": "trung_cap",
+  "auto": true,
+  "mt_translated": true,
+  "title_vi": "Bệnh án Trương Tịch Chu: khí ở ngực hạ lạc",
+  "title_zh": "张锡纯医案：胸中大气下陷一例",
+  "title_en": "Case of Zhang Xichun: sinking of the major qi in the chest",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "一名二十多岁女子因家庭关系不睦、常年恼怒就诊。",
+      "text_vi": "Một nữ bệnh nhân hơn hai mươi tuổi vì quan hệ gia đình không hòa thuận và thường xuyên tức giận nên đến khám.",
+      "text_en": "A woman in her twenties sought treatment because of family discord and long-standing anger.",
+      "text_pinyin": "yī míng èr shí duō suì nǚ zǐ yīn jiā tíng guān xì bù mù 、 cháng nián nǎo nù jiù zhěn 。"
+    },
+    {
+      "seq": 2,
+      "text_zh": "她渐觉呼吸短气、咽喉干渴，剧时呼吸几乎中断。",
+      "text_vi": "Cô ấy dần cảm thấy khó thở, họng khô và khát, và khi lên cơn thở gần như ngưng.",
+      "text_en": "She gradually developed shortness of breath and a dry, thirsty throat, and during severe episodes her breathing almost stopped.",
+      "text_pinyin": "tā jiàn jué hū xī duǎn qì 、 yān hóu gān kě ， jù shí hū xī jī hū zhōng duàn 。"
+    },
+    {
+      "seq": 3,
+      "text_zh": "诊脉见右手部位脉象无力、按之难起，左手如常。",
+      "text_vi": "Khám mạch thấy mạch ở phía tay phải yếu, ấn vào khó bắt lên, còn tay trái bình thường.",
+      "text_en": "On pulse examination the right-side pulse was weak and difficult to elicit, while the left-side pulse was normal.",
+      "text_pinyin": "zhěn mài jiàn yòu shǒu bù wèi mài xiàng wú lì 、 àn zhī nán qǐ ， zuǒ shǒu rú cháng 。"
+    },
+    {
+      "seq": 4,
+      "text_zh": "张锡纯判断为胸中大气下陷。",
+      "text_vi": "Trương Tịch Chu chẩn đoán là khí lớn ở trung thất bị hạ xuống (khí ở ngực hạ lạc).",
+      "text_en": "Zhang Xichun diagnosed sinking of the major qi in the chest (chest qi sinking).",
+      "text_pinyin": "zhāng xī chún pàn duàn wèi xiōng zhōng dà qì xià xiàn 。"
+    },
+    {
+      "seq": 5,
+      "text_zh": "用升陷汤治疗，方中有生黄芪、知母加量、柴胡、桔梗，去升麻。",
+      "text_vi": "Ông dùng Thăng Hãm thang, trong phương có sinh hoàng kì, thạch hộc tăng liều, sài hồ và cát cánh, bỏ thăng ma.",
+      "text_en": "He treated her with Shengxian Decoction, containing raw Astragalus root (Huangqi), Anemarrhena (Zhimu) in increased dosage, Bupleurum (Chaihu), and Platycodon (Jiegeng), with Shengma omitted.",
+      "text_pinyin": "yòng shēng xiàn tāng zhì liáo ， fāng zhōng yǒu shēng huáng qí 、 zhī mǔ jiā liàng 、 chái hú 、 jié gěng ， qù shēng má 。"
+    },
+    {
+      "seq": 6,
+      "text_zh": "患者连服三剂后病愈大半。",
+      "text_vi": "Bệnh nhân uống liên tiếp ba thang thuốc sau đó khỏi được hơn một nửa.",
+      "text_en": "After taking three consecutive doses, the patient's condition improved by about half.",
+      "text_pinyin": "huàn zhě lián fú sān jì hòu bìng yù dà bàn 。"
+    },
+    {
+      "seq": 7,
+      "text_zh": "再服数剂后痊愈。",
+      "text_vi": "Uống thêm vài thang nữa thì khỏi hoàn toàn.",
+      "text_en": "After several more doses she recovered completely.",
+      "text_pinyin": "zài fú shù jì hòu quán yù 。"
+    }
+  ],
+  "source_note_vi": "Diễn giải tự động (AI) từ dữ kiện y án thật (Dược/Thực liệu), nguồn: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Chưa qua rà soát thủ công.",
+  "source_note_zh": "由 AI 根据真实医案事实自动改写（方药/食疗），来源：张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》。尚未经人工校对。",
+  "source_note_en": "AI-generated narrative from real case facts (Herbal/Dietary therapy), source: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Not yet human-reviewed."
+}
