@@ -4,3 +4,4 @@ backend/credentials.json
 backend/public/data/*.json
 .DS_Store
 *.log
+__pycache__/

@@ -669,7 +669,7 @@ function listListeningDialogues(category) {
       if (!file.endsWith('.json')) continue;
       const data = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8'));
       result.push({
-        id: data.id, category: data.category, title: data.title,
+        id: data.id, category: data.category, title: data.title, level: data.level || null,
         title_vi: data.title_vi || data.title, title_zh: data.title_zh || data.title, title_en: data.title_en || data.title,
       });
     }

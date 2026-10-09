@@ -1,0 +1,50 @@
+name: Fetch PubMed (auto, luyện dịch EN→ZH)
+
+# Tự động lấy bài tóm tắt PubMed mới (châm cứu/Trung y), dịch EN→ZH/VI (MyMemory), sinh
+# audio tiếng Anh (Google Cloud TTS), commit trực tiếp vào backend/data/listening và
+# backend/public/audio/listening — bài mới có ngay trên dict.chimedis.vn, không cần bước
+# thủ công nào. Giữ tối đa 30 bài cùng lúc (tự xoá bài cũ nhất) để không phình kho lưu
+# trữ git vô hạn (quyết định 2026-10-09, xem scripts/pubmed_fetch.py).
+
+on:
+  schedule:
+    - cron: "0 22 * * *"   # 05:00 giờ Việt Nam hàng ngày
+  workflow_dispatch:
+    inputs:
+      max:
+        description: "Số bài mới tối đa"
+        required: false
+        default: "1"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Fetch + dịch + sinh audio
+        env:
+          GOOGLE_CREDENTIALS_JSON_B64: ${{ secrets.GOOGLE_CREDENTIALS_JSON_B64 }}
+          TRANSLATE_CONTACT_EMAIL: ${{ secrets.TRANSLATE_CONTACT_EMAIL }}
+        run: python scripts/pubmed_fetch.py --max "${{ inputs.max || '1' }}"
+
+      - name: Commit bài mới / xoá bài cũ
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backend/data/listening/hoc_thuat backend/public/audio/listening/hoc_thuat
+          git diff --cached --quiet || git commit -m "Tự động lấy bài PubMed mới (luyện dịch EN→ZH)"
+          git push

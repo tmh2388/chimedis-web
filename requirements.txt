@@ -1,0 +1,4 @@
+requests>=2.31
+pyyaml>=6.0
+google-cloud-texttospeech>=2.16
+pypinyin>=0.50

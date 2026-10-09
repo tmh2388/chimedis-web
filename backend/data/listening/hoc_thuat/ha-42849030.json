@@ -1,0 +1,155 @@
+{
+  "id": "ha-42849030",
+  "category": "hoc_thuat",
+  "level": "cao_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Comparative Evaluation of ChatGPT, DeepSeek, and Physician-Generated Acupuncture Treatment Protocols Across Chinese and English Language Settings: Cross-Sectional Evaluation Study.",
+  "title_zh": "中英文环境中ChatGPT、DeepSeek和医师生成的针灸治疗方案的比较评估：横断面评估研究。",
+  "title_vi": "Đánh giá so sánh các quy trình điều trị châm cứu do ChatGPT, DeepSeek và bác sĩ tạo ra trong môi trường tiếng Trung và tiếng Anh: Nghiên cứu đánh giá cắt ngang.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Traditional Chinese medicine (TCM) has received increasing attention in evidence-based medicine.",
+      "text_zh": "中医药在循证医学领域受到越来越多的关注。",
+      "text_vi": "Y học cổ truyền Trung Quốc (TCM) đã nhận được sự chú ý ngày càng tăng trong y học dựa trên bằng chứng.",
+      "text_pinyin": "zhōng yī yào zài xún zhèng yī xué lǐng yù shòu dào yuè lái yuè duō de guān zhù 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "However, its largely experience-based and practice-oriented nature has slowed modernization and standardization.",
+      "text_zh": "然而，其主要以经验为基础和实践为导向的性质减缓了现代化和标准化的步伐。",
+      "text_vi": "Tuy nhiên, bản chất chủ yếu dựa trên kinh nghiệm và định hướng thực hành của nó đã làm chậm quá trình hiện đại hóa và tiêu chuẩn hóa.",
+      "text_pinyin": "rán ér ， qí zhǔ yào yǐ jīng yàn wèi jī chǔ hé shí jiàn wèi dǎo xiàng de xìng zhì jiǎn huǎn le xiàn dài huà hé biāo zhǔn huà de bù fá 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "Advances in AI provide new opportunities for integrating AI with TCM.",
+      "text_zh": "人工智能的进步为将人工智能与中医药相结合提供了新的机会。",
+      "text_vi": "Những tiến bộ trong AI mang đến những cơ hội mới để tích hợp AI với TCM.",
+      "text_pinyin": "rén gōng zhì néng de jìn bù wèi jiāng rén gōng zhì néng yǔ zhōng yī yào xiāng jié hé tí gōng le xīn de jī huì 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "This study evaluates the application of large language models (LLMs), including ChatGPT (OpenAI) and DeepSeek, in generating acupuncture treatment protocols.",
+      "text_zh": "本研究评估了包括ChatGPT （ OpenAI ）和DeepSeek在内的大型语言模型（ LLM ）在生成针灸治疗方案中的应用。",
+      "text_vi": "Nghiên cứu này đánh giá việc áp dụng các mô hình ngôn ngữ lớn (LLM), bao gồm ChatGPT (OpenAI) và DeepSeek, trong việc tạo ra các phác đồ điều trị châm cứu.",
+      "text_pinyin": "běn yán jiū píng gū le bāo kuò ChatGPT （ OpenAI ） hé DeepSeek zài nèi de dà xíng yǔ yán mó xíng （ LLM ） zài shēng chéng zhēn jiǔ zhì liáo fāng àn zhōng de yìng yòng 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "We compare the validity and clinical effectiveness of physician-generated protocols with those produced by LLMs, examine differences in outputs across language corpora (Chinese and English), and establish a standardized assessment framework for systematically assessing the effectiveness of acupuncture point selection.",
+      "text_zh": "我们将医师生成方案的有效性和临床有效性与LLM生成的方案进行比较，检查语言语料库（中文和英语）之间的输出差异，并建立标准化评估框架，以系统评估针灸穴位选择的有效性。",
+      "text_vi": "Chúng tôi so sánh tính hợp lệ và hiệu quả lâm sàng của các quy trình do bác sĩ tạo ra với các quy trình do LLM tạo ra, kiểm tra sự khác biệt về kết quả đầu ra giữa các ngôn ngữ (tiếng Trung và tiếng Anh) và thiết lập một khung đánh giá tiêu chuẩn để đánh giá một cách có hệ thống hiệu quả của việc lựa chọn điểm châm cứu.",
+      "text_pinyin": "wǒ men jiāng yī shī shēng chéng fāng àn de yǒu xiào xìng hé lín chuáng yǒu xiào xìng yǔ LLM shēng chéng de fāng àn jìn xíng bǐ jiào ， jiǎn chá yǔ yán yǔ liào kù （ zhōng wén hé yīng yǔ ） zhī jiān de shū chū chāi yì ， bìng jiàn lì biāo zhǔn huà píng gū kuāng jià ， yǐ xì tǒng píng gū zhēn jiǔ xué wèi xuǎn zé de yǒu xiào xìng 。"
+    },
+    {
+      "seq": 6,
+      "text_en": "Ultimately, this research aims to support the standardization of acupoint selection and promote greater consistency, reliability, and evidence-based development in acupuncture practice.",
+      "text_zh": "最终，本研究旨在支持穴位选择的标准化，促进针灸实践中更大的一致性、可靠性和循证发展。",
+      "text_vi": "Cuối cùng, nghiên cứu này nhằm mục đích hỗ trợ tiêu chuẩn hóa việc lựa chọn huyệt và thúc đẩy sự nhất quán, độ tin cậy và phát triển dựa trên bằng chứng lớn hơn trong thực hành châm cứu.",
+      "text_pinyin": "zuì zhōng ， běn yán jiū zhǐ zài zhī chí xué wèi xuǎn zé de biāo zhǔn huà ， cù jìn zhēn jiǔ shí jiàn zhōng gèng dà de yí zhì xìng 、 kě kào xìng hé xún zhèng fā zhǎn 。"
+    },
+    {
+      "seq": 7,
+      "text_en": "Qualified acupuncture treatment cases published in Acupuncture in Medicine were identified and translated from English into Chinese to create a bilingual case dataset.",
+      "text_zh": "鉴定发表在《针灸医学》杂志上的合格针灸治疗病例，并将其从英文翻译成中文，以创建双语病例数据集。",
+      "text_vi": "Các trường hợp điều trị châm cứu đủ điều kiện được công bố trong Châm cứu trong Y học đã được xác định và dịch từ tiếng Anh sang tiếng Trung để tạo ra một bộ dữ liệu trường hợp song ngữ.",
+      "text_pinyin": "jiàn dìng fā biǎo zài 《 zhēn jiǔ yī xué 》 zá zhì shàng de hé gé zhēn jiǔ zhì liáo bìng lì ， bìng jiāng qí cóng yīng wén fān yì chéng zhōng wén ， yǐ chuàng jiàn shuāng yǔ bìng lì shù jù jí 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "Standardized case prompts were independently input into DeepSeek and ChatGPT to generate acupuncture treatment protocols.",
+      "text_zh": "将标准化病例提示独立输入DeepSeek和ChatGPT ，以生成针灸治疗方案。",
+      "text_vi": "Các lời nhắc trường hợp được chuẩn hóa được nhập độc lập vào DeepSeek và ChatGPT để tạo ra các phác đồ điều trị châm cứu.",
+      "text_pinyin": "jiāng biāo zhǔn huà bìng lì tí shì dú lì shū rù DeepSeek hé ChatGPT ， yǐ shēng chéng zhēn jiǔ zhì liáo fāng àn 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "Ten senior TCM physicians evaluated the AI-generated and physician-generated protocols using 7 criteria: local point selection, distal point selection, syndrome-based point selection, meridian-tracing point selection, neuroanatomical point selection, core acupoint selection, and synergistic effects.",
+      "text_zh": "十位资深中医医生使用7个标准评估了AI生成的和医师生成的方案：局部点选择、远端点选择、基于综合征的点选择、经络追踪点选择、神经解剖学点选择、核心穴位选择和协同效应。",
+      "text_vi": "Mười bác sĩ TCM cao cấp đã đánh giá các quy trình do AI tạo ra và do bác sĩ tạo ra bằng cách sử dụng 7 tiêu chí: lựa chọn điểm cục bộ, lựa chọn điểm xa, lựa chọn điểm dựa trên hội chứng, lựa chọn điểm theo dõi kinh tuyến, lựa chọn điểm giải phẫu thần kinh, lựa chọn huyệt lõi và tác dụng hiệp đồng.",
+      "text_pinyin": "shí wèi zī shēn zhōng yī yī shēng shǐ yòng 7 gè biāo zhǔn píng gū le AI shēng chéng de hé yī shī shēng chéng de fāng àn ： jú bù diǎn xuǎn zé 、 yuǎn duān diǎn xuǎn zé 、 jī yú zōng hé zhēng de diǎn xuǎn zé 、 jīng luò zhuī zōng diǎn xuǎn zé 、 shén jīng jiě pōu xué diǎn xuǎn zé 、 hé xīn xué wèi xuǎn zé hé xié tóng xiào yìng 。"
+    },
+    {
+      "seq": 10,
+      "text_en": "Repeated-measures ANOVA with sphericity assessment was used to examine differences across LLMs, language corpora, and protocol groups.",
+      "text_zh": "使用具有球度评估的重复测量ANOVA来检查LLM、语言语料库和方案组之间的差异。",
+      "text_vi": "Các biện pháp ANOVA lặp đi lặp lại với đánh giá hình cầu đã được sử dụng để kiểm tra sự khác biệt giữa các LLM, ngữ pháp ngôn ngữ và các nhóm quy trình.",
+      "text_pinyin": "shǐ yòng jù yǒu qiú dù píng gū de chóng fù cè liáng ANOVA lái jiǎn chá LLM、 yǔ yán yǔ liào kù hé fāng àn zǔ zhī jiān de chā yì 。"
+    },
+    {
+      "seq": 11,
+      "text_en": "Blinded expert evaluations revealed significant differences among the 5 acupuncture groups for local point selection (P=.006), syndrome-based point selection (P=.005), neuroanatomical point selection (P<.001), and core acupoints coverage principle (P=.03).",
+      "text_zh": "盲态专家评估显示，在局部穴位选择（ P = 0.006 ）、基于综合征的穴位选择（ P = 0.005 ）、神经解剖学穴位选择（ P < 0.001 ）和核心穴位覆盖原则（ P = 0.03 ）方面， 5个针灸组之间存在显著差异。",
+      "text_vi": "Các đánh giá của chuyên gia mù cho thấy sự khác biệt đáng kể giữa 5 nhóm châm cứu để lựa chọn điểm cục bộ (P= .006), lựa chọn điểm dựa trên hội chứng (P=.005), lựa chọn điểm giải phẫu thần kinh (P<.001) và nguyên tắc bao phủ huyệt lõi (P=.03).",
+      "text_pinyin": "máng tài zhuān jiā píng gū xiǎn shì ， zài jú bù xué wèi xuǎn zé （ P = 0.006 ）、 jī yú zōng hé zhēng de xué wèi xuǎn zé （ P = 0.005 ）、 shén jīng jiě pōu xué xué wèi xuǎn zé （ P < 0.001 ） hé hé xīn xué wèi fù gài yuán zé （ P = 0.03 ） fāng miàn ， 5 gè zhēn jiǔ zǔ zhī jiān cún zài xiǎn zhù chā yì 。"
+    },
+    {
+      "seq": 12,
+      "text_en": "For local point selection, DeepSeek Chinese output received higher scores than the other evaluated outputs, while ChatGPT English output scored higher than ChatGPT Chinese output.",
+      "text_zh": "对于局部点选择， DeepSeek中文输出得分高于其他评估输出，而ChatGPT英语输出得分高于ChatGPT中文输出。",
+      "text_vi": "Đối với lựa chọn điểm địa phương, đầu ra tiếng Trung của DeepSeek nhận được điểm số cao hơn so với các đầu ra được đánh giá khác, trong khi đầu ra tiếng Anh của ChatGPT đạt điểm cao hơn đầu ra tiếng Trung của ChatGPT.",
+      "text_pinyin": "duì yú jú bù diǎn xuǎn zé ， DeepSeek zhōng wén shū chū dé fēn gāo yú qí tā píng gū shū chū ， ér ChatGPT yīng yǔ shū chū dé fēn gāo yú ChatGPT zhōng wén shū chū 。"
+    },
+    {
+      "seq": 13,
+      "text_en": "For syndrome-based point selection, the journal physician-generated protocols received lower scores than the DeepSeek Chinese, DeepSeek English, and ChatGPT Chinese outputs.",
+      "text_zh": "对于基于综合征的点选择，期刊医师生成的方案得分低于DeepSeek中文、DeepSeek英语和ChatGPT中文输出。",
+      "text_vi": "Đối với việc lựa chọn điểm dựa trên hội chứng, các quy trình do bác sĩ tạo ra trên tạp chí nhận được điểm số thấp hơn so với các kết quả đầu ra bằng tiếng Trung của DeepSeek, tiếng Anh của DeepSeek và tiếng Trung của ChatGPT.",
+      "text_pinyin": "duì yú jī yú zōng hé zhēng de diǎn xuǎn zé ， qī kān yī shī shēng chéng de fāng àn dé fēn dī yú DeepSeek zhōng wén 、DeepSeek yīng yǔ hé ChatGPT zhōng wén shū chū 。"
+    },
+    {
+      "seq": 14,
+      "text_en": "For neuroanatomical point selection, DeepSeek English output achieved the highest scores among the 5 groups.",
+      "text_zh": "在神经解剖学点选择方面， DeepSeek英语输出在5组中得分最高。",
+      "text_vi": "Đối với lựa chọn điểm giải phẫu thần kinh, đầu ra tiếng Anh DeepSeek đạt được điểm số cao nhất trong số 5 nhóm.",
+      "text_pinyin": "zài shén jīng jiě pōu xué diǎn xuǎn zé fāng miàn ， DeepSeek yīng yǔ shū chū zài 5 zǔ zhōng dé fēn zuì gāo 。"
+    },
+    {
+      "seq": 15,
+      "text_en": "For core acupoints coverage, the journal physician-generated protocols received lower scores than the DeepSeek Chinese, DeepSeek English, and ChatGPT English outputs.",
+      "text_zh": "对于核心穴位覆盖，期刊医师生成的方案得分低于DeepSeek中文、DeepSeek英语和ChatGPT英语输出。",
+      "text_vi": "Đối với phạm vi điểm huyệt lõi, các giao thức do bác sĩ tạo ra trên tạp chí nhận được điểm số thấp hơn so với đầu ra tiếng Trung, tiếng Anh DeepSeek và tiếng Anh ChatGPT của DeepSeek.",
+      "text_pinyin": "duì yú hé xīn xué wèi fù gài ， qī kān yī shī shēng chéng de fāng àn dé fēn dī yú DeepSeek zhōng wén 、DeepSeek yīng yǔ hé ChatGPT yīng yǔ shū chū 。"
+    },
+    {
+      "seq": 16,
+      "text_en": "No significant differences were observed among the 5 groups for distal point selection, meridian-tracing point selection, or therapeutic synergy.",
+      "text_zh": "在远端点选择、经络追踪点选择或治疗协同方面， 5组之间未观察到显著差异。",
+      "text_vi": "Không có sự khác biệt đáng kể nào được quan sát thấy giữa 5 nhóm để lựa chọn điểm xa, lựa chọn điểm theo dõi kinh tuyến, hoặc sức mạnh tổng hợp điều trị.",
+      "text_pinyin": "zài yuǎn duān diǎn xuǎn zé 、 jīng luò zhuī zōng diǎn xuǎn zé huò zhì liáo xié tóng fāng miàn ， 5 zǔ zhī jiān wèi guān chá dào xiǎn zhù chā yì 。"
+    },
+    {
+      "seq": 17,
+      "text_en": "Overall, DeepSeek performed better in the Chinese-language setting, whereas ChatGPT performed better in the English-language setting.",
+      "text_zh": "总体而言， DeepSeek在中文设置中表现更好，而ChatGPT在英语设置中表现更好。",
+      "text_vi": "Nhìn chung, DeepSeek hoạt động tốt hơn trong môi trường tiếng Trung, trong khi ChatGPT hoạt động tốt hơn trong môi trường tiếng Anh.",
+      "text_pinyin": "zǒng tǐ ér yán ， DeepSeek zài zhōng wén shè zhì zhōng biǎo xiàn gèng hǎo ， ér ChatGPT zài yīng yǔ shè zhì zhōng biǎo xiàn gèng hǎo 。"
+    },
+    {
+      "seq": 18,
+      "text_en": "AI has demonstrated substantial progress in encoding explicit acupuncture knowledge and performing systematic acupoint selection.",
+      "text_zh": "人工智能在编码明确的针灸知识和执行系统的穴位选择方面取得了实质性进展。",
+      "text_vi": "AI đã chứng minh sự tiến bộ đáng kể trong việc mã hóa kiến thức châm cứu rõ ràng và thực hiện lựa chọn huyệt một cách có hệ thống.",
+      "text_pinyin": "rén gōng zhì néng zài biān mǎ míng què de zhēn jiǔ zhī shí hé zhí xíng xì tǒng de xué wèi xuǎn zé fāng miàn qǔ dé le shí zhì xìng jìn zhǎn 。"
+    },
+    {
+      "seq": 19,
+      "text_en": "However, challenges remain in individualized treatment and consistency across linguistic contexts.",
+      "text_zh": "然而，在个性化治疗和不同语言背景下的一致性方面仍然存在挑战。",
+      "text_vi": "Tuy nhiên, những thách thức vẫn còn trong cách đối xử cá nhân và tính nhất quán giữa các bối cảnh ngôn ngữ.",
+      "text_pinyin": "rán ér ， zài gè xìng huà zhì liáo hé bù tóng yǔ yán bèi jǐng xià de yí zhì xìng fāng miàn réng rán cún zài tiǎo zhàn 。"
+    },
+    {
+      "seq": 20,
+      "text_en": "Enhancing bilingual or multilingual training corpora and developing syndrome-specific reasoning modules may improve the clinical applicability of AI-assisted TCM systems.",
+      "text_zh": "增强双语或多语培训语料库并开发针对综合征的推理模块可以提高人工智能辅助中医系统的临床适用性。",
+      "text_vi": "Tăng cường đào tạo song ngữ hoặc đa ngôn ngữ và phát triển các mô-đun lý luận dành riêng cho hội chứng có thể cải thiện khả năng ứng dụng lâm sàng của các hệ thống TCM được AI hỗ trợ.",
+      "text_pinyin": "zēng qiáng shuāng yǔ huò duō yǔ péi xùn yǔ liào kù bìng kāi fā zhēn duì zōng hé zhēng de tuī lǐ mó kuài kě yǐ tí gāo rén gōng zhì néng fǔ zhù zhōng yī xì tǒng de lín chuáng shì yòng xìng 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42849030), JMIR formative research (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42849030/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42849030), JMIR formative research (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42849030/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42849030），JMIR formative research (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42849030/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。"
+}
