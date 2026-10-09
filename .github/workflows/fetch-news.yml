@@ -1,0 +1,52 @@
+name: Fetch tin tức Trung Y tự động
+
+# Lấy tin tức Trung Y mới qua Google News RSS (chỉ lấy tiêu đề+tóm tắt, không crawl toàn
+# văn — xem ghi chú trong scripts/news_fetch.py), GPT-5-mini diễn giải thành bài luyện
+# nghe-dịch, Google TTS sinh audio tiếng Trung, commit thẳng vào backend/. Giữ tối đa 20
+# bài tự động (tự xoá bài cũ nhất), không đụng bài Claude soạn tay (vd. bc-01).
+#
+# LƯU Ý: Google News RSS là tính năng KHÔNG chính thức của Google, có thể hỏng bất cứ
+# lúc nào — nếu workflow này lỗi liên tục, kiểm tra lại URL/tham số trước khi báo bug.
+
+on:
+  schedule:
+    - cron: "0 23 * * *"   # 06:00 giờ Việt Nam hàng ngày
+  workflow_dispatch:
+    inputs:
+      max:
+        description: "Số bài mới tối đa"
+        required: false
+        default: "1"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Diễn giải + sinh audio
+        env:
+          GOOGLE_CREDENTIALS_JSON_B64: ${{ secrets.GOOGLE_CREDENTIALS_JSON_B64 }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/news_fetch.py --max "${{ inputs.max || '1' }}"
+
+      - name: Commit bài mới / xoá bài cũ
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backend/data/listening/bao_chi backend/public/audio/listening/bao_chi
+          git diff --cached --quiet || git commit -m "Tự động lấy tin tức Trung Y mới"
+          git push

@@ -1,0 +1,49 @@
+name: Fetch Y Án tự động (dược + châm)
+
+# Mở rộng kho Y Án đa mô thức từ backend/data/yaan_source_bank.json (dữ kiện thật, đã
+# trích từ tư liệu Drive của user — xem ghi chú trong file bank), GPT-5-mini diễn giải
+# thành bài luyện nghe-dịch, Google TTS sinh audio tiếng Trung, commit thẳng vào backend/.
+# Giữ tối đa 40 bài tự động (tự xoá bài cũ nhất), không đụng bài Claude soạn tay.
+
+on:
+  schedule:
+    - cron: "30 22 * * *"   # 05:30 giờ Việt Nam hàng ngày (lệch PubMed 30 phút cho dễ theo dõi log)
+  workflow_dispatch:
+    inputs:
+      max:
+        description: "Số bài mới tối đa"
+        required: false
+        default: "1"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Diễn giải + sinh audio
+        env:
+          GOOGLE_CREDENTIALS_JSON_B64: ${{ secrets.GOOGLE_CREDENTIALS_JSON_B64 }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/yaan_fetch.py --max "${{ inputs.max || '1' }}"
+
+      - name: Commit bài mới / xoá bài cũ
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backend/data/listening/y_an backend/public/audio/listening/y_an
+          git diff --cached --quiet || git commit -m "Tự động mở rộng kho Y Án (dược/châm)"
+          git push

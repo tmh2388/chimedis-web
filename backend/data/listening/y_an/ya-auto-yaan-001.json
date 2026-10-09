@@ -1,0 +1,58 @@
+{
+  "id": "ya-auto-yaan-001",
+  "category": "y_an",
+  "modality": "duoc",
+  "level": "trung_cap",
+  "auto": true,
+  "mt_translated": true,
+  "title_vi": "Ca bệnh Trương Tịch Chu: sau sinh khó thở và ra mồ hôi, dùng hoài sơn sống 3 ngày khỏi",
+  "title_zh": "张锡纯医案：产后气短出汗以生怀山药三剂而愈",
+  "title_en": "Zhang Xichun case: postpartum dyspnea with sweating cured by three doses of raw Huai yam",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "一位妇女产后十余日，忽然感到气短、喘咳，并伴随身热和出汗。",
+      "text_vi": "Một phụ nữ sinh con hơn mười ngày bỗng thấy khó thở, ho khò khè, kèm sốt và ra mồ hôi.",
+      "text_en": "A woman more than ten days postpartum suddenly experienced shortness of breath and a panting cough, accompanied by fever and sweating.",
+      "text_pinyin": "yī wèi fù nǚ chǎn hòu shí yú rì ， hū rán gǎn dào qì duǎn 、 chuǎn ké ， bìng bàn suí shēn rè huo chū hàn 。"
+    },
+    {
+      "seq": 2,
+      "text_zh": "前医以黄芪、熟地、白芍等补药治疗，结果汗出更甚。",
+      "text_vi": "Bác sĩ trước đó cho các thuốc bổ như hoàng kỳ, thục địa, bạch thược, kết quả mồ hôi ra nhiều hơn.",
+      "text_en": "The previous physician treated her with tonics such as astragalus, cooked rehmannia, and white peony, which resulted in increased sweating.",
+      "text_pinyin": "qián yī yǐ huáng qí 、 shú dì 、 bái sháo děng bǔ yào zhì liáo ， jié guǒ hàn chū gèng shèn 。"
+    },
+    {
+      "seq": 3,
+      "text_zh": "张锡纯诊脉见“脉一息七至”，于是判断肺、脾、肾三脏俱虚。",
+      "text_vi": "Trương Tịch Chu bắt mạch thấy “mạch một hơi bảy tới”, nên kết luận phổi, tỳ, thận cả ba tạng đều hư.",
+      "text_en": "Zhang Xichun, on taking the pulse, observed 'pulse seven beats per breath' and therefore diagnosed deficiency of the lung, spleen, and kidney.",
+      "text_pinyin": "zhāng xī chún zhěn mài jiàn “ mài yī xī qī zhì ”， yú shì pàn duàn fèi 、 pí 、 shèn sān zàng jù xū 。"
+    },
+    {
+      "seq": 4,
+      "text_zh": "他嘱其用生怀山药六两煎汁代茶服用。",
+      "text_vi": "Ông bảo bà ấy dùng hoài sơn sống sáu lạng sắc lấy nước thay trà uống.",
+      "text_en": "He instructed her to take raw Huai yam (six liang) decocted as a tea.",
+      "text_pinyin": "tā zhǔ qí yòng shēng huái shān yào liù liǎng jiān zhī dài chá fú yòng 。"
+    },
+    {
+      "seq": 5,
+      "text_zh": "患者在一昼夜内将药服尽，次日再用六两，连服三日。",
+      "text_vi": "Bệnh nhân uống hết thuốc trong một ngày đêm, ngày hôm sau lại dùng sáu lạng nữa, liên tiếp uống trong ba ngày.",
+      "text_en": "The patient consumed the decoction within one day and night, then took another six liang the next day, continuing for three days.",
+      "text_pinyin": "huàn zhě zài yī zhòu yè nèi jiāng yào fú jǐn ， cì rì zài yòng liù liǎng ， lián fú sān rì 。"
+    },
+    {
+      "seq": 6,
+      "text_zh": "服药后三日症状消失，病情痊愈。",
+      "text_vi": "Sau ba ngày thuốc, các triệu chứng biến mất và bệnh khỏi.",
+      "text_en": "After three days of medication the symptoms disappeared and she recovered.",
+      "text_pinyin": "fú yào hòu sān rì zhèng zhuàng xiāo shī ， bìng qíng quán yù 。"
+    }
+  ],
+  "source_note_vi": "Diễn giải tự động (AI) từ dữ kiện y án thật (Dược/Thực liệu), nguồn: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Chưa qua rà soát thủ công.",
+  "source_note_zh": "由 AI 根据真实医案事实自动改写（方药/食疗），来源：张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》。尚未经人工校对。",
+  "source_note_en": "AI-generated narrative from real case facts (Herbal/Dietary therapy), source: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Not yet human-reviewed."
+}

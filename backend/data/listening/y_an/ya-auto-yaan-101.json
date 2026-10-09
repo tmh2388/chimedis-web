@@ -1,0 +1,72 @@
+{
+  "id": "ya-auto-yaan-101",
+  "category": "y_an",
+  "modality": "cham",
+  "level": "trung_cap",
+  "auto": true,
+  "mt_translated": true,
+  "title_vi": "Châm cứu điều trị mai hạch khí: một ca",
+  "title_zh": "针灸治疗梅核气一例",
+  "title_en": "Acupuncture treatment for globus hystericus: a case",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "一名工人因情绪不佳，进食后感到咽喉有异物梗阻。",
+      "text_vi": "Một công nhân vì tinh thần không tốt, sau khi ăn cảm thấy họng có cảm giác dị vật tắc nghẽn.",
+      "text_en": "A worker, due to poor mood, felt an obstructing foreign-body sensation in the throat after eating.",
+      "text_pinyin": "yī míng gōng rén yīn qíng xù bù jiā ， jìn shí hòu gǎn dào yān hóu yǒu yì wù gěng zǔ 。"
+    },
+    {
+      "seq": 2,
+      "text_zh": "他咳不出也咽不下，但进食不受影响。",
+      "text_vi": "Anh ấy không khạc ra được và cũng không nuốt xuống được, nhưng ăn uống không bị ảnh hưởng.",
+      "text_en": "He could neither cough it out nor swallow it down, but his eating was not affected.",
+      "text_pinyin": "tā ké bù chū yě yàn bù xià ， dàn jìn shí bù shòu yǐng xiǎng 。"
+    },
+    {
+      "seq": 3,
+      "text_zh": "耳鼻喉科和内科检查均未见异常。",
+      "text_vi": "Khám tai mũi họng và nội khoa đều không thấy bất thường.",
+      "text_en": "ENT and internal medicine examinations found no abnormalities.",
+      "text_pinyin": "ěr bí hóu kē hé nèi kē jiǎn chá jūn wèi jiàn yì cháng 。"
+    },
+    {
+      "seq": 4,
+      "text_zh": "曾服开胸顺气丸和半夏厚朴汤数剂无效，遂转而接受针灸治疗。",
+      "text_vi": "Đã uống Khai hung thuận khí hoàn và Bán hạ hậu bạc thang vài liệu trình không hiệu quả, nên chuyển sang điều trị châm cứu.",
+      "text_en": "He had taken Kaixiong Shunqi Wan and Banxia Houpu Tang for several doses without effect, so he turned to acupuncture treatment.",
+      "text_pinyin": "céng fú kāi xiōng shùn qì wán hé bàn xià hòu pò tāng shù jì wú xiào ， suì zhuǎn ér jiē shòu zhēn jiǔ zhì liáo 。"
+    },
+    {
+      "seq": 5,
+      "text_zh": "辨证为肝气郁结，郁久化火，上结咽喉，诊为梅核气。",
+      "text_vi": "Bịnh chứng được phân tích là can khí uất kết, uất lâu hóa hỏa, bốc lên kết tại họng, chẩn đoán là mai hạch khí.",
+      "text_en": "The pattern was liver qi stagnation; chronic stagnation transformed into heat that lodged in the throat; the diagnosis was globus hystericus.",
+      "text_pinyin": "biàn zhèng wèi gān qì yù jié ， yù jiǔ huà huǒ ， shàng jié yān hóu ， zhěn wèi méi hé qì 。"
+    },
+    {
+      "seq": 6,
+      "text_zh": "取肝俞、天突、廉泉、膻中、期门、内关和足三里针刺，留针25分钟。",
+      "text_vi": "Châm các huyệt Can du, Thiên đột, Liêm tuyền, Đản trung, Kỳ môn, Nội quan và Túc tam lý, giữ kim 25 phút.",
+      "text_en": "Acupuncture needles were applied at Ganshu, Tiantu, Lianquan, Danzhong, Qimen, Neiguan, and Zusanli, retained for 25 minutes.",
+      "text_pinyin": "qǔ gān yú 、 tiān tū 、 lián quán 、 dàn zhōng 、 qī mén 、 nèi guān hé zú sān lǐ zhēn cì ， liú zhēn 25 fēn zhōng 。"
+    },
+    {
+      "seq": 7,
+      "text_zh": "针后第二日即感咽喉轻松，食欲增加。",
+      "text_vi": "Ngày thứ hai sau châm, bệnh nhân cảm thấy họng nhẹ nhàng hơn và ăn ngon miệng hơn.",
+      "text_en": "By the second day after acupuncture he felt his throat relax and his appetite increased.",
+      "text_pinyin": "zhēn hòu dì èr rì jí gǎn yān hóu qīng sōng ， shí yù zēng jiā 。"
+    },
+    {
+      "seq": 8,
+      "text_zh": "共治疗7次后，异物感完全消失，其他症状悉数消除。",
+      "text_vi": "Sau tổng cộng 7 lần điều trị, cảm giác dị vật hoàn toàn biến mất, các triệu chứng khác cũng được loại bỏ.",
+      "text_en": "After a total of seven treatments the foreign-body sensation disappeared completely and the other symptoms were all resolved.",
+      "text_pinyin": "gòng zhì liáo 7 cì hòu ， yì wù gǎn wán quán xiāo shī ， qí tā zhèng zhuàng xī shù xiāo chú 。"
+    }
+  ],
+  "source_note_vi": "Diễn giải tự động (AI) từ dữ kiện y án thật (Châm cứu), nguồn: 周润茗医案，《针灸临证精要》，转引自针灸名家经典医案课件. Chưa qua rà soát thủ công.",
+  "source_note_zh": "由 AI 根据真实医案事实自动改写（针灸），来源：周润茗医案，《针灸临证精要》，转引自针灸名家经典医案课件。尚未经人工校对。",
+  "source_note_en": "AI-generated narrative from real case facts (Acupuncture), source: 周润茗医案，《针灸临证精要》，转引自针灸名家经典医案课件. Not yet human-reviewed."
+}

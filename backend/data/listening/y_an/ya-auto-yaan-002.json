@@ -1,0 +1,65 @@
+{
+  "id": "ya-auto-yaan-002",
+  "category": "y_an",
+  "modality": "duoc",
+  "level": "trung_cap",
+  "auto": true,
+  "mt_translated": true,
+  "title_vi": "Bệnh án Trương Tịch Thuần: Dùng Tư Sinh Thang trị lao phổi",
+  "title_zh": "张锡纯医案：资生汤治劳瘵",
+  "title_en": "Zhang Xichun Case: Zisheng Tang for Pulmonary Tuberculosis",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "民国二年，张锡纯记载了大名府一名未婚女子的病案。",
+      "text_vi": "Năm Dân Quốc thứ hai, Trương Tịch Thuần ghi chép một bệnh án của một nữ bệnh nhân chưa kết hôn ở Đại Minh Phủ.",
+      "text_en": "In the second year of the Republican era, Zhang Xichun recorded a case of an unmarried woman from Daming Fu.",
+      "text_pinyin": "mín guó èr nián ， zhāng xī chún jì zǎi le dà míng fǔ yī míng wèi hūn nǚ zǐ de bìng àn 。"
+    },
+    {
+      "seq": 2,
+      "text_zh": "她患劳瘵（肺结核）一年余，卧床不起并且闭经。",
+      "text_vi": "Cô ấy bị lao phổi (lao phổi) hơn một năm, nằm trên giường không dậy được và bị mất kinh.",
+      "text_en": "She had consumptive disease (pulmonary tuberculosis) for over a year, was bedridden and had amenorrhea.",
+      "text_pinyin": "tā huàn láo zhài （ fèi jié hé ） yī nián yú ， wò chuáng bù qǐ bìng qiě bì jīng 。"
+    },
+    {
+      "seq": 3,
+      "text_zh": "张锡纯给她用资生汤，处方写着：生山药一两、玄参五钱、于术三钱、生鸡内金二钱、炒牛蒡子三钱；热甚则加生地黄。",
+      "text_vi": "Trương Tịch Thuần cho bà ấy dùng Tư Sinh Thang; đơn thuốc ghi: 生山药 1 两, 玄参 5 钱, 于术 3 钱, 生鸡内金 2 钱, 炒牛蒡子 3 钱; nếu sốt nhiều thì thêm 生地黄.",
+      "text_en": "Zhang Xichun prescribed Zisheng Tang; the prescription read: Sheng Shanyao 1 liang, Xuanshen 5 qian, Yushu 3 qian, Sheng Jinei Jin 2 qian, Chao Niubangzi 3 qian; if heat was severe, add Sheng Dihuang.",
+      "text_pinyin": "zhāng xī chún gěi tā yòng zī shēng tāng ， chǔ fāng xiě zhe ： shēng shān yào yī liǎng 、 xuán cān wǔ qián 、 yú shù sān qián 、 shēng jī nèi jīn èr qián 、 chǎo niú bàng zi sān qián ； rè shèn zé jiā shēng dì huáng 。"
+    },
+    {
+      "seq": 4,
+      "text_zh": "连服数剂后，她的胃口渐开。",
+      "text_vi": "Sau khi dùng vài thang liên tiếp, ăn ngon lại dần dần.",
+      "text_en": "After taking several doses consecutively, her appetite gradually returned.",
+      "text_pinyin": "lián fú shù jì hòu ， tā de wèi kǒu jiàn kāi 。"
+    },
+    {
+      "seq": 5,
+      "text_zh": "后来又加生地黄五钱来退热。",
+      "text_vi": "Sau đó lại thêm 生地黄 5 钱 để hạ sốt.",
+      "text_en": "Later, Sheng Dihuang 5 qian was added to reduce the fever.",
+      "text_pinyin": "hòu lái yòu jiā shēng dì huáng wǔ qián lái tuì rè 。"
+    },
+    {
+      "seq": 6,
+      "text_zh": "并且加丹参、当归各三钱以治腿疼。",
+      "text_vi": "Đồng thời thêm 丹参 và 当归 mỗi vị 3 钱 để trị đau chân.",
+      "text_en": "Additionally, Danshen and Danggui were added, each 3 qian, to treat leg pain.",
+      "text_pinyin": "bìng qiě jiā dān shēn 、 dāng guī gè sān qián yǐ zhì tuǐ téng 。"
+    },
+    {
+      "seq": 7,
+      "text_zh": "前后调理月余，月经恢复，病情痊愈。",
+      "text_vi": "Sau hơn một tháng điều trị điều hòa, kinh nguyệt trở lại và bệnh khỏi.",
+      "text_en": "After about a month of overall regulation, her menstruation returned and the illness was cured.",
+      "text_pinyin": "qián hòu tiáo lǐ yuè yú ， yuè jīng huī fù ， bìng qíng quán yù 。"
+    }
+  ],
+  "source_note_vi": "Diễn giải tự động (AI) từ dữ kiện y án thật (Dược/Thực liệu), nguồn: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Chưa qua rà soát thủ công.",
+  "source_note_zh": "由 AI 根据真实医案事实自动改写（方药/食疗），来源：张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》。尚未经人工校对。",
+  "source_note_en": "AI-generated narrative from real case facts (Herbal/Dietary therapy), source: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Not yet human-reviewed."
+}

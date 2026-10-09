@@ -666,7 +666,9 @@ function listListeningDialogues(category) {
     const dir = path.join(LISTENING_DATA_DIR, cat);
     if (!fs.existsSync(dir)) continue;
     for (const file of fs.readdirSync(dir)) {
-      if (!file.endsWith('.json')) continue;
+      // File trạng thái nội bộ các pipeline tự động (.processed_*.json) cũng kết thúc
+      // bằng .json — bỏ qua mọi file bắt đầu bằng "." để không lẫn vào danh sách bài học.
+      if (!file.endsWith('.json') || file.startsWith('.')) continue;
       const data = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8'));
       result.push({
         id: data.id, category: data.category, title: data.title, level: data.level || null,
@@ -683,7 +685,7 @@ function findListeningDialogue(id) {
   for (const cat of categories) {
     const dir = path.join(LISTENING_DATA_DIR, cat);
     for (const file of fs.readdirSync(dir)) {
-      if (!file.endsWith('.json')) continue;
+      if (!file.endsWith('.json') || file.startsWith('.')) continue;
       const data = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8'));
       if (data.id === id) return data;
     }

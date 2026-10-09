@@ -1,0 +1,58 @@
+{
+  "id": "ya-auto-yaan-003",
+  "category": "y_an",
+  "modality": "duoc",
+  "level": "trung_cap",
+  "auto": true,
+  "mt_translated": true,
+  "title_vi": "Trương Tích Thuần y án: bé gái 5 tuổi uống nhầm thuốc khổ hàn gây tiêu chảy kéo dài, chữa bằng cháo củ hoài sơn",
+  "title_zh": "张锡纯医案：五岁女童误服苦寒药致久泻，薯蓣粥疗愈",
+  "title_en": "Zhang Xichun case: 5-year-old girl developed prolonged diarrhea after misuse of bitter-cold herbs, cured with Dioscorea (Huai Shan) porridge",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "有一名五岁女孩，因受凉后误服黄连、黄柏等苦寒药连服十余剂。",
+      "text_vi": "Có một bé gái 5 tuổi, vì bị lạnh đã bị nhầm cho uống hoàng liên, hoàng bá và các thuốc đắng tính hàn, liên tục hơn mười liều.",
+      "text_en": "A five-year-old girl, after catching a cold, was mistakenly given bitter-cold herbs such as Huanglian and Huangbai in more than ten consecutive doses.",
+      "text_pinyin": "yǒu yī míng wǔ suì nǚ hái ， yīn shòu liáng hòu wù fú huáng lián 、 huáng bǎi děng kǔ hán yào lián fú shí yú jì 。"
+    },
+    {
+      "seq": 2,
+      "text_zh": "因此她脾胃受损，腹泻持续一个多月。",
+      "text_vi": "Do đó tỳ vị của em bị tổn thương, tiêu chảy kéo dài hơn một tháng.",
+      "text_en": "As a result, her spleen and stomach were injured and diarrhea persisted for more than a month.",
+      "text_pinyin": "yīn cǐ tā pí wèi shòu sǔn ， fù xiè chí xù yí gè duō yuè 。"
+    },
+    {
+      "seq": 3,
+      "text_zh": "孩子身体羸弱，同时发热心烦，一昼夜泻十余次。",
+      "text_vi": "Trẻ gầy yếu, đồng thời sốt và cảm thấy khó chịu, một ngày đêm đi ngoài hơn mười lần.",
+      "text_en": "The child became emaciated and also had fever and irritability, with over ten bowel movements in a day and night.",
+      "text_pinyin": "hái zi shēn tǐ léi ruò ， tóng shí fā rè xīn fán ， yī zhòu yè xiè shí yú cì 。"
+    },
+    {
+      "seq": 4,
+      "text_zh": "多位医者都推辞不愿医治。",
+      "text_vi": "Nhiều thầy thuốc từ chối, không muốn chữa cho em.",
+      "text_en": "Several physicians refused to treat her.",
+      "text_pinyin": "duō wèi yī zhě dōu tuī cí bù yuàn yī zhì 。"
+    },
+    {
+      "seq": 5,
+      "text_zh": "张锡纯用怀山药细粉煮薯蓣粥，每次用量七八钱至一两。",
+      "text_vi": "Trương Tích Thuần dùng cháo củ hoài sơn (hoài sơn tán mịn nấu thành cháo), mỗi lần dùng 7–8 tiền tới 1 lượng.",
+      "text_en": "Zhang Xichun used Dioscorea (Huai Shan) porridge, with Huai Shan finely powdered and cooked into porridge, each dose being 7–8 qian to 1 liang.",
+      "text_pinyin": "zhāng xī chún yòng huái shān yào xì fěn zhǔ shǔ yù zhōu ， měi cì yòng liàng qī bā qián zhì yī liǎng 。"
+    },
+    {
+      "seq": 6,
+      "text_zh": "每日喂服四五次，十余日后孩子痊愈。",
+      "text_vi": "Mỗi ngày cho uống bốn đến năm lần, hơn mười ngày sau em khỏi bệnh.",
+      "text_en": "It was administered four to five times daily, and after more than ten days the child recovered.",
+      "text_pinyin": "měi rì wèi fú sì wǔ cì ， shí yú rì hòu hái zi quán yù 。"
+    }
+  ],
+  "source_note_vi": "Diễn giải tự động (AI) từ dữ kiện y án thật (Dược/Thực liệu), nguồn: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Chưa qua rà soát thủ công.",
+  "source_note_zh": "由 AI 根据真实医案事实自动改写（方药/食疗），来源：张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》。尚未经人工校对。",
+  "source_note_en": "AI-generated narrative from real case facts (Herbal/Dietary therapy), source: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Not yet human-reviewed."
+}

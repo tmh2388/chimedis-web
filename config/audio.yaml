@@ -1,12 +1,14 @@
-# Chỉ dùng cho pipeline tự động PubMed (mục "hoc_thuat") — nghe tiếng Anh gốc, luyện dịch
-# sang tiếng Trung. Nội dung y_an/bao_chi (tiếng Trung) soạn ở repo riêng
-# tmh2388/chimedis-listening rồi copy sang đây, không dùng config này.
+# Dùng cho các pipeline tự động chạy thẳng trong repo này (không qua bước copy tay):
+# - hoc_thuat (PubMed, EN→ZH): voices_google_en
+# - y_an + bao_chi tự động (GPT-5-mini diễn giải, ZH gốc): voices_google_zh
 voices_google_en:
   narrator: "en-US-Wavenet-D"
 
+voices_google_zh:
+  narrator: "cmn-CN-Wavenet-C"
+
 provider_settings:
   google:
-    language_code: "en-US"
     speaking_rate: 1.0
     pitch: 0.0
 

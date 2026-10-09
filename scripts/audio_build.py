@@ -1,9 +1,10 @@
-"""Sinh audio TTS cho nhánh nội dung tự động "hoc_thuat" (PubMed, luyện dịch EN→ZH) —
-bản tối giản, chỉ dùng Google Cloud TTS (không cần ElevenLabs). Dùng chung service
-account đã có cho Sheets API khác (GOOGLE_CREDENTIALS_JSON_B64).
+"""Sinh audio TTS cho các pipeline tự động chạy thẳng trong repo này (hoc_thuat/PubMed
+tiếng Anh, y_an+bao_chi tự động tiếng Trung) — chỉ dùng Google Cloud TTS, dùng chung
+service account đã có cho Sheets API khác (GOOGLE_CREDENTIALS_JSON_B64).
 
-Nội dung y_an/bao_chi (tiếng Trung, do Claude soạn/diễn giải) KHÔNG dùng script này —
-soạn ở repo riêng tmh2388/chimedis-listening rồi copy sang backend/data/listening.
+Nội dung y_an/bao_chi THỦ CÔNG (do Claude trực tiếp soạn/diễn giải trong chat) vẫn soạn
+ở repo riêng tmh2388/chimedis-listening rồi copy sang đây như trước — script này chỉ
+phục vụ các pipeline KHÔNG cần chat (workflow_dispatch/cron).
 """
 import base64
 import json
@@ -104,7 +105,8 @@ def build_passage(file_path, lang="text_en", voice_key="narrator"):
     (nơi app thật serve), không qua bước copy tay nào."""
     cfg = load_audio_config()
     locale = LANG_LOCALE.get(lang, "en-US")
-    voices = cfg["voices_google_en"]
+    voices_key = "voices_google_zh" if lang == "text_zh" else "voices_google_en"
+    voices = cfg[voices_key]
     settings = cfg["provider_settings"]["google"]
     pause_ms = cfg.get("pause_ms", 420)
     voice = voices.get(voice_key)
