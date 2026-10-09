@@ -720,19 +720,29 @@ function requireOpenAI(req, res, next) {
 // "gpt-4o-audio-preview" không còn khả dụng) KHÔNG hỗ trợ response_format/json_schema
 // (trả lỗi 400 "not supported with this model") — phải ép JSON qua prompt rồi tự parse
 // phòng thủ (extractJsonObject bên dưới).
+//
+// Đổi sang chấm theo TỪNG CÂU (quyết định 2026-10-09, sau khi user báo bug chấm theo cả
+// bài dài ra kết quả sai lệch/không chính xác) — audio ngắn giúp model phiên âm chính xác
+// hơn hẳn. Thêm "transcript_marked": model tự đánh dấu từ/cụm phát âm chưa chuẩn bằng
+// cặp ((...)) ngay trong transcript, để frontend tô màu — KHÔNG dùng danh sách từ riêng
+// vì dễ lệch khỏi transcript thật (sai chính tả, dấu câu khác nhau).
 const PRONUNCIATION_SYSTEM_PROMPT = `Bạn là giám khảo chấm phát âm cho người luyện dịch \
-cabin Trung Y (nghe tiếng Trung, nói lại bản dịch bằng tiếng Việt hoặc tiếng Anh, có thể \
-xen lẫn thuật ngữ tiếng Trung). Nhiệm vụ:
-1. Phiên âm chính xác những gì nghe được trong file audio (giữ nguyên (các) ngôn ngữ \
-được nói, không dịch lại).
-2. Xác định (các) ngôn ngữ xuất hiện trong audio (chỉ trong số: Tiếng Việt, 中文, English).
-3. Với MỖI ngôn ngữ phát hiện được, chấm điểm phát âm + độ trôi chảy từ 0-100, kèm nhận \
-xét ngắn gọn bằng tiếng Việt (2-3 câu, chỉ ra điểm cần cải thiện cụ thể — ví dụ âm nào \
-phát âm chưa chuẩn, tốc độ nói, ngắt nghỉ).
-Nếu audio không có tiếng nói rõ ràng (toàn im lặng/tạp âm), trả về transcript rỗng và \
-mảng scores rỗng.
+cabin Trung Y, đang luyện dịch TỪNG CÂU NGẮN (nghe 1 câu tiếng Trung, nói lại bản dịch \
+bằng tiếng Việt hoặc tiếng Anh). Nhiệm vụ, PHẢI làm đúng thứ tự:
+1. Phiên âm CHÍNH XÁC TUYỆT ĐỐI những gì nghe được trong file audio — đây là phần quan \
+trọng nhất, phải phản ánh ĐÚNG THẬT những gì người này nói, không được bịa, không được \
+đoán theo ngữ cảnh nếu nghe không rõ (ghi "..." ở chỗ không nghe rõ thay vì đoán).
+2. Xác định ngôn ngữ chính được nói (Tiếng Việt / 中文 / English).
+3. Tạo "transcript_marked": CHÉP LẠI y nguyên transcript ở bước 1, nhưng bọc các từ/cụm \
+từ phát âm chưa chuẩn (sai âm, nuốt âm, ngữ điệu sai) trong cặp ((...)), ví dụ: "The \
+((breath)) was short" nếu từ "breath" phát âm chưa chuẩn. Nếu không có lỗi rõ ràng, \
+transcript_marked giống hệt transcript (không bọc gì).
+4. Chấm điểm phát âm + độ trôi chảy từ 0-100.
+5. Nhận xét ngắn gọn bằng tiếng Việt (1-2 câu, nêu CỤ THỂ từ/âm nào cần sửa).
+Nếu audio không có tiếng nói rõ ràng (toàn im lặng/tạp âm/không phải giọng người), trả \
+về transcript rỗng, transcript_marked rỗng, score 0, feedback giải thích không nghe được.
 CHỈ trả về một object JSON hợp lệ duy nhất, không kèm markdown/giải thích, đúng dạng:
-{"transcript": "...", "scores": [{"language": "...", "score": 0-100, "feedback": "..."}]}`;
+{"transcript": "...", "transcript_marked": "...", "language": "...", "score": 0-100, "feedback": "..."}`;
 
 function extractJsonObject(text) {
   const cleaned = String(text || '').replace(/```json|```/g, '').trim();

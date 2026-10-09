@@ -689,6 +689,9 @@ header{transition:padding .2s ease}
 .listen-source{font-size:11.5px;color:var(--muc-mo,#8a7d6a);font-style:italic;margin-top:18px;padding-top:14px;
   border-top:1px solid var(--vien,#e5ddcc);line-height:1.5}
 .listen-iconbtn.accent{border-color:var(--son,#C8452F);color:var(--son,#C8452F)}
+.listen-iconbtn:disabled{opacity:.35;cursor:not-allowed}
+.listen-iconbtn.recording{background:var(--son,#C8452F);color:#fff;border-color:var(--son,#C8452F)}
+.listen-err-mark{background:#FBEFCF;color:#8A5A0F;border-radius:4px;padding:0 3px;font-weight:700}
 .listen-cbrow{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
 .listen-playbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
   background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:14px;padding:10px 12px;margin-bottom:8px}
@@ -868,23 +871,15 @@ header{transition:padding .2s ease}
   <div class="auth-scrim" id="authScrim" onclick="closeAuthModal()"></div>
   <div class="auth-modal" id="authModal"></div>
 
-  <!-- LUYỆN NGHE — luyện dịch cabin (chế độ tự do: tự play/pause bài gốc, hệ thống ghi âm/
-       ghi hình liên tục, tự cắt khoảng lặng >3s, chấm điểm phát âm vi/zh/en bằng OpenAI).
-       Thay thế hẳn modal "quay video mặt+màn hình" cũ (chưa dùng thật, gộp làm 1 modal
-       duy nhất — quyết định 2026-10-09). -->
+  <!-- LUYỆN NGHE — modal CHỈ GHI HÌNH (quay mặt để lưu/chia sẻ), KHÔNG chấm điểm phát
+       âm ở đây nữa — ghi âm chấm điểm giờ nằm trực tiếp trên trang chính theo từng câu
+       (xem listenLineRecordToggle ở trên). Quyết định 2026-10-09: user yêu cầu tách hẳn
+       2 việc, "ghi âm chỉ một thứ duy nhất trên trang chính". -->
   <div class="listen-modal-scrim" id="listenPracticeScrim" onclick="closeListenPracticeModal()"></div>
   <div class="listen-modal listen-practice-modal" id="listenPracticeModal">
-    <h3 data-i18n="practice_title">Luyện dịch cabin</h3>
-    <div class="practice-modebar">
-      <button class="practice-mode-btn on" id="practiceModeAudioBtn" onclick="listenSetPracticeMode('audio')" data-i18n="practice_mode_audio">Ghi âm</button>
-      <button class="practice-mode-btn" id="practiceModeVideoBtn" onclick="listenSetPracticeMode('video')" data-i18n="practice_mode_video">Ghi hình</button>
-    </div>
-    <video id="practiceCamPreview" autoplay muted playsinline style="display:none"></video>
-    <p class="practice-hint" data-i18n="practice_hint">Tự bấm play/pause nghe bài gốc, vừa nghe vừa nói bản dịch của bạn — hệ thống ghi âm liên tục, tự cắt khoảng lặng khi ngừng nói quá 3 giây.</p>
-    <div class="practice-srcbar">
-      <button class="listen-playbtn" id="practiceSrcPlayBtn" onclick="listenPracticeToggleSource()" aria-label="Play"></button>
-      <span data-i18n="practice_src_label">Nghe bài gốc</span>
-    </div>
+    <h3 data-i18n="practice_video_title">Ghi hình</h3>
+    <video id="practiceCamPreview" autoplay muted playsinline></video>
+    <p class="practice-hint" data-i18n="practice_video_hint">Quay lại mặt bạn khi luyện tập để lưu hoặc chia sẻ — không chấm điểm ở đây, chỉ ghi hình.</p>
     <div class="btnrow">
       <button class="primary" id="practiceStartBtn" onclick="listenPracticeStartRecord()" data-i18n="practice_start">● Bắt đầu ghi</button>
       <button id="practiceStopBtn" onclick="listenPracticeStopRecord()" disabled data-i18n="practice_stop">■ Dừng ghi</button>
@@ -892,7 +887,6 @@ header{transition:padding .2s ease}
     </div>
     <div class="practice-status" id="practiceStatus"></div>
     <div id="practiceDownloadArea"></div>
-    <div id="practiceScoreArea"></div>
   </div>
 
   <!-- POPUP -->
@@ -1771,12 +1765,12 @@ Object.assign(I18N.vi, {
   listen_record_unsupported: 'Mở bằng Safari/Chrome trên trình duyệt để dùng tính năng ghi âm/ghi hình — chưa hỗ trợ trong app.',
   listen_shadow_unsupported: 'Mở bằng trình duyệt (Safari/Chrome) để dùng tính năng nhắc lại có chấm điểm — chưa hỗ trợ trong app.',
   listen_line_of: 'Câu {n}/{total}',
-  practice_title: 'Luyện dịch cabin', practice_mode_audio: 'Ghi âm', practice_mode_video: 'Ghi hình',
-  practice_hint: 'Tự bấm play/pause nghe bài gốc, vừa nghe vừa nói bản dịch của bạn — hệ thống ghi âm liên tục, tự cắt khoảng lặng khi ngừng nói quá 3 giây.',
-  practice_src_label: 'Nghe bài gốc', practice_start: '● Bắt đầu ghi', practice_stop: '■ Dừng ghi',
+  practice_video_title: 'Ghi hình', practice_video_hint: 'Quay lại mặt bạn khi luyện tập để lưu hoặc chia sẻ — không chấm điểm ở đây, chỉ ghi hình.',
+  practice_start: '● Bắt đầu ghi', practice_stop: '■ Dừng ghi',
   practice_recording: '🔴 Đang ghi âm...', practice_processing: 'Đang xử lý (cắt khoảng lặng)...', practice_scoring: 'Đang chấm điểm phát âm...',
   practice_error: 'Lỗi', practice_transcript: 'Bạn đã nói:',
   practice_no_mic: 'Không xin được quyền micro/camera. Nếu đang dùng app, hãy kiểm tra app đã được cập nhật bản mới nhất; hoặc thử mở bằng trình duyệt Safari/Chrome.',
+  practice_no_speech_detected: 'Không nghe rõ giọng nói, thử ghi âm lại gần micro hơn.',
 });
 Object.assign(I18N.zh, {
   dr_listen: '听力练习', listen_home: '听力练习', listen_back: '听力练习',
@@ -1792,12 +1786,12 @@ Object.assign(I18N.zh, {
   listen_record_unsupported: '请用 Safari/Chrome 浏览器打开以使用录音/录像功能——App 内暂不支持。',
   listen_shadow_unsupported: '请用浏览器（Safari/Chrome）打开以使用跟读打分功能——App 内暂不支持。',
   listen_line_of: '第 {n}/{total} 句',
-  practice_title: '同传口译练习', practice_mode_audio: '录音', practice_mode_video: '录像',
-  practice_hint: '自行播放/暂停原文音频，边听边说出你的翻译——系统持续录音，结束后自动剪掉超过3秒的静音。',
-  practice_src_label: '收听原文', practice_start: '● 开始录制', practice_stop: '■ 停止录制',
+  practice_video_title: '录像', practice_video_hint: '录制你练习时的样子，用于保存或分享——这里不打分，仅录像。',
+  practice_start: '● 开始录制', practice_stop: '■ 停止录制',
   practice_recording: '🔴 正在录音...', practice_processing: '正在处理（剪掉静音）...', practice_scoring: '正在评估发音...',
   practice_error: '错误', practice_transcript: '你说的是：',
   practice_no_mic: '无法获取麦克风/摄像头权限。如果正在使用 App，请确认已更新到最新版本；或尝试用 Safari/Chrome 浏览器打开。',
+  practice_no_speech_detected: '未能听清语音，请靠近麦克风重新录制。',
 });
 Object.assign(I18N.en, {
   dr_listen: 'Listening Practice', listen_home: 'Listening Practice', listen_back: 'Listening Practice',
@@ -1813,12 +1807,12 @@ Object.assign(I18N.en, {
   listen_record_unsupported: 'Open with Safari/Chrome in a browser to use the record audio/video feature — not supported in-app yet.',
   listen_shadow_unsupported: 'Open with a browser (Safari/Chrome) to use the scored repeat-after-me mode — not supported in-app yet.',
   listen_line_of: 'Line {n}/{total}',
-  practice_title: 'Cabin interpretation practice', practice_mode_audio: 'Record audio', practice_mode_video: 'Record video',
-  practice_hint: 'Play/pause the source audio yourself, speak your translation as you listen — the system records continuously and auto-trims silences longer than 3 seconds afterward.',
-  practice_src_label: 'Listen to source', practice_start: '● Start recording', practice_stop: '■ Stop recording',
+  practice_video_title: 'Record video', practice_video_hint: 'Record yourself practicing, to save or share — no scoring here, just recording.',
+  practice_start: '● Start recording', practice_stop: '■ Stop recording',
   practice_recording: '🔴 Recording...', practice_processing: 'Processing (trimming silence)...', practice_scoring: 'Scoring pronunciation...',
   practice_error: 'Error', practice_transcript: 'You said:',
   practice_no_mic: 'Could not get microphone/camera permission. If using the app, check you have the latest update; or try opening with Safari/Chrome.',
+  practice_no_speech_detected: "Couldn't hear clearly, try recording closer to the microphone.",
 });
 
 // ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
@@ -2585,9 +2579,6 @@ function listenSetBadge(seq, cls, html){
   el.innerHTML = html;
 }
 
-// Lưu mức TỰ ĐÁNH GIÁ (không phải điểm máy chấm — dịch thuật không có 1 đáp án đúng duy
-// nhất, so khớp từ cứng nhắc sẽ chấm sai oan bản dịch đúng nghĩa nhưng khác từ). score
-// chỉ còn ý nghĩa "100 = tự nhận Đạt, 40 = tự nhận Cần luyện thêm", user tự bấm chọn.
 async function listenPushProgress(dialogue_id, line_seq, target_lang, spoken_text, score){
   if(!state.user) return; // chưa đăng nhập: vẫn dùng được UI, chỉ không lưu lịch sử
   try{
@@ -2598,52 +2589,131 @@ async function listenPushProgress(dialogue_id, line_seq, target_lang, spoken_tex
   }catch(e){ /* mất mạng không chặn UI */ }
 }
 
-function listenRenderSelfCheck(seq, spoken, reference){
+// ===== Ghi âm luyện dịch THEO CÂU, ngay trên trang chính — thay thế hẳn cơ chế
+// SpeechRecognition cũ (chỉ ra transcript thô, không chấm được phát âm). Quyết định
+// 2026-10-09 sau phản hồi user: "Ghi âm chỉ một thứ duy nhất trên trang chính", bỏ hẳn
+// phần ghi âm chấm điểm trong modal camera (modal đó giờ CHỈ ghi hình, xem bên dưới).
+// Mỗi câu có nút record/pause (đổi icon qua lại) + nút stop riêng. Chỉ 1 câu được ghi
+// tại 1 thời điểm — các nút ghi/phát khác bị khoá trong lúc đó.
+const LISTEN_RECORD_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="7"/></svg>';
+const LISTEN_STOP_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>';
+let lineRecordSeq = null;
+let lineRecorder = null, lineRecordChunks = [], lineRecordStream = null;
+
+function listenUpdateLineRecordUI(){
+  document.querySelectorAll('.listen-line').forEach(el => {
+    const s = Number(el.dataset.seq);
+    const recBtn = el.querySelector('.listen-record-icon');
+    const stopBtn = el.querySelector('.listen-stop-icon');
+    const playBtn = el.querySelector('.listen-play-icon');
+    if(!recBtn) return;
+    const isThis = lineRecordSeq === s;
+    const isPaused = isThis && lineRecorder && lineRecorder.state === 'paused';
+    recBtn.innerHTML = isThis && !isPaused ? LISTEN_PAUSE_ICON : LISTEN_RECORD_ICON;
+    recBtn.classList.toggle('recording', isThis && !isPaused);
+    recBtn.disabled = lineRecordSeq !== null && !isThis;
+    if(stopBtn) stopBtn.style.display = isThis ? 'inline-flex' : 'none';
+    if(playBtn) playBtn.disabled = lineRecordSeq !== null;
+  });
+}
+
+function listenLineRecordToggle(seq){
+  if(lineRecordSeq === seq && lineRecorder){
+    if(lineRecorder.state === 'recording') lineRecorder.pause();
+    else if(lineRecorder.state === 'paused') lineRecorder.resume();
+    listenUpdateLineRecordUI();
+    return;
+  }
+  if(lineRecordSeq !== null) return; // đã có câu khác đang ghi dở
+  listenLineRecordStart(seq);
+}
+
+async function listenLineRecordStart(seq){
+  // Dừng hẳn mọi audio đang phát trước khi xin mic — tuyệt đối không để phát qua loa
+  // trong lúc ghi (bug thật đã gặp 2026-10-09: mic thu lại tiếng loa thay vì giọng user).
+  listenStopPlayback();
+  try{
+    const withTimeout = (p) => Promise.race([
+      p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 8000)),
+    ]);
+    const micStream = await withTimeout(navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+    }));
+    lineRecordStream = micStream;
+    lineRecordChunks = [];
+    lineRecorder = new MediaRecorder(micStream);
+    lineRecorder.ondataavailable = (e) => { if(e.data.size) lineRecordChunks.push(e.data); };
+    lineRecorder.start();
+    lineRecordSeq = seq;
+    listenSetBadge(seq, 'listening', `<span class="practice-rec-dot"></span> ${t('practice_recording')}`);
+    listenUpdateLineRecordUI();
+  }catch(err){
+    listenSetBadge(seq, 'bad', (err && err.message === 'timeout') ? t('practice_no_mic') : `${t('practice_error')}: ${err.message}`);
+  }
+}
+
+function listenLineRecordStop(seq){
+  if(lineRecordSeq !== seq || !lineRecorder) return;
+  const finishedSeq = seq;
+  const recorder = lineRecorder;
+  const stream = lineRecordStream;
+  recorder.onstop = async () => {
+    const rawBlob = new Blob(lineRecordChunks, { type: recorder.mimeType || 'audio/webm' });
+    if(stream) stream.getTracks().forEach(tr => tr.stop());
+    lineRecorder = null; lineRecordStream = null; lineRecordSeq = null;
+    listenUpdateLineRecordUI();
+    listenSetBadge(finishedSeq, 'checking', t('practice_processing'));
+    try{
+      const trimmedBlob = await trimSilenceToWav(rawBlob, 3000);
+      await listenLineScore(finishedSeq, trimmedBlob);
+    }catch(err){
+      listenSetBadge(finishedSeq, 'bad', `${t('practice_error')}: ${err.message}`);
+    }
+  };
+  if(recorder.state !== 'inactive') recorder.stop();
+}
+
+function listenHighlightMarked(marked){
+  const esc = (s) => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return esc(marked).replace(/\(\(([^)]+)\)\)/g, '<mark class="listen-err-mark">$1</mark>');
+}
+
+async function listenLineScore(seq, trimmedBlob){
+  const d = listenCurrentDialogue; if(!d) return;
+  const seg = d.segments.find(s => s.seq === seq);
+  const targetLang = listenRecognitionLang(d);
+  const reference = seg ? seg[targetLang] : '';
+  listenSetBadge(seq, 'checking', t('practice_scoring'));
+  const base64 = await blobToBase64(trimmedBlob);
+  let json;
+  try{
+    const res = await fetch(`${API_BASE}/api/pronunciation-score`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audio_base64: base64, format: 'wav', reference_zh: seg ? seg.text_zh : '' }),
+    });
+    json = await res.json();
+  }catch(e){
+    listenSetBadge(seq, 'bad', `${t('practice_error')}: ${e.message}`);
+    return;
+  }
   const esc = (s) => String(s||'').replace(/</g,'&lt;');
+  if(!json.success || !json.data || !json.data.transcript){
+    listenSetBadge(seq, 'bad', (json.data && json.data.feedback) ? esc(json.data.feedback) : t('practice_no_speech_detected'));
+    return;
+  }
+  const highlighted = listenHighlightMarked(json.data.transcript_marked || json.data.transcript);
   const html = `
     <div class="listen-selfcheck">
-      <div class="lsc-row"><span class="lsc-lab">${t('listen_you_said')}</span><span class="lsc-txt">${esc(spoken)}</span></div>
+      <div class="lsc-row"><span class="lsc-lab">${t('listen_you_said')}</span><span class="lsc-txt">${highlighted}</span></div>
       <div class="lsc-row"><span class="lsc-lab">${t('listen_reference')}</span><span class="lsc-txt ref">${esc(reference)}</span></div>
-      <div class="lsc-actions">
-        <button class="lsc-btn good" onclick="listenSelfRate(${seq},'good','${esc(spoken).replace(/'/g, "\\'")}')">${t('listen_self_good')}</button>
-        <button class="lsc-btn retry" onclick="listenSelfRate(${seq},'retry','${esc(spoken).replace(/'/g, "\\'")}')">${t('listen_self_retry')}</button>
+      <div class="practice-score-row">
+        <span class="practice-score-num">${esc(json.data.score)}/100</span>
+        <p class="practice-score-fb">${esc(json.data.feedback)}</p>
       </div>
     </div>`;
-  listenSetBadge(seq, 'checking', html);
-}
-function listenSelfRate(seq, rating, spoken){
-  const targetLang = listenRecognitionLang(listenCurrentDialogue);
-  const score = rating === 'good' ? 100 : 40;
-  listenSetBadge(seq, rating === 'good' ? 'good' : 'mid', rating === 'good' ? t('listen_self_good') + ' ✓' : t('listen_self_retry') + ' ↻');
-  listenPushProgress(listenCurrentDialogue.id, seq, targetLang, spoken, score);
-}
-
-function listenStartRecognition(seq, targetLang, reference){
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SpeechRec){ listenSetBadge(seq, 'bad', t('listen_no_speech')); return; }
-  const rec = new SpeechRec();
-  rec.lang = targetLang === 'text_en' ? 'en-US' : targetLang === 'text_zh' ? 'zh-CN' : 'vi-VN';
-  rec.interimResults = false;
-  listenSetBadge(seq, 'listening', t('listen_listening'));
-  rec.onresult = (e) => {
-    const spoken = e.results[0][0].transcript;
-    listenRenderSelfCheck(seq, spoken, reference);
-  };
-  rec.onerror = () => listenSetBadge(seq, 'bad', t('listen_retry'));
-  rec.start();
-}
-
-function listenTranslateLine(seq){
-  const d = listenCurrentDialogue; if(!d) return;
-  const seg = d.segments.find(s => s.seq === seq); if(!seg) return;
-  const targetLang = listenRecognitionLang(d);
-  const reference = seg[targetLang];
-  listenStopPlayback();
-  const token = listenPlayToken;
-  listenSetActiveLine(seq);
-  listenAudioEl = listenNewAudio(listenAudioUrl(d, seq, listenSourceField(d)));
-  listenAudioEl.play();
-  listenAudioEl.onended = () => { if(token === listenPlayToken){ listenClearActiveLine(); listenStartRecognition(seq, targetLang, reference); } };
+  listenSetBadge(seq, 'show', html);
+  listenPushProgress(d.id, seq, targetLang, json.data.transcript, json.data.score);
 }
 
 function renderListenDialogue(){
@@ -2660,9 +2730,10 @@ function renderListenDialogue(){
         <p class="sub en ${sl.en?'':'hidden'}">${seg.text_en}</p>
         <div class="listen-line-actions">
           <button class="listen-iconbtn listen-play-icon" onclick="listenPlayLine(${seg.seq})" aria-label="${t('listen_play_line')}">${LISTEN_PLAY_ICON}</button>
-          ${feat.speech ? `<button class="listen-iconbtn accent" onclick="listenTranslateLine(${seg.seq})" aria-label="${t('listen_translate')}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
-          </button>` : ''}
+          ${feat.record ? `
+          <button class="listen-iconbtn accent listen-record-icon" onclick="listenLineRecordToggle(${seg.seq})" aria-label="${t('practice_start')}">${LISTEN_RECORD_ICON}</button>
+          <button class="listen-iconbtn listen-stop-icon" onclick="listenLineRecordStop(${seg.seq})" style="display:none" aria-label="${t('practice_stop')}">${LISTEN_STOP_ICON}</button>
+          ` : ''}
         </div>
         <div class="listen-badge" data-listen-badge="${seg.seq}"></div>
       </div>
@@ -2674,7 +2745,7 @@ function renderListenDialogue(){
     <div class="listen-cbrow">
       ${cbRow('zh','listen_cb_zh')}${cbRow('pinyin','listen_cb_pinyin')}${cbRow('vi','listen_cb_vi')}${cbRow('en','listen_cb_en')}
     </div>
-    ${!feat.speech ? `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>` : ''}
+    ${!feat.record ? `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>` : ''}
     <div class="listen-playbar">
       <div class="listen-speedrow">
         ${LISTEN_SPEEDS.map(v => `<button class="listen-speed-btn ${loadListenSpeed()===v?'on':''}" data-speed="${v}" onclick="setListenSpeed(${v})">${v}×</button>`).join('')}
@@ -2692,64 +2763,25 @@ function renderListenDialogue(){
   </div>`;
 }
 
-// --- Quay video mặt + màn hình (modal, chỉ khả dụng khi getDisplayMedia có thật) ---
-// ===== Luyện dịch cabin — chế độ TỰ DO (không chia câu, khác hẳn "nghe & luyện dịch"
-// từng câu ở trên — 2 chế độ song song theo yêu cầu user 2026-10-09): user tự play/pause
-// nghe bài gốc theo nhịp của mình, hệ thống ghi âm (+ghi hình nếu chọn) LIÊN TỤC suốt
-// phiên, sau khi dừng tự cắt khoảng lặng >3s rồi gửi lên chấm điểm phát âm (OpenAI).
-let practiceMode = 'audio'; // 'audio' | 'video'
+// ===== Modal ghi hình (chỉ quay mặt để lưu/chia sẻ — KHÔNG chấm điểm, xem ghi chú ở
+// khai báo listenPracticeModal trong HTML). Ghi âm chấm điểm nằm riêng, theo từng câu
+// trên trang chính (listenLineRecordToggle ở trên).
 let practiceCamStream = null;
-let practiceAudioRecorder = null, practiceAudioChunks = [];
 let practiceVideoRecorder = null, practiceVideoChunks = [];
-let practiceSrcAudioEl = null;
 
 function openListenPracticeModal(){
   if(!listenCurrentDialogue) return;
-  // Bắt buộc dừng mọi audio đang phát ở trang chính trước khi mở — nếu không, audio đó
-  // vẫn phát qua loa trong lúc ghi âm, mic thu lại chính tiếng loa thay vì giọng người
-  // dùng (bug thật user báo cáo 2026-10-09: transcript ra gần như nguyên văn bài gốc).
   listenStopPlayback();
   document.getElementById('listenPracticeScrim').classList.add('open');
   document.getElementById('listenPracticeModal').classList.add('open');
-  document.getElementById('practiceSrcPlayBtn').innerHTML = LISTEN_PLAY_ICON;
   document.getElementById('practiceStatus').textContent = '';
   document.getElementById('practiceDownloadArea').innerHTML = '';
-  document.getElementById('practiceScoreArea').innerHTML = '';
 }
 function closeListenPracticeModal(){
   document.getElementById('listenPracticeScrim').classList.remove('open');
   document.getElementById('listenPracticeModal').classList.remove('open');
-  if(practiceSrcAudioEl){ practiceSrcAudioEl.pause(); practiceSrcAudioEl = null; }
-  // Đóng modal khi đang ghi dở — dừng hẳn recorder, không để chạy ngầm sau khi đóng.
-  if(practiceIsRecording){
-    if(practiceAudioRecorder && practiceAudioRecorder.state === 'recording') practiceAudioRecorder.stop();
-    if(practiceVideoRecorder && practiceVideoRecorder.state === 'recording') practiceVideoRecorder.stop();
-    practiceIsRecording = false;
-  }
+  if(practiceVideoRecorder && practiceVideoRecorder.state === 'recording') practiceVideoRecorder.stop();
   if(practiceCamStream){ practiceCamStream.getTracks().forEach(tr => tr.stop()); practiceCamStream = null; }
-}
-function listenSetPracticeMode(mode){
-  practiceMode = mode;
-  document.getElementById('practiceModeAudioBtn').classList.toggle('on', mode === 'audio');
-  document.getElementById('practiceModeVideoBtn').classList.toggle('on', mode === 'video');
-  document.getElementById('practiceCamPreview').style.display = mode === 'video' ? 'block' : 'none';
-}
-function listenFullAudioUrl(d){
-  return `/audio/listening/${d.category}/${d.id}/full-${listenSourceField(d)}.mp3`;
-}
-let practiceIsRecording = false;
-function listenPracticeToggleSource(){
-  // Không cho nghe bài gốc trong lúc đang ghi âm — nghe qua loa + ghi âm cùng lúc khiến
-  // mic thu lại chính tiếng loa thay vì giọng người dùng (user báo lỗi 2026-10-09, xem
-  // openListenPracticeModal). Phải dừng ghi mới nghe lại được.
-  if(practiceIsRecording) return;
-  const btn = document.getElementById('practiceSrcPlayBtn');
-  if(!practiceSrcAudioEl){
-    practiceSrcAudioEl = listenNewAudio(listenFullAudioUrl(listenCurrentDialogue));
-    practiceSrcAudioEl.onended = () => { btn.innerHTML = LISTEN_PLAY_ICON; };
-  }
-  if(practiceSrcAudioEl.paused){ practiceSrcAudioEl.play(); btn.innerHTML = LISTEN_PAUSE_ICON; }
-  else { practiceSrcAudioEl.pause(); btn.innerHTML = LISTEN_PLAY_ICON; }
 }
 
 async function listenPracticeStartRecord(){
@@ -2761,39 +2793,19 @@ async function listenPracticeStartRecord(){
     // Một số WKWebView (app iOS) có thể treo vô thời hạn thay vì từ chối rõ ràng khi
     // thiếu quyền native — đặt timeout để luôn báo lỗi rõ ràng thay vì im lặng mãi.
     const withTimeout = (p) => Promise.race([
-      p,
-      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 8000)),
+      p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 8000)),
     ]);
-    // Dừng hẳn audio nguồn trước khi xin mic — tuyệt đối không để phát qua loa trong lúc
-    // ghi (user yêu cầu 2026-10-09: "ghi âm thì phải tắt toàn bộ phần đọc").
-    if(practiceSrcAudioEl){ practiceSrcAudioEl.pause(); }
-    document.getElementById('practiceSrcPlayBtn').innerHTML = LISTEN_PLAY_ICON;
-
-    // echoCancellation/noiseSuppression: lớp phòng thủ thêm (không thay thế việc tắt hẳn
-    // audio nguồn ở trên) — giảm tạp âm/tiếng vọng còn sót nếu máy không tắt loa kịp.
-    const micStream = await withTimeout(navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+    const camStream = await withTimeout(navigator.mediaDevices.getUserMedia({
+      video: true, audio: { echoCancellation: true, noiseSuppression: true },
     }));
-    practiceAudioChunks = [];
-    practiceAudioRecorder = new MediaRecorder(micStream);
-    practiceAudioRecorder.ondataavailable = (e) => { if(e.data.size) practiceAudioChunks.push(e.data); };
-
-    if(practiceMode === 'video'){
-      const camStream = await withTimeout(navigator.mediaDevices.getUserMedia({ video: true }));
-      practiceCamStream = new MediaStream([...camStream.getVideoTracks(), ...micStream.getAudioTracks()]);
-      document.getElementById('practiceCamPreview').srcObject = practiceCamStream;
-      practiceVideoChunks = [];
-      practiceVideoRecorder = new MediaRecorder(practiceCamStream, { mimeType: 'video/webm' });
-      practiceVideoRecorder.ondataavailable = (e) => { if(e.data.size) practiceVideoChunks.push(e.data); };
-      practiceVideoRecorder.start();
-    }
-    practiceAudioRecorder.start();
-    practiceIsRecording = true;
+    practiceCamStream = camStream;
+    document.getElementById('practiceCamPreview').srcObject = camStream;
+    practiceVideoChunks = [];
+    practiceVideoRecorder = new MediaRecorder(camStream, { mimeType: 'video/webm' });
+    practiceVideoRecorder.ondataavailable = (e) => { if(e.data.size) practiceVideoChunks.push(e.data); };
+    practiceVideoRecorder.start();
     document.getElementById('practiceStartBtn').disabled = true;
     document.getElementById('practiceStopBtn').disabled = false;
-    const srcBtn = document.getElementById('practiceSrcPlayBtn');
-    srcBtn.disabled = true;
-    srcBtn.closest('.practice-srcbar').classList.add('disabled');
     document.getElementById('practiceStatus').innerHTML = `<span class="practice-rec-dot"></span> ${t('practice_recording')}`;
   }catch(err){
     document.getElementById('practiceStatus').textContent =
@@ -2802,41 +2814,18 @@ async function listenPracticeStartRecord(){
 }
 
 function listenPracticeStopRecord(){
-  practiceIsRecording = false;
   document.getElementById('practiceStartBtn').disabled = false;
   document.getElementById('practiceStopBtn').disabled = true;
-  const srcBtn = document.getElementById('practiceSrcPlayBtn');
-  srcBtn.disabled = false;
-  srcBtn.closest('.practice-srcbar').classList.remove('disabled');
-  document.getElementById('practiceStatus').textContent = t('practice_processing');
-
-  const finishAudio = new Promise(resolve => {
-    practiceAudioRecorder.onstop = async () => {
-      const rawBlob = new Blob(practiceAudioChunks, { type: practiceAudioRecorder.mimeType || 'audio/webm' });
-      resolve(rawBlob);
-    };
-    practiceAudioRecorder.stop();
-  });
-  if(practiceVideoRecorder){
-    practiceVideoRecorder.onstop = () => {
-      const videoBlob = new Blob(practiceVideoChunks, { type: 'video/webm' });
-      const url = URL.createObjectURL(videoBlob);
-      document.getElementById('practiceDownloadArea').innerHTML =
-        `<a href="${url}" download="chimedis-luyen-dich-cabin.webm">⬇ ${t('listen_record_download')}</a>`;
-    };
-    practiceVideoRecorder.stop();
-  }
-  if(practiceCamStream) practiceCamStream.getTracks().forEach(tr => tr.stop());
-
-  finishAudio.then(async rawBlob => {
-    try{
-      const trimmedBlob = await trimSilenceToWav(rawBlob, 3000);
-      document.getElementById('practiceStatus').textContent = t('practice_scoring');
-      await listenPracticeScore(trimmedBlob);
-    }catch(err){
-      document.getElementById('practiceStatus').textContent = t('practice_error') + ': ' + err.message;
-    }
-  });
+  document.getElementById('practiceStatus').textContent = '';
+  if(!practiceVideoRecorder) return;
+  practiceVideoRecorder.onstop = () => {
+    const videoBlob = new Blob(practiceVideoChunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(videoBlob);
+    document.getElementById('practiceDownloadArea').innerHTML =
+      `<a href="${url}" download="chimedis-ghi-hinh.webm">⬇ ${t('listen_record_download')}</a>`;
+    if(practiceCamStream) practiceCamStream.getTracks().forEach(tr => tr.stop());
+  };
+  practiceVideoRecorder.stop();
 }
 
 // Cắt khoảng lặng >= minSilenceMs trong audio đã ghi — xử lý hoàn toàn phía trình duyệt
@@ -2920,38 +2909,6 @@ function blobToBase64(blob){
   });
 }
 
-async function listenPracticeScore(trimmedWavBlob){
-  const d = listenCurrentDialogue;
-  const referenceText = (d.segments || []).map(s => s.text_zh).join(' ');
-  const base64 = await blobToBase64(trimmedWavBlob);
-  let json;
-  try{
-    const res = await fetch(`${API_BASE}/api/pronunciation-score`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ audio_base64: base64, format: 'wav', reference_zh: referenceText }),
-    });
-    json = await res.json();
-  }catch(e){
-    document.getElementById('practiceStatus').textContent = t('practice_error') + ': ' + e.message;
-    return;
-  }
-  document.getElementById('practiceStatus').textContent = '';
-  if(!json.success){
-    document.getElementById('practiceScoreArea').innerHTML = `<p class="practice-hint">${t('practice_error')}: ${json.error || ''}</p>`;
-    return;
-  }
-  const esc = (s) => String(s || '').replace(/</g, '&lt;');
-  const scoresHtml = (json.data.scores || []).map(s => `
-    <div class="practice-score-row">
-      <span class="practice-score-lang">${esc(s.language)}</span>
-      <span class="practice-score-num">${esc(s.score)}/100</span>
-      <p class="practice-score-fb">${esc(s.feedback)}</p>
-    </div>`).join('');
-  document.getElementById('practiceScoreArea').innerHTML = `
-    <div class="practice-transcript"><strong>${t('practice_transcript')}</strong> ${esc(json.data.transcript)}</div>
-    ${scoresHtml}`;
-}
 
 // ===== CHUẨN HOÁ TÌM KIẾM (bỏ dấu, hoa/thường) =====
 function stripDiacritics(str){
