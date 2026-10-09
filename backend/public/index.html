@@ -715,6 +715,10 @@ header{transition:padding .2s ease}
 .listen-cb input{width:18px;height:18px;accent-color:var(--thamthm,#0E3A3A);cursor:pointer}
 .sub.pinyin{font-size:12.5px;color:var(--dong,#B07D4A);font-weight:600;letter-spacing:.2px}
 .listen-selfcheck{background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:12px;padding:10px 12px;margin-top:8px}
+.practice-playback{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;padding-bottom:10px;
+  border-bottom:1px solid var(--vien,#e5ddcc)}
+.practice-playback audio{width:100%;height:32px}
+.practice-playback span{font-size:11px;color:var(--muc-mo,#8a7d6a)}
 .lsc-row{display:flex;flex-direction:column;gap:2px;margin-bottom:6px;font-size:12.5px}
 .lsc-lab{font-weight:700;color:var(--muc-mo,#8a7d6a);font-size:11px}
 .lsc-txt{color:var(--muc,#2a2118)}
@@ -1772,6 +1776,7 @@ Object.assign(I18N.vi, {
   practice_no_mic: 'Không xin được quyền micro/camera. Nếu đang dùng app, hãy kiểm tra app đã được cập nhật bản mới nhất; hoặc thử mở bằng trình duyệt Safari/Chrome.',
   practice_no_speech_detected: 'Không nghe rõ giọng nói, thử ghi âm lại gần micro hơn.',
   practice_pronunciation: 'Phát âm:', practice_grammar: 'Ngữ pháp:', practice_corrected: 'Gợi ý sửa đúng:',
+  practice_your_recording: 'Đoạn ghi âm của bạn',
 });
 Object.assign(I18N.zh, {
   dr_listen: '听力练习', listen_home: '听力练习', listen_back: '听力练习',
@@ -1794,6 +1799,7 @@ Object.assign(I18N.zh, {
   practice_no_mic: '无法获取麦克风/摄像头权限。如果正在使用 App，请确认已更新到最新版本；或尝试用 Safari/Chrome 浏览器打开。',
   practice_no_speech_detected: '未能听清语音，请靠近麦克风重新录制。',
   practice_pronunciation: '发音：', practice_grammar: '语法：', practice_corrected: '建议改为：',
+  practice_your_recording: '你的录音',
 });
 Object.assign(I18N.en, {
   dr_listen: 'Listening Practice', listen_home: 'Listening Practice', listen_back: 'Listening Practice',
@@ -1816,6 +1822,7 @@ Object.assign(I18N.en, {
   practice_no_mic: 'Could not get microphone/camera permission. If using the app, check you have the latest update; or try opening with Safari/Chrome.',
   practice_no_speech_detected: "Couldn't hear clearly, try recording closer to the microphone.",
   practice_pronunciation: 'Pronunciation:', practice_grammar: 'Grammar:', practice_corrected: 'Suggested correction:',
+  practice_your_recording: 'Your recording',
 });
 
 // ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
@@ -2602,6 +2609,7 @@ const LISTEN_RECORD_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><circle
 const LISTEN_STOP_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>';
 let lineRecordSeq = null;
 let lineRecorder = null, lineRecordChunks = [], lineRecordStream = null;
+let lineRecordingUrls = {}; // { [seq]: objectURL } — nghe lại chính đoạn vừa ghi/đã chấm
 
 function listenUpdateLineRecordUI(){
   document.querySelectorAll('.listen-line').forEach(el => {
@@ -2668,6 +2676,10 @@ function listenLineRecordStop(seq){
     listenSetBadge(finishedSeq, 'checking', t('practice_processing'));
     try{
       const trimmedBlob = await trimSilenceToWav(rawBlob, 3000);
+      // Lưu URL để nghe lại chính đoạn đã gửi đi chấm điểm (user yêu cầu 2026-10-09) —
+      // thu hồi URL cũ của câu này trước, tránh rò rỉ bộ nhớ khi ghi lại nhiều lần.
+      if(lineRecordingUrls[finishedSeq]) URL.revokeObjectURL(lineRecordingUrls[finishedSeq]);
+      lineRecordingUrls[finishedSeq] = URL.createObjectURL(trimmedBlob);
       await listenLineScore(finishedSeq, trimmedBlob);
     }catch(err){
       listenSetBadge(finishedSeq, 'bad', `${t('practice_error')}: ${err.message}`);
@@ -2701,8 +2713,12 @@ async function listenLineScore(seq, trimmedBlob){
     return;
   }
   const esc = (s) => String(s||'').replace(/</g,'&lt;');
+  const recordingUrl = lineRecordingUrls[seq];
+  const playbackHtml = recordingUrl
+    ? `<div class="practice-playback"><audio controls src="${recordingUrl}"></audio><span>${t('practice_your_recording')}</span></div>`
+    : '';
   if(!json.success || !json.data || !json.data.transcript){
-    listenSetBadge(seq, 'bad', (json.data && json.data.pronunciation_feedback) ? esc(json.data.pronunciation_feedback) : t('practice_no_speech_detected'));
+    listenSetBadge(seq, 'bad', playbackHtml + esc((json.data && json.data.pronunciation_feedback) ? json.data.pronunciation_feedback : t('practice_no_speech_detected')));
     return;
   }
   const highlighted = listenHighlightMarked(json.data.transcript_marked || json.data.transcript);
@@ -2710,6 +2726,7 @@ async function listenLineScore(seq, trimmedBlob){
   const showCorrection = correctedText && correctedText.trim() !== json.data.transcript.trim();
   const html = `
     <div class="listen-selfcheck">
+      ${playbackHtml}
       <div class="lsc-row"><span class="lsc-lab">${t('listen_you_said')}</span><span class="lsc-txt">${highlighted}</span></div>
       <div class="lsc-row"><span class="lsc-lab">${t('listen_reference')}</span><span class="lsc-txt ref">${esc(reference)}</span></div>
       <div class="practice-score-row">
@@ -2781,6 +2798,7 @@ function renderListenDialogue(){
 // trên trang chính (listenLineRecordToggle ở trên).
 let practiceCamStream = null;
 let practiceVideoRecorder = null, practiceVideoChunks = [];
+let practiceVideoUrl = null;
 
 function openListenPracticeModal(){
   if(!listenCurrentDialogue) return;
@@ -2789,6 +2807,11 @@ function openListenPracticeModal(){
   document.getElementById('listenPracticeModal').classList.add('open');
   document.getElementById('practiceStatus').textContent = '';
   document.getElementById('practiceDownloadArea').innerHTML = '';
+  // Reset preview về trạng thái xem camera trực tiếp (có thể đang hiện lại đoạn ghi lần
+  // trước — controls=true/muted=false — từ lần mở trước đó).
+  const preview = document.getElementById('practiceCamPreview');
+  preview.src = ''; preview.controls = false; preview.muted = true;
+  if(practiceVideoUrl){ URL.revokeObjectURL(practiceVideoUrl); practiceVideoUrl = null; }
 }
 function closeListenPracticeModal(){
   document.getElementById('listenPracticeScrim').classList.remove('open');
@@ -2812,7 +2835,11 @@ async function listenPracticeStartRecord(){
       video: true, audio: { echoCancellation: true, noiseSuppression: true },
     }));
     practiceCamStream = camStream;
-    document.getElementById('practiceCamPreview').srcObject = camStream;
+    if(practiceVideoUrl){ URL.revokeObjectURL(practiceVideoUrl); practiceVideoUrl = null; }
+    const preview = document.getElementById('practiceCamPreview');
+    preview.src = ''; preview.controls = false; preview.muted = true;
+    preview.srcObject = camStream;
+    document.getElementById('practiceDownloadArea').innerHTML = '';
     practiceVideoChunks = [];
     practiceVideoRecorder = new MediaRecorder(camStream, { mimeType: 'video/webm' });
     practiceVideoRecorder.ondataavailable = (e) => { if(e.data.size) practiceVideoChunks.push(e.data); };
@@ -2833,10 +2860,18 @@ function listenPracticeStopRecord(){
   if(!practiceVideoRecorder) return;
   practiceVideoRecorder.onstop = () => {
     const videoBlob = new Blob(practiceVideoChunks, { type: 'video/webm' });
-    const url = URL.createObjectURL(videoBlob);
-    document.getElementById('practiceDownloadArea').innerHTML =
-      `<a href="${url}" download="chimedis-ghi-hinh.webm">⬇ ${t('listen_record_download')}</a>`;
+    if(practiceVideoUrl) URL.revokeObjectURL(practiceVideoUrl);
+    practiceVideoUrl = URL.createObjectURL(videoBlob);
     if(practiceCamStream) practiceCamStream.getTracks().forEach(tr => tr.stop());
+    // Chuyển video preview từ "xem camera trực tiếp" sang "xem lại đoạn vừa ghi" — user
+    // yêu cầu 2026-10-09: phải nghe/xem lại được ngay, không chỉ có nút tải xuống.
+    const preview = document.getElementById('practiceCamPreview');
+    preview.srcObject = null;
+    preview.src = practiceVideoUrl;
+    preview.muted = false;
+    preview.controls = true;
+    document.getElementById('practiceDownloadArea').innerHTML =
+      `<a href="${practiceVideoUrl}" download="chimedis-ghi-hinh.webm">⬇ ${t('listen_record_download')}</a>`;
   };
   practiceVideoRecorder.stop();
 }
