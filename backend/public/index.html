@@ -4810,7 +4810,7 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
     getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult,
     GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithCredential,
     signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut,
-    setPersistence, browserLocalPersistence,
+    setPersistence, browserLocalPersistence, initializeAuth,
   } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
   const FIREBASE_CONFIG = {
@@ -4823,7 +4823,14 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
   let auth = null;
   try{
     const app = initializeApp(FIREBASE_CONFIG);
-    auth = getAuth(app);
+    // 2026-10-09: từ build 9 app iOS chạy giao diện đóng gói sẵn ở capacitor://localhost. getAuth() mặc định
+    // thăm dò IndexedDB — trong WKWebView origin này nó có thể treo vô hạn, xếp hàng chặn MỌI thao tác đăng nhập
+    // (Google native xong, có email báo, nhưng signInWithCredential không bao giờ trả về → popup đứng im, không lỗi).
+    // Trong app: initializeAuth chỉ với localStorage, không IndexedDB, không resolver popup/iframe.
+    const _inNativeApp = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+    auth = _inNativeApp
+      ? initializeAuth(app, { persistence: browserLocalPersistence })
+      : getAuth(app);
     // 2026-09-12: bản trước dùng indexedDBLocalPersistence để sửa lỗi "mỗi lần mở app phải
     // đăng nhập lại" (xem lịch sử bên dưới) NHƯNG gây lỗi NẶNG HƠN: mở IndexedDB trong
     // WKWebView của app iOS bị TREO (Promise không bao giờ resolve/reject) — Firebase Auth xếp
@@ -4874,6 +4881,13 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
   const IN_NATIVE = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
   function fbAuthPlugin(){ return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.FirebaseAuthentication) || null; }
 
+  // Không bao giờ để đăng nhập đứng im không báo lỗi: quá 20s thì ném lỗi để modal hiện mã cho dễ gỡ.
+  function withAuthTimeout(promise, ms){
+    return Promise.race([promise, new Promise((_, reject) => setTimeout(() => {
+      const e = new Error('Đăng nhập quá thời gian chờ'); e.code = 'auth/chimedis-timeout'; reject(e);
+    }, ms || 20000))]);
+  }
+
   async function nativeGoogleSignIn(){
     const p = fbAuthPlugin();
     if(!p) throw new Error('FirebaseAuthentication plugin không sẵn sàng');
@@ -4881,7 +4895,7 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
     const idToken = res && res.credential && res.credential.idToken;
     const accessToken = res && res.credential && res.credential.accessToken;
     if(!idToken) throw new Error('Google (native) không trả idToken');
-    return signInWithCredential(auth, GoogleAuthProvider.credential(idToken, accessToken || null));
+    return withAuthTimeout(signInWithCredential(auth, GoogleAuthProvider.credential(idToken, accessToken || null)));
   }
 
   async function socialSignIn(provider){
@@ -4914,7 +4928,7 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
         const idToken = (res && (res.response ? res.response.identityToken : res.identityToken));
         if(!idToken) throw new Error('Apple không trả identityToken');
         const cred = new OAuthProvider('apple.com').credential({ idToken, rawNonce });
-        return signInWithCredential(auth, cred);
+        return withAuthTimeout(signInWithCredential(auth, cred));
       }
       // Trình duyệt web: popup, chặn popup thì redirect.
       const provider = new OAuthProvider('apple.com'); provider.addScope('email'); provider.addScope('name');
