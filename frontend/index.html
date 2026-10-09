@@ -722,6 +722,7 @@ header{transition:padding .2s ease}
 .lsc-row{display:flex;flex-direction:column;gap:2px;margin-bottom:6px;font-size:12.5px}
 .lsc-lab{font-weight:700;color:var(--muc-mo,#8a7d6a);font-size:11px}
 .lsc-txt{color:var(--muc,#2a2118)}
+.practice-pinyin{color:var(--muc-mo,#8a7d6a);font-size:11.5px;font-style:italic;margin:2px 0 0}
 .lsc-txt.ref{color:var(--thamthm,#0E3A3A);font-weight:600}
 .lsc-actions{display:flex;gap:8px;margin-top:6px}
 .lsc-btn{font-family:inherit;font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px;border:0;cursor:pointer}
@@ -2565,8 +2566,19 @@ function listenPlayLine(seq){ listenTogglePlay([seq]); }
 // nút điều khiển play/ghi âm, không hiện chữ nào — đúng tinh thần luyện nghe không nhìn chữ).
 const LISTEN_SUBLANG_KEY = 'chimedis_listen_sublang_v2';
 function loadListenSubLangs(){
-  try{ return Object.assign({ zh:false, vi:false, en:false, pinyin:false }, JSON.parse(localStorage.getItem(LISTEN_SUBLANG_KEY)) || {}); }
-  catch(e){ return { zh:false, vi:false, en:false, pinyin:false }; }
+  // Lần đầu dùng (chưa lưu localStorage): mặc định hiện phụ đề đúng NGÔN NGỮ GIAO DIỆN
+  // đang chọn (state.lang) — user góp ý 2026-10-09: hợp lý hơn hẳn so với mặc định ẩn
+  // hết. Nhưng chỉ áp dụng lần đầu — nếu user đã từng tự bật/tắt checkbox, LUÔN tôn
+  // trọng lựa chọn đó cho các lần sau, không tự ý đổi lại mỗi khi chuyển ngôn ngữ giao
+  // diện (sẽ khó đoán/ghi đè lựa chọn thủ công).
+  const base = { zh:false, vi:false, en:false, pinyin:false };
+  try{
+    const saved = JSON.parse(localStorage.getItem(LISTEN_SUBLANG_KEY));
+    if(saved) return Object.assign(base, saved);
+  }catch(e){ /* rơi xuống mặc định bên dưới */ }
+  const uiLang = (typeof state !== 'undefined' && state.lang) || 'vi';
+  if(base.hasOwnProperty(uiLang)) base[uiLang] = true;
+  return base;
 }
 let listenSubLangs = loadListenSubLangs();
 function toggleListenSubLang(key){
@@ -2705,7 +2717,7 @@ async function listenLineScore(seq, trimmedBlob){
     const res = await fetch(`${API_BASE}/api/pronunciation-score`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ audio_base64: base64, format: 'wav', reference_zh: seg ? seg.text_zh : '' }),
+      body: JSON.stringify({ audio_base64: base64, format: 'wav', reference_zh: seg ? seg.text_zh : '', ui_lang: state.lang }),
     });
     json = await res.json();
   }catch(e){
@@ -2724,10 +2736,15 @@ async function listenLineScore(seq, trimmedBlob){
   const highlighted = listenHighlightMarked(json.data.transcript_marked || json.data.transcript);
   const correctedText = json.data.corrected_text || '';
   const showCorrection = correctedText && correctedText.trim() !== json.data.transcript.trim();
+  // Nói tiếng Trung thì transcript LUÔN là chữ Hán thật (ép ở backend prompt — model có
+  // xu hướng tự ý chuyển thành pinyin, user phát hiện bug 2026-10-09), pinyin chỉ thêm
+  // làm dòng phụ bên dưới, không thay thế chữ Hán (cần giữ chữ Hán để tô màu lỗi đúng).
+  const pinyinLine = json.data.transcript_pinyin
+    ? `<p class="practice-pinyin">${esc(json.data.transcript_pinyin)}</p>` : '';
   const html = `
     <div class="listen-selfcheck">
       ${playbackHtml}
-      <div class="lsc-row"><span class="lsc-lab">${t('listen_you_said')}</span><span class="lsc-txt">${highlighted}</span></div>
+      <div class="lsc-row"><span class="lsc-lab">${t('listen_you_said')}</span><span class="lsc-txt">${highlighted}</span>${pinyinLine}</div>
       <div class="lsc-row"><span class="lsc-lab">${t('listen_reference')}</span><span class="lsc-txt ref">${esc(reference)}</span></div>
       <div class="practice-score-row">
         <span class="practice-score-lang">${t('practice_pronunciation')}</span>
