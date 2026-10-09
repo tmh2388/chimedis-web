@@ -726,30 +726,44 @@ function requireOpenAI(req, res, next) {
 // hơn hẳn. Thêm "transcript_marked": model tự đánh dấu từ/cụm phát âm chưa chuẩn bằng
 // cặp ((...)) ngay trong transcript, để frontend tô màu — KHÔNG dùng danh sách từ riêng
 // vì dễ lệch khỏi transcript thật (sai chính tả, dấu câu khác nhau).
-const PRONUNCIATION_SYSTEM_PROMPT = `Bạn là giám khảo chấm phát âm cho người luyện dịch \
-cabin Trung Y, đang luyện dịch TỪNG CÂU NGẮN (nghe 1 câu tiếng Trung, nói lại bản dịch \
-bằng tiếng Việt hoặc tiếng Anh). Nhiệm vụ, PHẢI làm đúng thứ tự:
+const PRONUNCIATION_SYSTEM_PROMPT = `Bạn là giám khảo chấm phát âm VÀ ngữ pháp cho người \
+luyện dịch cabin Trung Y, đang luyện dịch TỪNG CÂU NGẮN (nghe 1 câu tiếng Trung, nói lại \
+bản dịch bằng tiếng Việt hoặc tiếng Anh). Nhiệm vụ, PHẢI làm đúng thứ tự:
 1. Phiên âm CHÍNH XÁC TUYỆT ĐỐI những gì nghe được trong file audio — đây là phần quan \
 trọng nhất, phải phản ánh ĐÚNG THẬT những gì người này nói, không được bịa, không được \
 đoán theo ngữ cảnh nếu nghe không rõ (ghi "..." ở chỗ không nghe rõ thay vì đoán).
 2. Xác định ngôn ngữ chính được nói (Tiếng Việt / 中文 / English).
 3. Tạo "transcript_marked": CHÉP LẠI y nguyên transcript ở bước 1, nhưng bọc các từ/cụm \
-từ phát âm chưa chuẩn (sai âm, nuốt âm, ngữ điệu sai) trong cặp ((...)), ví dụ: "The \
-((breath)) was short" nếu từ "breath" phát âm chưa chuẩn. Nếu không có lỗi rõ ràng, \
-transcript_marked giống hệt transcript (không bọc gì).
-4. Chấm điểm phát âm + độ trôi chảy từ 0-100.
-5. Nhận xét ngắn gọn bằng tiếng Việt (1-2 câu, nêu CỤ THỂ từ/âm nào cần sửa).
+từ PHÁT ÂM chưa chuẩn (sai âm, nuốt âm, ngữ điệu sai — KHÔNG phải lỗi ngữ pháp) trong \
+cặp ((...)), ví dụ: "The ((breath)) was short" nếu từ "breath" phát âm chưa chuẩn. Nếu \
+không có lỗi phát âm rõ ràng, transcript_marked giống hệt transcript (không bọc gì).
+4. Chấm điểm PHÁT ÂM + độ trôi chảy từ 0-100 ("pronunciation_score"), kèm nhận xét ngắn \
+gọn bằng tiếng Việt (1-2 câu, nêu CỤ THỂ từ/âm nào cần sửa) trong "pronunciation_feedback".
+5. Chấm điểm NGỮ PHÁP + cách dùng từ từ 0-100 ("grammar_score") — đánh giá câu nói (dựa \
+trên transcript, không liên quan phát âm) có đúng ngữ pháp của ngôn ngữ đó không, kèm \
+nhận xét ngắn gọn bằng tiếng Việt trong "grammar_feedback". Nếu câu đã đúng ngữ pháp, \
+grammar_score = 100 và ghi rõ "Ngữ pháp đúng" trong feedback.
+6. Viết lại câu đó cho ĐÚNG NGỮ PHÁP hoàn toàn (giữ nguyên Ý người nói muốn diễn đạt, chỉ \
+sửa lỗi ngữ pháp/từ vựng dùng sai, KHÔNG đổi sang cách diễn đạt khác) vào "corrected_text" \
+— cùng ngôn ngữ với transcript. Nếu câu đã đúng, corrected_text giống hệt transcript.
 Nếu audio không có tiếng nói rõ ràng (toàn im lặng/tạp âm/không phải giọng người), trả \
-về transcript rỗng, transcript_marked rỗng, score 0, feedback giải thích không nghe được.
+về transcript/transcript_marked/corrected_text rỗng, cả 2 score = 0, feedback giải thích \
+không nghe được.
 CHỈ trả về một object JSON hợp lệ duy nhất, không kèm markdown/giải thích, đúng dạng:
-{"transcript": "...", "transcript_marked": "...", "language": "...", "score": 0-100, "feedback": "..."}`;
+{"transcript": "...", "transcript_marked": "...", "language": "...", \
+"pronunciation_score": 0-100, "pronunciation_feedback": "...", \
+"grammar_score": 0-100, "grammar_feedback": "...", "corrected_text": "..."}`;
 
 function extractJsonObject(text) {
   const cleaned = String(text || '').replace(/```json|```/g, '').trim();
   const start = cleaned.indexOf('{');
   const end = cleaned.lastIndexOf('}');
   if (start === -1 || end === -1) throw new Error('Không tìm thấy JSON trong phản hồi');
-  return JSON.parse(cleaned.slice(start, end + 1));
+  // gpt-audio-mini thỉnh thoảng chèn ký tự xuống dòng THÔ (chưa escape) bên trong giá trị
+  // chuỗi feedback dài — JSON.parse vỡ vì đây là ký tự control không hợp lệ trong string
+  // literal. Thay bằng khoảng trắng trước khi parse (phát hiện thật 2026-10-09).
+  const jsonSlice = cleaned.slice(start, end + 1).replace(/[\n\r\t]+/g, ' ');
+  return JSON.parse(jsonSlice);
 }
 
 app.post('/api/pronunciation-score', express.json({ limit: '25mb' }), requireOpenAI, async (req, res) => {
