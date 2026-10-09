@@ -1,0 +1,71 @@
+{
+  "id": "ha-42848100",
+  "category": "hoc_thuat",
+  "level": "cao_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Oral administration of ultrafine-grained Astragalus membranaceus enhances peripheral immunity in weaned black Xiangdong goats by upregulating the complement regulator C4bp and immunoglobulin responses.",
+  "title_zh": "口服超细颗粒黄芪可通过上调补体调节剂C4bp和免疫球蛋白应答来增强断奶黑湘东山羊的外周免疫力。",
+  "title_vi": "Sử dụng qua đường miệng Astragalus membranaceus hạt siêu mịn làm tăng khả năng miễn dịch ngoại vi ở dê Xiangdong đen cai sữa bằng cách điều hòa tăng đáp ứng của chất điều hòa bổ thể C4bp và globulin miễn dịch.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Astragalus membranaceus is a widely used immunomodulatory herb in traditional Chinese medicine; however, the effects of its ultrafine-grained powder (UGAM) on the peripheral immune system of young ruminants remain largely unexplored.",
+      "text_zh": "黄芪是中药中广泛使用的免疫调节药材，但其超细颗粒粉末（ UGAM ）对年轻反刍动物外周免疫系统的影响在很大程度上仍未得到探索。",
+      "text_vi": "Astragalus membranaceus là một loại thảo mộc điều hòa miễn dịch được sử dụng rộng rãi trong y học cổ truyền Trung Quốc; tuy nhiên, tác dụng của bột hạt siêu mịn (UGAM) của nó đối với hệ thống miễn dịch ngoại vi của động vật nhai lại trẻ phần lớn vẫn chưa được khám phá.",
+      "text_pinyin": "huáng qí shì zhōng yào zhōng guǎng fàn shǐ yòng de miǎn yì tiáo jié yào cái ， dàn qí chāo xì kē lì fěn mò （ UGAM ） duì nián qīng fǎn chú dòng wù wài zhōu miǎn yì xì tǒng de yǐng xiǎng zài hěn dà chéng dù shàng réng wèi dé dào tàn suǒ 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "Thirty-six weaned black Xiangdong goats (postnatal day 42; 5.34 ± 1.342 kg) were randomly allocated to a control group (n = 16; basal diet only) and a UGAM group (n = 20; control plus 10 g/d UGAM) from postnatal days 43-78, including 8 days adaption period.",
+      "text_zh": "将36只断奶的湘东黑山羊（出生后第42天； 5.34 ± 1.342 kg ）从出生后第43-78天随机分配到对照组（ n = 16 ；仅基础饮食）和UGAM组（ n = 20 ；对照加10 g/d UGAM ） ，包括8天的适应期。",
+      "text_vi": "Ba mươi sáu con dê Xiangdong đen cai sữa (ngày sau sinh 42; 5,34 ± 1,342 kg) được phân bổ ngẫu nhiên vào nhóm đối chứng (n = 16; chỉ chế độ ăn nền) và nhóm UGAM (n = 20; đối chứng cộng 10 g/ngày UGAM) từ ngày sau sinh 43-78, bao gồm thời gian thích ứng 8 ngày.",
+      "text_pinyin": "jiāng 36 zhǐ duàn nǎi de xiāng dōng hēi shān yáng （ chū shēng hòu dì 42 tiān ； 5.34 ± 1.342 kg ） cóng chū shēng hòu dì 43-78 tiān suí jī fēn pèi dào duì zhào zǔ （ n = 16 ； jǐn jī chǔ yǐn shí ） hé UGAM zǔ （ n = 20 ； duì zhào jiā 10 g/d UGAM ） ， bāo kuò 8 tiān de shì yìng qī 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "On postnatal day 78, blood samples were analyzed for complement proteins (C1q, C1r, C1s, C3, C4, C4bp, and Factor H), immunoglobulins (IgA, IgG, and IgM), and inflammatory cytokines (IL-1α, IL-1β, IL-6, IL-10, TNF-α, and IFN-γ), along with peripheral blood cell profiles.",
+      "text_zh": "在出生后第78天，分析血液样品的补体蛋白（ C1q、C1r、C1s、C3、C4、C4bp和因子H ）、免疫球蛋白（ IgA、IgG和IgM ）和炎性细胞因子（ IL-1α、IL-1β、IL-6、IL-10、TNF-α和IFN-γ ）以及外周血细胞谱。",
+      "text_vi": "Vào ngày sau sinh 78, các mẫu máu được phân tích về các protein bổ thể (C1q, C1r, C1s, C3, C4, C4bp, và Yếu tố H), các globulin miễn dịch (IgA, IgG, và IgM), và các xytokin gây viêm (IL-1α, IL-1β, IL-6, IL-10, TNF-α, và IFN-γ), cùng với các profin tế bào máu ngoại vi.",
+      "text_pinyin": "zài chū shēng hòu dì 78 tiān ， fēn xī xuè yè yàng pǐn de bǔ tǐ dàn bái （ C1q、C1r、C1s、C3、C4、C4bp hé yīn zi H ）、 miǎn yì qiú dàn bái （ IgA、IgG hé IgM ） hé yán xìng xì bāo yīn zi （ IL-1α、IL-1β、IL-6、IL-10、TNF-α hé IFN-γ ） yǐ jí wài zhōu xuè xì bāo pǔ 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "Hepatic complement gene expression was measured in a randomly selected subset of animals (Control n = 11; UGAM n = 16) using RT-qPCR.",
+      "text_zh": "使用RT-qPCR在随机选择的动物亚群(对照n = 11 ； UGAM n = 16)中测量肝脏补体基因表达。",
+      "text_vi": "Sự biểu hiện gen bổ thể gan được đo trong một tập hợp con được chọn ngẫu nhiên của động vật (Đối chứng n = 11; UGAM n = 16) sử dụng RT-qPCR.",
+      "text_pinyin": "shǐ yòng RT-qPCR zài suí jī xuǎn zé de dòng wù yà qún ( duì zhào n = 11 ； UGAM n = 16) zhōng cè liáng gān zàng bǔ tǐ jī yīn biǎo dá 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "UGAM significantly increased serum C4bp concentrations and serum and hepatic C4bp mRNA expression (p < 0.001) and increased peripheral IgM concentrations (p = 0.032), whereas IgA, IgG, and all measured inflammatory cytokines (IL-1α, IL-1β, IL-6, IL-10, TNF-α, and IFN-γ) remained unchanged (p > 0.05).",
+      "text_zh": "UGAM显著增加血清C4bp浓度以及血清和肝脏C4bp mRNA表达（ p < 0.001 ） ，增加外周IgM浓度（ p = 0.032 ） ，而IgA、IgG和所有测量的炎性细胞因子（ IL-1α、IL-1β、IL-6、IL-10、TNF-α和IFN-γ ）保持不变（ p > 0.05 ）。",
+      "text_vi": "UGAM làm tăng đáng kể nồng độ C4bp huyết thanh và biểu hiện mARN C4bp huyết thanh và gan (p < 0,001) và tăng nồng độ IgM ngoại vi (p = 0,032), trong khi IgA, IgG, và tất cả các xytokin viêm được đo (IL-1α, IL-1β, IL-6, IL-10, TNF-α, và IFN-γ) vẫn không thay đổi (p > 0,05).",
+      "text_pinyin": "UGAM xiǎn zhù zēng jiā xuè qīng C4bp nóng dù yǐ jí xuè qīng hé gān zàng C4bp mRNA biǎo dá （ p < 0.001 ） ， zēng jiā wài zhōu IgM nóng dù （ p = 0.032 ） ， ér IgA、IgG hé suǒ yǒu cè liáng de yán xìng xì bāo yīn zi （ IL-1α、IL-1β、IL-6、IL-10、TNF-α hé IFN-γ ） bǎo chí bù biàn （ p > 0.05 ）。"
+    },
+    {
+      "seq": 6,
+      "text_en": "In the multi-parameter analysis, UGAM treatment was independently and positively associated with C4bp (partial r = 0.74, p < 0.001), and the overall correlation structure of the complement system was positively associated with that of the immunoglobulins (Mantel r = 0.36, p = 0.001).",
+      "text_zh": "在多参数分析中， UGAM治疗与C4bp独立呈正相关（部分r = 0.74 ， p < 0.001 ） ，补体系统的整体相关结构与免疫球蛋白呈正相关（ Mantel r = 0.36 ， p = 0.001 ）。",
+      "text_vi": "Trong phân tích đa thông số, điều trị UGAM có liên quan độc lập và dương tính với C4bp (một phần r = 0,74, p < 0,001), và cấu trúc tương quan tổng thể của hệ bổ thể có liên quan dương tính với cấu trúc của globulin miễn dịch (Mantel r = 0,36, p = 0,001).",
+      "text_pinyin": "zài duō cān shù fēn xī zhōng ， UGAM zhì liáo yǔ C4bp dú lì chéng zhèng xiāng guān （ bù fèn r = 0.74 ， p < 0.001 ） ， bǔ tǐ xì tǒng de zhěng tǐ xiāng guān jié gòu yǔ miǎn yì qiú dàn bái chéng zhèng xiāng guān （ Mantel r = 0.36 ， p = 0.001 ）。"
+    },
+    {
+      "seq": 7,
+      "text_en": "Oral administration of UGAM increased circulating C4bp and IgM and hepatic C4bp in weaned goats, consistent with engagement of homeostatic complement regulatary and possible post-weaning immune support.",
+      "text_zh": "口服UGAM增加断奶山羊的循环C4bp和IgM以及肝脏C4bp ，这与稳态补体调节和可能的断奶后免疫支持的参与一致。",
+      "text_vi": "Sử dụng UGAM qua đường miệng làm tăng tuần hoàn C4bp và IgM và C4bp gan ở dê cai sữa, phù hợp với sự gắn kết của sự bổ sung cân bằng nội môi điều hòa và có thể hỗ trợ miễn dịch sau cai sữa.",
+      "text_pinyin": "kǒu fú UGAM zēng jiā duàn nǎi shān yáng de xún huán C4bp hé IgM yǐ jí gān zàng C4bp ， zhè yǔ wěn tài bǔ tǐ tiáo jié hé kě néng de duàn nǎi hòu miǎn yì zhī chí de cān yù yí zhì 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "However, complement activity, plasma-cell responses, signaling, and safety were not measured; mechanisms remain hypothetical and require validation.",
+      "text_zh": "然而，没有测量补体活性、浆细胞应答、信号传导和安全性；机制仍然是假设的，需要验证。",
+      "text_vi": "Tuy nhiên, hoạt tính bổ thể, phản ứng tế bào huyết tương, tín hiệu và độ an toàn không được đo; các cơ chế vẫn là giả thuyết và yêu cầu xác nhận.",
+      "text_pinyin": "rán ér ， méi yǒu cè liáng bǔ tǐ huó xìng 、 jiāng xì bāo yìng dá 、 xìn hào chuán dǎo hé ān quán xìng ； jī zhì réng rán shì jiǎ shè de ， xū yào yàn zhèng 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42848100), Molecular biology reports (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42848100/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42848100), Molecular biology reports (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42848100/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42848100），Molecular biology reports (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42848100/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。"
+}
