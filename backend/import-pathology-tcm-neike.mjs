@@ -49,6 +49,10 @@ const head = v[0];
 const rows = v.slice(1).filter((r) => r.some((c) => c)).map((r) => Object.fromEntries(head.map((k, i) => [k, (r[i] ?? '').trim()])));
 console.log(`📖 ${rows.length} bệnh chứng`);
 
+// Sửa tay Hán Việt theo xác nhận của founder (2026-10-09), áp khi nhập nên không phải sửa Sheet.
+const HANVIET_FIX = { '肥胖': 'Phì bàn' };
+for (const r of rows) if (HANVIET_FIX[r.disease_zh]) r.disease_vi_hanviet = HANVIET_FIX[r.disease_zh];
+
 const errors = [];
 for (const r of rows) {
   for (const k of CORE) if (!r[k]) errors.push(`${r.term_id}: thiếu ${k}`);
