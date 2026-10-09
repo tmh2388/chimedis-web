@@ -13,6 +13,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// CORS + JSON phải đứng TRƯỚC mọi route /api/*: app iOS chạy ở capacitor://localhost nên gọi API chéo origin;
+// route đặt trước cors() sẽ không có header CORS (app bị chặn) và route POST/PUT trước express.json() nhận req.body rỗng.
+// /api/pronunciation-score có parser riêng giới hạn 25mb (audio base64) nên loại khỏi parser mặc định 100kb.
+const defaultJson = express.json();
+app.use(cors());
+app.use((req, res, next) => (req.path === '/api/pronunciation-score' ? next() : defaultJson(req, res, next)));
 const PORT = process.env.PORT || 3000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
 
@@ -876,8 +883,6 @@ app.put('/api/listening-progress', requireMysql, verifyFirebaseToken, async (req
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 // Middleware
-app.use(cors());
-app.use(express.json());
 app.use(express.static(PUBLIC_DIR));
 // Gói giao diện cho app iOS (live update) — dựng từ chính PUBLIC_DIR, xem lib/app-bundle.js.
 mountAppBundle(app, PUBLIC_DIR);
