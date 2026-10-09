@@ -19,6 +19,16 @@ const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
 // MySQL is optional — herb data (from Google Sheets via import-herbal-sheets.js)
 // only appears in /api/terms once MYSQL_HOST etc. are configured. Without it,
 // /api/terms still works with just the Giải phẫu data from public/data/terms.json.
+console.log('🔍 MySQL env check:', {
+  host: process.env.MYSQL_HOST || '(unset)',
+  port: process.env.MYSQL_PORT || '(unset)',
+  user: process.env.MYSQL_USER ? JSON.stringify(process.env.MYSQL_USER) : '(unset)',
+  database: process.env.MYSQL_DATABASE || '(unset)',
+  passwordLength: process.env.MYSQL_PASSWORD ? process.env.MYSQL_PASSWORD.length : 0,
+  passwordFirstChar: process.env.MYSQL_PASSWORD ? JSON.stringify(process.env.MYSQL_PASSWORD[0]) : null,
+  passwordLastChar: process.env.MYSQL_PASSWORD ? JSON.stringify(process.env.MYSQL_PASSWORD.slice(-1)) : null,
+});
+
 const mysqlPool = process.env.MYSQL_HOST
   ? mysql.createPool({
       host: process.env.MYSQL_HOST,
