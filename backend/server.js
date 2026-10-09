@@ -885,6 +885,11 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 // Middleware
 app.use(express.static(PUBLIC_DIR));
 // Gói giao diện cho app iOS (live update) — dựng từ chính PUBLIC_DIR, xem lib/app-bundle.js.
+// Chẩn đoán live-update: ghi lại mỗi lần app hỏi/tải gói giao diện (để biết app thật có đang cập nhật không).
+app.use('/app-bundle', (req, res, next) => {
+  console.log('[app-bundle]', req.method, req.originalUrl, String(req.headers['user-agent'] || '').slice(0, 90));
+  next();
+});
 mountAppBundle(app, PUBLIC_DIR);
 
 // ===== API ENDPOINTS =====

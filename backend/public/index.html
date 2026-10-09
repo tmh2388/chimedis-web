@@ -1402,6 +1402,13 @@ function closeAuthModal(){
   document.getElementById('authModal').classList.remove('show');
 }
 function switchAuthMode(mode){ state.authMode = mode; renderAuthModal(); }
+// Chẩn đoán đăng nhập: hiện phiên bản giao diện đang chạy + bước cuối cùng của luồng đăng nhập (nhỏ, cuối hộp đăng nhập).
+window.__bundleVer = window.__bundleVer || '';
+window.__authTraceText = window.__authTraceText || '';
+function authTraceHtml(){ return `<div id="authTrace" class="auth-switch" style="opacity:.55;font-size:10px;margin-top:8px;word-break:break-all">${authTraceLine()}</div>`; }
+function authTraceLine(){ return 'ui ' + (window.__bundleVer || (IN_NATIVE_APP ? 'built-in' : 'web')) + (window.__authTraceText ? ' · ' + window.__authTraceText : ''); }
+window.authTrace = function(step){ window.__authTraceText = step; const el = document.getElementById('authTrace'); if(el) el.textContent = authTraceLine(); };
+if(IN_NATIVE_APP){ fetch('bundle-version.txt', { cache: 'no-store' }).then(r => r.text()).then(v => { window.__bundleVer = v.trim(); window.authTrace(window.__authTraceText); }).catch(() => {}); }
 function showAuthError(msg){ const el = document.getElementById('authError'); if(el) el.textContent = msg; }
 function authErrorMessage(err){
   const code = err && err.code;
@@ -1445,6 +1452,7 @@ function renderAuthModal(){
       <div class="auth-error" id="authError"></div>
       <button class="auth-submit" onclick="${isSignup ? 'doSignUpEmail()' : 'doSignInEmail()'}">${isSignup ? t('auth_signup') : t('auth_signin')}</button>
       <div class="auth-switch">${isSignup ? t('auth_have_account') : t('auth_no_account')} <b onclick="switchAuthMode('${isSignup ? 'signin' : 'signup'}')">${isSignup ? t('auth_switch_signin') : t('auth_switch_signup')}</b></div>
+      ${authTraceHtml()}
     </div>`;
 }
 
@@ -4891,11 +4899,16 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
   async function nativeGoogleSignIn(){
     const p = fbAuthPlugin();
     if(!p) throw new Error('FirebaseAuthentication plugin không sẵn sàng');
+    window.authTrace('google: đang mở picker');
     const res = await withAuthTimeout(p.signInWithGoogle({ skipNativeAuth: true }));
+    window.authTrace('google: picker xong');
     const idToken = res && res.credential && res.credential.idToken;
     const accessToken = res && res.credential && res.credential.accessToken;
     if(!idToken) throw new Error('Google (native) không trả idToken');
-    return withAuthTimeout(signInWithCredential(auth, GoogleAuthProvider.credential(idToken, accessToken || null)));
+    window.authTrace('firebase: đang xác thực');
+    const cred = await withAuthTimeout(signInWithCredential(auth, GoogleAuthProvider.credential(idToken, accessToken || null)));
+    window.authTrace('firebase: xong');
+    return cred;
   }
 
   async function socialSignIn(provider){
