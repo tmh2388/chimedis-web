@@ -4891,7 +4891,7 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
   async function nativeGoogleSignIn(){
     const p = fbAuthPlugin();
     if(!p) throw new Error('FirebaseAuthentication plugin không sẵn sàng');
-    const res = await p.signInWithGoogle({ skipNativeAuth: true });
+    const res = await withAuthTimeout(p.signInWithGoogle({ skipNativeAuth: true }));
     const idToken = res && res.credential && res.credential.idToken;
     const accessToken = res && res.credential && res.credential.accessToken;
     if(!idToken) throw new Error('Google (native) không trả idToken');
@@ -4924,7 +4924,7 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
         const rawNonce = Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');
         const hashBuf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(rawNonce));
         const hashed = Array.from(new Uint8Array(hashBuf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-        const res = await window.Capacitor.Plugins.SignInWithApple.authorize({ scopes: 'email name', nonce: hashed });
+        const res = await withAuthTimeout(window.Capacitor.Plugins.SignInWithApple.authorize({ scopes: 'email name', nonce: hashed }));
         const idToken = (res && (res.response ? res.response.identityToken : res.identityToken));
         if(!idToken) throw new Error('Apple không trả identityToken');
         const cred = new OAuthProvider('apple.com').credential({ idToken, rawNonce });
