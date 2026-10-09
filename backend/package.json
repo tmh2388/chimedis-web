@@ -8,6 +8,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "build": "node sync-frontend.js && node build-api.js",
+    "postinstall": "node build-api.js || true",
     "build:watch": "node --watch build-api.js",
     "import:herbs": "node import-herbal-sheets.js",
     "import:anatomy": "node import-anatomy-terms.js",
