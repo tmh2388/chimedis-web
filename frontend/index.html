@@ -691,8 +691,10 @@ header{transition:padding .2s ease}
 .listen-iconbtn.accent{border-color:var(--son,#C8452F);color:var(--son,#C8452F)}
 .listen-cbrow{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
 .listen-playbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
-  background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:14px;padding:10px 12px;margin-bottom:8px;
-  position:sticky;top:0;z-index:5;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+  background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+.listen-linebox{position:relative;max-height:52vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:16px;padding:6px 10px;
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.03)}
 .listen-speedrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .listen-speed-btn{font-family:inherit;font-size:11.5px;font-weight:600;padding:5px 9px;min-height:28px;
   border-radius:999px;border:1px solid var(--vien,#e5ddcc);background:#fff;color:var(--muc-mo,#8a7d6a);cursor:pointer}
@@ -1769,6 +1771,7 @@ Object.assign(I18N.vi, {
   practice_src_label: 'Nghe bài gốc', practice_start: '● Bắt đầu ghi', practice_stop: '■ Dừng ghi',
   practice_recording: '🔴 Đang ghi âm...', practice_processing: 'Đang xử lý (cắt khoảng lặng)...', practice_scoring: 'Đang chấm điểm phát âm...',
   practice_error: 'Lỗi', practice_transcript: 'Bạn đã nói:',
+  practice_no_mic: 'Không xin được quyền micro/camera. Nếu đang dùng app, hãy kiểm tra app đã được cập nhật bản mới nhất; hoặc thử mở bằng trình duyệt Safari/Chrome.',
 });
 Object.assign(I18N.zh, {
   dr_listen: '听力练习', listen_home: '听力练习', listen_back: '听力练习',
@@ -1789,6 +1792,7 @@ Object.assign(I18N.zh, {
   practice_src_label: '收听原文', practice_start: '● 开始录制', practice_stop: '■ 停止录制',
   practice_recording: '🔴 正在录音...', practice_processing: '正在处理（剪掉静音）...', practice_scoring: '正在评估发音...',
   practice_error: '错误', practice_transcript: '你说的是：',
+  practice_no_mic: '无法获取麦克风/摄像头权限。如果正在使用 App，请确认已更新到最新版本；或尝试用 Safari/Chrome 浏览器打开。',
 });
 Object.assign(I18N.en, {
   dr_listen: 'Listening Practice', listen_home: 'Listening Practice', listen_back: 'Listening Practice',
@@ -1809,6 +1813,7 @@ Object.assign(I18N.en, {
   practice_src_label: 'Listen to source', practice_start: '● Start recording', practice_stop: '■ Stop recording',
   practice_recording: '🔴 Recording...', practice_processing: 'Processing (trimming silence)...', practice_scoring: 'Scoring pronunciation...',
   practice_error: 'Error', practice_transcript: 'You said:',
+  practice_no_mic: 'Could not get microphone/camera permission. If using the app, check you have the latest update; or try opening with Safari/Chrome.',
 });
 
 // ===== PHÁT ÂM (Text-to-Speech qua Web Speech API — chạy cả trong WKWebView của app iOS) =====
@@ -2474,8 +2479,15 @@ function listenSetActiveLine(seq){
   const prog = document.getElementById('listenProgressLabel');
   if(prog && d) prog.textContent = `${t('listen_line_of').replace('{n}', seq).replace('{total}', d.segments.length)}`;
   // Bài dài phải kéo lên/xuống mới theo kịp câu đang đọc — tự cuộn câu đang phát lên đầu
-  // vùng nhìn thấy, giống phụ đề cuộn theo audio (user phản hồi 2026-10-09).
-  if(activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // vùng nhìn thấy. CHỈ cuộn bên trong khung phụ đề (#listenLineBox), KHÔNG dùng
+  // scrollIntoView() vì nó sẽ cuộn cả trang theo, kéo tiêu đề/checkbox/thanh điều khiển
+  // trôi mất khỏi màn hình — user phản hồi 2026-10-09: "toàn bộ giữ nguyên chỉ có phụ đề
+  // di chuyển". Tự tính scrollTop trong phạm vi khung, không đụng tới scroll của trang.
+  const box = document.getElementById('listenLineBox');
+  if(activeEl && box){
+    const target = activeEl.offsetTop - 8;
+    box.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+  }
 }
 function listenStopPlayback(){
   listenPlayToken++;
@@ -2670,7 +2682,7 @@ function renderListenDialogue(){
       </div>
     </div>
     <div class="listen-progress" id="listenProgressLabel"></div>
-    <div>${linesHtml}</div>
+    <div class="listen-linebox" id="listenLineBox">${linesHtml}</div>
     ${listenSourceNote(d) ? `<p class="listen-source">${t('listen_source_label')} ${listenSourceNote(d)}</p>` : ''}
   </div>`;
 }
@@ -2721,14 +2733,24 @@ function listenPracticeToggleSource(){
 }
 
 async function listenPracticeStartRecord(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    document.getElementById('practiceStatus').textContent = t('practice_no_mic');
+    return;
+  }
   try{
-    const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // Một số WKWebView (app iOS) có thể treo vô thời hạn thay vì từ chối rõ ràng khi
+    // thiếu quyền native — đặt timeout để luôn báo lỗi rõ ràng thay vì im lặng mãi.
+    const withTimeout = (p) => Promise.race([
+      p,
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 8000)),
+    ]);
+    const micStream = await withTimeout(navigator.mediaDevices.getUserMedia({ audio: true }));
     practiceAudioChunks = [];
     practiceAudioRecorder = new MediaRecorder(micStream);
     practiceAudioRecorder.ondataavailable = (e) => { if(e.data.size) practiceAudioChunks.push(e.data); };
 
     if(practiceMode === 'video'){
-      const camStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const camStream = await withTimeout(navigator.mediaDevices.getUserMedia({ video: true }));
       practiceCamStream = new MediaStream([...camStream.getVideoTracks(), ...micStream.getAudioTracks()]);
       document.getElementById('practiceCamPreview').srcObject = practiceCamStream;
       practiceVideoChunks = [];
@@ -2741,7 +2763,8 @@ async function listenPracticeStartRecord(){
     document.getElementById('practiceStopBtn').disabled = false;
     document.getElementById('practiceStatus').textContent = t('practice_recording');
   }catch(err){
-    alert(err.message);
+    document.getElementById('practiceStatus').textContent =
+      (err && err.message === 'timeout') ? t('practice_no_mic') : `${t('practice_error')}: ${err.message}`;
   }
 }
 
