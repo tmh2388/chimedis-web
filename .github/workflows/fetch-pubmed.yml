@@ -46,5 +46,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add backend/data/listening/hoc_thuat backend/public/audio/listening/hoc_thuat
-          git diff --cached --quiet || git commit -m "Tự động lấy bài PubMed mới (luyện dịch EN→ZH)"
-          git push
+          git diff --cached --quiet && exit 0
+          git commit -m "Tự động lấy bài PubMed mới (luyện dịch EN→ZH)"
+          for i in 1 2 3 4 5; do
+            git push && exit 0
+            echo "Push bị từ chối (có thể trùng lịch với workflow khác), thử rebase lại (lần $i)..."
+            git pull --rebase origin main
+            sleep $((RANDOM % 10 + 5))
+          done
+          echo "Push thất bại sau nhiều lần thử." >&2
+          exit 1
