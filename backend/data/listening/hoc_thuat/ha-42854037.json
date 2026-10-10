@@ -1,0 +1,92 @@
+{
+  "id": "ha-42854037",
+  "category": "hoc_thuat",
+  "level": "cao_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Associations between lifestyle behaviors and traditional Chinese Medicine body constitutions: A cross-sectional study.",
+  "title_zh": "生活方式行为与中医体质之间的关联：一项横断面研究。",
+  "title_vi": "Mối liên hệ giữa hành vi lối sống và cấu tạo cơ thể Y học cổ truyền Trung Quốc: Một nghiên cứu cắt ngang.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "This study aims to assess the associations between lifestyle behaviors - including smoking, alcohol consumption, tea consumption, and leisure-time physical activity - and traditional Chinese Medicine (TCM) body constitutions (BCs), Yin deficiency, Yang deficiency, and phlegm stasis, among Taiwanese adults participating in the Taiwan Biobank Study.",
+      "text_zh": "本研究旨在评估参与台湾生物库研究的台湾成年人中生活方式行为（包括吸烟、饮酒、饮茶和休闲时间体育活动）与中医体质（ BC ）、阴虚、阳虚和痰瘀之间的关联。",
+      "text_vi": "Nghiên cứu này nhằm mục đích đánh giá mối liên hệ giữa các hành vi lối sống - bao gồm hút thuốc, uống rượu, uống trà và hoạt động thể chất trong thời gian rảnh rỗi - và cấu trúc cơ thể (BC) của Y học cổ truyền Trung Quốc (TCM), thiếu Âm, thiếu Dương và ứ đờm, ở những người trưởng thành Đài Loan tham gia Nghiên cứu Biobank Đài Loan.",
+      "text_pinyin": "běn yán jiū zhǐ zài píng gū cān yù tái wān shēng wù kù yán jiū de tái wān chéng nián rén zhōng shēng huó fāng shì xíng wéi （ bāo kuò xī yān 、 yǐn jiǔ 、 yǐn chá hé xiū xián shí jiān tǐ yù huó dòng ） yǔ zhōng yī tǐ zhì （ BC ）、 yīn xū 、 yáng xū hé tán yū zhī jiān de guān lián 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "A total of 15,665 participants from the Taiwan Biobank Study were included in the analysis.",
+      "text_zh": "分析中共纳入了来自台湾生物库研究的15,665名参与者。",
+      "text_vi": "Tổng cộng có 15.665 người tham gia từ Nghiên cứu Biobank Đài Loan đã được đưa vào phân tích.",
+      "text_pinyin": "fēn xī zhōng gòng nà rù le lái zì tái wān shēng wù kù yán jiū de 15,665 míng cān yù zhě 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "Comprehensive data were collected on lifestyle behaviors (including smoking, alcohol consumption, tea consumption, and leisure-time physical activity) and family medical history.",
+      "text_zh": "收集生活方式行为（包括吸烟、饮酒、饮茶和休闲时间体育活动）和家族病史的综合数据。",
+      "text_vi": "Dữ liệu toàn diện được thu thập về hành vi lối sống (bao gồm hút thuốc, uống rượu, uống trà và hoạt động thể chất trong thời gian rảnh rỗi) và tiền sử bệnh lý gia đình.",
+      "text_pinyin": "shōu jí shēng huó fāng shì xíng wéi （ bāo kuò xī yān 、 yǐn jiǔ 、 yǐn chá hé xiū xián shí jiān tǐ yù huó dòng ） hé jiā zú bìng shǐ de zōng hé shù jù 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "TCM BC types - Yin deficiency, Yang deficiency, and phlegm stasis - were assessed using a well-validated BC questionnaire.",
+      "text_zh": "使用经过充分验证的BC问卷评估中医BC类型-阴虚、阳虚和痰瘀。",
+      "text_vi": "Các loại TCM BC - thiếu Âm, thiếu Dương và ứ đờm - được đánh giá bằng cách sử dụng bảng câu hỏi BC được xác nhận tốt.",
+      "text_pinyin": "shǐ yòng jīng guò chōng fèn yàn zhèng de BC wèn juǎn píng gū zhōng yī BC lèi xíng - yīn xū 、 yáng xū hé tán yū 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "Associations between lifestyle behaviors and BC types were examined using multivariate logistic regression models to estimate odds ratios (ORs).",
+      "text_zh": "使用多变量逻辑回归模型检查生活方式行为与BC类型之间的关联，以估计比值比（ OR ）。",
+      "text_vi": "Mối liên hệ giữa các hành vi lối sống và các loại BC được kiểm tra bằng cách sử dụng các mô hình hồi quy logistic đa biến để ước tính tỷ lệ chênh lệch (ORS).",
+      "text_pinyin": "shǐ yòng duō biàn liàng luó jí huí guī mó xíng jiǎn chá shēng huó fāng shì xíng wéi yǔ BC lèi xíng zhī jiān de guān lián ， yǐ gū jì bǐ zhí bǐ （ OR ）。"
+    },
+    {
+      "seq": 6,
+      "text_en": "The average age was 46.55 years (standard deviation: 12.17), with 5611 males (35.82%).",
+      "text_zh": "平均年龄为46.55岁（标准差： 12.17 ） ，男性为5611人（ 35.82% ）。",
+      "text_vi": "Độ tuổi trung bình là 46,55 tuổi (độ lệch chuẩn: 12,17), với 5611 nam giới (35,82%).",
+      "text_pinyin": "píng jūn nián líng wèi 46.55 suì （ biāo zhǔn chà ： 12.17 ） ， nán xìng wèi 5611 rén （ 35.82% ）。"
+    },
+    {
+      "seq": 7,
+      "text_en": "Compared with nonsmokers, current smokers had a significantly higher likelihood of having Yang deficiency (OR [95% confidence interval (CI)]: 1.62 [1.39-1.89]), Yin deficiency (1.64 [1.41-1.90]), and phlegm stasis (1.88 [1.59-2.22]) after multivariate adjustment.",
+      "text_zh": "与不吸烟者相比，当前吸烟者在多变量调整后出现阳虚（ OR [95%置信区间(CI)] ： 1.62 [1.39-1.89] ）、阴虚（ 1.64 [1.41-1.90] ）和痰瘀（ 1.88 [1.59-2.22] ）的可能性明显更高。",
+      "text_vi": "So với những người không hút thuốc, những người hút thuốc hiện tại có khả năng bị thiếu Yang cao hơn đáng kể (OR [95% confidence interval (CI)]: 1,62 [1,39-1,89]), thiếu Âm (1,64 [1,41-1,90]) và ứ đờm (1,88 [1,59-2,22]) sau khi điều chỉnh đa biến.",
+      "text_pinyin": "yǔ bù xī yān zhě xiāng bǐ ， dāng qián xī yān zhě zài duō biàn liàng tiáo zhěng hòu chū xiàn yáng xū （ OR [95% zhì xìn qū jiān (CI)] ： 1.62 [1.39-1.89] ）、 yīn xū （ 1.64 [1.41-1.90] ） hé tán yū （ 1.88 [1.59-2.22] ） de kě néng xìng míng xiǎn gèng gāo 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "Compared with nondrinkers, current drinkers had a significantly higher likelihood of having Yin deficiency (1.21 [1.02-1.44]) and phlegm stasis (1.27 [1.04-1.56]) after multivariate adjustment.",
+      "text_zh": "与不饮酒者相比，目前饮酒者在多变量调整后患阴虚（ 1.21 [1.02-1.44] ）和痰瘀（ 1.27 [1.04-1.56] ）的可能性明显更高。",
+      "text_vi": "So với những người không uống rượu, những người uống rượu hiện tại có khả năng bị thiếu Yin cao hơn đáng kể (1,21 [1,02-1,44]) và ứ đọng đờm (1,27 [1,04-1,56]) sau khi điều chỉnh đa biến.",
+      "text_pinyin": "yǔ bù yǐn jiǔ zhě xiāng bǐ ， mù qián yǐn jiǔ zhě zài duō biàn liàng tiáo zhěng hòu huàn yīn xū （ 1.21 [1.02-1.44] ） hé tán yū （ 1.27 [1.04-1.56] ） de kě néng xìng míng xiǎn gèng gāo 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "Tea consumption was significantly associated with phlegm stasis (1.18 [1.08-1.29]).",
+      "text_zh": "饮茶与痰瘀证显著相关（ 1.18 [1.08-1.29] ）。",
+      "text_vi": "Tiêu thụ trà có liên quan đáng kể đến ứ đọng đờm (1,18 [1,08-1,29]).",
+      "text_pinyin": "yǐn chá yǔ tán yū zhèng xiǎn zhù xiāng guān （ 1.18 [1.08-1.29] ）。"
+    },
+    {
+      "seq": 10,
+      "text_en": "Regarding leisure-time physical activity, this habit was negatively associated with Yang deficiency, Yin deficiency, and phlegm stasis with multivariate adjustment (0.71 [0.65-0.78], 0.74 [0.68-0.81], and 0.63 [0.58-0.70], respectively).",
+      "text_zh": "在闲暇时间体力活动方面，该习惯与阳虚、阴虚、痰瘀多变量调节负相关（分别为0.71 [0.65-0.78]、0.74 [0.68-0.81]、0.63 [0.58-0.70] ）。",
+      "text_vi": "Về hoạt động thể chất trong thời gian rảnh rỗi, thói quen này có liên quan tiêu cực đến tình trạng thiếu Yang, thiếu Âm và ứ đờm với sự điều chỉnh đa biến (lần lượt là 0,71 [0,65-0,78], 0,74 [0,68-0,81] và 0,63 [0,58-0,70]).",
+      "text_pinyin": "zài xián xiá shí jiān tǐ lì huó dòng fāng miàn ， gāi xí guàn yǔ yáng xū 、 yīn xū 、 tán yū duō biàn liàng tiáo jié fù xiāng guān （ fēn bié wèi 0.71 [0.65-0.78]、0.74 [0.68-0.81]、0.63 [0.58-0.70] ）。"
+    },
+    {
+      "seq": 11,
+      "text_en": "This study demonstrates that lifestyle behaviors are associated with imbalanced TCM BCs, particularly Yin deficiency, Yang deficiency, and phlegm stasis.",
+      "text_zh": "本研究表明，生活方式行为与中医BC失衡有关，尤其是阴虚、阳虚、痰瘀。",
+      "text_vi": "Nghiên cứu này chứng minh rằng các hành vi lối sống có liên quan đến các TCM BC mất cân bằng, đặc biệt là thiếu hụt Âm, thiếu Yang và ứ đọng đờm.",
+      "text_pinyin": "běn yán jiū biǎo míng ， shēng huó fāng shì xíng wéi yǔ zhōng yī BC shī héng yǒu guān ， yóu qí shì yīn xū 、 yáng xū 、 tán yū 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42854037), Medicine (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42854037/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42854037), Medicine (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42854037/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42854037），Medicine (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42854037/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。"
+}
