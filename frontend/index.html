@@ -889,7 +889,7 @@ header{transition:padding .2s ease}
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/></svg><span data-i18n="dr_source">Nguồn học thuật</span><span class="soon" data-i18n="soon">Sắp có</span></div>
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span data-i18n="dr_about">Giới thiệu Hạ Vân Y Đạo</span><span class="soon" data-i18n="soon">Sắp có</span></div>
     </div>
-    <div class="drawer-foot">夏雲醫道 — Hạ Vân Y Đạo<br>contact@chimedis.vn</div>
+    <div class="drawer-foot">夏雲醫道 — Hạ Vân Y Đạo<br>contact@chimedis.vn<div id="luStatus" onclick="checkLiveUpdate(true)" style="margin-top:8px;font-size:10px;opacity:.55;word-break:break-all"></div></div>
   </aside>
 
   <!-- ĐĂNG NHẬP -->
@@ -1426,9 +1426,13 @@ function switchAuthMode(mode){ state.authMode = mode; renderAuthModal(); }
 window.__bundleVer = window.__bundleVer || '';
 window.__authTraceText = window.__authTraceText || '';
 function authTraceHtml(){ return `<div id="authTrace" class="auth-switch" style="opacity:.55;font-size:10px;margin-top:8px;word-break:break-all">${authTraceLine()}</div>`; }
-function authTraceLine(){ return 'ui ' + (window.__bundleVer || (IN_NATIVE_APP ? 'built-in' : 'web')) + (window.__authTraceText ? ' · ' + window.__authTraceText : ''); }
+function luSavedStatus(){ try{ return localStorage.getItem('chimedis_lu_status') || ''; }catch(e){ return ''; } }
+function authTraceLine(){
+  const lu = IN_NATIVE_APP ? (' · live: ' + (luSavedStatus() || 'chưa chạy')) : '';
+  return 'ui ' + (window.__bundleVer || (IN_NATIVE_APP ? 'built-in' : 'web')) + lu + (window.__authTraceText ? ' · ' + window.__authTraceText : '');
+}
 window.authTrace = function(step){ window.__authTraceText = step; const el = document.getElementById('authTrace'); if(el) el.textContent = authTraceLine(); };
-if(IN_NATIVE_APP){ fetch('bundle-version.txt', { cache: 'no-store' }).then(r => r.text()).then(v => { window.__bundleVer = v.trim(); window.authTrace(window.__authTraceText); }).catch(() => {}); }
+if(IN_NATIVE_APP){ fetch('bundle-version.txt', { cache: 'no-store' }).then(r => r.text()).then(v => { v = v.trim(); if(/^\d+\.\d+\.\d+$/.test(v)) window.__bundleVer = v; window.authTrace(window.__authTraceText); }).catch(() => {}); }
 function showAuthError(msg){ const el = document.getElementById('authError'); if(el) el.textContent = msg; }
 function authErrorMessage(err){
   const code = err && err.code;
@@ -4438,6 +4442,7 @@ function setupPopupSwipe(){
 
 // ===== DRAWER (MENU DỌC) =====
 function openDrawer(){
+  const luEl = document.getElementById('luStatus'); if(luEl) luEl.textContent = authTraceLine();
   document.getElementById('drawer').classList.add('show');
   document.getElementById('drawerScrim').classList.add('show');
   syncContentLangPanel();
@@ -4905,29 +4910,45 @@ refreshOfflineStatus();
 // quay về bản cũ (cơ chế an toàn: bản lỗi không "brick" app).
 let _luLast = 0, _luBusy = false;
 function luPlugin(){ return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorUpdater) || null; }
+function luSet(msg){
+  try{ localStorage.setItem('chimedis_lu_status', new Date().toTimeString().slice(0,5) + ' ' + msg); }catch(e){}
+  const el = document.getElementById('luStatus');
+  if(el) el.textContent = authTraceLine();
+  if(window.authTrace) window.authTrace(window.__authTraceText || '');
+}
 async function checkLiveUpdate(force){
+  if(!IN_NATIVE_APP) return;
   const cu = luPlugin();
-  if(!IN_NATIVE_APP || !cu || _luBusy || !navigator.onLine) return;
+  if(!cu){ luSet('không có plugin cập nhật'); return; }
+  if(_luBusy) return;
+  if(!navigator.onLine){ luSet('đang offline'); return; }
   if(!force && Date.now() - _luLast < 30*60*1000) return; // tối đa 1 lần / 30 phút
   _luBusy = true; _luLast = Date.now();
   try{
+    luSet('đang kiểm tra');
     const res = await fetch(`${API_BASE}/app-bundle/latest.json`, { cache: 'no-store' });
-    if(!res.ok) return;
+    if(!res.ok){ luSet('máy chủ trả ' + res.status); return; }
     const latest = await res.json();
-    if(!latest || !latest.version || !latest.url) return;
+    if(!latest || !latest.version || !latest.url){ luSet('latest.json thiếu dữ liệu'); return; }
     let own = '';
-    try{ own = (await (await fetch('bundle-version.txt', { cache: 'no-store' })).text()).trim(); }catch(e){}
-    if(own === latest.version) return;
+    try{ const ownTxt = (await (await fetch('bundle-version.txt', { cache: 'no-store' })).text()).trim(); if(/^\d+\.\d+\.\d+$/.test(ownTxt)) own = ownTxt; }catch(e){}
+    if(own === latest.version){ luSet('đã là bản mới nhất'); return; }
+    luSet('đang tải ' + latest.version);
     const b = await cu.download({ url: latest.url, version: latest.version });
+    luSet('đã tải xong, đang áp dụng');
     // Đang rảnh (không mở popup/không đang tìm) → áp dụng ngay (WebView tải lại 1 lần); nếu không → lần mở app sau.
     const idle = !state.popupId && !state.searchQuery && !document.getElementById('gsOverlay') && !document.querySelector('.fv');
-    if(idle) await cu.set({ id: b.id }); else await cu.next({ id: b.id });
-  }catch(err){ console.warn('[Chimedis] Live update lỗi:', err && err.message); }
+    if(idle){ await cu.set({ id: b.id }); luSet('đã áp dụng'); } else { await cu.next({ id: b.id }); luSet('sẽ áp dụng ở lần mở sau'); }
+  }catch(err){
+    luSet('lỗi: ' + String((err && (err.message || err.code)) || err).slice(0, 90));
+    console.warn('[Chimedis] Live update lỗi:', err && err.message);
+  }
   finally{ _luBusy = false; }
 }
 (function initLiveUpdate(){
+  if(!IN_NATIVE_APP) return;
   const cu = luPlugin();
-  if(!IN_NATIVE_APP || !cu) return;
+  if(!cu){ luSet('không có plugin cập nhật'); return; }
   Promise.resolve(cu.notifyAppReady()).catch(() => {});
   setTimeout(() => checkLiveUpdate(false), 4000);
   document.addEventListener('visibilitychange', () => { if(!document.hidden) checkLiveUpdate(false); });
