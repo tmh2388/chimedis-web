@@ -748,6 +748,19 @@ header{transition:padding .2s ease}
 .lsc-btn{font-family:inherit;font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px;border:0;cursor:pointer}
 .lsc-btn.good{background:#1F7A41;color:#fff}
 .lsc-btn.retry{background:var(--ngua-am,#efe7d8);color:var(--tham-2,#7a6a58)}
+.listen-recordfab.on{background:var(--thamthm,#0E3A3A)}
+.listen-campip{position:absolute;left:12px;bottom:calc(88px + env(safe-area-inset-bottom));width:96px;height:128px;border-radius:14px;overflow:hidden;z-index:46;background:#000;box-shadow:0 6px 18px rgba(0,0,0,.28);touch-action:none;border:2px solid #fff}
+.listen-campip video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.listen-campip.rec{border-color:var(--son,#C8452F)}
+.listen-campip-dot{position:absolute;left:6px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--son,#C8452F);display:none}
+.listen-campip.rec .listen-campip-dot{display:block;animation:recblink 1s infinite}
+.listen-campip-x{position:absolute;right:2px;top:2px;width:24px;height:24px;border:0;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;font-size:16px;line-height:1;cursor:pointer}
+@keyframes recblink{50%{opacity:.25}}
+.practice-video{margin:0 0 8px}
+.practice-video video{width:100%;max-height:300px;border-radius:12px;background:#000;display:block}
+.practice-video button{margin-top:6px}
+.listen-toast{position:absolute;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:rgba(14,58,58,.92);color:#fff;font-size:12.5px;padding:8px 14px;border-radius:999px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s;max-width:86%;text-align:center}
+.listen-toast.show{opacity:1}
 .listen-recordfab{position:absolute;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));width:52px;height:52px;border-radius:50%;background:var(--son,#C8452F);
   color:#fff;border:0;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);cursor:pointer;z-index:40}
 .listen-modal-scrim{position:fixed;inset:0;background:rgba(28,43,42,.55);display:none;z-index:60}
@@ -900,20 +913,6 @@ header{transition:padding .2s ease}
        âm ở đây nữa — ghi âm chấm điểm giờ nằm trực tiếp trên trang chính theo từng câu
        (xem listenLineRecordToggle ở trên). Quyết định 2026-10-09: user yêu cầu tách hẳn
        2 việc, "ghi âm chỉ một thứ duy nhất trên trang chính". -->
-  <div class="listen-modal-scrim" id="listenPracticeScrim" onclick="closeListenPracticeModal()"></div>
-  <div class="listen-modal listen-practice-modal" id="listenPracticeModal">
-    <h3 data-i18n="practice_video_title">Ghi hình</h3>
-    <video id="practiceCamPreview" autoplay muted playsinline></video>
-    <p class="practice-hint" data-i18n="practice_video_hint">Quay lại mặt bạn khi luyện tập để lưu hoặc chia sẻ — không chấm điểm ở đây, chỉ ghi hình.</p>
-    <div class="btnrow">
-      <button class="primary" id="practiceStartBtn" onclick="listenPracticeStartRecord()" data-i18n="practice_start">● Bắt đầu ghi</button>
-      <button id="practiceStopBtn" onclick="listenPracticeStopRecord()" disabled data-i18n="practice_stop">■ Dừng ghi</button>
-      <button onclick="closeListenPracticeModal()" data-i18n="listen_record_close">Đóng</button>
-    </div>
-    <div class="practice-status" id="practiceStatus"></div>
-    <div id="practiceDownloadArea"></div>
-  </div>
-
   <!-- POPUP -->
   <div class="pp-overlay" id="ppOverlay" onclick="if(event.target===this)closePopup()">
     <div class="pp" id="ppContent"></div>
@@ -1793,7 +1792,7 @@ Object.assign(I18N.vi, {
   listen_cat_y_an: 'Y Án', listen_cat_bao_chi: 'Báo Chí', listen_cat_tu_them: 'Tự Thêm', listen_cat_hoc_thuat: 'Học Thuật (Anh→Trung)',
   listen_empty: 'Chưa có hội thoại nào trong mục này.',
   listen_level_all: 'Tất cả', listen_level_so_cap: 'Sơ cấp', listen_level_trung_cap: 'Trung cấp', listen_level_cao_cap: 'Cao cấp',
-  listen_play_full: 'Phát toàn bài', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', listen_stop: 'Dừng',
+  listen_play_full: 'Phát toàn bài', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)', listen_stop: 'Dừng',
   listen_target_lang: 'Nhắc lại bằng', listen_vi: 'Tiếng Việt', listen_en: 'Tiếng Anh',
   listen_listening: '🎙 Đang nghe...', listen_points: 'điểm', listen_retry: 'Không nhận diện được, thử lại',
   listen_no_speech: 'Trình duyệt không hỗ trợ ghi âm giọng nói',
@@ -1822,7 +1821,7 @@ Object.assign(I18N.zh, {
   listen_cat_y_an: '医案', listen_cat_bao_chi: '新闻', listen_cat_tu_them: '自建内容', listen_cat_hoc_thuat: '学术（英→中）',
   listen_empty: '此分类暂无对话。',
   listen_level_all: '全部', listen_level_so_cap: '初级', listen_level_trung_cap: '中级', listen_level_cao_cap: '高级',
-  listen_play_full: '播放全文', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', listen_stop: '停止',
+  listen_play_full: '播放全文', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）', listen_stop: '停止',
   listen_target_lang: '跟读语言', listen_vi: '越南语', listen_en: '英语',
   listen_listening: '🎙 正在聆听...', listen_points: '分', listen_retry: '无法识别，请重试',
   listen_no_speech: '此浏览器不支持语音识别',
@@ -1851,7 +1850,7 @@ Object.assign(I18N.en, {
   listen_cat_y_an: 'Case Studies', listen_cat_bao_chi: 'News', listen_cat_tu_them: 'Custom', listen_cat_hoc_thuat: 'Academic (EN→ZH)',
   listen_empty: 'No dialogues in this category yet.',
   listen_level_all: 'All', listen_level_so_cap: 'Beginner', listen_level_trung_cap: 'Intermediate', listen_level_cao_cap: 'Advanced',
-  listen_play_full: 'Play full dialogue', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', listen_stop: 'Stop',
+  listen_play_full: 'Play full dialogue', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)', listen_stop: 'Stop',
   listen_target_lang: 'Repeat in', listen_vi: 'Vietnamese', listen_en: 'English',
   listen_listening: '🎙 Listening...', listen_points: 'pts', listen_retry: "Couldn't recognize, try again",
   listen_no_speech: 'This browser does not support speech recognition',
@@ -2718,8 +2717,9 @@ function listenUpdateLineRecordUI(){
 
 function listenLineRecordToggle(seq){
   if(lineRecordSeq === seq && lineRecorder){
-    if(lineRecorder.state === 'recording') lineRecorder.pause();
-    else if(lineRecorder.state === 'paused') lineRecorder.resume();
+    const vr = lineVideoRecorder;
+    if(lineRecorder.state === 'recording'){ lineRecorder.pause(); if(vr && vr.state === 'recording') vr.pause(); }
+    else if(lineRecorder.state === 'paused'){ lineRecorder.resume(); if(vr && vr.state === 'paused') vr.resume(); }
     listenUpdateLineRecordUI();
     return;
   }
@@ -2743,6 +2743,7 @@ async function listenLineRecordStart(seq){
     lineRecorder = new MediaRecorder(micStream);
     lineRecorder.ondataavailable = (e) => { if(e.data.size) lineRecordChunks.push(e.data); };
     lineRecorder.start();
+    listenVideoAttemptStart(micStream);
     lineRecordSeq = seq;
     listenSetBadge(seq, 'listening', `<span class="practice-rec-dot"></span> ${t('practice_recording')}`);
     listenUpdateLineRecordUI();
@@ -2773,6 +2774,7 @@ function listenLineRecordStop(seq){
       listenSetBadge(finishedSeq, 'bad', `${t('practice_error')}: ${err.message}`);
     }
   };
+  listenVideoAttemptStop(finishedSeq);
   if(recorder.state !== 'inactive') recorder.stop();
 }
 
@@ -2789,7 +2791,7 @@ async function listenLineInterpret(seq, trimmedBlob, d, seg, targetLang, referen
   const base64 = await blobToBase64(trimmedBlob);
   const esc = (s) => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const recordingUrl = lineRecordingUrls[seq];
-  const playbackHtml = recordingUrl
+  const playbackHtml = lineVideoUrls[seq] ? listenVideoHtml(seq) : recordingUrl
     ? `<div class="practice-playback"><audio controls src="${recordingUrl}"></audio><span>${t('practice_your_recording')}</span></div>`
     : '';
   let json;
@@ -2861,7 +2863,7 @@ async function listenLineScore(seq, trimmedBlob){
   }
   const esc = (s) => String(s||'').replace(/</g,'&lt;');
   const recordingUrl = lineRecordingUrls[seq];
-  const playbackHtml = recordingUrl
+  const playbackHtml = lineVideoUrls[seq] ? listenVideoHtml(seq) : recordingUrl
     ? `<div class="practice-playback"><audio controls src="${recordingUrl}"></audio><span>${t('practice_your_recording')}</span></div>`
     : '';
   if(!json.success || !json.data || !json.data.transcript){
@@ -2946,87 +2948,124 @@ function renderListenDialogue(){
   </div>`;
 }
 
-// ===== Modal ghi hình (chỉ quay mặt để lưu/chia sẻ — KHÔNG chấm điểm, xem ghi chú ở
-// khai báo listenPracticeModal trong HTML). Ghi âm chấm điểm nằm riêng, theo từng câu
-// trên trang chính (listenLineRecordToggle ở trên).
-let practiceCamStream = null;
-let practiceVideoRecorder = null, practiceVideoChunks = [];
-let practiceVideoUrl = null;
+// ===== Camera nổi + video đồng bộ với từng lần ghi âm (2026-10-10) =====
+// Camera chỉ lấy HÌNH (audio:false) và hiện thành khung nhỏ nổi trên trang chính, nên bạn vẫn điều khiển nghe/ghi âm
+// bình thường. Khi camera đang bật và bạn ghi âm một câu, 1 bộ ghi riêng thu HÌNH + TIẾNG TỪ CÙNG MỘT MICRO của lần ghi
+// đó → file video có tiếng khớp từng khung hình (không cần ghép sau). Lúc ghi, audio bài nghe đã được dừng sẵn nên
+// không lọt tiếng loa. Audio dùng để chấm điểm vẫn do bộ ghi âm riêng đảm nhận như cũ.
+let listenCamStream = null;
+let lineVideoRecorder = null;
+const lineVideoBlobs = {}, lineVideoUrls = {};
 
-function openListenPracticeModal(){
-  if(!listenCurrentDialogue) return;
-  listenStopPlayback();
-  document.getElementById('listenPracticeScrim').classList.add('open');
-  document.getElementById('listenPracticeModal').classList.add('open');
-  document.getElementById('practiceStatus').textContent = '';
-  document.getElementById('practiceDownloadArea').innerHTML = '';
-  // Reset preview về trạng thái xem camera trực tiếp (có thể đang hiện lại đoạn ghi lần
-  // trước — controls=true/muted=false — từ lần mở trước đó).
-  const preview = document.getElementById('practiceCamPreview');
-  preview.src = ''; preview.controls = false; preview.muted = true;
-  if(practiceVideoUrl){ URL.revokeObjectURL(practiceVideoUrl); practiceVideoUrl = null; }
+function listenVideoMime(){
+  if(!window.MediaRecorder || !MediaRecorder.isTypeSupported) return '';
+  const list = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+  return list.find(m => MediaRecorder.isTypeSupported(m)) || '';
 }
-function closeListenPracticeModal(){
-  document.getElementById('listenPracticeScrim').classList.remove('open');
-  document.getElementById('listenPracticeModal').classList.remove('open');
-  if(practiceVideoRecorder && practiceVideoRecorder.state === 'recording') practiceVideoRecorder.stop();
-  if(practiceCamStream){ practiceCamStream.getTracks().forEach(tr => tr.stop()); practiceCamStream = null; }
+function listenToast(msg){
+  let el = document.getElementById('listenToast');
+  if(!el){ el = document.createElement('div'); el.id = 'listenToast'; el.className = 'listen-toast'; document.getElementById('app').appendChild(el); }
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(listenToast._t); listenToast._t = setTimeout(() => el.classList.remove('show'), 3500);
 }
-
-async function listenPracticeStartRecord(){
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    document.getElementById('practiceStatus').textContent = t('practice_no_mic');
-    return;
-  }
+function listenCamToggle(){ if(listenCamStream) listenCamStop(); else listenCamStart(); }
+async function listenCamStart(){
   try{
-    // Một số WKWebView (app iOS) có thể treo vô thời hạn thay vì từ chối rõ ràng khi
-    // thiếu quyền native — đặt timeout để luôn báo lỗi rõ ràng thay vì im lặng mãi.
-    const withTimeout = (p) => Promise.race([
-      p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 8000)),
+    listenCamStream = await Promise.race([
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 640 } }, audio: false }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 8000)),
     ]);
-    const camStream = await withTimeout(navigator.mediaDevices.getUserMedia({
-      video: true, audio: { echoCancellation: true, noiseSuppression: true },
-    }));
-    practiceCamStream = camStream;
-    if(practiceVideoUrl){ URL.revokeObjectURL(practiceVideoUrl); practiceVideoUrl = null; }
-    const preview = document.getElementById('practiceCamPreview');
-    preview.src = ''; preview.controls = false; preview.muted = true;
-    preview.srcObject = camStream;
-    document.getElementById('practiceDownloadArea').innerHTML = '';
-    practiceVideoChunks = [];
-    practiceVideoRecorder = new MediaRecorder(camStream, { mimeType: 'video/webm' });
-    practiceVideoRecorder.ondataavailable = (e) => { if(e.data.size) practiceVideoChunks.push(e.data); };
-    practiceVideoRecorder.start();
-    document.getElementById('practiceStartBtn').disabled = true;
-    document.getElementById('practiceStopBtn').disabled = false;
-    document.getElementById('practiceStatus').innerHTML = `<span class="practice-rec-dot"></span> ${t('practice_recording')}`;
-  }catch(err){
-    document.getElementById('practiceStatus').textContent =
-      (err && err.message === 'timeout') ? t('practice_no_mic') : `${t('practice_error')}: ${err.message}`;
+  }catch(err){ listenCamStream = null; listenToast(t('cam_denied')); return; }
+  let pip = document.getElementById('listenCamPip');
+  if(!pip){
+    document.getElementById('app').insertAdjacentHTML('beforeend',
+      `<div id="listenCamPip" class="listen-campip"><video autoplay muted playsinline></video><span class="listen-campip-dot"></span>` +
+      `<button class="listen-campip-x" aria-label="${t('cam_off')}" onclick="listenCamStop()">×</button></div>`);
+    pip = document.getElementById('listenCamPip');
+    listenCamDrag(pip);
   }
+  const v = pip.querySelector('video'); v.srcObject = listenCamStream; v.play().catch(() => {});
+  document.getElementById('listenRecordFab')?.classList.add('on');
+  listenToast(t('cam_on_hint'));
 }
-
-function listenPracticeStopRecord(){
-  document.getElementById('practiceStartBtn').disabled = false;
-  document.getElementById('practiceStopBtn').disabled = true;
-  document.getElementById('practiceStatus').textContent = '';
-  if(!practiceVideoRecorder) return;
-  practiceVideoRecorder.onstop = () => {
-    const videoBlob = new Blob(practiceVideoChunks, { type: 'video/webm' });
-    if(practiceVideoUrl) URL.revokeObjectURL(practiceVideoUrl);
-    practiceVideoUrl = URL.createObjectURL(videoBlob);
-    if(practiceCamStream) practiceCamStream.getTracks().forEach(tr => tr.stop());
-    // Chuyển video preview từ "xem camera trực tiếp" sang "xem lại đoạn vừa ghi" — user
-    // yêu cầu 2026-10-09: phải nghe/xem lại được ngay, không chỉ có nút tải xuống.
-    const preview = document.getElementById('practiceCamPreview');
-    preview.srcObject = null;
-    preview.src = practiceVideoUrl;
-    preview.muted = false;
-    preview.controls = true;
-    document.getElementById('practiceDownloadArea').innerHTML =
-      `<a href="${practiceVideoUrl}" download="chimedis-ghi-hinh.webm">⬇ ${t('listen_record_download')}</a>`;
+function listenCamStop(){
+  if(lineVideoRecorder && lineVideoRecorder.state !== 'inactive'){ try{ lineVideoRecorder.stop(); }catch(e){} }
+  lineVideoRecorder = null;
+  if(listenCamStream){ listenCamStream.getTracks().forEach(tr => tr.stop()); listenCamStream = null; }
+  document.getElementById('listenCamPip')?.remove();
+  document.getElementById('listenRecordFab')?.classList.remove('on');
+}
+function listenCamDrag(pip){
+  let sx = 0, sy = 0, ox = 0, oy = 0, drag = false;
+  pip.addEventListener('pointerdown', (e) => {
+    if(e.target.closest('.listen-campip-x')) return;
+    drag = true; sx = e.clientX; sy = e.clientY; ox = pip.offsetLeft; oy = pip.offsetTop;
+    pip.style.bottom = 'auto'; pip.style.top = oy + 'px'; pip.style.left = ox + 'px';
+    pip.setPointerCapture(e.pointerId);
+  });
+  pip.addEventListener('pointermove', (e) => {
+    if(!drag) return;
+    const app = document.getElementById('app');
+    const nx = Math.min(Math.max(0, ox + e.clientX - sx), app.clientWidth - pip.offsetWidth);
+    const ny = Math.min(Math.max(0, oy + e.clientY - sy), app.clientHeight - pip.offsetHeight);
+    pip.style.left = nx + 'px'; pip.style.top = ny + 'px';
+  });
+  const end = () => { drag = false; };
+  pip.addEventListener('pointerup', end); pip.addEventListener('pointercancel', end);
+}
+// Gọi khi bắt đầu ghi âm một câu: nếu camera đang bật thì thu hình + tiếng cùng micro.
+function listenVideoAttemptStart(micStream){
+  lineVideoRecorder = null;
+  if(!listenCamStream || !listenCamStream.active || !window.MediaRecorder) return;
+  try{
+    const mime = listenVideoMime();
+    const combo = new MediaStream([...listenCamStream.getVideoTracks(), ...micStream.getAudioTracks()]);
+    const chunks = [];
+    const rec = new MediaRecorder(combo, mime ? { mimeType: mime } : undefined);
+    rec.ondataavailable = (e) => { if(e.data.size) chunks.push(e.data); };
+    rec._chunks = chunks;
+    rec.start();
+    lineVideoRecorder = rec;
+    document.getElementById('listenCamPip')?.classList.add('rec');
+  }catch(e){ lineVideoRecorder = null; }
+}
+function listenVideoAttemptStop(seq){
+  const rec = lineVideoRecorder; lineVideoRecorder = null;
+  document.getElementById('listenCamPip')?.classList.remove('rec');
+  if(!rec || rec.state === 'inactive') return;
+  rec.onstop = () => {
+    const blob = new Blob(rec._chunks, { type: rec.mimeType || 'video/webm' });
+    if(!blob.size) return;
+    if(lineVideoUrls[seq]) URL.revokeObjectURL(lineVideoUrls[seq]);
+    lineVideoBlobs[seq] = blob; lineVideoUrls[seq] = URL.createObjectURL(blob);
+    listenAttachVideo(seq);
   };
-  practiceVideoRecorder.stop();
+  try{ rec.stop(); }catch(e){}
+}
+function listenVideoHtml(seq){
+  const url = lineVideoUrls[seq];
+  if(!url) return '';
+  return `<div class="practice-video"><video src="${url}" controls playsinline></video>` +
+    `<button type="button" class="lsc-btn retry" onclick="listenSaveVideo(${seq})">⬇ ${t('cam_save')}</button></div>`;
+}
+function listenAttachVideo(seq){
+  const box = document.querySelector(`[data-listen-badge="${seq}"] .listen-selfcheck`);
+  if(!box || box.querySelector('.practice-video')) return;
+  box.querySelector('.practice-playback')?.remove(); // video đã có tiếng, bỏ trình phát âm thanh riêng
+  box.insertAdjacentHTML('afterbegin', listenVideoHtml(seq));
+}
+async function listenSaveVideo(seq){
+  const blob = lineVideoBlobs[seq];
+  if(!blob) return;
+  const ext = /mp4/.test(blob.type) ? 'mp4' : 'webm';
+  const name = `chimedis-${(listenCurrentDialogue && listenCurrentDialogue.id) || 'luyen-dich'}-cau${seq}.${ext}`;
+  try{
+    const file = new File([blob], name, { type: blob.type });
+    if(navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files: [file], title: 'Chimedis' }); return; }
+  }catch(e){ if(e && e.name === 'AbortError') return; }
+  const a = document.createElement('a');
+  a.href = lineVideoUrls[seq]; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
 }
 
 // Cắt khoảng lặng >= minSilenceMs trong audio đã ghi — xử lý hoàn toàn phía trình duyệt
@@ -3683,6 +3722,7 @@ function renderTabContent(){
   const el = document.getElementById('tabContent');
   const oldFab = document.getElementById('listenRecordFab');
   if(oldFab) oldFab.remove();
+  if(state.tab !== 'listendialogue' && typeof listenCamStop === 'function' && listenCamStream) listenCamStop();
   if(state.tab === 'studyhome'){ el.innerHTML = renderStudyHome(); return; }
   if(state.tab === 'listenhome'){ el.innerHTML = renderListenHome(); return; }
   if(state.tab === 'listendialogue'){
@@ -3690,7 +3730,8 @@ function renderTabContent(){
     el.innerHTML = backBarL + renderListenDialogue();
     const feat = listenFeatureSupported();
     if(feat.record){
-      document.getElementById('app').insertAdjacentHTML('beforeend', `<button id="listenRecordFab" class="listen-recordfab" onclick="openListenPracticeModal()" aria-label="${t('listen_record')}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend', `<button id="listenRecordFab" class="listen-recordfab" onclick="listenCamToggle()" aria-label="${t('listen_record')}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>`);
+      if(listenCamStream) document.getElementById('listenRecordFab')?.classList.add('on');
     }
     return;
   }
