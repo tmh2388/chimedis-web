@@ -5,7 +5,7 @@ import { mountAppBundle } from './lib/app-bundle.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import mysql from 'mysql2/promise';
+import { mysqlPool, onDbUp, dbStatus } from './lib/db.js';
 import { runImport } from './import-herbal-sheets.js';
 import { buildAPI } from './build-api.js';
 import { verifyFirebaseToken, isFirebaseConfigured } from './firebase-admin.js';
@@ -33,22 +33,14 @@ const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
 // MySQL is optional — herb data (from Google Sheets via import-herbal-sheets.js)
 // only appears in /api/terms once MYSQL_HOST etc. are configured. Without it,
 // /api/terms still works with just the Giải phẫu data from public/data/terms.json.
-const mysqlPool = process.env.MYSQL_HOST
-  ? mysql.createPool({
-      host: process.env.MYSQL_HOST,
-      port: process.env.MYSQL_PORT || 3306,
-      user: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PASSWORD,
-      database: process.env.MYSQL_DATABASE,
-      connectionLimit: 5,
-    })
-  : null;
+// (lib/db.js: thử MYSQL_HOST → MYSQL_HOST_FALLBACK → localhost, nối IPv4, tự thử lại mỗi 30s.)
 
-// Gieo/cập nhật thuật ngữ "Tổng hợp" từ backend/data/general-terms/*.json vào MySQL mỗi lần khởi động.
+// Gieo/cập nhật thuật ngữ "Tổng hợp" từ backend/data/general-terms/*.json vào MySQL mỗi khi DB sẵn sàng
+// (lúc khởi động và cả khi tự phục hồi sau sự cố).
 if (mysqlPool) {
-  syncGeneralTerms(mysqlPool, path.join(__dirname, 'data', 'general-terms'))
+  onDbUp(() => syncGeneralTerms(mysqlPool, path.join(__dirname, 'data', 'general-terms'))
     .then((r) => console.log(`[general-terms] đồng bộ: ${r.total} thuật ngữ trong file, ${r.written} dòng thay đổi`))
-    .catch((err) => console.error('⚠️  Không đồng bộ được thuật ngữ Tổng hợp:', err.message));
+    .catch((err) => console.error('⚠️  Không đồng bộ được thuật ngữ Tổng hợp:', err.message)));
 }
 
 /**
@@ -1217,6 +1209,14 @@ app.get('/api/db-check', async (req, res) => {
     }
   }
   res.json(out);
+});
+
+/**
+ * GET /api/health — trạng thái kết nối MySQL (không lộ host, user, mật khẩu).
+ */
+app.get('/api/health', (req, res) => {
+  const db = dbStatus();
+  res.json({ status: db.configured && !db.ok ? 'degraded' : 'ok', timestamp: new Date().toISOString(), dbStatus: db });
 });
 
 app.get('/health', (req, res) => {
