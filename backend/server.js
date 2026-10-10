@@ -1189,6 +1189,30 @@ app.post('/api/build-now', async (req, res) => {
  * GET /health
  * Health check
  */
+/**
+ * GET /api/db-check — chẩn đoán kết nối MySQL (không lộ bí mật): mã lỗi + số dòng các bảng chính.
+ */
+app.get('/api/db-check', async (req, res) => {
+  if (!mysqlPool) return res.json({ configured: false });
+  const out = { configured: true, tables: {} };
+  try {
+    await mysqlPool.query('SELECT 1');
+    out.connect = 'ok';
+  } catch (err) {
+    out.connect = { code: err.code, errno: err.errno, message: String(err.message).replace(/'[^']*'@'[^']*'/g, "'***'@'***'").slice(0, 160) };
+    return res.json(out);
+  }
+  for (const t of ['herbs', 'anatomy_terms', 'general_terms', 'acupoints', 'word_elements', 'formulas']) {
+    try {
+      const [[row]] = await mysqlPool.query(`SELECT COUNT(*) AS n FROM ${t}`);
+      out.tables[t] = row.n;
+    } catch (err) {
+      out.tables[t] = { code: err.code, message: String(err.message).slice(0, 120) };
+    }
+  }
+  res.json(out);
+});
+
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
