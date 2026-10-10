@@ -1,0 +1,852 @@
+{
+ "group": {
+  "key": "bc-benh-vi",
+  "zh": "病位辨证",
+  "vi": "Biện chứng theo bệnh vị (tạng phủ)",
+  "en": "Pattern differentiation by disease location",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ đã đối chiếu nguồn; bản dịch AI chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — thuật ngữ SOURCE_VERIFIED, bản dịch vi/en chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "心血虚证",
+   "py": "xīn xuè xū zhèng",
+   "vi": "Tâm huyết hư chứng",
+   "en": "heart blood deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心阴虚证",
+   "py": "xīn yīn xū zhèng",
+   "vi": "Tâm âm hư chứng",
+   "en": "heart yin deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心气虚证",
+   "py": "xīn qì xū zhèng",
+   "vi": "Tâm khí hư chứng",
+   "en": "heart qi deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心阳虚证",
+   "py": "xīn yáng xū zhèng",
+   "vi": "Tâm dương hư chứng",
+   "en": "heart yang deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心阳虚脱证",
+   "py": "xīn yáng xū tuō zhèng",
+   "vi": "Tâm dương hư thoát chứng",
+   "en": "heart yang collapse pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心火亢盛证",
+   "py": "xīn huǒ kàng shèng zhèng",
+   "vi": "Tâm hỏa kháng thịnh chứng",
+   "en": "hyperactive heart fire pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心脉痹阻证",
+   "py": "xīn mài bì zǔ zhèng",
+   "vi": "Tâm mạch tý trở chứng",
+   "en": "heart vessel obstruction pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "痰蒙心神证",
+   "py": "tán méng xīn shén zhèng",
+   "vi": "Đàm mông tâm thần chứng",
+   "en": "phlegm clouding the heart spirit pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "痰火扰神证",
+   "py": "tán huǒ rǎo shén zhèng",
+   "vi": "Đàm hỏa nhiễu thần chứng",
+   "en": "phlegm-fire disturbing the spirit pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "瘀阻脑络证",
+   "py": "yū zǔ nǎo luò zhèng",
+   "vi": "Ứ trở não lạc chứng",
+   "en": "blood stasis obstructing the brain collaterals pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "小肠实热证",
+   "py": "xiǎo cháng shí rè zhèng",
+   "vi": "Tiểu trường thực nhiệt chứng",
+   "en": "small intestine excess heat pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肺气虚证",
+   "py": "fèi qì xū zhèng",
+   "vi": "Phế khí hư chứng",
+   "en": "lung qi deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肺阴虚证",
+   "py": "fèi yīn xū zhèng",
+   "vi": "Phế âm hư chứng",
+   "en": "lung yin deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "风寒犯肺证",
+   "py": "fēng hán fàn fèi zhèng",
+   "vi": "Phong hàn phạm phế chứng",
+   "en": "wind-cold invading the lung pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "风热犯肺证",
+   "py": "fēng rè fàn fèi zhèng",
+   "vi": "Phong nhiệt phạm phế chứng",
+   "en": "wind-heat invading the lung pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "燥邪犯肺证",
+   "py": "zào xié fàn fèi zhèng",
+   "vi": "Táo tà phạm phế chứng",
+   "en": "dryness invading the lung pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肺热炽盛证",
+   "py": "fèi rè chì shèng zhèng",
+   "vi": "Phế nhiệt sí thịnh chứng",
+   "en": "intense lung heat pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "痰热壅肺证",
+   "py": "tán rè yōng fèi zhèng",
+   "vi": "Đàm nhiệt ủng phế chứng",
+   "en": "phlegm-heat obstructing the lung pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "寒痰阻肺证",
+   "py": "hán tán zǔ fèi zhèng",
+   "vi": "Hàn đàm trở phế chứng",
+   "en": "cold-phlegm obstructing the lung pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "饮停胸胁证",
+   "py": "yǐn tíng xiōng xié zhèng",
+   "vi": "Ẩm đình hung hiếp chứng",
+   "en": "fluid retention in the chest and hypochondrium pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "风水搏肺证",
+   "py": "fēng shuǐ bó fèi zhèng",
+   "vi": "Phong thủy bác phế chứng",
+   "en": "wind-water assailing the lung pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "大肠湿热证",
+   "py": "dà cháng shī rè zhèng",
+   "vi": "Đại trường thấp nhiệt chứng",
+   "en": "large intestine damp-heat pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肠热腑实证",
+   "py": "cháng rè fǔ shí zhèng",
+   "vi": "Trường nhiệt phủ thực chứng",
+   "en": "intestinal heat with bowel excess pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肠燥津亏证",
+   "py": "cháng zào jīn kuī zhèng",
+   "vi": "Trường táo tân khuy chứng",
+   "en": "intestinal dryness with fluid depletion pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肠虚滑泻证",
+   "py": "cháng xū huá xiè zhèng",
+   "vi": "Trường hư hoạt tả chứng",
+   "en": "intestinal deficiency with slippery diarrhea pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虫积肠道证",
+   "py": "chóng jī cháng dào zhèng",
+   "vi": "Trùng tích trường đạo chứng",
+   "en": "intestinal parasite accumulation pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脾气虚证",
+   "py": "pí qì xū zhèng",
+   "vi": "Tỳ khí hư chứng",
+   "en": "spleen qi deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脾虚气陷证",
+   "py": "pí xū qì xiàn zhèng",
+   "vi": "Tỳ hư khí hãm chứng",
+   "en": "spleen deficiency with qi sinking pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脾阳虚证",
+   "py": "pí yáng xū zhèng",
+   "vi": "Tỳ dương hư chứng",
+   "en": "spleen yang deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脾不统血证",
+   "py": "pí bù tǒng xuè zhèng",
+   "vi": "Tỳ bất thống huyết chứng",
+   "en": "spleen failing to control blood pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "湿热蕴脾证",
+   "py": "shī rè yùn pí zhèng",
+   "vi": "Thấp nhiệt uẩn tỳ chứng",
+   "en": "damp-heat accumulating in the spleen pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "寒湿困脾证",
+   "py": "hán shī kùn pí zhèng",
+   "vi": "Hàn thấp khốn tỳ chứng",
+   "en": "cold-dampness encumbering the spleen pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胃气虚证",
+   "py": "wèi qì xū zhèng",
+   "vi": "Vị khí hư chứng",
+   "en": "stomach qi deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胃阳虚证",
+   "py": "wèi yáng xū zhèng",
+   "vi": "Vị dương hư chứng",
+   "en": "stomach yang deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胃阴虚证",
+   "py": "wèi yīn xū zhèng",
+   "vi": "Vị âm hư chứng",
+   "en": "stomach yin deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "寒滞胃脘证",
+   "py": "hán zhì wèi wǎn zhèng",
+   "vi": "Hàn trệ vị quản chứng",
+   "en": "cold stagnation in the stomach cavity pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胃热炽盛证",
+   "py": "wèi rè chì shèng zhèng",
+   "vi": "Vị nhiệt sí thịnh chứng",
+   "en": "intense stomach heat pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "食滞胃脘证",
+   "py": "shí zhì wèi wǎn zhèng",
+   "vi": "Thực trệ vị quản chứng",
+   "en": "food stagnation in the stomach cavity pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝血虚证",
+   "py": "gān xuè xū zhèng",
+   "vi": "Can huyết hư chứng",
+   "en": "liver blood deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝阴虚证",
+   "py": "gān yīn xū zhèng",
+   "vi": "Can âm hư chứng",
+   "en": "liver yin deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝郁气滞证",
+   "py": "gān yù qì zhì zhèng",
+   "vi": "Can uất khí trệ chứng",
+   "en": "liver depression with qi stagnation pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝火炽盛证",
+   "py": "gān huǒ chì shèng zhèng",
+   "vi": "Can hỏa sí thịnh chứng",
+   "en": "intense liver fire pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝阳上亢证",
+   "py": "gān yáng shàng kàng zhèng",
+   "vi": "Can dương thượng kháng chứng",
+   "en": "hyperactivity of liver yang pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝风内动证",
+   "py": "gān fēng nèi dòng zhèng",
+   "vi": "Can phong nội động chứng",
+   "en": "liver wind stirring internally pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝阳化风证",
+   "py": "gān yáng huà fēng zhèng",
+   "vi": "Can dương hóa phong chứng",
+   "en": "liver yang transforming into wind pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "热极生风证",
+   "py": "rè jí shēng fēng zhèng",
+   "vi": "Nhiệt cực sinh phong chứng",
+   "en": "extreme heat generating wind pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "阴虚动风证",
+   "py": "yīn xū dòng fēng zhèng",
+   "vi": "Âm hư động phong chứng",
+   "en": "yin deficiency with wind stirring pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "血虚生风证",
+   "py": "xuè xū shēng fēng zhèng",
+   "vi": "Huyết hư sinh phong chứng",
+   "en": "blood deficiency generating wind pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "寒凝肝脉证",
+   "py": "hán níng gān mài zhèng",
+   "vi": "Hàn ngưng can mạch chứng",
+   "en": "cold congealing in the liver vessel pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胆郁痰扰证",
+   "py": "dǎn yù tán rǎo zhèng",
+   "vi": "Đởm uất đàm nhiễu chứng",
+   "en": "gallbladder depression with phlegm disturbance pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肾阳虚证",
+   "py": "shèn yáng xū zhèng",
+   "vi": "Thận dương hư chứng",
+   "en": "kidney yang deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肾虚水泛证",
+   "py": "shèn xū shuǐ fàn zhèng",
+   "vi": "Thận hư thủy phiếm chứng",
+   "en": "kidney deficiency with water flooding pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肾阴虚证",
+   "py": "shèn yīn xū zhèng",
+   "vi": "Thận âm hư chứng",
+   "en": "kidney yin deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肾精不足证",
+   "py": "shèn jīng bù zú zhèng",
+   "vi": "Thận tinh bất túc chứng",
+   "en": "kidney essence insufficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肾气不固证",
+   "py": "shèn qì bù gù zhèng",
+   "vi": "Thận khí bất cố chứng",
+   "en": "kidney qi non-consolidation pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心肾不交证",
+   "py": "xīn shèn bù jiāo zhèng",
+   "vi": "Tâm thận bất giao chứng",
+   "en": "heart-kidney non-interaction pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心肾阳虚证",
+   "py": "xīn shèn yáng xū zhèng",
+   "vi": "Tâm thận dương hư chứng",
+   "en": "heart and kidney yang deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心肺气虚证",
+   "py": "xīn fèi qì xū zhèng",
+   "vi": "Tâm phế khí hư chứng",
+   "en": "heart and lung qi deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心脾两虚证",
+   "py": "xīn pí liǎng xū zhèng",
+   "vi": "Tâm tỳ lưỡng hư chứng",
+   "en": "heart and spleen deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心肝血虚证",
+   "py": "xīn gān xuè xū zhèng",
+   "vi": "Tâm can huyết hư chứng",
+   "en": "heart and liver blood deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脾肺气虚证",
+   "py": "pí fèi qì xū zhèng",
+   "vi": "Tỳ phế khí hư chứng",
+   "en": "spleen and lung qi deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肺肾阴虚证",
+   "py": "fèi shèn yīn xū zhèng",
+   "vi": "Phế thận âm hư chứng",
+   "en": "lung and kidney yin deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝火犯肺证",
+   "py": "gān huǒ fàn fèi zhèng",
+   "vi": "Can hỏa phạm phế chứng",
+   "en": "liver fire invading the lung pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝胃不和证",
+   "py": "gān wèi bù hé zhèng",
+   "vi": "Can vị bất hòa chứng",
+   "en": "liver-stomach disharmony pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝郁脾虚证",
+   "py": "gān yù pí xū zhèng",
+   "vi": "Can uất tỳ hư chứng",
+   "en": "liver depression with spleen deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝胆湿热证",
+   "py": "gān dǎn shī rè zhèng",
+   "vi": "Can đởm thấp nhiệt chứng",
+   "en": "liver and gallbladder damp-heat pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肝肾阴虚证",
+   "py": "gān shèn yīn xū zhèng",
+   "vi": "Can thận âm hư chứng",
+   "en": "liver and kidney yin deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脾肾阳虚证",
+   "py": "pí shèn yáng xū zhèng",
+   "vi": "Tỳ thận dương hư chứng",
+   "en": "spleen and kidney yang deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肾不纳气证",
+   "py": "shèn bù nà qì zhèng",
+   "vi": "Thận bất nạp khí chứng",
+   "en": "kidney failing to receive qi pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  },
+  {
+   "hz": "膀胱湿热证",
+   "py": "páng guāng shī rè zhèng",
+   "vi": "Bàng quang thấp nhiệt chứng",
+   "en": "bladder damp-heat pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh vị (tạng phủ).",
+    "属于「病位辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease location."
+   ],
+   "u": []
+  }
+ ]
+}

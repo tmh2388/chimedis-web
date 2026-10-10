@@ -1,0 +1,156 @@
+{
+ "group": {
+  "key": "van-chan-hoi-benh",
+  "zh": "问诊·症状",
+  "vi": "Vấn chẩn — triệu chứng hỏi bệnh",
+  "en": "Inquiry findings",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ đã đối chiếu nguồn; bản dịch AI chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — thuật ngữ SOURCE_VERIFIED, bản dịch vi/en chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "恶寒",
+   "py": "wù hán",
+   "vi": "Ố hàn",
+   "en": "aversion to cold",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "畏寒喜暖",
+   "py": "wèi hán xǐ nuǎn",
+   "vi": "Úy hàn hỉ noãn",
+   "en": "chilliness with preference for warmth",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肢冷蜷卧",
+   "py": "zhī lěng quán wò",
+   "vi": "Chi lãnh quyền ngọa",
+   "en": "cold limbs with curled-up posture",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "局部冷痛",
+   "py": "jú bù lěng tòng",
+   "vi": "Cục bộ lãnh thống",
+   "en": "localized cold pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口淡不渴",
+   "py": "kǒu dàn bù kě",
+   "vi": "Khẩu đạm bất khát",
+   "en": "bland taste without thirst",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "小便清长",
+   "py": "xiǎo biàn qīng cháng",
+   "vi": "Tiểu tiện thanh trường",
+   "en": "clear, copious urine",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "恶热喜冷",
+   "py": "wù rè xǐ lěng",
+   "vi": "Ố nhiệt hỉ lãnh",
+   "en": "aversion to heat with preference for coolness",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口渴欲饮",
+   "py": "kǒu kě yù yǐn",
+   "vi": "Khẩu khát dục ẩm",
+   "en": "thirst with desire to drink",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "小便短黄",
+   "py": "xiǎo biàn duǎn huáng",
+   "vi": "Tiểu tiện đoản hoàng",
+   "en": "scanty yellow urine",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "大便干结",
+   "py": "dà biàn gān jié",
+   "vi": "Đại tiện can kết",
+   "en": "dry, constipated stool",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "尿中带血",
+   "py": "niào zhōng dài xuè",
+   "vi": "Nước tiểu lẫn máu",
+   "en": "blood in urine",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "尿有砂石",
+   "py": "niào yǒu shā shí",
+   "vi": "Nước tiểu có cát sỏi",
+   "en": "sand or stones in urine",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  }
+ ]
+}

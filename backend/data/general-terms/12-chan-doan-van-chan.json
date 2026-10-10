@@ -1,0 +1,1032 @@
+{
+ "group": {
+  "key": "van-chan",
+  "zh": "闻诊·声音气味",
+  "vi": "Văn chẩn — âm thanh và mùi",
+  "en": "Listening and smelling findings",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ đã đối chiếu nguồn; bản dịch AI chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — thuật ngữ SOURCE_VERIFIED, bản dịch vi/en chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "喷射状呕吐",
+   "py": "pēn shè zhuàng ǒu tù",
+   "vi": "Nôn vọt",
+   "en": "projectile vomiting",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "尿有烂苹果气味",
+   "py": "niào yǒu làn píng guǒ qì wèi",
+   "vi": "Nước tiểu có mùi táo thối",
+   "en": "urine with rotten-apple odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "语声高亢洪亮有力",
+   "py": "yǔ shēng gāo kàng hóng liàng yǒu lì",
+   "vi": "Tiếng nói cao, vang, to và có lực",
+   "en": "high-pitched, resonant, loud and forceful voice",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "语声低微细弱",
+   "py": "yǔ shēng dī wēi xì ruò",
+   "vi": "Tiếng nói thấp nhỏ, yếu mảnh",
+   "en": "low, faint and weak voice",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "语声重浊",
+   "py": "yǔ shēng zhòng zhuó",
+   "vi": "Tiếng nói trầm đục",
+   "en": "heavy and turbid voice",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "夺气",
+   "py": "duó qì",
+   "vi": "Đoạt khí",
+   "en": "duo-qi voice sign",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "音哑",
+   "py": "yīn yǎ",
+   "vi": "Khàn tiếng",
+   "en": "hoarseness",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "失音",
+   "py": "shī yīn",
+   "vi": "Mất tiếng",
+   "en": "aphonia",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "惊呼",
+   "py": "jīng hū",
+   "vi": "Kinh hô",
+   "en": "sudden frightened cry",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "谵语",
+   "py": "zhān yǔ",
+   "vi": "Chiêm ngữ",
+   "en": "delirious speech",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "郑声",
+   "py": "zhèng shēng",
+   "vi": "Trịnh thanh",
+   "en": "repetitive feeble speech",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "独语",
+   "py": "dú yǔ",
+   "vi": "Độc ngữ",
+   "en": "solitary self-talk",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "错语",
+   "py": "cuò yǔ",
+   "vi": "Thác ngữ",
+   "en": "erroneous speech with awareness",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "狂言",
+   "py": "kuáng yán",
+   "vi": "Cuồng ngôn",
+   "en": "manic disordered speech",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "语謇",
+   "py": "yǔ jiǎn",
+   "vi": "Ngữ kiển",
+   "en": "dysfluent or indistinct speech",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "实喘",
+   "py": "shí chuǎn",
+   "vi": "Thực suyễn",
+   "en": "excess-type dyspnea",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虚喘",
+   "py": "xū chuǎn",
+   "vi": "Hư suyễn",
+   "en": "deficiency-type dyspnea",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "哮",
+   "py": "xiào",
+   "vi": "Háo",
+   "en": "wheezing",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "短气",
+   "py": "duǎn qì",
+   "vi": "Đoản khí",
+   "en": "shortness of breath",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "少气",
+   "py": "shǎo qì",
+   "vi": "Thiểu khí",
+   "en": "weak scanty breathing",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "鼻鼾",
+   "py": "bí hān",
+   "vi": "Tỵ hãn",
+   "en": "nasal snoring",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咳声重浊沉闷",
+   "py": "ké shēng zhòng zhuó chén mèn",
+   "vi": "Tiếng ho trầm đục, nặng và bí",
+   "en": "heavy, turbid and muffled cough",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咳声轻清低微",
+   "py": "ké shēng qīng qīng dī wēi",
+   "vi": "Tiếng ho nhẹ, trong và nhỏ",
+   "en": "light, clear and faint cough",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咳声重浊痰白清稀",
+   "py": "ké shēng zhòng zhuó tán bái qīng xī",
+   "vi": "Ho trầm đục, đờm trắng trong loãng",
+   "en": "heavy turbid cough with thin clear white sputum",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咳声不扬痰稠色黄",
+   "py": "ké shēng bù yáng tán chóu sè huáng",
+   "vi": "Ho tiếng không vang, đờm đặc vàng",
+   "en": "unraised cough with thick yellow sputum",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咳嗽痰多易于咯出",
+   "py": "ké sòu tán duō yì yú kǎ chū",
+   "vi": "Ho nhiều đờm, dễ khạc",
+   "en": "cough with copious easily expectorated sputum",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "干咳无痰或痰少而黏不易咯出",
+   "py": "gàn ké wú tán huò tán shǎo ér nián bù yì kǎ chū",
+   "vi": "Ho khan không đờm hoặc ít đờm dính khó khạc",
+   "en": "dry cough with no sputum or scant sticky difficult sputum",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "顿咳",
+   "py": "dùn ké",
+   "vi": "Đốn khái",
+   "en": "paroxysmal whooping cough",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咳声如犬吠",
+   "py": "ké shēng rú quǎn fèi",
+   "vi": "Tiếng ho như chó sủa",
+   "en": "barking cough",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "呕吐吐势徐缓声音微弱",
+   "py": "ǒu tù tù shì xú huǎn shēng yīn wēi ruò",
+   "vi": "Nôn chậm nhẹ, tiếng yếu",
+   "en": "slow gentle vomiting with weak sound",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "呕吐吐势较猛声音壮厉",
+   "py": "ǒu tù tù shì jiào měng shēng yīn zhuàng lì",
+   "vi": "Nôn mạnh, tiếng lớn dữ",
+   "en": "forceful vomiting with strong harsh sound",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "呕吐酸腐味食物",
+   "py": "ǒu tù suān fǔ wèi shí wù",
+   "vi": "Nôn thức ăn có mùi chua ôi",
+   "en": "vomiting sour putrid-smelling food",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "多人同时吐泻",
+   "py": "duō rén tóng shí tù xiè",
+   "vi": "Nhiều người cùng nôn và tiêu chảy",
+   "en": "multiple people with simultaneous vomiting and diarrhea",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胃反",
+   "py": "wèi fǎn",
+   "vi": "Vị phản",
+   "en": "stomach reversal with delayed vomiting",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "水逆",
+   "py": "shuǐ nì",
+   "vi": "Thủy nghịch",
+   "en": "water-reversal vomiting",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "呃声频作高亢而短连续有力",
+   "py": "è shēng pín zuò gāo kàng ér duǎn lián xù yǒu lì",
+   "vi": "Nấc dồn, cao ngắn, liên tục có lực",
+   "en": "frequent high short forceful hiccups",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "呃声低沉声弱无力",
+   "py": "è shēng dī chén shēng ruò wú lì",
+   "vi": "Nấc trầm, yếu, vô lực",
+   "en": "low weak powerless hiccups",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "久病重病呃逆不止声低无力",
+   "py": "jiǔ bìng zhòng bìng è nì bù zhǐ shēng dī wú lì",
+   "vi": "Bệnh lâu/nặng nấc không dứt, tiếng thấp yếu",
+   "en": "persistent low weak hiccups in prolonged or severe illness",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "突发呃逆声不高不低持续短暂",
+   "py": "tū fā è nì shēng bù gāo bù dī chí xù duǎn zàn",
+   "vi": "Nấc đột ngột, âm vừa, kéo dài ngắn",
+   "en": "sudden moderate-pitch brief hiccups",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "嗳气酸腐",
+   "py": "ǎi qì suān fǔ",
+   "vi": "Ợ hơi chua ôi",
+   "en": "sour putrid belching",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "嗳气频作而响亮",
+   "py": "ǎi qì pín zuò ér xiǎng liàng",
+   "vi": "Ợ hơi thường xuyên và vang",
+   "en": "frequent loud belching",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "嗳气频作兼脘腹冷痛得温痛减",
+   "py": "ǎi qì pín zuò jiān wǎn fù lěng tòng dé wēn tòng jiǎn",
+   "vi": "Ợ hơi thường xuyên kèm lạnh đau vùng quản bụng, ấm thì giảm",
+   "en": "frequent belching with cold epigastric-abdominal pain relieved by warmth",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "嗳声低沉断续无酸腐气味",
+   "py": "ǎi shēng dī chén duàn xù wú suān fǔ qì wèi",
+   "vi": "Tiếng ợ trầm ngắt quãng, không mùi chua ôi",
+   "en": "low intermittent belching without sour putrid odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "太息",
+   "py": "tài xī",
+   "vi": "Thái tức",
+   "en": "sighing",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "新病喷嚏伴恶寒发热鼻塞流清涕",
+   "py": "xīn bìng pēn tì bàn wù hán fā rè bí sāi liú qīng tì",
+   "vi": "Bệnh mới hắt hơi kèm ố hàn, phát nhiệt, nghẹt mũi, chảy mũi trong",
+   "en": "new-onset sneezing with chills, fever, nasal obstruction and clear discharge",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "季节变化反复喷嚏鼻痒流清涕",
+   "py": "jì jié biàn huà fǎn fù pēn tì bí yǎng liú qīng tì",
+   "vi": "Hắt hơi tái diễn theo mùa, ngứa mũi, chảy mũi trong",
+   "en": "seasonally recurrent sneezing with nasal itch and clear discharge",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "振水声",
+   "py": "zhèn shuǐ shēng",
+   "vi": "Chấn thủy thanh",
+   "en": "succussion splash",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脘腹鸣响如饥肠辘辘",
+   "py": "wǎn fù míng xiǎng rú jī cháng lù lù",
+   "vi": "Vùng quản bụng sôi réo như đói",
+   "en": "epigastric-abdominal rumbling like hunger",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肠鸣高亢而频急",
+   "py": "cháng míng gāo kàng ér pín jí",
+   "vi": "Ruột sôi cao và dồn dập",
+   "en": "high-pitched frequent urgent bowel sounds",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肠鸣阵作伴腹痛欲泻泻后痛减",
+   "py": "cháng míng zhèn zuò bàn fù tòng yù xiè xiè hòu tòng jiǎn",
+   "vi": "Ruột sôi từng cơn kèm đau bụng muốn đi lỏng, đi xong giảm đau",
+   "en": "episodic bowel sounds with abdominal pain and urge to diarrhea relieved after stool",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肠鸣稀少",
+   "py": "cháng míng xī shǎo",
+   "vi": "Ruột sôi thưa",
+   "en": "decreased bowel sounds",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肠鸣音完全消失",
+   "py": "cháng míng yīn wán quán xiāo shī",
+   "vi": "Mất hoàn toàn tiếng ruột",
+   "en": "absent bowel sounds",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口气酸臭",
+   "py": "kǒu qì suān chòu",
+   "vi": "Hơi miệng chua hôi",
+   "en": "sour foul breath",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口气臭秽",
+   "py": "kǒu qì chòu huì",
+   "vi": "Hơi miệng hôi uế",
+   "en": "foul breath",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口气腐臭",
+   "py": "kǒu qì fǔ chòu",
+   "vi": "Hơi miệng thối rữa",
+   "en": "putrid breath",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口气臭秽难闻伴牙龈腐烂",
+   "py": "kǒu qì chòu huì nán wén bàn yá yín fǔ làn",
+   "vi": "Hơi miệng hôi uế khó chịu kèm lợi mục nát",
+   "en": "offensive foul breath with decayed gums",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "汗出腥膻",
+   "py": "hàn chū xīng shān",
+   "vi": "Mồ hôi có mùi tanh nồng",
+   "en": "rank fishy-smelling sweat",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "汗出腥臭",
+   "py": "hàn chū xīng chòu",
+   "vi": "Mồ hôi tanh hôi",
+   "en": "fishy foul-smelling sweat",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "腋下臊臭",
+   "py": "yè xià sāo chòu",
+   "vi": "Nách có mùi khai hôi",
+   "en": "rank axillary odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咳吐痰涎清稀量多无特异气味",
+   "py": "ké tù tán xián qīng xī liàng duō wú tè yì qì wèi",
+   "vi": "Khạc đờm dãi trong loãng nhiều, không mùi đặc biệt",
+   "en": "copious thin clear sputum without distinctive odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咳痰黄稠味腥",
+   "py": "ké tán huáng chóu wèi xīng",
+   "vi": "Đờm vàng đặc có mùi tanh",
+   "en": "thick yellow fishy-smelling sputum",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咳吐浊痰脓血腥臭异常",
+   "py": "ké tù zhuó tán nóng xuè xīng chòu yì cháng",
+   "vi": "Khạc đờm đục mủ máu, tanh hôi bất thường",
+   "en": "turbid purulent bloody sputum with abnormal foul fishy odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "鼻流浊涕日久腥秽如鱼脑",
+   "py": "bí liú zhuó tì rì jiǔ xīng huì rú yú nǎo",
+   "vi": "Chảy mũi đục kéo dài, tanh uế như óc cá",
+   "en": "chronic turbid nasal discharge with fishy foul odor like fish brain",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "鼻流清涕无气味",
+   "py": "bí liú qīng tì wú qì wèi",
+   "vi": "Chảy mũi trong không mùi",
+   "en": "odorless clear nasal discharge",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "呕吐物清稀无臭味",
+   "py": "ǒu tù wù qīng xī wú chòu wèi",
+   "vi": "Chất nôn trong loãng không mùi hôi",
+   "en": "thin clear vomitus without foul odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "呕吐物气味酸腐臭秽",
+   "py": "ǒu tù wù qì wèi suān fǔ chòu huì",
+   "vi": "Chất nôn có mùi chua ôi hôi uế",
+   "en": "vomitus with sour putrid foul odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "呕吐未消化食物气味酸腐",
+   "py": "ǒu tù wèi xiāo huà shí wù qì wèi suān fǔ",
+   "vi": "Nôn thức ăn chưa tiêu có mùi chua ôi",
+   "en": "vomited undigested food with sour putrid odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "呕吐脓血而腥臭",
+   "py": "ǒu tù nóng xuè ér xīng chòu",
+   "vi": "Nôn mủ máu có mùi tanh hôi",
+   "en": "vomiting pus and blood with foul fishy odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "大便臭秽难闻",
+   "py": "dà biàn chòu huì nán wén",
+   "vi": "Đại tiện hôi uế khó chịu",
+   "en": "offensively foul stool",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "大便溏泄而腥",
+   "py": "dà biàn táng xiè ér xīng",
+   "vi": "Đại tiện lỏng nát có mùi tanh",
+   "en": "loose stool with fishy odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "大便泄泻臭如败卵",
+   "py": "dà biàn xiè xiè chòu rú bài luǎn",
+   "vi": "Tiêu chảy hôi như trứng thối",
+   "en": "diarrhea smelling like rotten eggs",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "矢气酸臭",
+   "py": "shǐ qì suān chòu",
+   "vi": "Trung tiện chua hôi",
+   "en": "sour foul flatus",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "小便黄赤混浊臊臭异常",
+   "py": "xiǎo biàn huáng chì hùn zhuó sāo chòu yì cháng",
+   "vi": "Tiểu tiện vàng đỏ đục, mùi khai hôi bất thường",
+   "en": "yellow-red turbid urine with abnormal rank odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "月经臭秽",
+   "py": "yuè jīng chòu huì",
+   "vi": "Kinh nguyệt hôi uế",
+   "en": "foul-smelling menstrual blood",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "经血味腥",
+   "py": "jīng xuè wèi xīng",
+   "vi": "Máu kinh có mùi tanh",
+   "en": "fishy-smelling menstrual blood",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "带下臭秽而黄稠",
+   "py": "dài xià chòu huì ér huáng chóu",
+   "vi": "Khí hư vàng đặc, hôi uế",
+   "en": "yellow thick foul-smelling vaginal discharge",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "带下腥臭而清稀",
+   "py": "dài xià xīng chòu ér qīng xī",
+   "vi": "Khí hư trong loãng, tanh hôi",
+   "en": "thin clear fishy foul vaginal discharge",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "崩漏或带下奇臭兼颜色异常",
+   "py": "bēng lòu huò dài xià qí chòu jiān yán sè yì cháng",
+   "vi": "Băng lậu hoặc khí hư có mùi lạ kèm màu bất thường",
+   "en": "metrorrhagia or vaginal discharge with unusual odor and abnormal color",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "病室臭气触人",
+   "py": "bìng shì chòu qì chù rén",
+   "vi": "Phòng bệnh có mùi hôi xộc vào người",
+   "en": "sickroom with penetrating foul odor",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "病室有血腥味",
+   "py": "bìng shì yǒu xuè xīng wèi",
+   "vi": "Phòng bệnh có mùi tanh máu",
+   "en": "bloody odor in sickroom",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "病室有腐臭气",
+   "py": "bìng shì yǒu fǔ chòu qì",
+   "vi": "Phòng bệnh có mùi thối rữa",
+   "en": "putrid odor in sickroom",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "病室尸臭",
+   "py": "bìng shì shī chòu",
+   "vi": "Phòng bệnh có mùi tử thi",
+   "en": "cadaveric odor in sickroom",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "病室有尿臊味",
+   "py": "bìng shì yǒu niào sāo wèi",
+   "vi": "Phòng bệnh có mùi khai nước tiểu",
+   "en": "urine-like odor in sickroom",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "病室有烂苹果样气味",
+   "py": "bìng shì yǒu làn píng guǒ yàng qì wèi",
+   "vi": "Phòng bệnh có mùi như táo thối",
+   "en": "rotten-apple odor in sickroom",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  },
+  {
+   "hz": "病室有蒜臭味",
+   "py": "bìng shì yǒu suàn chòu wèi",
+   "vi": "Phòng bệnh có mùi tỏi hôi",
+   "en": "garlic-like odor in sickroom",
+   "d": [
+    "Âm thanh hoặc mùi khí của người bệnh thu được trong phép văn chẩn.",
+    "闻诊中所得的声音或气味表现。",
+    "A sound or odor finding obtained in listening and smelling examination."
+   ],
+   "u": []
+  }
+ ]
+}

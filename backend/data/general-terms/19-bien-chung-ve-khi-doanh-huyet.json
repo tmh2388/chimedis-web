@@ -1,0 +1,84 @@
+{
+ "group": {
+  "key": "bc-ve-khi-doanh-huyet",
+  "zh": "卫气营血辨证",
+  "vi": "Vệ khí doanh huyết biện chứng",
+  "en": "Defense-qi-nutritive-blood pattern differentiation",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ đã đối chiếu nguồn; bản dịch AI chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — thuật ngữ SOURCE_VERIFIED, bản dịch vi/en chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "卫分证",
+   "py": "wèi fèn zhèng",
+   "vi": "Vệ phận chứng",
+   "en": "defense-aspect pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Vệ khí doanh huyết biện chứng.",
+    "属于「卫气营血辨证」体系的证型。",
+    "A pattern belonging to the system of defense-qi-nutritive-blood pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气分证",
+   "py": "qì fèn zhèng",
+   "vi": "Khí phận chứng",
+   "en": "qi-aspect pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Vệ khí doanh huyết biện chứng.",
+    "属于「卫气营血辨证」体系的证型。",
+    "A pattern belonging to the system of defense-qi-nutritive-blood pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "营分证",
+   "py": "yíng fèn zhèng",
+   "vi": "Doanh phận chứng",
+   "en": "nutritive-aspect pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Vệ khí doanh huyết biện chứng.",
+    "属于「卫气营血辨证」体系的证型。",
+    "A pattern belonging to the system of defense-qi-nutritive-blood pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "血分证",
+   "py": "xuè fèn zhèng",
+   "vi": "Huyết phận chứng",
+   "en": "blood-aspect pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Vệ khí doanh huyết biện chứng.",
+    "属于「卫气营血辨证」体系的证型。",
+    "A pattern belonging to the system of defense-qi-nutritive-blood pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "血分实热证",
+   "py": "xuè fèn shí rè zhèng",
+   "vi": "Huyết phận thực nhiệt chứng",
+   "en": "blood-aspect excess heat pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Vệ khí doanh huyết biện chứng.",
+    "属于「卫气营血辨证」体系的证型。",
+    "A pattern belonging to the system of defense-qi-nutritive-blood pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "血分虚热证",
+   "py": "xuè fèn xū rè zhèng",
+   "vi": "Huyết phận hư nhiệt chứng",
+   "en": "blood-aspect deficiency heat pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Vệ khí doanh huyết biện chứng.",
+    "属于「卫气营血辨证」体系的证型。",
+    "A pattern belonging to the system of defense-qi-nutritive-blood pattern differentiation."
+   ],
+   "u": []
+  }
+ ]
+}

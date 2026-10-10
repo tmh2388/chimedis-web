@@ -36,7 +36,7 @@ export function loadGeneralTermRows(dir) {
       rows.push([
         termId(t.hz), 'Tổng hợp', group.zh, group.vi, group.en, t.hz, t.py || null, t.vi || null, t.en || null,
         dZh || null, dVi || null, dEn || null, null, null, null, null, null, null,
-        u[1] || null, u[0] || null, u[2] || null, SOURCE, 0, 1, NOTE,
+        u[1] || null, u[0] || null, u[2] || null, group.source || SOURCE, 0, 1, group.note || NOTE,
       ]);
     }
   }

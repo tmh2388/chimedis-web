@@ -1,0 +1,204 @@
+{
+ "group": {
+  "key": "bc-luc-kinh",
+  "zh": "六经辨证",
+  "vi": "Lục kinh biện chứng",
+  "en": "Six-channel pattern differentiation",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ đã đối chiếu nguồn; bản dịch AI chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — thuật ngữ SOURCE_VERIFIED, bản dịch vi/en chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "太阳病证",
+   "py": "tài yáng bìng zhèng",
+   "vi": "Thái dương bệnh chứng",
+   "en": "taiyang disease pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "太阳经证",
+   "py": "tài yáng jīng zhèng",
+   "vi": "Thái dương kinh chứng",
+   "en": "taiyang channel pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "太阳中风证",
+   "py": "tài yáng zhòng fēng zhèng",
+   "vi": "Thái dương trúng phong chứng",
+   "en": "taiyang wind-strike pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "太阳伤寒证",
+   "py": "tài yáng shāng hán zhèng",
+   "vi": "Thái dương thương hàn chứng",
+   "en": "taiyang cold-damage pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "太阳腑证",
+   "py": "tài yáng fǔ zhèng",
+   "vi": "Thái dương phủ chứng",
+   "en": "taiyang bowel pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "太阳蓄水证",
+   "py": "tài yáng xù shuǐ zhèng",
+   "vi": "Thái dương súc thủy chứng",
+   "en": "taiyang water retention pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "太阳蓄血证",
+   "py": "tài yáng xù xuè zhèng",
+   "vi": "Thái dương súc huyết chứng",
+   "en": "taiyang blood accumulation pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "阳明病证",
+   "py": "yáng míng bìng zhèng",
+   "vi": "Dương minh bệnh chứng",
+   "en": "yangming disease pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "阳明经证",
+   "py": "yáng míng jīng zhèng",
+   "vi": "Dương minh kinh chứng",
+   "en": "yangming channel pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "阳明腑证",
+   "py": "yáng míng fǔ zhèng",
+   "vi": "Dương minh phủ chứng",
+   "en": "yangming bowel pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "少阳病证",
+   "py": "shào yáng bìng zhèng",
+   "vi": "Thiếu dương bệnh chứng",
+   "en": "shaoyang disease pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "太阴病证",
+   "py": "tài yīn bìng zhèng",
+   "vi": "Thái âm bệnh chứng",
+   "en": "taiyin disease pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "少阴病证",
+   "py": "shào yīn bìng zhèng",
+   "vi": "Thiếu âm bệnh chứng",
+   "en": "shaoyin disease pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "少阴寒化证",
+   "py": "shào yīn hán huà zhèng",
+   "vi": "Thiếu âm hàn hóa chứng",
+   "en": "shaoyin cold transformation pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "少阴热化证",
+   "py": "shào yīn rè huà zhèng",
+   "vi": "Thiếu âm nhiệt hóa chứng",
+   "en": "shaoyin heat transformation pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "厥阴病证",
+   "py": "jué yīn bìng zhèng",
+   "vi": "Quyết âm bệnh chứng",
+   "en": "jueyin disease pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Lục kinh biện chứng.",
+    "属于「六经辨证」体系的证型。",
+    "A pattern belonging to the system of six-channel pattern differentiation."
+   ],
+   "u": []
+  }
+ ]
+}

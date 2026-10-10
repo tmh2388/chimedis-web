@@ -1,0 +1,168 @@
+{
+ "group": {
+  "key": "bc-bat-cuong",
+  "zh": "八纲辨证",
+  "vi": "Bát cương biện chứng",
+  "en": "Eight-principle pattern differentiation",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ đã đối chiếu nguồn; bản dịch AI chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — thuật ngữ SOURCE_VERIFIED, bản dịch vi/en chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "寒证",
+   "py": "hán zhèng",
+   "vi": "Hàn chứng",
+   "en": "cold pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "热证",
+   "py": "rè zhèng",
+   "vi": "Nhiệt chứng",
+   "en": "heat pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "表证",
+   "py": "biǎo zhèng",
+   "vi": "Biểu chứng",
+   "en": "exterior pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "里证",
+   "py": "lǐ zhèng",
+   "vi": "Lý chứng",
+   "en": "interior pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "半表半里证",
+   "py": "bàn biǎo bàn lǐ zhèng",
+   "vi": "Bán biểu bán lý chứng",
+   "en": "half-exterior half-interior pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "真热假寒证",
+   "py": "zhēn rè jiǎ hán zhèng",
+   "vi": "Chân nhiệt giả hàn chứng",
+   "en": "true heat with false cold pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "真寒假热证",
+   "py": "zhēn hán jià rè zhèng",
+   "vi": "Chân hàn giả nhiệt chứng",
+   "en": "true cold with false heat pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虚证",
+   "py": "xū zhèng",
+   "vi": "Hư chứng",
+   "en": "deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "实证",
+   "py": "shí zhèng",
+   "vi": "Thực chứng",
+   "en": "excess pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "真实假虚证",
+   "py": "zhēn shí jiǎ xū zhèng",
+   "vi": "Chân thực giả hư chứng",
+   "en": "true excess with false deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "真虚假实证",
+   "py": "zhēn xū jiǎ shí zhèng",
+   "vi": "Chân hư giả thực chứng",
+   "en": "true deficiency with false excess pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "阴证",
+   "py": "yīn zhèng",
+   "vi": "Âm chứng",
+   "en": "yin pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "阳证",
+   "py": "yáng zhèng",
+   "vi": "Dương chứng",
+   "en": "yang pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Bát cương biện chứng.",
+    "属于「八纲辨证」体系的证型。",
+    "A pattern belonging to the system of eight-principle pattern differentiation."
+   ],
+   "u": []
+  }
+ ]
+}

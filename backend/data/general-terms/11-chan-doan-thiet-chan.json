@@ -1,0 +1,852 @@
+{
+ "group": {
+  "key": "thiet-chan",
+  "zh": "舌诊·舌象",
+  "vi": "Thiệt chẩn — lưỡi và rêu lưỡi",
+  "en": "Tongue diagnosis findings",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ đã đối chiếu nguồn; bản dịch AI chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — thuật ngữ SOURCE_VERIFIED, bản dịch vi/en chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "舌质淡",
+   "py": "shé zhì dàn",
+   "vi": "Thiệt chất đạm",
+   "en": "pale tongue body",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "苔白而润",
+   "py": "tāi bái ér rùn",
+   "vi": "Đài bạch nhi nhuận",
+   "en": "white, moist tongue coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "舌红少津",
+   "py": "shé hóng shǎo jīn",
+   "vi": "Thiệt hồng thiểu tân",
+   "en": "red tongue with scanty fluids",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "苔黄燥",
+   "py": "tāi huáng zào",
+   "vi": "Đài hoàng táo",
+   "en": "yellow, dry tongue coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "淡红舌",
+   "py": "dàn hóng shé",
+   "vi": "Lưỡi đỏ nhạt",
+   "en": "pale-red tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "荣舌",
+   "py": "róng shé",
+   "vi": "Lưỡi nhuận có thần",
+   "en": "thriving tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "枯舌",
+   "py": "kū shé",
+   "vi": "Lưỡi khô héo",
+   "en": "withered tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "淡白舌",
+   "py": "dàn bái shé",
+   "vi": "Lưỡi nhạt trắng",
+   "en": "pale tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "枯白舌",
+   "py": "kū bái shé",
+   "vi": "Lưỡi trắng khô héo",
+   "en": "withered pale tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "红舌",
+   "py": "hóng shé",
+   "vi": "Lưỡi đỏ",
+   "en": "red tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "绛舌",
+   "py": "jiàng shé",
+   "vi": "Lưỡi đỏ sẫm",
+   "en": "crimson tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "青紫舌",
+   "py": "qīng zǐ shé",
+   "vi": "Lưỡi xanh tím",
+   "en": "bluish-purple tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "青舌",
+   "py": "qīng shé",
+   "vi": "Lưỡi xanh",
+   "en": "blue tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "紫舌",
+   "py": "zǐ shé",
+   "vi": "Lưỡi tím",
+   "en": "purple tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "淡紫舌",
+   "py": "dàn zǐ shé",
+   "vi": "Lưỡi tím nhạt",
+   "en": "pale-purple tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "紫红舌",
+   "py": "zǐ hóng shé",
+   "vi": "Lưỡi tím đỏ",
+   "en": "purplish-red tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "绛紫舌",
+   "py": "jiàng zǐ shé",
+   "vi": "Lưỡi đỏ sẫm tím",
+   "en": "crimson-purple tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "苍老舌",
+   "py": "cāng lǎo shé",
+   "vi": "Lưỡi thô già",
+   "en": "coarse old tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "娇嫩舌",
+   "py": "jiāo nèn shé",
+   "vi": "Lưỡi non mềm",
+   "en": "tender tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胖大舌",
+   "py": "pàng dà shé",
+   "vi": "Lưỡi bệu to",
+   "en": "enlarged tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肿胀舌",
+   "py": "zhǒng zhàng shé",
+   "vi": "Lưỡi sưng trướng",
+   "en": "swollen tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "瘦薄舌",
+   "py": "shòu báo shé",
+   "vi": "Lưỡi gầy mỏng",
+   "en": "thin tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "红星舌",
+   "py": "hóng xīng shé",
+   "vi": "Lưỡi có sao đỏ",
+   "en": "red-star tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "红点舌",
+   "py": "hóng diǎn shé",
+   "vi": "Lưỡi có điểm đỏ",
+   "en": "red-spotted tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "芒刺舌",
+   "py": "máng cì shé",
+   "vi": "Lưỡi gai nhọn",
+   "en": "prickly tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "点刺舌",
+   "py": "diǎn cì shé",
+   "vi": "Lưỡi điểm gai",
+   "en": "spotted-prickly tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "裂纹舌",
+   "py": "liè wén shé",
+   "vi": "Lưỡi nứt",
+   "en": "fissured tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "齿痕舌",
+   "py": "chǐ hén shé",
+   "vi": "Lưỡi dấu răng",
+   "en": "tooth-marked tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "痿软舌",
+   "py": "wěi ruǎn shé",
+   "vi": "Lưỡi nhuyễn yếu",
+   "en": "flaccid tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "强硬舌",
+   "py": "qiáng yìng shé",
+   "vi": "Lưỡi cứng",
+   "en": "stiff tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "歪斜舌",
+   "py": "wāi xié shé",
+   "vi": "Lưỡi lệch",
+   "en": "deviated tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "颤动舌",
+   "py": "chàn dòng shé",
+   "vi": "Lưỡi run",
+   "en": "trembling tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "吐舌",
+   "py": "tǔ shé",
+   "vi": "Thè lưỡi",
+   "en": "protruding tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "弄舌",
+   "py": "nòng shé",
+   "vi": "Lưỡi thò thụt liên tục",
+   "en": "darting tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "短缩舌",
+   "py": "duǎn suō shé",
+   "vi": "Lưỡi co ngắn",
+   "en": "shortened tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "薄苔",
+   "py": "báo tāi",
+   "vi": "Rêu mỏng",
+   "en": "thin coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "厚苔",
+   "py": "hòu tāi",
+   "vi": "Rêu dày",
+   "en": "thick coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "润苔",
+   "py": "rùn tāi",
+   "vi": "Rêu nhuận",
+   "en": "moist coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "滑苔",
+   "py": "huá tāi",
+   "vi": "Rêu trơn",
+   "en": "slippery coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "燥苔",
+   "py": "zào tāi",
+   "vi": "Rêu khô",
+   "en": "dry coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "糙苔",
+   "py": "cāo tāi",
+   "vi": "Rêu thô",
+   "en": "rough coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "腻苔",
+   "py": "nì tāi",
+   "vi": "Rêu nhớt",
+   "en": "greasy coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "腐苔",
+   "py": "fǔ tāi",
+   "vi": "Rêu hủ",
+   "en": "curdy coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脓腐苔",
+   "py": "nóng fǔ tāi",
+   "vi": "Rêu mủ hủ",
+   "en": "purulent-curdy coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "前剥苔",
+   "py": "qián bō tāi",
+   "vi": "Rêu bong phía trước",
+   "en": "anterior peeled coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "中剥苔",
+   "py": "zhōng bō tāi",
+   "vi": "Rêu bong giữa",
+   "en": "central peeled coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "根剥苔",
+   "py": "gēn bō tāi",
+   "vi": "Rêu bong gốc",
+   "en": "root peeled coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "花剥苔",
+   "py": "huā bō tāi",
+   "vi": "Rêu bong loang lổ",
+   "en": "patchy peeled coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "地图舌",
+   "py": "dì tú shé",
+   "vi": "Lưỡi bản đồ",
+   "en": "geographic tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "镜面舌",
+   "py": "jìng miàn shé",
+   "vi": "Lưỡi gương",
+   "en": "mirror tongue",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "类剥苔",
+   "py": "lèi bō tāi",
+   "vi": "Rêu dạng bong",
+   "en": "pseudo-peeled coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "全苔",
+   "py": "quán tāi",
+   "vi": "Rêu toàn lưỡi",
+   "en": "full coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "偏苔",
+   "py": "piān tāi",
+   "vi": "Rêu lệch",
+   "en": "partial coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "真苔",
+   "py": "zhēn tāi",
+   "vi": "Rêu thật",
+   "en": "true coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "假苔",
+   "py": "jiǎ tāi",
+   "vi": "Rêu giả",
+   "en": "false coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "白苔",
+   "py": "bái tāi",
+   "vi": "Rêu trắng",
+   "en": "white coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "厚白苔",
+   "py": "hòu bái tāi",
+   "vi": "Rêu trắng dày",
+   "en": "thick white coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "积粉苔",
+   "py": "jī fěn tāi",
+   "vi": "Rêu bột tích",
+   "en": "powder-like coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "黄苔",
+   "py": "huáng tāi",
+   "vi": "Rêu vàng",
+   "en": "yellow coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "浅黄苔",
+   "py": "qiǎn huáng tāi",
+   "vi": "Rêu vàng nhạt",
+   "en": "light-yellow coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "深黄苔",
+   "py": "shēn huáng tāi",
+   "vi": "Rêu vàng đậm",
+   "en": "deep-yellow coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "焦黄苔",
+   "py": "jiāo huáng tāi",
+   "vi": "Rêu vàng cháy",
+   "en": "scorched-yellow coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "黄滑苔",
+   "py": "huáng huá tāi",
+   "vi": "Rêu vàng trơn",
+   "en": "yellow slippery coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "黄糙苔",
+   "py": "huáng cāo tāi",
+   "vi": "Rêu vàng thô",
+   "en": "yellow rough coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "黄瓣苔",
+   "py": "huáng bàn tāi",
+   "vi": "Rêu vàng hình cánh",
+   "en": "petal-like yellow coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "黄腻苔",
+   "py": "huáng nì tāi",
+   "vi": "Rêu vàng nhớt",
+   "en": "yellow greasy coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "灰苔",
+   "py": "huī tāi",
+   "vi": "Rêu xám",
+   "en": "gray coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "黑苔",
+   "py": "hēi tāi",
+   "vi": "Rêu đen",
+   "en": "black coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "灰黑苔",
+   "py": "huī hēi tāi",
+   "vi": "Rêu xám đen",
+   "en": "gray-black coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  },
+  {
+   "hz": "霉酱苔",
+   "py": "méi jiàng tāi",
+   "vi": "Rêu mốc tương",
+   "en": "moldy-sauce coating",
+   "d": [
+    "Đặc điểm của chất lưỡi hoặc rêu lưỡi quan sát được trong phép thiệt chẩn.",
+    "舌诊中观察到的舌质或舌苔特征。",
+    "A feature of the tongue body or coating observed in tongue diagnosis."
+   ],
+   "u": []
+  }
+ ]
+}

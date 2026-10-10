@@ -1,0 +1,48 @@
+{
+ "group": {
+  "key": "mach-chan",
+  "zh": "脉诊·脉象",
+  "vi": "Mạch chẩn — mạch tượng",
+  "en": "Pulse diagnosis findings",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ đã đối chiếu nguồn; bản dịch AI chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — thuật ngữ SOURCE_VERIFIED, bản dịch vi/en chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "脉紧",
+   "py": "mài jǐn",
+   "vi": "Mạch khẩn",
+   "en": "tight pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脉迟",
+   "py": "mài chí",
+   "vi": "Mạch trì",
+   "en": "slow pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脉数",
+   "py": "mài shuò",
+   "vi": "Mạch sác",
+   "en": "rapid pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  }
+ ]
+}

@@ -1,0 +1,48 @@
+{
+ "group": {
+  "key": "bc-tam-tieu",
+  "zh": "三焦辨证",
+  "vi": "Tam tiêu biện chứng",
+  "en": "Triple-burner pattern differentiation",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ đã đối chiếu nguồn; bản dịch AI chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — thuật ngữ SOURCE_VERIFIED, bản dịch vi/en chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "上焦病证",
+   "py": "shàng jiāo bìng zhèng",
+   "vi": "Thượng tiêu bệnh chứng",
+   "en": "upper burner disease pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Tam tiêu biện chứng.",
+    "属于「三焦辨证」体系的证型。",
+    "A pattern belonging to the system of triple-burner pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "中焦病证",
+   "py": "zhōng jiāo bìng zhèng",
+   "vi": "Trung tiêu bệnh chứng",
+   "en": "middle burner disease pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Tam tiêu biện chứng.",
+    "属于「三焦辨证」体系的证型。",
+    "A pattern belonging to the system of triple-burner pattern differentiation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "下焦病证",
+   "py": "xià jiāo bìng zhèng",
+   "vi": "Hạ tiêu bệnh chứng",
+   "en": "lower burner disease pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Tam tiêu biện chứng.",
+    "属于「三焦辨证」体系的证型。",
+    "A pattern belonging to the system of triple-burner pattern differentiation."
+   ],
+   "u": []
+  }
+ ]
+}

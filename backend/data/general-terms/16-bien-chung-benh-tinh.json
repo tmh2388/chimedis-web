@@ -1,0 +1,432 @@
+{
+ "group": {
+  "key": "bc-benh-tinh",
+  "zh": "病性辨证",
+  "vi": "Biện chứng theo bệnh tính",
+  "en": "Pattern differentiation by disease nature",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ đã đối chiếu nguồn; bản dịch AI chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — thuật ngữ SOURCE_VERIFIED, bản dịch vi/en chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "风淫证",
+   "py": "fēng yín zhèng",
+   "vi": "Phong dâm chứng",
+   "en": "wind pathogen pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "寒淫证",
+   "py": "hán yín zhèng",
+   "vi": "Hàn dâm chứng",
+   "en": "cold pathogen pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "伤寒证",
+   "py": "shāng hán zhèng",
+   "vi": "Thương hàn chứng",
+   "en": "cold damage pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "中寒证",
+   "py": "zhòng hán zhèng",
+   "vi": "Trúng hàn chứng",
+   "en": "cold strike pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "暑淫证",
+   "py": "shǔ yín zhèng",
+   "vi": "Thử dâm chứng",
+   "en": "summer-heat pathogen pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "湿淫证",
+   "py": "shī yín zhèng",
+   "vi": "Thấp dâm chứng",
+   "en": "dampness pathogen pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "燥淫证",
+   "py": "zào yín zhèng",
+   "vi": "Táo dâm chứng",
+   "en": "dryness pathogen pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "火淫证",
+   "py": "huǒ yín zhèng",
+   "vi": "Hỏa dâm chứng",
+   "en": "fire pathogen pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "阳虚证",
+   "py": "yáng xū zhèng",
+   "vi": "Dương hư chứng",
+   "en": "yang deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "阴虚证",
+   "py": "yīn xū zhèng",
+   "vi": "Âm hư chứng",
+   "en": "yin deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "亡阳证",
+   "py": "wáng yáng zhèng",
+   "vi": "Vong dương chứng",
+   "en": "yang collapse pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "亡阴证",
+   "py": "wáng yīn zhèng",
+   "vi": "Vong âm chứng",
+   "en": "yin collapse pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气虚证",
+   "py": "qì xū zhèng",
+   "vi": "Khí hư chứng",
+   "en": "qi deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气陷证",
+   "py": "qì xiàn zhèng",
+   "vi": "Khí hãm chứng",
+   "en": "qi sinking pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气不固证",
+   "py": "qì bù gù zhèng",
+   "vi": "Khí bất cố chứng",
+   "en": "qi non-consolidation pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气脱证",
+   "py": "qì tuō zhèng",
+   "vi": "Khí thoát chứng",
+   "en": "qi desertion pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气滞证",
+   "py": "qì zhì zhèng",
+   "vi": "Khí trệ chứng",
+   "en": "qi stagnation pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气逆证",
+   "py": "qì nì zhèng",
+   "vi": "Khí nghịch chứng",
+   "en": "qi counterflow pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气闭证",
+   "py": "qì bì zhèng",
+   "vi": "Khí bế chứng",
+   "en": "qi block pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "血虚证",
+   "py": "xuè xū zhèng",
+   "vi": "Huyết hư chứng",
+   "en": "blood deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "血脱证",
+   "py": "xuè tuō zhèng",
+   "vi": "Huyết thoát chứng",
+   "en": "blood desertion pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "血瘀证",
+   "py": "xuè yū zhèng",
+   "vi": "Huyết ứ chứng",
+   "en": "blood stasis pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "血热证",
+   "py": "xuè rè zhèng",
+   "vi": "Huyết nhiệt chứng",
+   "en": "blood heat pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "血寒证",
+   "py": "xuè hán zhèng",
+   "vi": "Huyết hàn chứng",
+   "en": "blood cold pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气血两虚证",
+   "py": "qì xuè liǎng xū zhèng",
+   "vi": "Khí huyết lưỡng hư chứng",
+   "en": "qi and blood deficiency pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气虚血瘀证",
+   "py": "qì xū xuè yū zhèng",
+   "vi": "Khí hư huyết ứ chứng",
+   "en": "qi deficiency with blood stasis pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气不摄血证",
+   "py": "qì bù shè xuè zhèng",
+   "vi": "Khí bất nhiếp huyết chứng",
+   "en": "qi failing to contain blood pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气随血脱证",
+   "py": "qì suí xuè tuō zhèng",
+   "vi": "Khí tùy huyết thoát chứng",
+   "en": "qi desertion following blood loss pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气滞血瘀证",
+   "py": "qì zhì xuè yū zhèng",
+   "vi": "Khí trệ huyết ứ chứng",
+   "en": "qi stagnation and blood stasis pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "津液亏虚证",
+   "py": "jīn yè kuī xū zhèng",
+   "vi": "Tân dịch khuy hư chứng",
+   "en": "fluid-humor depletion pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "痰证",
+   "py": "tán zhèng",
+   "vi": "Đàm chứng",
+   "en": "phlegm pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "饮证",
+   "py": "yǐn zhèng",
+   "vi": "Ẩm chứng",
+   "en": "fluid-retention pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "水停证",
+   "py": "shuǐ tíng zhèng",
+   "vi": "Thủy đình chứng",
+   "en": "water retention pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "伤暑证",
+   "py": "shāng shǔ zhèng",
+   "vi": "Thương thử chứng",
+   "en": "summer-heat damage pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  },
+  {
+   "hz": "中暑证",
+   "py": "zhòng shǔ zhèng",
+   "vi": "Trúng thử chứng",
+   "en": "summer-heat stroke pattern",
+   "d": [
+    "Chứng (pattern) thuộc hệ Biện chứng theo bệnh tính.",
+    "属于「病性辨证」体系的证型。",
+    "A pattern belonging to the system of pattern differentiation by disease nature."
+   ],
+   "u": []
+  }
+ ]
+}
