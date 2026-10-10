@@ -1,0 +1,624 @@
+{
+ "group": {
+  "key": "mach-chan",
+  "zh": "脉诊·脉象",
+  "vi": "Mạch chẩn — mạch tượng",
+  "en": "Pulse diagnosis findings",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ trạng thái EXTRACTED; bản dịch Claude rà soát và sửa 2026-10-10, chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — bản dịch AI gốc đã được rà soát/sửa, chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "斜飞脉",
+   "py": "xié fēi mài",
+   "vi": "Mạch tà phi",
+   "en": "oblique-flying pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "反关脉",
+   "py": "fǎn guān mài",
+   "vi": "Mạch phản quan",
+   "en": "reversed-gate pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "六阴脉",
+   "py": "liù yīn mài",
+   "vi": "Mạch lục âm",
+   "en": "six-yin pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "六阳脉",
+   "py": "liù yáng mài",
+   "vi": "Mạch lục dương",
+   "en": "six-yang pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "浮脉",
+   "py": "fú mài",
+   "vi": "Mạch phù",
+   "en": "floating pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "散脉",
+   "py": "sàn mài",
+   "vi": "Mạch tán",
+   "en": "scattered pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "革脉",
+   "py": "gé mài",
+   "vi": "Mạch cách",
+   "en": "leather pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "沉脉",
+   "py": "chén mài",
+   "vi": "Mạch trầm",
+   "en": "deep pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "伏脉",
+   "py": "fú mài",
+   "vi": "Mạch phục",
+   "en": "hidden pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "牢脉",
+   "py": "láo mài",
+   "vi": "Mạch lao",
+   "en": "confined pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "迟脉",
+   "py": "chí mài",
+   "vi": "Mạch trì",
+   "en": "slow pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "缓脉",
+   "py": "huǎn mài",
+   "vi": "Mạch hoãn",
+   "en": "moderate pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "疾脉",
+   "py": "jí mài",
+   "vi": "Mạch tật",
+   "en": "racing pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虚脉",
+   "py": "xū mài",
+   "vi": "Mạch hư",
+   "en": "deficient pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "短脉",
+   "py": "duǎn mài",
+   "vi": "Mạch đoản",
+   "en": "short pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "实脉",
+   "py": "shí mài",
+   "vi": "Mạch thực",
+   "en": "replete pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "长脉",
+   "py": "cháng mài",
+   "vi": "Mạch trường",
+   "en": "long pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "洪脉",
+   "py": "hóng mài",
+   "vi": "Mạch hồng",
+   "en": "surging pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "大脉",
+   "py": "dà mài",
+   "vi": "Mạch đại (大, to rộng)",
+   "en": "large pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "细脉",
+   "py": "xì mài",
+   "vi": "Mạch tế",
+   "en": "thready pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "濡脉",
+   "py": "rú mài",
+   "vi": "Mạch nhu",
+   "en": "soggy pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "弱脉",
+   "py": "ruò mài",
+   "vi": "Mạch nhược",
+   "en": "weak pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "微脉",
+   "py": "wēi mài",
+   "vi": "Mạch vi",
+   "en": "faint pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "滑脉",
+   "py": "huá mài",
+   "vi": "Mạch hoạt",
+   "en": "slippery pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "涩脉",
+   "py": "sè mài",
+   "vi": "Mạch sáp",
+   "en": "choppy pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "弦脉",
+   "py": "xián mài",
+   "vi": "Mạch huyền",
+   "en": "wiry pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "结脉",
+   "py": "jié mài",
+   "vi": "Mạch kết",
+   "en": "knotted pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "代脉",
+   "py": "dài mài",
+   "vi": "Mạch đại (代, nhịp ngừng có chu kỳ)",
+   "en": "regularly intermittent pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "促脉",
+   "py": "cù mài",
+   "vi": "Mạch xúc",
+   "en": "hurried pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "浮紧脉",
+   "py": "fú jǐn mài",
+   "vi": "Mạch phù khẩn",
+   "en": "floating-tight pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "浮缓脉",
+   "py": "fú huǎn mài",
+   "vi": "Mạch phù hoãn",
+   "en": "floating-moderate pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "浮数脉",
+   "py": "fú shuò mài",
+   "vi": "Mạch phù sác",
+   "en": "floating-rapid pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "浮滑脉",
+   "py": "fú huá mài",
+   "vi": "Mạch phù hoạt",
+   "en": "floating-slippery pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "沉迟脉",
+   "py": "chén chí mài",
+   "vi": "Mạch trầm trì",
+   "en": "deep-slow pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "沉弦脉",
+   "py": "chén xián mài",
+   "vi": "Mạch trầm huyền",
+   "en": "deep-wiry pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "沉涩脉",
+   "py": "chén sè mài",
+   "vi": "Mạch trầm sáp",
+   "en": "deep-choppy pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "沉缓脉",
+   "py": "chén huǎn mài",
+   "vi": "Mạch trầm hoãn",
+   "en": "deep-moderate pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "沉细数脉",
+   "py": "chén xì shuò mài",
+   "vi": "Mạch trầm tế sác",
+   "en": "deep-thready-rapid pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "弦数脉",
+   "py": "xián shuò mài",
+   "vi": "Mạch huyền sác",
+   "en": "wiry-rapid pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "弦紧脉",
+   "py": "xián jǐn mài",
+   "vi": "Mạch huyền khẩn",
+   "en": "wiry-tight pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "弦细脉",
+   "py": "xián xì mài",
+   "vi": "Mạch huyền tế",
+   "en": "wiry-thready pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "弦滑数脉",
+   "py": "xián huá shuò mài",
+   "vi": "Mạch huyền hoạt sác",
+   "en": "wiry-slippery-rapid pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "滑数脉",
+   "py": "huá shuò mài",
+   "vi": "Mạch hoạt sác",
+   "en": "slippery-rapid pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "洪数脉",
+   "py": "hóng shuò mài",
+   "vi": "Mạch hồng sác",
+   "en": "surging-rapid pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "真脏脉",
+   "py": "zhēn zàng mài",
+   "vi": "Mạch chân tạng",
+   "en": "true-organ pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "釜沸脉",
+   "py": "fǔ fèi mài",
+   "vi": "Mạch phủ phí",
+   "en": "boiling-cauldron pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "鱼翔脉",
+   "py": "yú xiáng mài",
+   "vi": "Mạch ngư tường",
+   "en": "fish-swimming pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虾游脉",
+   "py": "xiā yóu mài",
+   "vi": "Mạch hà du",
+   "en": "shrimp-swimming pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "屋漏脉",
+   "py": "wū lòu mài",
+   "vi": "Mạch ốc lậu",
+   "en": "leaking-roof pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "雀啄脉",
+   "py": "què zhuó mài",
+   "vi": "Mạch tước trác",
+   "en": "sparrow-pecking pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  },
+  {
+   "hz": "解索脉",
+   "py": "jiě suǒ mài",
+   "vi": "Mạch giải sách",
+   "en": "unraveling-rope pulse",
+   "d": [
+    "Đặc điểm của mạch thu được khi bắt mạch (mạch chẩn).",
+    "切脉所得的脉象特征。",
+    "A pulse feature obtained by pulse palpation."
+   ],
+   "u": []
+  }
+ ]
+}

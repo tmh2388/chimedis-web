@@ -1,0 +1,1176 @@
+{
+ "group": {
+  "key": "van-chan-hoi-benh",
+  "zh": "问诊·症状",
+  "vi": "Vấn chẩn — triệu chứng hỏi bệnh",
+  "en": "Inquiry findings",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ trạng thái EXTRACTED; bản dịch Claude rà soát và sửa 2026-10-10, chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — bản dịch AI gốc đã được rà soát/sửa, chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "大便溏薄",
+   "py": "dà biàn táng bó",
+   "vi": "Phân nát, loãng",
+   "en": "loose, thin stool",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "恶寒发热",
+   "py": "wù hán fā rè",
+   "vi": "Sợ lạnh kèm phát sốt",
+   "en": "aversion to cold with fever",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "恶寒重发热轻",
+   "py": "wù hán zhòng fā rè qīng",
+   "vi": "Sợ lạnh nặng, sốt nhẹ",
+   "en": "severe aversion to cold with mild fever",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "发热重恶寒轻",
+   "py": "fā rè zhòng wù hán qīng",
+   "vi": "Sốt nặng, sợ lạnh nhẹ",
+   "en": "high fever with mild aversion to cold",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "发热轻而恶风",
+   "py": "fā rè qīng ér wù fēng",
+   "vi": "Sốt nhẹ kèm sợ gió",
+   "en": "mild fever with aversion to wind",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "但寒不热",
+   "py": "dàn hán bù rè",
+   "vi": "Chỉ sợ lạnh, không sốt",
+   "en": "cold sensation without fever",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "新病恶寒",
+   "py": "xīn bìng wù hán",
+   "vi": "Mới mắc bệnh đã sợ lạnh",
+   "en": "aversion to cold in new illness",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "久病畏寒",
+   "py": "jiǔ bìng wèi hán",
+   "vi": "Bệnh lâu ngày sợ lạnh (úy hàn)",
+   "en": "chilliness in chronic illness",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "但热不寒",
+   "py": "dàn rè bù hán",
+   "vi": "Chỉ sốt, không sợ lạnh",
+   "en": "fever without aversion to cold",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "壮热",
+   "py": "zhuàng rè",
+   "vi": "Sốt cao (tráng nhiệt)",
+   "en": "high fever",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "潮热",
+   "py": "cháo rè",
+   "vi": "Sốt từng đợt theo giờ (triều nhiệt)",
+   "en": "tidal fever",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "阳明潮热",
+   "py": "yáng míng cháo rè",
+   "vi": "Triều nhiệt Dương minh (sốt cao, nặng về chiều)",
+   "en": "yangming tidal fever",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "湿温潮热",
+   "py": "shī wēn cháo rè",
+   "vi": "Triều nhiệt trong thấp ôn (sốt âm ỉ, người nặng nề)",
+   "en": "tidal fever in damp-warmth disease",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "微热",
+   "py": "wēi rè",
+   "vi": "Sốt nhẹ (vi nhiệt)",
+   "en": "low-grade fever",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气虚发热",
+   "py": "qì xū fā rè",
+   "vi": "Sốt do khí hư",
+   "en": "fever due to qi deficiency",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "阴虚发热",
+   "py": "yīn xū fā rè",
+   "vi": "Sốt do âm hư",
+   "en": "fever due to yin deficiency",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "气郁发热",
+   "py": "qì yù fā rè",
+   "vi": "Sốt do khí uất",
+   "en": "fever due to qi depression",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "小儿夏季热",
+   "py": "xiǎo ér xià jì rè",
+   "vi": "Sốt mùa hè ở trẻ nhỏ",
+   "en": "summer fever in children",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "寒热往来",
+   "py": "hán rè wǎng lái",
+   "vi": "Hàn nhiệt vãng lai (lúc rét lúc sốt luân phiên)",
+   "en": "alternating chills and fever",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "有汗",
+   "py": "yǒu hàn",
+   "vi": "Có ra mồ hôi",
+   "en": "presence of sweating",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "自汗",
+   "py": "zì hàn",
+   "vi": "Tự hãn (tự ra mồ hôi, không do nóng hay gắng sức)",
+   "en": "spontaneous sweating",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "绝汗",
+   "py": "jué hàn",
+   "vi": "Tuyệt hãn (mồ hôi vã ra dầm dề lúc nguy kịch)",
+   "en": "expiring sweat (profuse sweating in critical illness)",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "战汗",
+   "py": "zhàn hàn",
+   "vi": "Chiến hãn (run rét rồi toát mồ hôi)",
+   "en": "shiver sweating",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "头汗",
+   "py": "tóu hàn",
+   "vi": "Ra mồ hôi ở đầu",
+   "en": "head sweating",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "手足汗出",
+   "py": "shǒu zú hàn chū",
+   "vi": "Ra mồ hôi tay chân",
+   "en": "sweating of the hands and feet",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "心胸汗出",
+   "py": "xīn xiōng hàn chū",
+   "vi": "Ra mồ hôi vùng tim ngực",
+   "en": "sweating of the heart and chest region",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "半身汗出",
+   "py": "bàn shēn hàn chū",
+   "vi": "Ra mồ hôi nửa người",
+   "en": "hemilateral sweating",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胀痛",
+   "py": "zhàng tòng",
+   "vi": "Đau tức căng trướng",
+   "en": "distending pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "刺痛",
+   "py": "cì tòng",
+   "vi": "Đau nhói như kim châm",
+   "en": "stabbing pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "走窜痛",
+   "py": "zǒu cuàn tòng",
+   "vi": "Đau di chuyển, không cố định",
+   "en": "wandering pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "固定痛",
+   "py": "gù dìng tòng",
+   "vi": "Đau cố định một chỗ",
+   "en": "fixed pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "冷痛",
+   "py": "lěng tòng",
+   "vi": "Đau lạnh",
+   "en": "cold pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "灼痛",
+   "py": "zhuó tòng",
+   "vi": "Đau rát nóng",
+   "en": "burning pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "绞痛",
+   "py": "jiǎo tòng",
+   "vi": "Đau quặn từng cơn",
+   "en": "colicky pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "隐痛",
+   "py": "yǐn tòng",
+   "vi": "Đau âm ỉ",
+   "en": "dull lingering pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "重痛",
+   "py": "zhòng tòng",
+   "vi": "Đau kèm cảm giác nặng nề",
+   "en": "heavy pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "酸痛",
+   "py": "suān tòng",
+   "vi": "Đau nhức mỏi",
+   "en": "aching pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "掣痛",
+   "py": "chè tòng",
+   "vi": "Đau giật, lan nhói",
+   "en": "pulling pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "空痛",
+   "py": "kōng tòng",
+   "vi": "Đau cảm giác trống rỗng",
+   "en": "empty pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "闷痛",
+   "py": "mèn tòng",
+   "vi": "Đau tức nặng, bí bách",
+   "en": "oppressive pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胃脘痛",
+   "py": "wèi wǎn tòng",
+   "vi": "Đau vùng thượng vị (vị quản thống)",
+   "en": "epigastric pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "背痛",
+   "py": "bèi tòng",
+   "vi": "Đau vùng lưng",
+   "en": "back pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "四肢痛",
+   "py": "sì zhī tòng",
+   "vi": "Đau tứ chi",
+   "en": "pain in the limbs",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "周身疼痛",
+   "py": "zhōu shēn téng tòng",
+   "vi": "Đau nhức khắp người",
+   "en": "generalized body pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "头晕",
+   "py": "tóu yūn",
+   "vi": "Chóng mặt, choáng đầu",
+   "en": "dizziness",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胁胀",
+   "py": "xié zhàng",
+   "vi": "Đầy tức vùng hạ sườn",
+   "en": "hypochondriac distension",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脘痞",
+   "py": "wǎn pǐ",
+   "vi": "Đầy tức vùng thượng vị (hoãn bĩ)",
+   "en": "epigastric stuffiness",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "腹胀",
+   "py": "fù zhàng",
+   "vi": "Bụng đầy chướng",
+   "en": "abdominal distension",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "身重",
+   "py": "shēn zhòng",
+   "vi": "Người nặng nề",
+   "en": "heaviness of the body",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "身痒",
+   "py": "shēn yǎng",
+   "vi": "Ngứa khắp người",
+   "en": "generalized itching",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "麻木",
+   "py": "má mù",
+   "vi": "Tê bì",
+   "en": "numbness",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "拘挛",
+   "py": "jū luán",
+   "vi": "Co cứng, co rút gân cơ",
+   "en": "contracture",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "耳鸣",
+   "py": "ěr míng",
+   "vi": "Ù tai",
+   "en": "tinnitus",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "重听",
+   "py": "zhòng tīng",
+   "vi": "Nghe kém (nặng tai)",
+   "en": "hard of hearing",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "耳聋",
+   "py": "ěr lóng",
+   "vi": "Điếc tai",
+   "en": "deafness",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "目痛",
+   "py": "mù tòng",
+   "vi": "Đau mắt",
+   "en": "eye pain",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "目痒",
+   "py": "mù yǎng",
+   "vi": "Ngứa mắt",
+   "en": "itchy eyes",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "目眩",
+   "py": "mù xuàn",
+   "vi": "Hoa mắt (mục huyễn)",
+   "en": "dizzy vision",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "目昏",
+   "py": "mù hūn",
+   "vi": "Mắt mờ",
+   "en": "dim vision",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "雀盲",
+   "py": "què máng",
+   "vi": "Quáng gà",
+   "en": "night blindness",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "歧视",
+   "py": "qí shì",
+   "vi": "Nhìn một thành hai (song thị)",
+   "en": "diplopia (seeing double)",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "失眠",
+   "py": "shī mián",
+   "vi": "Mất ngủ",
+   "en": "insomnia",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "嗜睡",
+   "py": "shì shuì",
+   "vi": "Ngủ nhiều, hay buồn ngủ",
+   "en": "somnolence",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "食欲减退",
+   "py": "shí yù jiǎn tuì",
+   "vi": "Ăn kém, giảm cảm giác thèm ăn",
+   "en": "decreased appetite",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "消谷善饥",
+   "py": "xiāo gǔ shàn jī",
+   "vi": "Tiêu cốc thiện cơ (ăn nhiều, nhanh đói)",
+   "en": "rapid digestion with frequent hunger",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "饥不欲食",
+   "py": "jī bù yù shí",
+   "vi": "Đói nhưng không muốn ăn",
+   "en": "hunger without desire to eat",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胃脘嘈杂",
+   "py": "wèi wǎn cáo zá",
+   "vi": "Cồn cào, nóng rát vùng thượng vị",
+   "en": "gnawing epigastric discomfort",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口不渴",
+   "py": "kǒu bù kě",
+   "vi": "Miệng không khát",
+   "en": "absence of thirst",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口渴多饮",
+   "py": "kǒu kě duō yǐn",
+   "vi": "Khát, uống nhiều nước",
+   "en": "thirst with excessive drinking",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "渴不多饮",
+   "py": "kě bù duō yǐn",
+   "vi": "Khát nhưng không uống nhiều",
+   "en": "thirst without desire to drink much",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口淡",
+   "py": "kǒu dàn",
+   "vi": "Miệng nhạt",
+   "en": "bland taste in the mouth",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口苦",
+   "py": "kǒu kǔ",
+   "vi": "Miệng đắng",
+   "en": "bitter taste in the mouth",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口甜",
+   "py": "kǒu tián",
+   "vi": "Miệng ngọt",
+   "en": "sweet taste in the mouth",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口酸",
+   "py": "kǒu suān",
+   "vi": "Miệng chua",
+   "en": "sour taste in the mouth",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口咸",
+   "py": "kǒu xián",
+   "vi": "Miệng mặn",
+   "en": "salty taste in the mouth",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口涩",
+   "py": "kǒu sè",
+   "vi": "Miệng chát, se",
+   "en": "astringent sensation in the mouth",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "口黏腻",
+   "py": "kǒu nián nì",
+   "vi": "Miệng nhớt dính",
+   "en": "sticky greasy sensation in the mouth",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "便血",
+   "py": "biàn xuè",
+   "vi": "Đại tiện ra máu",
+   "en": "blood in the stool",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肛门灼热",
+   "py": "gāng mén zhuó rè",
+   "vi": "Hậu môn nóng rát",
+   "en": "anal burning sensation",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "里急后重",
+   "py": "lǐ jí hòu zhòng",
+   "vi": "Mót rặn (lý cấp hậu trọng)",
+   "en": "tenesmus",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "排便不爽",
+   "py": "pái biàn bù shuǎng",
+   "vi": "Đại tiện không thông khoái",
+   "en": "unsatisfying defecation",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "滑泻失禁",
+   "py": "huá xiè shī jìn",
+   "vi": "Tiêu chảy lỏng không tự chủ (hoạt tả thất cấm)",
+   "en": "incontinence with slippery diarrhea",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肛门重坠",
+   "py": "gāng mén zhòng zhuì",
+   "vi": "Hậu môn nặng trĩu, cảm giác sa xuống",
+   "en": "anal heaviness with bearing-down sensation",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "尿量增多",
+   "py": "niào liàng zēng duō",
+   "vi": "Lượng nước tiểu tăng",
+   "en": "increased urine volume",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "尿量减少",
+   "py": "niào liàng jiǎn shǎo",
+   "vi": "Lượng nước tiểu giảm",
+   "en": "decreased urine volume",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "尿次增多",
+   "py": "niào cì zēng duō",
+   "vi": "Đi tiểu nhiều lần",
+   "en": "increased urinary frequency",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "尿次减少",
+   "py": "niào cì jiǎn shǎo",
+   "vi": "Số lần đi tiểu giảm",
+   "en": "decreased urinary frequency",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "小便混浊",
+   "py": "xiǎo biàn hún zhuó",
+   "vi": "Nước tiểu đục",
+   "en": "turbid urine",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "小便涩痛",
+   "py": "xiǎo biàn sè tòng",
+   "vi": "Tiểu buốt, tiểu rát (sáp thống)",
+   "en": "painful, difficult urination",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "余沥不尽",
+   "py": "yú lì bù jìn",
+   "vi": "Tiểu xong còn rỉ, không hết",
+   "en": "dribbling after urination",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "小便失禁",
+   "py": "xiǎo biàn shī jìn",
+   "vi": "Tiểu không tự chủ",
+   "en": "urinary incontinence",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "遗尿",
+   "py": "yí niào",
+   "vi": "Đái dầm (di niệu)",
+   "en": "enuresis",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "月经先期",
+   "py": "yuè jīng xiān qī",
+   "vi": "Kinh nguyệt đến sớm",
+   "en": "early menstrual cycle",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "月经后期",
+   "py": "yuè jīng hòu qī",
+   "vi": "Kinh nguyệt đến muộn",
+   "en": "delayed menstrual cycle",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "月经先后不定期",
+   "py": "yuè jīng xiān hòu bù dìng qī",
+   "vi": "Kinh nguyệt lúc sớm lúc muộn, không đều",
+   "en": "irregular menstrual cycle",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "月经过少",
+   "py": "yuè jīng guò shǎo",
+   "vi": "Kinh nguyệt ra ít",
+   "en": "scanty menstruation",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  },
+  {
+   "hz": "带下过多",
+   "py": "dài xià guò duō",
+   "vi": "Khí hư ra nhiều (đới hạ quá nhiều)",
+   "en": "profuse vaginal discharge",
+   "d": [
+    "Triệu chứng do người bệnh tự thuật, thu được qua phép vấn chẩn.",
+    "问诊中通过询问所得的症状。",
+    "A symptom reported by the patient and obtained through inquiry."
+   ],
+   "u": []
+  }
+ ]
+}

@@ -1,0 +1,492 @@
+{
+ "group": {
+  "key": "vong-chan-the-hien",
+  "zh": "望诊·体征表现",
+  "vi": "Vọng chẩn — dấu hiệu quan sát",
+  "en": "Inspection findings",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ trạng thái EXTRACTED; bản dịch Claude rà soát và sửa 2026-10-10, chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — bản dịch AI gốc đã được rà soát/sửa, chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "戴阳面色",
+   "py": "dài yáng miàn sè",
+   "vi": "Sắc mặt đới dương (má đỏ như phấn, trôi nổi)",
+   "en": "malar flush of floating yang (dai yang complexion)",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "浮色",
+   "py": "fú sè",
+   "vi": "Sắc nổi",
+   "en": "floating complexion",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "沉色",
+   "py": "chén sè",
+   "vi": "Sắc chìm",
+   "en": "deep-set complexion",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "清色",
+   "py": "qīng sè",
+   "vi": "Sắc thanh",
+   "en": "clear complexion",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "浊色",
+   "py": "zhuó sè",
+   "vi": "Sắc trọc",
+   "en": "dull-turbid complexion",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "微色",
+   "py": "wēi sè",
+   "vi": "Sắc nhạt",
+   "en": "subtle pale complexion",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "甚色",
+   "py": "shén sè",
+   "vi": "Sắc đậm",
+   "en": "deep intense complexion",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "散色",
+   "py": "sàn sè",
+   "vi": "Sắc tán",
+   "en": "dispersed complexion",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "抟色",
+   "py": "tuán sè",
+   "vi": "Sắc đoàn (kết tụ)",
+   "en": "concentrated complexion",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "泽色",
+   "py": "zé sè",
+   "vi": "Sắc nhuận",
+   "en": "lustrous complexion",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "夭色",
+   "py": "yāo sè",
+   "vi": "Sắc yêu (khô tối, mất tươi nhuận)",
+   "en": "withered, lusterless complexion",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "卧喜向内",
+   "py": "wò xǐ xiàng nèi",
+   "vi": "Nằm thích quay vào trong",
+   "en": "lying with preference to face inward",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "卧喜向外",
+   "py": "wò xǐ xiàng wài",
+   "vi": "Nằm thích quay ra ngoài",
+   "en": "lying with preference to face outward",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "仰卧伸足掀衣被",
+   "py": "yǎng wò shēn zú xiān yī bèi",
+   "vi": "Nằm ngửa duỗi chân, hất chăn",
+   "en": "lying supine with legs extended and throwing off covers",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "蜷卧缩足喜加衣被",
+   "py": "quán wò suō zú xǐ jiā yī bèi",
+   "vi": "Nằm co quắp, co chân, thích đắp thêm",
+   "en": "curled-up lying posture with desire for more covering",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "手扪心闭目蹙额",
+   "py": "shǒu mén xīn bì mù cù é",
+   "vi": "Tay ôm vùng tim, nhắm mắt nhíu mày",
+   "en": "hand over precordium with closed eyes and frowning",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "手护腹俯身前倾",
+   "py": "shǒu hù fù fǔ shēn qián qīng",
+   "vi": "Tay ôm bụng, cúi người về trước",
+   "en": "guarding abdomen while leaning forward",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "行走震动不定",
+   "py": "xíng zǒu zhèn dòng bù dìng",
+   "vi": "Đi lại run lắc không ổn",
+   "en": "shaking or swaying while walking",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "行走突然止步手护心",
+   "py": "xíng zǒu tū rán zhǐ bù shǒu hù xīn",
+   "vi": "Đang đi đột ngột dừng, tay ôm ngực",
+   "en": "sudden stopping while walking with hand guarding chest",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "手护腰弯腰曲背",
+   "py": "shǒu hù yāo wān yāo qū bèi",
+   "vi": "Tay ôm eo, cúi lưng",
+   "en": "guarding the lower back with bent posture",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "不能久立行则振摇",
+   "py": "bù néng jiǔ lì xíng zé zhèn yáo",
+   "vi": "Không đứng lâu được, đi thì lảo đảo",
+   "en": "inability to stand long with swaying gait",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "发黄干枯稀疏易落",
+   "py": "fà huáng gān kū xī shū yì luò",
+   "vi": "Tóc vàng, khô, thưa và dễ rụng",
+   "en": "yellow dry sparse hair prone to shedding",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "小儿头发稀疏黄软生长迟缓",
+   "py": "xiǎo ér tóu fà xī shū huáng ruǎn shēng zhǎng chí huǎn",
+   "vi": "Tóc trẻ thưa, vàng mềm, mọc chậm",
+   "en": "child's sparse soft yellow hair with delayed growth",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "须发骤白",
+   "py": "xū fā zhòu bái",
+   "vi": "Râu tóc đột nhiên bạc trắng",
+   "en": "sudden whitening of beard and hair",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "发质脆易断",
+   "py": "fā zhì cuì yì duàn",
+   "vi": "Tóc giòn, dễ gãy",
+   "en": "brittle, easily broken hair",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "久病头发不生",
+   "py": "jiǔ bìng tóu fā bù shēng",
+   "vi": "Bệnh lâu tóc không mọc",
+   "en": "failure of hair regrowth in chronic illness",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "目眶色黑伴肌肤甲错",
+   "py": "mù kuàng sè hēi bàn jī fū jiǎ cuò",
+   "vi": "Quanh hốc mắt sẫm đen kèm da khô ráp như vảy",
+   "en": "dark orbital discoloration with rough, scaly skin",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "鼻端色赤",
+   "py": "bí duān sè chì",
+   "vi": "Chóp mũi đỏ",
+   "en": "red nasal tip",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "鼻端色黄",
+   "py": "bí duān sè huáng",
+   "vi": "Chóp mũi vàng",
+   "en": "yellow nasal tip",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "鼻端色青",
+   "py": "bí duān sè qīng",
+   "vi": "Chóp mũi xanh tím",
+   "en": "bluish nasal tip",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "鼻头红肿疼痛",
+   "py": "bí tóu hóng zhǒng téng tòng",
+   "vi": "Đầu mũi đỏ, sưng, đau",
+   "en": "red, swollen, painful nose tip",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "牙龈萎缩牙根暴露",
+   "py": "yá yín wěi suō yá gēn bào lù",
+   "vi": "Lợi teo, lộ chân răng",
+   "en": "gingival recession with exposed tooth roots",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咽部深红肿痛",
+   "py": "yàn bù shēn hóng zhǒng tòng",
+   "vi": "Họng đỏ sẫm, sưng đau",
+   "en": "deep-red, swollen, painful pharynx",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咽部嫩红肿痛",
+   "py": "yàn bù nèn hóng zhǒng tòng",
+   "vi": "Họng đỏ non, sưng đau",
+   "en": "tender-red, mildly swollen painful pharynx",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咽喉红肿高突",
+   "py": "yàn hóu hóng zhǒng gāo tū",
+   "vi": "Họng đỏ sưng, nhô cao",
+   "en": "red, swollen, prominently raised throat",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "咽部伪膜",
+   "py": "yàn bù wěi mó",
+   "vi": "Giả mạc ở họng",
+   "en": "pharyngeal pseudomembrane",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "颈前肿块随吞咽移动",
+   "py": "jǐng qián zhǒng kuài suí tūn yàn yí dòng",
+   "vi": "Khối vùng trước cổ di động theo nuốt",
+   "en": "anterior neck mass moving with swallowing",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "颈侧串珠状肿块",
+   "py": "jǐng cè chuàn zhū zhuàng zhǒng kuài",
+   "vi": "Khối/hạch chuỗi hạt ở bên cổ",
+   "en": "beaded masses along the side of the neck",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "乳房红肿热痛",
+   "py": "rǔ fáng hóng zhǒng rè tòng",
+   "vi": "Vú đỏ, sưng, nóng, đau",
+   "en": "red, swollen, hot, painful breast",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肛周红肿疼痛",
+   "py": "gāng zhōu hóng zhǒng téng tòng",
+   "vi": "Quanh hậu môn đỏ, sưng, đau",
+   "en": "red, swollen, painful perianal region",
+   "d": [
+    "Dấu hiệu quan sát được trên người bệnh (thần, sắc, hình, thái, đầu mặt, da...) trong phép vọng chẩn.",
+    "望诊中通过视觉观察所得的体征。",
+    "A sign obtained by visual observation of the patient in inspection (wang zhen)."
+   ],
+   "u": []
+  }
+ ]
+}

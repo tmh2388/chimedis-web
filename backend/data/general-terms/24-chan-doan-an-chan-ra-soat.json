@@ -1,0 +1,528 @@
+{
+ "group": {
+  "key": "an-chan",
+  "zh": "按诊·触按所得",
+  "vi": "Án chẩn — dấu hiệu sờ nắn",
+  "en": "Palpation findings",
+  "source": "Chimedis — mục Tổng hợp · nguồn: HVYD Diagnosis Core DB v1.1.0 (thuật ngữ trạng thái EXTRACTED; bản dịch Claude rà soát và sửa 2026-10-10, chờ chuyên gia duyệt)",
+  "note": "Nhập từ HVYD Diagnosis Core DB 2026-10-10 — bản dịch AI gốc đã được rà soát/sửa, chờ chuyên gia duyệt"
+ },
+ "terms": [
+  {
+   "hz": "虚里搏动微弱",
+   "py": "xu li bo dong wei ruo",
+   "vi": "Bác động Hư lý yếu",
+   "en": "weak Xuli pulsation",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虚里搏动应衣",
+   "py": "xu li bo dong ying yi",
+   "vi": "Bác động Hư lý ứng y",
+   "en": "Xuli pulsation lifting the clothing",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虚里按之弹手洪大而搏",
+   "py": "xu li an zhi tan shou hong da er bo",
+   "vi": "Hư lý ấn thấy bật tay, hồng đại mà đập",
+   "en": "Xuli palpation bouncing against the hand with forceful large pulsation",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虚里绝而不应",
+   "py": "xu li jue er bu ying",
+   "vi": "Hư lý tuyệt, ấn không ứng",
+   "en": "absent Xuli pulsation",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虚里搏动迟弱",
+   "py": "xu li bo dong chi ruo",
+   "vi": "Bác động Hư lý trì nhược",
+   "en": "slow weak Xuli pulsation",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虚里搏动数急而时有一止",
+   "py": "xu li bo dong shu ji er shi you yi zhi",
+   "vi": "Bác động Hư lý sác cấp, thỉnh thoảng ngừng",
+   "en": "rapid Xuli pulsation with intermittent pauses",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虚里搏动散漫而数",
+   "py": "xu li bo dong san man er shu",
+   "vi": "Bác động Hư lý tán mạn mà sác",
+   "en": "diffuse rapid Xuli pulsation",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "虚里动高聚而不散",
+   "py": "xu li dong gao ju er bu san",
+   "vi": "Hư lý động cao, tụ mà không tán",
+   "en": "elevated concentrated Xuli pulsation",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肺下界下移",
+   "py": "fei xia jie xia yi",
+   "vi": "Ranh giới dưới phổi hạ thấp",
+   "en": "downward displacement of lower lung border",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肺下界上移",
+   "py": "fei xia jie shang yi",
+   "vi": "Ranh giới dưới phổi nâng cao",
+   "en": "upward displacement of lower lung border",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "前胸高突叩之过清音",
+   "py": "qian xiong gao tu kou zhi guo qing yin",
+   "vi": "Ngực trước nhô cao, gõ vang quá trong",
+   "en": "prominent anterior chest with hyperresonant percussion",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胸部叩诊浊音或实音",
+   "py": "xiong bu kou zhen zhuo yin huo shi yin",
+   "vi": "Gõ ngực có âm đục hoặc âm thực",
+   "en": "dull or flat percussion note over the chest",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胸部局限压痛伴青紫肿胀",
+   "py": "xiong bu ju xian ya tong ban qing zi zhong zhang",
+   "vi": "Đau ấn khu trú ngực kèm sưng tím",
+   "en": "localized chest tenderness with bluish-purple swelling",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "乳房局部压痛",
+   "py": "ru fang ju bu ya tong",
+   "vi": "Đau ấn khu trú tuyến vú",
+   "en": "localized breast tenderness",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胁痛喜按",
+   "py": "xie tong xi an",
+   "vi": "Đau vùng hiếp thích ấn",
+   "en": "hypochondriac pain relieved by pressure",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胁下按之空虚无力",
+   "py": "xie xia an zhi kong xu wu li",
+   "vi": "Dưới hiếp ấn thấy trống rỗng vô lực",
+   "en": "empty weak sensation on subcostal palpation",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "胁下肿块刺痛拒按",
+   "py": "xie xia zhong kuai ci tong ju an",
+   "vi": "Khối dưới hiếp đau châm chích, cự án",
+   "en": "subcostal mass with stabbing pain and resistance to pressure",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脘部痞满按之较硬而疼痛",
+   "py": "wan bu pi man an zhi jiao ying er teng tong",
+   "vi": "Vùng quản bĩ mãn, ấn khá cứng và đau",
+   "en": "epigastric fullness that is firm and tender on palpation",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脘部按之濡软无痛",
+   "py": "wan bu an zhi ru ruan wu tong",
+   "vi": "Vùng quản ấn mềm nhuận không đau",
+   "en": "soft non-tender epigastrium on palpation",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "脘部按之有形胀痛推之辘辘有声",
+   "py": "wan bu an zhi you xing zhang tong tui zhi lu lu you sheng",
+   "vi": "Vùng quản có hình, trướng đau, đẩy có tiếng róc rách",
+   "en": "palpable epigastric distension with rumbling on pressure",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "腹痛喜按按之痛减腹壁柔软",
+   "py": "fu tong xi an an zhi tong jian fu bi rou ruan",
+   "vi": "Đau bụng thích ấn, ấn giảm đau, thành bụng mềm",
+   "en": "abdominal pain relieved by pressure with soft abdominal wall",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "腹痛拒按按之痛甚腹部硬满",
+   "py": "fu tong ju an an zhi tong shen fu bu ying man",
+   "vi": "Đau bụng cự án, ấn đau tăng, bụng cứng đầy",
+   "en": "abdominal pain aggravated by pressure with hard fullness",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "腹部肌肤凉而喜温",
+   "py": "fu bu ji fu liang er xi wen",
+   "vi": "Da bụng lạnh và thích ấm",
+   "en": "cool abdominal skin with preference for warmth",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "腹部肌肤灼热而喜凉",
+   "py": "fu bu ji fu zhuo re er xi liang",
+   "vi": "Da bụng nóng rát và thích mát",
+   "en": "burning-hot abdominal skin with preference for coolness",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "局部肿胀拒按",
+   "py": "ju bu zhong zhang ju an",
+   "vi": "Sưng khu trú cự án",
+   "en": "localized swelling resistant to pressure",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "按之疼痛固定不移",
+   "py": "an zhi teng tong gu ding bu yi",
+   "vi": "Ấn đau cố định không di chuyển",
+   "en": "fixed localized tenderness on palpation",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "按之胀痛按此联彼",
+   "py": "an zhi zhang tong an ci lian bi",
+   "vi": "Ấn đau trướng lan liên vùng",
+   "en": "distending pain linked to adjacent areas on pressure",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肿块有形推之不移痛有定处",
+   "py": "zhong kuai you xing tui zhi bu yi tong you ding chu",
+   "vi": "Khối có hình, đẩy không di chuyển, đau cố định",
+   "en": "fixed palpable mass with localized pain",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肿块推之可移或聚散不定",
+   "py": "zhong kuai tui zhi ke yi huo ju san bu ding",
+   "vi": "Khối có thể di chuyển hoặc tụ tán bất định",
+   "en": "movable or variably gathering and dispersing mass",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "腹部叩拍有波动感",
+   "py": "fu bu kou pai you bo dong gan",
+   "vi": "Gõ vỗ bụng có cảm giác sóng",
+   "en": "abdominal fluid-wave sensation on percussion",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "腹部叩拍无波动感且叩之鼓音",
+   "py": "fu bu kou pai wu bo dong gan qie kou zhi gu yin",
+   "vi": "Gõ vỗ bụng không có sóng, âm trống",
+   "en": "no fluid wave with tympanitic abdominal percussion",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "肌肤濡软按之痛减",
+   "py": "ji fu ru ruan an zhi tong jian",
+   "vi": "Da thịt mềm, ấn giảm đau",
+   "en": "soft tissue with pain relieved by pressure",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "硬痛拒按",
+   "py": "ying tong ju an",
+   "vi": "Cứng đau cự án",
+   "en": "hard painful area resistant to pressure",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "轻按即痛",
+   "py": "qing an ji tong",
+   "vi": "Ấn nhẹ đã đau",
+   "en": "pain on light pressure",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "重按方痛",
+   "py": "zhong an fang tong",
+   "vi": "Ấn mạnh mới đau",
+   "en": "pain only on deep pressure",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "按之凹陷不能即起",
+   "py": "an zhi ao xian bu neng ji qi",
+   "vi": "Ấn lõm không phục hồi ngay",
+   "en": "pitting that does not immediately rebound",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "按之凹陷举手即起",
+   "py": "an zhi ao xian ju shou ji qi",
+   "vi": "Ấn lõm, nhấc tay phục hồi ngay",
+   "en": "pitting that immediately rebounds after release",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "疮疡按之有波动感",
+   "py": "chuang yang an zhi you bo dong gan",
+   "vi": "Sang dương ấn có cảm giác dao động",
+   "en": "fluctuation on palpation of a sore or abscess",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "手足俱冷",
+   "py": "shou zu ju leng",
+   "vi": "Tay chân đều lạnh",
+   "en": "both hands and feet cold",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "手足俱热",
+   "py": "shou zu ju re",
+   "vi": "Tay chân đều nóng",
+   "en": "both hands and feet hot",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "手足背热甚于手足心",
+   "py": "shou zu bei re shen yu shou zu xin",
+   "vi": "Mu tay chân nóng hơn lòng tay chân",
+   "en": "dorsal hands and feet hotter than palms and soles",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "手足心热甚于手足背",
+   "py": "shou zu xin re shen yu shou zu bei",
+   "vi": "Lòng tay chân nóng hơn mu tay chân",
+   "en": "palms and soles hotter than dorsal hands and feet",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  },
+  {
+   "hz": "腧穴明显压痛结节或条索状物",
+   "py": "shù xué míng xiǎn yā tòng jié jié huò tiáo suǒ zhuàng wù",
+   "vi": "Huyệt vị ấn đau rõ, có nốt hoặc dải cứng như dây",
+   "en": "marked tenderness, nodules or cord-like structures at acupoints",
+   "d": [
+    "Dấu hiệu thu được khi sờ, ấn, nắn vào cơ thể người bệnh (án chẩn).",
+    "按诊中所得体征。",
+    "A sign obtained by palpating or pressing the body."
+   ],
+   "u": []
+  }
+ ]
+}
