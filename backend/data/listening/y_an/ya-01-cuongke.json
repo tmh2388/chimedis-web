@@ -195,7 +195,7 @@
             "flu",
             "cold-like"
           ],
-          "in_bank": false,
+          "in_bank": true,
           "accept_vi": [
             "cảm nhẹ",
             "ngoại cảm",
@@ -204,7 +204,8 @@
             "triệu chứng cảm",
             "cảm cúm"
           ],
-          "id": "3-1"
+          "id": "3-1",
+          "bank_id": "tq-1d92073989"
         },
         {
           "zh": "两天后",
@@ -262,7 +263,7 @@
             "jaw rigid",
             "jaw"
           ],
-          "in_bank": false,
+          "in_bank": true,
           "accept_vi": [
             "cứng hàm",
             "khít hàm",
@@ -278,7 +279,8 @@
             "cứng cơ hàm",
             "co cứng hàm"
           ],
-          "id": "3-4"
+          "id": "3-4",
+          "bank_id": "tq-332137cb7a"
         },
         {
           "zh": "颈背部强直",
@@ -327,7 +329,7 @@
             "bowed back",
             "arch"
           ],
-          "in_bank": false,
+          "in_bank": true,
           "accept_vi": [
             "ưỡn cong",
             "ưỡn người",
@@ -342,7 +344,8 @@
             "cong người",
             "ngửa ra sau"
           ],
-          "id": "3-6"
+          "id": "3-6",
+          "bank_id": "tq-67c6af1a9e"
         }
       ]
     },
@@ -454,7 +457,7 @@
             "short breath",
             "dyspnea"
           ],
-          "in_bank": false,
+          "in_bank": true,
           "accept_vi": [
             "khó thở",
             "hụt hơi",
@@ -465,7 +468,8 @@
             "ngắn hơi",
             "hơi thở ngắn"
           ],
-          "id": "4-4"
+          "id": "4-4",
+          "bank_id": "tq-6eb552905d"
         },
         {
           "zh": "困倦",
@@ -650,7 +654,7 @@
             "thin white",
             "tongue coat"
           ],
-          "in_bank": false,
+          "in_bank": true,
           "accept_vi": [
             "rêu lưỡi trắng mỏng",
             "rêu trắng mỏng",
@@ -662,7 +666,8 @@
             "rêu lưỡi mỏng và trắng",
             "rêu trắng mỏng của lưỡi"
           ],
-          "id": "5-5"
+          "id": "5-5",
+          "bank_id": "tq-1b4e175fc1"
         },
         {
           "zh": "脉象紧而数",
@@ -695,8 +700,9 @@
             "wiry",
             "fast"
           ],
-          "in_bank": false,
-          "id": "5-6"
+          "in_bank": true,
+          "id": "5-6",
+          "bank_id": "tq-fd5edff1d4"
         }
       ]
     },
@@ -735,14 +741,15 @@
             "gangjing",
             "tetany"
           ],
-          "in_bank": false,
+          "in_bank": true,
           "accept_vi": [
             "cương kính",
             "cương kinh",
             "cương kỉnh",
             "kính chứng"
           ],
-          "id": "6-2"
+          "id": "6-2",
+          "bank_id": "tq-b772ea5e8c"
         },
         {
           "zh": "风寒",
@@ -763,8 +770,9 @@
             "cold and wind",
             "wind-chill"
           ],
-          "in_bank": false,
-          "id": "6-3"
+          "in_bank": true,
+          "id": "6-3",
+          "bank_id": "tq-7a2e710b11"
         },
         {
           "zh": "阻滞",
@@ -895,8 +903,9 @@
             "contract",
             "spastic"
           ],
-          "in_bank": false,
-          "id": "6-7"
+          "in_bank": true,
+          "id": "6-7",
+          "bank_id": "tq-372688789e"
         },
         {
           "zh": "项背强直",
@@ -914,7 +923,7 @@
             "stiff nape",
             "nape"
           ],
-          "in_bank": false,
+          "in_bank": true,
           "accept_vi": [
             "cổ gáy cứng",
             "cứng cổ gáy",
@@ -933,7 +942,8 @@
             "cứng lưng",
             "cứng cổ"
           ],
-          "id": "6-8"
+          "id": "6-8",
+          "bank_id": "tq-2a61b77d76"
         }
       ]
     },
@@ -960,7 +970,7 @@
             "dispelling cold",
             "dispel cold"
           ],
-          "in_bank": false,
+          "in_bank": true,
           "all_vi": [
             [
               "khu phong",
@@ -977,7 +987,8 @@
               "thanh hàn"
             ]
           ],
-          "id": "7-1"
+          "id": "7-1",
+          "bank_id": "tq-fa986f294d"
         },
         {
           "zh": "解肌和营",
@@ -994,7 +1005,7 @@
             "harmonising",
             "ying"
           ],
-          "in_bank": false,
+          "in_bank": true,
           "all_vi": [
             [
               "giải cơ",
@@ -1008,7 +1019,8 @@
               "điều hòa doanh"
             ]
           ],
-          "id": "7-2"
+          "id": "7-2",
+          "bank_id": "tq-bf2b9b68c4"
         },
         {
           "zh": "葛根",

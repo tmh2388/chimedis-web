@@ -9,6 +9,7 @@ import { runImport } from './import-herbal-sheets.js';
 import { buildAPI } from './build-api.js';
 import { verifyFirebaseToken, isFirebaseConfigured } from './firebase-admin.js';
 import { analyzeInterpretation, buildVocabHint, normalize as normalizeInterp } from './lib/interpret-check.js';
+import { syncGeneralTerms } from './lib/general-terms-sync.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,6 +38,13 @@ const mysqlPool = process.env.MYSQL_HOST
       connectionLimit: 5,
     })
   : null;
+
+// Gieo/cập nhật thuật ngữ "Tổng hợp" từ backend/data/general-terms/*.json vào MySQL mỗi lần khởi động.
+if (mysqlPool) {
+  syncGeneralTerms(mysqlPool, path.join(__dirname, 'data', 'general-terms'))
+    .then((r) => console.log(`[general-terms] đồng bộ: ${r.total} thuật ngữ trong file, ${r.written} dòng thay đổi`))
+    .catch((err) => console.error('⚠️  Không đồng bộ được thuật ngữ Tổng hợp:', err.message));
+}
 
 /**
  * Maps a `herbs` MySQL row into the same shape /api/terms already returns

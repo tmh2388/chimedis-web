@@ -1,0 +1,282 @@
+{
+  "group": {
+    "key": "chan-doan-bien-chung",
+    "zh": "诊断与辨证",
+    "vi": "Chẩn đoán và biện chứng",
+    "en": "Diagnosis and pattern differentiation"
+  },
+  "terms": [
+    {
+      "hz": "外感",
+      "py": "wài gǎn",
+      "vi": "ngoại cảm",
+      "en": "external contraction",
+      "d": [
+        "Bệnh do ngoại tà (phong, hàn, thử, thấp, táo, hỏa) xâm nhập cơ thể từ bên ngoài, thường khởi phát nhanh và có biểu chứng.",
+        "指感受外邪（风、寒、暑、湿、燥、火）所致的疾病，多起病较急，初起以表证为主。",
+        "Disease caused by external pathogens (wind, cold, summer-heat, dampness, dryness, fire) invading the body; usually acute onset with exterior signs."
+      ],
+      "u": [
+        "Giai đoạn đầu hay gặp sợ lạnh, phát sốt, đau đầu, mạch phù; chữa theo phép giải biểu.",
+        "初起常见恶寒、发热、头痛、脉浮，治宜解表。",
+        "Early signs often include aversion to cold, fever, headache and a floating pulse; treated by releasing the exterior."
+      ]
+    },
+    {
+      "hz": "风寒",
+      "py": "fēng hán",
+      "vi": "phong hàn",
+      "en": "wind-cold",
+      "d": [
+        "Phong tà kết hợp hàn tà xâm phạm cơ thể, làm bế tắc phần biểu và kinh lạc, khí huyết vận hành không thông.",
+        "风邪与寒邪合而侵袭人体，阻滞肌表与经络，气血运行不畅。",
+        "Wind and cold pathogens invading together, obstructing the exterior and the channels so that qi and blood flow is impaired."
+      ],
+      "u": [
+        "Gặp trong cảm mạo phong hàn (sợ lạnh, không ra mồ hôi, đau đầu mình), đau nhức, co cứng; cần phân biệt với phong nhiệt.",
+        "见于风寒感冒（恶寒、无汗、头身疼痛）及肢体疼痛、拘急，需与风热相鉴别。",
+        "Seen in wind-cold common cold (aversion to cold, no sweating, headache and body aches), pain and spasm; to be distinguished from wind-heat."
+      ]
+    },
+    {
+      "hz": "祛风散寒",
+      "py": "qū fēng sàn hán",
+      "vi": "khu phong tán hàn",
+      "en": "dispel wind and scatter cold",
+      "d": [
+        "Phép trị dùng thuốc cay ấm để đuổi phong tà và làm tan hàn tà ở phần biểu.",
+        "用辛温药物驱散风邪、温散寒邪的治法。",
+        "Treatment method using acrid-warm substances to expel wind and disperse cold from the exterior."
+      ],
+      "u": [
+        "Dùng trong ngoại cảm phong hàn, đau nhức do phong hàn; thường phối Ma hoàng, Quế chi, Phòng phong, Kinh giới.",
+        "用于外感风寒、风寒痹痛，常用麻黄、桂枝、防风、荆芥等。",
+        "Used in external wind-cold and wind-cold painful obstruction; commonly with Ma Huang, Gui Zhi, Fang Feng and Jing Jie."
+      ]
+    },
+    {
+      "hz": "解肌和营",
+      "py": "jiě jī hé yíng",
+      "vi": "giải cơ hòa doanh",
+      "en": "release the muscle layer and harmonize nutritive qi",
+      "d": [
+        "Phép trị làm tan tà khí ở tầng cơ biểu đồng thời điều hòa doanh khí và vệ khí.",
+        "疏散肌表之邪，同时调和营卫的治法。",
+        "Treatment method that releases pathogens from the muscle layer while harmonizing nutritive (ying) and defensive (wei) qi."
+      ],
+      "u": [
+        "Dùng khi biểu chứng kèm cứng gáy lưng; thường dùng Quế chi, Bạch thược, Cát căn trong các bài như Quế chi gia Cát căn thang, Cát căn thang.",
+        "用于表证兼项背强，常用桂枝、白芍、葛根，如桂枝加葛根汤、葛根汤。",
+        "Used for exterior patterns with stiff nape and back; Gui Zhi, Bai Shao and Ge Gen are common, as in Gui Zhi Jia Ge Gen Tang and Ge Gen Tang."
+      ]
+    },
+    {
+      "hz": "刚痉",
+      "py": "gāng jìng",
+      "vi": "cương kính",
+      "en": "rigid tetany (gang jing)",
+      "d": [
+        "Một thể của chứng kính trong Kim Quỹ Yếu Lược: cổ gáy và lưng co cứng, nghiến chặt hàm, có thể ưỡn cong người, không ra mồ hôi, do phong hàn bế tắc kinh lạc.",
+        "《金匮要略》痉病之一型，表现为项背强急、口噤，甚则角弓反张，无汗，多由风寒闭阻经络所致。",
+        "A type of tetanic disease (jing) in the Jin Gui Yao Lue: rigid nape and back, clenched jaw, possible opisthotonos, no sweating; caused by wind-cold obstructing the channels."
+      ],
+      "u": [
+        "Phân biệt với nhu kính (có mồ hôi); Kim Quỹ dùng Cát căn thang; hướng trị là tán hàn, giải cơ, thư cân.",
+        "与柔痉（有汗）相鉴别；《金匮》用葛根汤，治宜散寒解肌、舒筋。",
+        "Differentiated from soft tetany (with sweating); the Jin Gui uses Ge Gen Tang, aiming to scatter cold, release the muscle layer and relax the sinews."
+      ]
+    },
+    {
+      "hz": "柔痉",
+      "py": "róu jìng",
+      "vi": "nhu kính",
+      "en": "soft tetany (rou jing)",
+      "d": [
+        "Một thể của chứng kính trong Kim Quỹ Yếu Lược: phát sốt, ra mồ hôi, không sợ lạnh, thân mình cứng.",
+        "《金匮要略》痉病之一型，发热汗出而不恶寒，身体强直。",
+        "A type of tetanic disease in the Jin Gui Yao Lue with fever and sweating without aversion to cold, and a stiff body."
+      ],
+      "u": [
+        "Đối lập với cương kính (không mồ hôi); Kim Quỹ dùng Qua lâu Quế chi thang.",
+        "与刚痉（无汗）相对；《金匮》用栝楼桂枝汤。",
+        "Contrasted with rigid tetany (no sweating); the Jin Gui uses Gua Lou Gui Zhi Tang."
+      ]
+    },
+    {
+      "hz": "痉病",
+      "py": "jìng bìng",
+      "vi": "kính bệnh",
+      "en": "tetanic disease (jing disease)",
+      "d": [
+        "Bệnh có đặc trưng cứng gáy lưng, nghiến hàm, co giật, nặng thì ưỡn cong người; theo Kim Quỹ chia cương kính và nhu kính.",
+        "以项背强急、口噤、抽搐，甚则角弓反张为特征的疾病；《金匮》分刚痉与柔痉。",
+        "A disease marked by stiff nape and back, clenched jaw and convulsions, severely opisthotonos; the Jin Gui divides it into rigid and soft tetany."
+      ],
+      "u": [
+        "Cần phân biệt với động kinh, uốn ván và các bệnh nhiễm trùng thần kinh khi đối chiếu với y học hiện đại.",
+        "对照现代医学时，需与癫痫、破伤风及神经系统感染相鉴别。",
+        "When compared with modern medicine, to be distinguished from epilepsy, tetanus and CNS infections."
+      ]
+    },
+    {
+      "hz": "角弓反张",
+      "py": "jiǎo gōng fǎn zhāng",
+      "vi": "giác cung phản trương (ưỡn cong người)",
+      "en": "opisthotonos",
+      "d": [
+        "Tư thế toàn thân ưỡn cong ra sau như cánh cung do cơ gáy lưng co cứng nặng.",
+        "颈项及背部筋脉强急，身体向后反张如弓状。",
+        "A posture in which the body arches backward like a bow because of severe spasm of the neck and back muscles."
+      ],
+      "u": [
+        "Là dấu hiệu nặng trong kính bệnh, uốn ván, viêm màng não; cần đánh giá cấp cứu theo y học hiện đại.",
+        "为痉病、破伤风、脑膜炎等的重症表现，需结合现代医学紧急评估。",
+        "A severe sign in tetanic disease, tetanus and meningitis; requires urgent assessment in modern medical terms."
+      ]
+    },
+    {
+      "hz": "牙关紧闭",
+      "py": "yá guān jǐn bì",
+      "vi": "nha quan khẩn bế (cứng hàm)",
+      "en": "lockjaw (trismus)",
+      "d": [
+        "Hàm dưới cắn chặt, không há miệng được do cơ nhai co cứng.",
+        "咬肌拘急，口噤不开。",
+        "Jaw clenched shut and unable to open the mouth because of spasm of the masticatory muscles."
+      ],
+      "u": [
+        "Gặp trong kính bệnh, trúng phong, uốn ván; là triệu chứng cần xử trí sớm.",
+        "见于痉病、中风、破伤风，宜及早处理。",
+        "Seen in tetanic disease, wind stroke and tetanus; calls for early management."
+      ]
+    },
+    {
+      "hz": "项背强直",
+      "py": "xiàng bèi qiáng zhí",
+      "vi": "hạng bối cường trực (cứng gáy lưng)",
+      "en": "rigidity of the nape and back",
+      "d": [
+        "Gáy và lưng cứng đờ, khó cúi ngửa xoay trở.",
+        "项部和背部筋脉强硬，俯仰转侧不利。",
+        "Stiffness of the nape and back with difficulty bending, extending or turning."
+      ],
+      "u": [
+        "Gặp trong kính bệnh và biểu chứng phong hàn thuộc kinh Thái dương; thường dùng Cát căn.",
+        "见于痉病及太阳经风寒表证，常用葛根。",
+        "Seen in tetanic disease and Taiyang-channel wind-cold exterior patterns; Ge Gen is commonly used."
+      ]
+    },
+    {
+      "hz": "筋脉拘急",
+      "py": "jīn mài jū jí",
+      "vi": "cân mạch câu cấp (gân mạch co rút)",
+      "en": "spasm and tightness of sinews and vessels",
+      "d": [
+        "Gân và mạch máu co rút, căng cứng, khó co duỗi.",
+        "筋脉挛缩紧张，屈伸不利。",
+        "Contracture and tension of the sinews and vessels, impairing flexion and extension."
+      ],
+      "u": [
+        "Do hàn tà ngưng trệ hoặc tân dịch, huyết không nuôi dưỡng được gân; gặp trong kính bệnh, tý chứng.",
+        "多因寒邪凝滞或津血不能濡养筋脉，见于痉病、痹证。",
+        "Due to cold stagnation or fluids and blood failing to nourish the sinews; seen in tetanic disease and bi syndrome."
+      ]
+    },
+    {
+      "hz": "气短",
+      "py": "qì duǎn",
+      "vi": "khí đoản (hụt hơi)",
+      "en": "shortness of breath (qi shortness)",
+      "d": [
+        "Hơi thở ngắn, không đủ hơi, nhưng không nâng vai và không có tiếng khò khè như suyễn.",
+        "呼吸短促而不相接续，似喘而不抬肩，喉中无哮鸣音。",
+        "Short, shallow breathing that feels insufficient, resembling dyspnea but without shoulder-lifting or wheezing."
+      ],
+      "u": [
+        "Gặp trong phế khí hư, tâm khí hư, đàm ẩm; kèm tức ngực cần xét thể thực hay hư.",
+        "见于肺气虚、心气虚、痰饮等，伴胸闷者需辨虚实。",
+        "Seen in lung qi deficiency, heart qi deficiency and phlegm-fluid retention; with chest oppression, differentiate excess from deficiency."
+      ]
+    },
+    {
+      "hz": "舌苔",
+      "py": "shé tāi",
+      "vi": "rêu lưỡi (thiệt đài)",
+      "en": "tongue coating",
+      "d": [
+        "Lớp rêu phủ trên mặt lưỡi; quan sát màu, độ dày, độ ẩm để đánh giá tà khí và vị khí.",
+        "舌面上的一层苔状物，观察其色、质、厚薄润燥以判断邪气和胃气。",
+        "The coating on the tongue surface; its colour, thickness and moisture are observed to assess pathogenic factors and stomach qi."
+      ],
+      "u": [
+        "Là phần quan trọng của vọng chẩn lưỡi, đối chiếu với chất lưỡi và mạch.",
+        "是舌诊的重要内容，须与舌质、脉象合参。",
+        "A key part of tongue inspection, to be read together with the tongue body and pulse."
+      ]
+    },
+    {
+      "hz": "薄白苔",
+      "py": "báo bái tāi",
+      "vi": "rêu trắng mỏng (bạc bạch đài)",
+      "en": "thin white coating",
+      "d": [
+        "Rêu trắng mỏng, nhìn thấy chất lưỡi qua rêu.",
+        "苔色白而薄，可透见舌质。",
+        "A thin white coating through which the tongue body can be seen."
+      ],
+      "u": [
+        "Thường gặp ở người bình thường hoặc biểu chứng giai đoạn đầu, bệnh nhẹ.",
+        "常见于正常人或外感表证初起、病轻者。",
+        "Common in healthy people or in early exterior patterns with mild disease."
+      ]
+    },
+    {
+      "hz": "紧脉",
+      "py": "jǐn mài",
+      "vi": "mạch khẩn",
+      "en": "tight pulse",
+      "d": [
+        "Mạch căng, có lực, như dây thừng bị vặn.",
+        "脉来绷急有力，状如绞转的绳索。",
+        "A tense, forceful pulse, like a twisted rope."
+      ],
+      "u": [
+        "Thường gặp ở hàn chứng, thống chứng, thực chứng; hay thấy trong biểu hàn.",
+        "多见于寒证、痛证、实证，常见于表寒。",
+        "Often seen in cold, pain and excess patterns, commonly in exterior cold."
+      ]
+    },
+    {
+      "hz": "数脉",
+      "py": "shuò mài",
+      "vi": "mạch sác",
+      "en": "rapid pulse",
+      "d": [
+        "Mạch đến nhanh, trên 90 lần mỗi phút (một hơi thở từ năm nhịp trở lên).",
+        "脉来频数，一息五至以上（每分钟九十次以上）。",
+        "A rapid pulse of more than 90 beats per minute (five or more beats per breath)."
+      ],
+      "u": [
+        "Chủ yếu gặp ở nhiệt chứng; mạch tế sác thường gặp ở âm hư, thực nhiệt thì sác có lực.",
+        "主热证；细数多见于阴虚，实热则数而有力。",
+        "Mainly indicates heat; a thin rapid pulse is common in yin deficiency, while excess heat gives a forceful rapid pulse."
+      ]
+    },
+    {
+      "hz": "脉象",
+      "py": "mài xiàng",
+      "vi": "mạch tượng (hình thái mạch)",
+      "en": "pulse quality (pulse image)",
+      "d": [
+        "Hình thái và đặc điểm của mạch khi bắt mạch, như nông sâu, tần số, nhịp, lực và hình dạng.",
+        "诊脉时脉搏的位置、频率、节律、力度和形态等表现。",
+        "The qualities of the pulse on palpation, such as depth, rate, rhythm, strength and shape."
+      ],
+      "u": [
+        "Là cơ sở của mạch chẩn, kết hợp với tứ chẩn khác để biện chứng.",
+        "是脉诊的依据，须四诊合参以辨证。",
+        "The basis of pulse diagnosis, combined with the other three diagnostic methods for syndrome differentiation."
+      ]
+    }
+  ]
+}
