@@ -1,0 +1,65 @@
+{
+  "id": "ya-auto-yaan-005",
+  "category": "y_an",
+  "modality": "duoc",
+  "level": "trung_cap",
+  "auto": true,
+  "mt_translated": true,
+  "title_vi": "Y án của Trương Tịch Thuần: một ca hoảng sợ gây đại khí hạ hạn",
+  "title_zh": "张锡纯医案：惊恐致气陷一例",
+  "title_en": "Case by Zhang Xichun: a case of fright causing sinking of the chest's great qi",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "张锡纯记载一名二十多岁女子因家中失火受惊。",
+      "text_vi": "Trương Tịch Thuần ghi chép một phụ nữ hơn hai mươi tuổi vì nhà cháy bị hoảng sợ.",
+      "text_en": "Zhang Xichun recorded a woman in her twenties who was frightened by a house fire.",
+      "text_pinyin": "zhāng xī chún jì zǎi yī míng èr shí duō suì nǚ zǐ yīn jiā zhōng shī huǒ shòu jīng 。"
+    },
+    {
+      "seq": 2,
+      "text_zh": "她后来出现呼吸短气与心中惶惶，并伴心悸不安。",
+      "text_vi": "Sau đó cô ấy bị khó thở, trong lòng bồn chồn và kèm theo hồi hộp không yên.",
+      "text_en": "She later developed shortness of breath and inner panic, accompanied by palpitations and restlessness.",
+      "text_pinyin": "tā hòu lái chū xiàn hū xī duǎn qì yǔ xīn zhōng huáng huáng ， bìng bàn xīn jì bù ān 。"
+    },
+    {
+      "seq": 3,
+      "text_zh": "饭后尤甚。",
+      "text_vi": "Các triệu chứng trở nên nặng hơn sau bữa ăn.",
+      "text_en": "The symptoms became especially worse after meals.",
+      "text_pinyin": "fàn hòu yóu shèn 。"
+    },
+    {
+      "seq": 4,
+      "text_zh": "诊脉时右手部位脉象略沉。",
+      "text_vi": "Khi chẩn mạch, mạch ở tay phải hơi trầm.",
+      "text_en": "On pulse examination, the pulse on the right hand was slightly deep.",
+      "text_pinyin": "zhěn mài shí yòu shǒu bù wèi mài xiàng lüè chén 。"
+    },
+    {
+      "seq": 5,
+      "text_zh": "医者判断为惊恐致胸中大气下陷，兼心血不足。",
+      "text_vi": "Bác sĩ chẩn đoán do hoảng sợ gây đại khí hạ hạn trong ngực, đồng thời có tâm huyết bất túc.",
+      "text_en": "The physician judged that fright had caused a sinking of the chest's great qi, with concurrent heart‑blood deficiency.",
+      "text_pinyin": "yī zhě pàn duàn wèi jīng kǒng zhì xiōng zhōng dà qì xià xiàn ， jiān xīn xuè bù zú 。"
+    },
+    {
+      "seq": 6,
+      "text_zh": "处方为升陷汤，加龙眼肉五钱。",
+      "text_vi": "Chỉ định dùng Thăng Hãm thang, thêm long nhãn nhục 5 tiền.",
+      "text_en": "The prescription was Shengxian Decoction with added longan arillus five qian.",
+      "text_pinyin": "chǔ fāng wèi shēng xiàn tāng ， jiā lóng yǎn ròu wǔ qián 。"
+    },
+    {
+      "seq": 7,
+      "text_zh": "患者连服四剂后痊愈。",
+      "text_vi": "Bệnh nhân uống liên tiếp bốn thang rồi khỏi bệnh.",
+      "text_en": "The patient recovered after taking four consecutive doses.",
+      "text_pinyin": "huàn zhě lián fú sì jì hòu quán yù 。"
+    }
+  ],
+  "source_note_vi": "Diễn giải tự động (AI) từ dữ kiện y án thật (Dược/Thực liệu), nguồn: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Chưa qua rà soát thủ công.",
+  "source_note_zh": "由 AI 根据真实医案事实自动改写（方药/食疗），来源：张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》。尚未经人工校对。",
+  "source_note_en": "AI-generated narrative from real case facts (Herbal/Dietary therapy), source: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Not yet human-reviewed."
+}
