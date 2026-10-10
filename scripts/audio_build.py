@@ -8,6 +8,7 @@ phục vụ các pipeline KHÔNG cần chat (workflow_dispatch/cron).
 """
 import base64
 import json
+import re
 import time
 from pathlib import Path
 
@@ -107,6 +108,32 @@ def concat_mp3s(parts, output_mp3, pause_ms):
         )
 
 
+def tts_prepare(text, lang="text_zh"):
+    """Văn bản đưa cho TTS (KHÔNG đổi chữ hiển thị). Chèn dấu phẩy ngay trước dấu ngoặc kép mở khi nó dính liền
+    chữ đứng trước: không có dấu phẩy, mô hình tự ngắt nhầm ở chữ đầu của cụm trong ngoặc (vd 2026年度“中西医…” bị
+    dừng sau 年度中). Muốn kiểm soát hoàn toàn một câu, đặt field `tts_zh` cho đoạn đó trong JSON."""
+    if lang != "text_zh":
+        return text
+    NO_BREAK_BEFORE = set("的之和与及或为是称曰叫以对将把被从在于里内见说道即名云言指含有")
+    out = []
+    last_punct = -1
+    for i, ch in enumerate(text):
+        if ch in "，。；：、！？,.;:!?" :
+            last_punct = i
+        if ch in "“「『" and i - last_punct - 1 >= 8:
+            prev = text[i - 1]
+            if prev not in NO_BREAK_BEFORE and re.match(r"[\u4e00-\u9fffA-Za-z0-9]", prev):
+                out.append("，")
+        out.append(ch)
+    return "".join(out)
+
+
+def tts_text(seg, lang):
+    if lang == "text_zh" and seg.get("tts_zh"):
+        return seg["tts_zh"]
+    return tts_prepare(seg[lang], lang)
+
+
 def build_passage(file_path, lang="text_en", voice_key="narrator"):
     """Sinh audio cho 1 đoạn văn tường thuật — ghi trực tiếp vào backend/public/audio/listening
     (nơi app thật serve), không qua bước copy tay nào."""
@@ -121,6 +148,13 @@ def build_passage(file_path, lang="text_en", voice_key="narrator"):
         raise RuntimeError(f"Không có giọng cho '{voice_key}' trong config/audio.yaml")
 
     data = json.loads(Path(file_path).read_text(encoding="utf-8"))
+    if not data.get("created_at"):
+        # Ngày bài được đưa vào kho — dùng để xếp bài mới lên đầu và hiện "cập nhật" dưới tiêu đề.
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        data["created_at"] = now
+        data["updated_at"] = now
+        Path(file_path).write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     passage_id = data["id"]
     category = data["category"]
     out_dir = ROOT / "backend" / "public" / "audio" / "listening" / category / passage_id
@@ -132,7 +166,7 @@ def build_passage(file_path, lang="text_en", voice_key="narrator"):
         text = seg[lang]
         out_mp3 = out_dir / f"{seq:02d}-{lang}.mp3"
         print(f"[{passage_id}] đoạn {seq} ({lang})...", file=__import__("sys").stderr)
-        google_tts(text, voice, settings, out_mp3, language_code=locale)
+        google_tts(tts_text(seg, lang), voice, settings, out_mp3, language_code=locale)
         seg_files.append(out_mp3)
 
     full_mp3 = out_dir / f"full-{lang}.mp3"
@@ -162,7 +196,7 @@ def build_extra_voices(file_path, lang="text_zh"):
             if out_mp3.exists() and out_mp3.stat().st_size > 0:
                 continue
             print(f"[{data['id']}] {key} đoạn {seg['seq']}...", file=__import__("sys").stderr)
-            google_tts(seg[lang], voice, settings, out_mp3, language_code=LANG_LOCALE.get(lang, "cmn-CN"))
+            google_tts(tts_text(seg, lang), voice, settings, out_mp3, language_code=LANG_LOCALE.get(lang, "cmn-CN"))
 
 
 def backfill_extra_voices():
@@ -173,9 +207,41 @@ def backfill_extra_voices():
         build_extra_voices(f)
 
 
+def regen_prosody(lang="text_zh"):
+    """Sinh lại audio (mọi giọng) cho các đoạn mà văn bản TTS khác văn bản hiển thị (tts_prepare hoặc `tts_zh`),
+    rồi nối lại full-text_zh.mp3. Dùng khi đổi quy tắc ngắt nghỉ."""
+    cfg = load_audio_config()
+    settings = cfg["provider_settings"]["google"]
+    pause_ms = cfg.get("pause_ms", 420)
+    voices = {"": cfg["voices_google_zh"]["narrator"], **{k: v for k, v in (cfg.get("voices_extra_zh") or {}).items()}}
+    root = ROOT / "backend" / "data" / "listening"
+    for f in sorted(root.glob("*/*.json")):
+        if f.name.startswith("."):
+            continue
+        data = json.loads(f.read_text(encoding="utf-8"))
+        if data.get("source_lang") == "en":
+            continue
+        base = ROOT / "backend" / "public" / "audio" / "listening" / data["category"] / data["id"]
+        changed = [seg for seg in data["segments"] if tts_text(seg, lang) != seg[lang]]
+        if not changed:
+            continue
+        for key, voice in voices.items():
+            out_dir = base / key if key else base
+            out_dir.mkdir(parents=True, exist_ok=True)
+            for seg in changed:
+                out_mp3 = out_dir / f"{seg['seq']:02d}-{lang}.mp3"
+                print(f"[{data['id']}] {key or 'default'} đoạn {seg['seq']}: {tts_text(seg, lang)}", file=__import__("sys").stderr)
+                google_tts(tts_text(seg, lang), voice, settings, out_mp3, language_code=LANG_LOCALE.get(lang, "cmn-CN"))
+        parts = [base / f"{seg['seq']:02d}-{lang}.mp3" for seg in data["segments"]]
+        if all(p.exists() for p in parts):
+            concat_mp3s(parts, base / f"full-{lang}.mp3", pause_ms)
+
+
 if __name__ == "__main__":
     import sys as _sys
-    if len(_sys.argv) > 1 and _sys.argv[1] == "backfill-voices":
+    if len(_sys.argv) > 1 and _sys.argv[1] == "regen-prosody":
+        regen_prosody()
+    elif len(_sys.argv) > 1 and _sys.argv[1] == "backfill-voices":
         backfill_extra_voices()
     else:
         print("Dùng: python scripts/audio_build.py backfill-voices", file=_sys.stderr)

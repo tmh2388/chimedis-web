@@ -723,7 +723,13 @@ header{transition:padding .2s ease}
 .lsc-lab{font-weight:700;color:var(--muc-mo,#8a7d6a);font-size:11px}
 .lsc-txt{color:var(--muc,#2a2118)}
 .practice-pinyin{color:var(--muc-mo,#8a7d6a);font-size:11.5px;font-style:italic;margin:2px 0 0}
-.listen-voice-sel{margin-left:6px;border:1px solid var(--vien,#E4DCCC);border-radius:999px;padding:5px 8px;font-size:12px;background:#fff;color:inherit}
+.listen-voicerow{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:12.5px;color:var(--muc-mo,#8a7d6a)}
+.listen-voicerow select{flex:1;min-width:0;max-width:240px;border:1px solid var(--vien,#E4DCCC);border-radius:999px;padding:6px 10px;font-size:13px;background:#fff;color:var(--muc,#2a2118)}
+.listen-dialogue,.listen-screen{max-width:100%;overflow-x:hidden}
+.listen-dialogue *{min-width:0}
+.listen-card .lc-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.listen-card .lc-tx strong{flex:none}
+.listen-card-date{font-size:11px;color:var(--muc-mo,#8a7d6a);opacity:.7}
 .interp-summary{margin:8px 0 6px;font-weight:700;font-size:13px}
 .interp-summary .n{color:var(--son,#B4472B)}
 .interp-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
@@ -742,7 +748,7 @@ header{transition:padding .2s ease}
 .lsc-btn{font-family:inherit;font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px;border:0;cursor:pointer}
 .lsc-btn.good{background:#1F7A41;color:#fff}
 .lsc-btn.retry{background:var(--ngua-am,#efe7d8);color:var(--tham-2,#7a6a58)}
-.listen-recordfab{position:fixed;right:18px;bottom:18px;width:52px;height:52px;border-radius:50%;background:var(--son,#C8452F);
+.listen-recordfab{position:absolute;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));width:52px;height:52px;border-radius:50%;background:var(--son,#C8452F);
   color:#fff;border:0;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);cursor:pointer;z-index:40}
 .listen-modal-scrim{position:fixed;inset:0;background:rgba(28,43,42,.55);display:none;z-index:60}
 .listen-modal-scrim.open{display:block}
@@ -812,7 +818,7 @@ header{transition:padding .2s ease}
   <nav class="menu1" id="menu1"></nav>
 
   <!-- VÙNG CUỘN DUY NHẤT -->
-  <div id="scrollZone" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;min-height:0;display:flex;flex-direction:column">
+  <div id="scrollZone" style="flex:1;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;min-height:0;display:flex;flex-direction:column">
     <div id="mainArea" style="flex:1 0 auto"></div>
     <!-- footer chuyển vào trong scrollZone bằng JS-render -->
   <!-- FOOTER (chỉ hiện ở tab Từ vựng/trang chủ) -->
@@ -1783,7 +1789,7 @@ Object.assign(I18N.vi, {
   listen_cat_y_an: 'Y Án', listen_cat_bao_chi: 'Báo Chí', listen_cat_tu_them: 'Tự Thêm', listen_cat_hoc_thuat: 'Học Thuật (Anh→Trung)',
   listen_empty: 'Chưa có hội thoại nào trong mục này.',
   listen_level_all: 'Tất cả', listen_level_so_cap: 'Sơ cấp', listen_level_trung_cap: 'Trung cấp', listen_level_cao_cap: 'Cao cấp',
-  listen_play_full: 'Phát toàn bài', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_stop: 'Dừng',
+  listen_play_full: 'Phát toàn bài', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', listen_stop: 'Dừng',
   listen_target_lang: 'Nhắc lại bằng', listen_vi: 'Tiếng Việt', listen_en: 'Tiếng Anh',
   listen_listening: '🎙 Đang nghe...', listen_points: 'điểm', listen_retry: 'Không nhận diện được, thử lại',
   listen_no_speech: 'Trình duyệt không hỗ trợ ghi âm giọng nói',
@@ -1812,7 +1818,7 @@ Object.assign(I18N.zh, {
   listen_cat_y_an: '医案', listen_cat_bao_chi: '新闻', listen_cat_tu_them: '自建内容', listen_cat_hoc_thuat: '学术（英→中）',
   listen_empty: '此分类暂无对话。',
   listen_level_all: '全部', listen_level_so_cap: '初级', listen_level_trung_cap: '中级', listen_level_cao_cap: '高级',
-  listen_play_full: '播放全文', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_stop: '停止',
+  listen_play_full: '播放全文', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', listen_stop: '停止',
   listen_target_lang: '跟读语言', listen_vi: '越南语', listen_en: '英语',
   listen_listening: '🎙 正在聆听...', listen_points: '分', listen_retry: '无法识别，请重试',
   listen_no_speech: '此浏览器不支持语音识别',
@@ -1841,7 +1847,7 @@ Object.assign(I18N.en, {
   listen_cat_y_an: 'Case Studies', listen_cat_bao_chi: 'News', listen_cat_tu_them: 'Custom', listen_cat_hoc_thuat: 'Academic (EN→ZH)',
   listen_empty: 'No dialogues in this category yet.',
   listen_level_all: 'All', listen_level_so_cap: 'Beginner', listen_level_trung_cap: 'Intermediate', listen_level_cao_cap: 'Advanced',
-  listen_play_full: 'Play full dialogue', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_stop: 'Stop',
+  listen_play_full: 'Play full dialogue', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', listen_stop: 'Stop',
   listen_target_lang: 'Repeat in', listen_vi: 'Vietnamese', listen_en: 'English',
   listen_listening: '🎙 Listening...', listen_points: 'pts', listen_retry: "Couldn't recognize, try again",
   listen_no_speech: 'This browser does not support speech recognition',
@@ -2452,6 +2458,11 @@ function setListenLevel(level){
   state._listenLevel = level;
   render();
 }
+function listenFmtDate(iso){
+  const dt = new Date(iso);
+  if(isNaN(dt)) return '';
+  return dt.toLocaleDateString(state.lang === 'zh' ? 'zh-CN' : state.lang === 'en' ? 'en-GB' : 'vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Asia/Ho_Chi_Minh' });
+}
 function renderListenHome(){
   const cat = state._listenCategory || 'bao_chi';
   const tabsHtml = LISTEN_CATEGORIES.map(c =>
@@ -2460,7 +2471,8 @@ function renderListenHome(){
   const allItems = listenDialoguesCache[cat] || [];
   const levelsPresent = Array.from(new Set(allItems.map(d => d.level).filter(Boolean)));
   const curLevel = state._listenLevel || 'all';
-  const items = curLevel === 'all' ? allItems : allItems.filter(d => d.level === curLevel);
+  const filtered = curLevel === 'all' ? allItems : allItems.filter(d => d.level === curLevel);
+  const items = [...filtered].sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')) || String(b.id).localeCompare(String(a.id)));
   const levelFilterHtml = levelsPresent.length > 1 ? `<div class="listen-levelrow">
       <span class="listen-level-pill ${curLevel==='all'?'on':''}" onclick="setListenLevel('all')">${t('listen_level_all')}</span>
       ${LISTEN_LEVELS.filter(lv => levelsPresent.includes(lv)).map(lv =>
@@ -2470,7 +2482,7 @@ function renderListenHome(){
   const listHtml = items.length
     ? items.map(d => `<button class="listen-card" onclick="openListenDialogue('${d.id}')">
         <span class="lc-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></span>
-        <strong>${listenTitle(d)}</strong>
+        <span class="lc-tx"><strong>${listenTitle(d)}</strong>${d.updated_at ? `<span class="listen-card-date">${t('listen_updated')} ${listenFmtDate(d.updated_at)}</span>` : ''}</span>
         ${d.level ? `<span class="listen-level-badge">${t('listen_level_'+d.level)}</span>` : ''}
       </button>`).join('')
     : `<div class="empty">${t('listen_empty')}</div>`;
@@ -2912,10 +2924,10 @@ function renderListenDialogue(){
       ${cbRow('zh','listen_cb_zh')}${cbRow('pinyin','listen_cb_pinyin')}${cbRow('vi','listen_cb_vi')}${cbRow('en','listen_cb_en')}
     </div>
     ${!feat.record ? `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>` : ''}
+    ${d.source_lang !== 'en' ? `<div class="listen-voicerow"><label for="listenVoiceSel">${t('listen_voice_label')}:</label><select id="listenVoiceSel" onchange="setListenVoice(this.value)">${LISTEN_VOICES.map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${v.label}</option>`).join('')}</select></div>` : ''}
     <div class="listen-playbar">
       <div class="listen-speedrow">
         ${LISTEN_SPEEDS.map(v => `<button class="listen-speed-btn ${loadListenSpeed()===v?'on':''}" data-speed="${v}" onclick="setListenSpeed(${v})">${v}×</button>`).join('')}
-        ${d.source_lang !== 'en' ? `<select class="listen-voice-sel" aria-label="${t('listen_voice_label')}" title="${t('listen_voice_label')}" onchange="setListenVoice(this.value)">${LISTEN_VOICES.map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${v.label}</option>`).join('')}</select>` : ''}
       </div>
       <div class="listen-playctl">
         <button id="listenTopPlayBtn" class="listen-playbtn" onclick="listenTogglePlay()" aria-label="${t('listen_play_full')}">${LISTEN_PLAY_ICON}</button>
@@ -3665,6 +3677,8 @@ function selectTab(tab){
 
 function renderTabContent(){
   const el = document.getElementById('tabContent');
+  const oldFab = document.getElementById('listenRecordFab');
+  if(oldFab) oldFab.remove();
   if(state.tab === 'studyhome'){ el.innerHTML = renderStudyHome(); return; }
   if(state.tab === 'listenhome'){ el.innerHTML = renderListenHome(); return; }
   if(state.tab === 'listendialogue'){
@@ -3672,7 +3686,7 @@ function renderTabContent(){
     el.innerHTML = backBarL + renderListenDialogue();
     const feat = listenFeatureSupported();
     if(feat.record){
-      el.insertAdjacentHTML('beforeend', `<button class="listen-recordfab" onclick="openListenPracticeModal()" aria-label="${t('listen_record')}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend', `<button id="listenRecordFab" class="listen-recordfab" onclick="openListenPracticeModal()" aria-label="${t('listen_record')}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>`);
     }
     return;
   }
@@ -4368,6 +4382,7 @@ function setupScrollWatch(){
   const app = document.getElementById('app');
   const zone = document.getElementById('scrollZone');
   zone.addEventListener('scroll', ()=>{
+    if(zone.scrollLeft) zone.scrollLeft = 0; // không bao giờ để nội dung trượt ngang (lỗi app 2026-10-10)
     app.classList.toggle('scrolled', zone.scrollTop > 50);
     app.classList.toggle('deep-scrolled', zone.scrollTop > 400);
   }, {passive:true});

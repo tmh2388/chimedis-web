@@ -694,6 +694,7 @@ function listListeningDialogues(category) {
       result.push({
         id: data.id, category: data.category, title: data.title, level: data.level || null,
         title_vi: data.title_vi || data.title, title_zh: data.title_zh || data.title, title_en: data.title_en || data.title,
+        created_at: data.created_at || null, updated_at: data.updated_at || data.created_at || null,
       });
     }
   }
