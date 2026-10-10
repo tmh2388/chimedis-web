@@ -1199,7 +1199,7 @@ app.get('/api/db-check', async (req, res) => {
     await mysqlPool.query('SELECT 1');
     out.connect = 'ok';
   } catch (err) {
-    out.connect = { code: err.code, errno: err.errno, message: String(err.message).replace(/'[^']*'@'[^']*'/g, "'***'@'***'").slice(0, 160) };
+    out.connect = { code: err.code, errno: err.errno, message: String(err.message).replace(/'[^']*'@/g, "'***'@").slice(0, 160) };
     return res.json(out);
   }
   for (const t of ['herbs', 'anatomy_terms', 'general_terms', 'acupoints', 'word_elements', 'formulas']) {
