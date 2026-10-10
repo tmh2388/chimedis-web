@@ -3587,6 +3587,7 @@ function sortByRelevance(list, q, isFuzzy){
     .map(x => x.t);
 }
 
+const SESSION_SEED = ':' + Math.floor(Math.random() * 4294967296);
 function getFiltered(){
   let list = TERMS;
   // Thang Phương là domain GATED: chưa đăng nhập -> loại khỏi mọi danh sách (kể cả "Toàn bộ"
@@ -3641,6 +3642,11 @@ function getFiltered(){
   }
   if(state.searchQuery){
     return sortByRelevance(list, state.searchQuery, state.searchFuzzyFallback);
+  }
+  // "Toàn bộ" (không tìm kiếm, không lọc nhóm con): thứ tự NGẪU NHIÊN mỗi lần mở app cho phong phú (2026-10-10).
+  // Khoá ngẫu nhiên gắn theo id + hạt giống phiên nên ổn định trong phiên (Xem thêm không bị xáo lại).
+  if(state.group1 === 'all' && !state.group2){
+    return [...list].sort((a, b) => _hash32(a.id + SESSION_SEED) - _hash32(b.id + SESSION_SEED));
   }
   return sortTermsAlpha(list);
 }
@@ -3779,20 +3785,43 @@ let _homeShuffle = 0;
 function shuffleHome(ev){ if(ev) ev.stopPropagation(); _homeShuffle++; renderTabContent(); }
 function _hash32(str){ let h = 2166136261; for(let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
 function _rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+// Số ô gợi ý hôm nay theo bề ngang thật của lưới (minmax 150px): web rộng 5 cột × 2 hàng = 10, điện thoại
+// 2 cột × 4 hàng = 8 — luôn đầy hàng, không còn ô lẻ loi (yêu cầu 2026-10-10).
+function homeSugCount(){
+  const zone = document.getElementById('scrollZone');
+  const w = (zone && zone.clientWidth) || window.innerWidth || 400;
+  const cols = Math.max(2, Math.floor((w - 28) / 158)); // (w - lề 36 + gap 8) / (ô 150 + gap 8)
+  return cols * (cols >= 4 ? 2 : 4);
+}
 function homeSuggestions(){
   const visible = TERMS.filter(x => x.group1 !== 'Thang phương' || state.user);
   const order = ['Dược liệu','Huyệt vị','Bệnh lý','Giải phẫu','Sinh lý','Tổng hợp','Thang phương','Từ ghép Y Khoa'];
   const rnd = _rng(_hash32(todayKey() + ':' + _homeShuffle));
-  const out = [];
+  const target = homeSugCount();
+  const pools = [];
   for(const g of order){
     // chỉ chọn từ có nội dung (rowSummary không rỗng) để gợi ý có ích; không có thì lấy bất kỳ
     const all = visible.filter(x => x.group1 === g);
     if(!all.length) continue;
     const rich = all.filter(x => rowSummary(x));
-    const pool = rich.length ? rich : all;
-    out.push(pool[Math.floor(rnd() * pool.length)]);
+    pools.push({ g, pool: rich.length ? rich : all, size: all.length });
   }
-  return out.slice(0, 6);
+  const out = [], used = new Set();
+  const pick = (pl) => {
+    for(let k = 0; k < 12; k++){
+      const t0 = pl.pool[Math.floor(rnd() * pl.pool.length)];
+      if(!used.has(t0.id)){ used.add(t0.id); out.push(t0); return true; }
+    }
+    return false;
+  };
+  pools.forEach(pick);                         // vòng 1: mỗi nhóm 1 từ để đa dạng
+  const bySize = [...pools].sort((a, b) => b.size - a.size);
+  let guard = 0;
+  while(out.length < target && guard++ < target * 6){   // vòng sau: thêm từ nhóm lớn trước
+    const pl = bySize[(guard - 1) % bySize.length];
+    if(pl.pool.length > 1) pick(pl);
+  }
+  return out.slice(0, target);
 }
 function homeChip(term){
   const label = hzOf(term) || term.en || term.vi || '';
