@@ -1,4 +1,5 @@
 import express from 'express';
+import dns from 'dns';
 import cors from 'cors';
 import { mountAppBundle } from './lib/app-bundle.js';
 import fs from 'fs';
@@ -13,6 +14,10 @@ import { syncGeneralTerms } from './lib/general-terms-sync.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Remote MySQL của Hostinger cho phép theo IP cố định (IPv4). Hostname máy chủ MySQL có cả bản ghi AAAA nên
+// Node mặc định có thể kết nối qua IPv6 và bị từ chối "Access denied" dù đã khai báo đúng IPv4 → ưu tiên IPv4.
+dns.setDefaultResultOrder('ipv4first');
 
 const app = express();
 
