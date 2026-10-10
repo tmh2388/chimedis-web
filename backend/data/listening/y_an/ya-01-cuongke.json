@@ -11,56 +11,1293 @@
       "text_zh": "这是一则记载于《金匮要略》教材医案举隅中的真实病例，原始资料出自《金匮方百家医案评议》一书。",
       "text_vi": "Đây là một ca bệnh thật được ghi trong mục \"Y án tiêu biểu\" của giáo trình Kim Quỹ Yếu Lược, tư liệu gốc trích từ sách \"Kim Quỹ Phương Bách Gia Y Án Bình Nghị\".",
       "text_en": "This is a real case recorded in the \"Illustrative Case Studies\" section of the Jin Gui Yao Lue (Essential Prescriptions of the Golden Cabinet) textbook, originally sourced from the book \"Commentary on Classic Cases Using Jin Gui Formulas by a Hundred Physicians.\"",
-      "text_pinyin": "zhè shì yī zé jì zǎi yú 《 jīn kuì yào lüè 》 jiào cái yī àn jǔ yú zhōng de zhēn shí bìng lì ， yuán shǐ zī liào chū zì 《 jīn kuì fāng bǎi jiā yī àn píng yì 》 yī shū 。"
+      "text_pinyin": "zhè shì yī zé jì zǎi yú 《 jīn kuì yào lüè 》 jiào cái yī àn jǔ yú zhōng de zhēn shí bìng lì ， yuán shǐ zī liào chū zì 《 jīn kuì fāng bǎi jiā yī àn píng yì 》 yī shū 。",
+      "key_units": [
+        {
+          "zh": "金匮要略",
+          "type": "name",
+          "pref_vi": "Kim Quỹ Yếu Lược",
+          "pref_en": "Jin Gui Yao Lue (Essential Prescriptions of the Golden Cabinet)",
+          "accept_vi": [
+            "kim quỹ yếu lược",
+            "kim quỹ"
+          ],
+          "accept_en": [
+            "jin gui yao lue",
+            "golden cabinet",
+            "jin kui"
+          ],
+          "in_bank": false,
+          "id": "1-1"
+        },
+        {
+          "zh": "医案",
+          "type": "term",
+          "pref_vi": "y án (ca bệnh)",
+          "pref_en": "medical case record",
+          "accept_en": [
+            "case study",
+            "case studies",
+            "case record",
+            "medical case",
+            "case history"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "y án",
+            "ca bệnh",
+            "bệnh án",
+            "ca lâm sàng"
+          ],
+          "id": "1-2"
+        }
+      ]
     },
     {
       "seq": 2,
       "text_zh": "患者是一名十三岁的女孩，一九七七年九月十三日初诊。",
       "text_vi": "Bệnh nhân là một bé gái 13 tuổi, khám lần đầu vào ngày 13 tháng 9 năm 1977.",
       "text_en": "The patient was a 13-year-old girl, first examined on September 13, 1977.",
-      "text_pinyin": "huàn zhě shì yī míng shí sān suì de nǚ hái ， yī jiǔ qī qī nián jiǔ yuè shí sān rì chū zhěn 。"
+      "text_pinyin": "huàn zhě shì yī míng shí sān suì de nǚ hái ， yī jiǔ qī qī nián jiǔ yuè shí sān rì chū zhěn 。",
+      "key_units": [
+        {
+          "zh": "十三岁",
+          "type": "number",
+          "pref_vi": "13 tuổi",
+          "pref_en": "13 years old",
+          "accept_vi": [
+            "13 tuổi",
+            "mười ba tuổi",
+            "13"
+          ],
+          "accept_en": [
+            "13-year-old",
+            "13 year old",
+            "thirteen",
+            "13 years",
+            "13"
+          ],
+          "in_bank": false,
+          "id": "2-1"
+        },
+        {
+          "zh": "女孩",
+          "type": "term",
+          "pref_vi": "bé gái",
+          "pref_en": "girl",
+          "accept_vi": [
+            "bé gái",
+            "cô bé",
+            "bé",
+            "con gái",
+            "nữ",
+            "thiếu nữ",
+            "cô gái"
+          ],
+          "accept_en": [
+            "girl",
+            "female",
+            "young girl"
+          ],
+          "in_bank": false,
+          "id": "2-2"
+        },
+        {
+          "zh": "一九七七年",
+          "type": "number",
+          "pref_vi": "năm 1977",
+          "pref_en": "1977",
+          "accept_vi": [
+            "1977",
+            "một nghìn chín trăm bảy mươi bảy",
+            "một ngàn chín trăm bảy mươi bảy",
+            "năm 77"
+          ],
+          "accept_en": [
+            "1977",
+            "nineteen seventy-seven",
+            "nineteen seventy seven"
+          ],
+          "in_bank": false,
+          "id": "2-3"
+        },
+        {
+          "zh": "九月十三日",
+          "type": "number",
+          "pref_vi": "ngày 13 tháng 9",
+          "pref_en": "September 13",
+          "accept_vi": [
+            "ngày 13 tháng 9",
+            "13 tháng 9",
+            "13/9",
+            "ngày mười ba tháng chín",
+            "13 tháng chín",
+            "mười ba tháng chín",
+            "tháng 9",
+            "tháng chín"
+          ],
+          "accept_en": [
+            "september 13",
+            "13 september",
+            "13th of september",
+            "sept 13",
+            "9/13",
+            "13/9"
+          ],
+          "in_bank": false,
+          "id": "2-4"
+        },
+        {
+          "zh": "初诊",
+          "type": "term",
+          "pref_vi": "khám lần đầu",
+          "pref_en": "first examined",
+          "accept_vi": [
+            "khám lần đầu",
+            "sơ chẩn",
+            "khám ban đầu",
+            "lần khám đầu",
+            "khám đầu tiên",
+            "khám lần đầu tiên",
+            "lần khám đầu tiên",
+            "chẩn đoán lần đầu"
+          ],
+          "accept_en": [
+            "first examined",
+            "first visit",
+            "initial",
+            "first consultation",
+            "initial examination",
+            "first seen",
+            "initially examined"
+          ],
+          "in_bank": false,
+          "id": "2-5"
+        }
+      ]
     },
     {
       "seq": 3,
       "text_zh": "发病前曾有轻微外感症状，两天后突然抽搐，先是牙关紧闭，接着颈背部强直，并出现角弓反张。",
       "text_vi": "Trước khi phát bệnh có triệu chứng cảm nhẹ, 2 ngày sau đột ngột lên cơn co giật, đầu tiên là cứng hàm, sau đó cứng cổ gáy và xuất hiện tư thế ưỡn cong người ra sau (giác cung phản trương).",
       "text_en": "Before onset she had mild cold-like symptoms; two days later she suddenly developed convulsions — first her jaw locked shut, then her neck and back became rigid, with opisthotonos (an arched, backward-bent posture).",
-      "text_pinyin": "fā bìng qián céng yǒu qīng wēi wài gǎn zhèng zhuàng ， liǎng tiān hòu tū rán chōu chù ， xiān shì yá guān jǐn bì ， jiē zhe jǐng bèi bù qiáng zhí ， bìng chū xiàn jiǎo gōng fǎn zhāng 。"
+      "text_pinyin": "fā bìng qián céng yǒu qīng wēi wài gǎn zhèng zhuàng ， liǎng tiān hòu tū rán chōu chù ， xiān shì yá guān jǐn bì ， jiē zhe jǐng bèi bù qiáng zhí ， bìng chū xiàn jiǎo gōng fǎn zhāng 。",
+      "key_units": [
+        {
+          "zh": "外感",
+          "type": "term",
+          "pref_vi": "ngoại cảm (cảm nhẹ)",
+          "pref_en": "external contraction / mild cold-like symptoms",
+          "accept_en": [
+            "cold",
+            "external contraction",
+            "exogenous",
+            "flu",
+            "cold-like"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "cảm nhẹ",
+            "ngoại cảm",
+            "cảm mạo",
+            "cảm lạnh",
+            "triệu chứng cảm",
+            "cảm cúm"
+          ],
+          "id": "3-1"
+        },
+        {
+          "zh": "两天后",
+          "type": "number",
+          "pref_vi": "2 ngày sau",
+          "pref_en": "two days later",
+          "accept_vi": [
+            "2 ngày",
+            "hai ngày"
+          ],
+          "accept_en": [
+            "two days",
+            "2 days"
+          ],
+          "in_bank": false,
+          "id": "3-2"
+        },
+        {
+          "zh": "抽搐",
+          "type": "term",
+          "pref_vi": "co giật",
+          "pref_en": "convulsions",
+          "accept_en": [
+            "convuls",
+            "seizure",
+            "spasm"
+          ],
+          "bank_id": "PATH-TERM-001566",
+          "in_bank": true,
+          "accept_vi": [
+            "co giật",
+            "co quắp",
+            "lên cơn co giật",
+            "cơn giật"
+          ],
+          "id": "3-3"
+        },
+        {
+          "zh": "牙关紧闭",
+          "type": "term",
+          "pref_vi": "cứng hàm (nha quan khẩn bế)",
+          "pref_en": "lockjaw / jaw clenched shut",
+          "accept_en": [
+            "lockjaw",
+            "trismus",
+            "jaw clench",
+            "clenched jaw",
+            "jaw locked",
+            "jaw lock",
+            "locked jaw",
+            "teeth clench",
+            "jaw shut",
+            "jaw stiff",
+            "stiff jaw",
+            "jaw rigid",
+            "jaw"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "cứng hàm",
+            "khít hàm",
+            "nha quan khẩn bế",
+            "cắn chặt răng",
+            "cứng quai hàm",
+            "khóa hàm",
+            "hàm cứng",
+            "nghiến chặt hàm",
+            "nghiến chặt",
+            "cứng khớp hàm",
+            "khép chặt hàm",
+            "cứng cơ hàm",
+            "co cứng hàm"
+          ],
+          "id": "3-4"
+        },
+        {
+          "zh": "颈背部强直",
+          "type": "term",
+          "pref_vi": "cứng cổ gáy",
+          "pref_en": "rigidity of neck and back",
+          "accept_en": [
+            "neck and back",
+            "stiff neck",
+            "rigid neck",
+            "neck rigid",
+            "rigidity",
+            "neck stiff",
+            "back rigid",
+            "stiff back",
+            "neck stiff"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "cứng cổ",
+            "cứng gáy",
+            "cổ gáy cứng",
+            "cứng cổ gáy",
+            "cổ cứng",
+            "gáy cứng",
+            "cứng lưng",
+            "lưng cứng",
+            "cứng cổ và lưng",
+            "cổ và lưng cứng",
+            "cổ lưng cứng",
+            "cứng cổ lưng"
+          ],
+          "id": "3-5"
+        },
+        {
+          "zh": "角弓反张",
+          "type": "term",
+          "pref_vi": "ưỡn cong người ra sau (giác cung phản trương)",
+          "pref_en": "opisthotonos (arched back)",
+          "accept_en": [
+            "opisthotonos",
+            "arched",
+            "arching",
+            "bent backward",
+            "bend backward",
+            "bowed back",
+            "arch"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "ưỡn cong",
+            "ưỡn người",
+            "giác cung phản trương",
+            "cung phản trương",
+            "cong người ra sau",
+            "ưỡn ra sau",
+            "ưỡn ngửa",
+            "cong ra sau",
+            "uốn cong",
+            "ưỡn lưng",
+            "cong người",
+            "ngửa ra sau"
+          ],
+          "id": "3-6"
+        }
+      ]
     },
     {
       "seq": 4,
       "text_zh": "患者没有出汗，神志清楚，自觉胸闷气短，全身困倦沉重。",
       "text_vi": "Bệnh nhân không ra mồ hôi, ý thức tỉnh táo, tự cảm thấy tức ngực khó thở, toàn thân mệt mỏi nặng nề.",
       "text_en": "The patient had no sweating, was fully conscious, felt chest tightness and shortness of breath, and was generally fatigued and heavy-limbed.",
-      "text_pinyin": "huàn zhě méi yǒu chū hàn ， shén zhì qīng chǔ ， zì jué xiōng mēn qì duǎn ， quán shēn kùn juàn chén zhòng 。"
+      "text_pinyin": "huàn zhě méi yǒu chū hàn ， shén zhì qīng chǔ ， zì jué xiōng mēn qì duǎn ， quán shēn kùn juàn chén zhòng 。",
+      "key_units": [
+        {
+          "zh": "没有出汗",
+          "type": "term",
+          "pref_vi": "không ra mồ hôi",
+          "pref_en": "no sweating",
+          "accept_en": [
+            "no sweat",
+            "without sweat",
+            "not sweat",
+            "no sweating",
+            "did not sweat",
+            "absence of sweat",
+            "was not sweating",
+            "not sweating"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "không ra mồ hôi",
+            "không có mồ hôi",
+            "không đổ mồ hôi",
+            "không toát mồ hôi",
+            "vô hãn",
+            "không vã mồ hôi",
+            "không thấy ra mồ hôi",
+            "không mồ hôi",
+            "không hề ra mồ hôi",
+            "chưa ra mồ hôi"
+          ],
+          "id": "4-1"
+        },
+        {
+          "zh": "神志清楚",
+          "type": "term",
+          "pref_vi": "ý thức tỉnh táo",
+          "pref_en": "clear consciousness",
+          "accept_en": [
+            "conscious",
+            "alert",
+            "clear mind",
+            "lucid",
+            "clear consciousness",
+            "awake"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "tỉnh táo",
+            "còn tỉnh",
+            "ý thức rõ",
+            "ý thức tỉnh táo",
+            "ý thức rõ ràng",
+            "thần chí thanh sở",
+            "minh mẫn",
+            "tỉnh"
+          ],
+          "id": "4-2"
+        },
+        {
+          "zh": "胸闷",
+          "type": "term",
+          "pref_vi": "tức ngực",
+          "pref_en": "chest tightness",
+          "accept_vi": [
+            "tức ngực",
+            "nặng ngực",
+            "bứt rứt ngực",
+            "ngực khó chịu",
+            "đầy tức ngực",
+            "hung muộn",
+            "tức ngực",
+            "nặng tức ngực",
+            "ngực nặng",
+            "bí ngực",
+            "ngực bó chặt",
+            "đau tức ngực",
+            "ngực tức",
+            "khó chịu ở ngực"
+          ],
+          "accept_en": [
+            "chest tight",
+            "chest oppress",
+            "chest discomfort",
+            "tightness in the chest",
+            "chest stuff",
+            "chest fullness"
+          ],
+          "bank_id": "PATH-TERM-000015",
+          "in_bank": true,
+          "id": "4-3"
+        },
+        {
+          "zh": "气短",
+          "type": "term",
+          "pref_vi": "khó thở / hụt hơi",
+          "pref_en": "shortness of breath",
+          "accept_en": [
+            "shortness of breath",
+            "short of breath",
+            "breathless",
+            "short breath",
+            "dyspnea"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "khó thở",
+            "hụt hơi",
+            "thở ngắn",
+            "khí đoản",
+            "thở nông",
+            "đoản hơi",
+            "ngắn hơi",
+            "hơi thở ngắn"
+          ],
+          "id": "4-4"
+        },
+        {
+          "zh": "困倦",
+          "type": "term",
+          "pref_vi": "mệt mỏi",
+          "pref_en": "fatigued",
+          "accept_vi": [
+            "mệt mỏi",
+            "mệt",
+            "uể oải",
+            "buồn ngủ",
+            "mệt nhọc",
+            "mỏi mệt",
+            "kiệt sức",
+            "lờ đờ",
+            "lừ đừ",
+            "rã rời",
+            "mỏi"
+          ],
+          "accept_en": [
+            "fatigue",
+            "tired",
+            "weary",
+            "drowsy",
+            "exhaust",
+            "lethargic",
+            "sleepy"
+          ],
+          "in_bank": false,
+          "id": "4-5"
+        },
+        {
+          "zh": "沉重",
+          "type": "term",
+          "pref_vi": "nặng nề",
+          "pref_en": "heavy",
+          "accept_vi": [
+            "nặng nề",
+            "nặng",
+            "nặng người",
+            "nặng trĩu",
+            "nặng nhọc"
+          ],
+          "accept_en": [
+            "heavy",
+            "heaviness",
+            "weighty"
+          ],
+          "in_bank": false,
+          "id": "4-6"
+        }
+      ]
     },
     {
       "seq": 5,
       "text_zh": "检查显示体温三十七点五摄氏度，血压一百一十比七十毫米汞柱，白细胞计数升高，舌苔薄白，脉象紧而数。",
       "text_vi": "Kết quả khám cho thấy nhiệt độ 37,5 độ C, huyết áp 110 trên 70 mmHg, số lượng bạch cầu tăng cao, rêu lưỡi trắng mỏng, mạch căng và nhanh.",
       "text_en": "Examination showed a temperature of 37.5°C, blood pressure of 110/70 mmHg, an elevated white blood cell count, a thin white tongue coating, and a tight, rapid pulse.",
-      "text_pinyin": "jiǎn chá xiǎn shì tǐ wēn sān shí qī diǎn wǔ shè shì dù ， xue yā yì bǎi yī shí bǐ qī shí háo mǐ gǒng zhù ， bái xì bāo jì shù shēng gāo ， shé tāi báo bái ， mài xiàng jǐn ér shù 。"
+      "text_pinyin": "jiǎn chá xiǎn shì tǐ wēn sān shí qī diǎn wǔ shè shì dù ， xue yā yì bǎi yī shí bǐ qī shí háo mǐ gǒng zhù ， bái xì bāo jì shù shēng gāo ， shé tāi báo bái ， mài xiàng jǐn ér shù 。",
+      "key_units": [
+        {
+          "zh": "三十七点五摄氏度",
+          "type": "number",
+          "pref_vi": "37,5 độ C",
+          "pref_en": "37.5°C",
+          "accept_vi": [
+            "37,5",
+            "37.5",
+            "ba mươi bảy phẩy năm",
+            "ba mươi bảy độ rưỡi",
+            "37 độ 5",
+            "37 độ rưỡi",
+            "37,5 độ",
+            "ba mươi bảy độ năm",
+            "37 phẩy 5"
+          ],
+          "accept_en": [
+            "37.5",
+            "thirty-seven point five",
+            "37,5",
+            "37 point 5",
+            "thirty seven point five"
+          ],
+          "in_bank": false,
+          "id": "5-1"
+        },
+        {
+          "zh": "一百一十比七十",
+          "type": "number",
+          "pref_vi": "110 trên 70",
+          "pref_en": "110 over 70",
+          "accept_vi": [
+            "110/70",
+            "110 trên 70",
+            "110 over 70",
+            "một trăm mười trên bảy mươi",
+            "110 phần 70",
+            "110 / 70",
+            "110 70",
+            "một trăm mười trên 70",
+            "110 trên bảy mươi",
+            "110 chia 70",
+            "110 với 70"
+          ],
+          "accept_en": [
+            "110/70",
+            "110 over 70",
+            "110 on 70",
+            "one hundred ten over seventy",
+            "110 70",
+            "one ten over seventy",
+            "110 by 70"
+          ],
+          "in_bank": false,
+          "id": "5-2"
+        },
+        {
+          "zh": "毫米汞柱",
+          "type": "number",
+          "pref_vi": "mmHg",
+          "pref_en": "mmHg",
+          "accept_vi": [
+            "mmhg",
+            "milimét thủy ngân",
+            "mm thủy ngân",
+            "mi li mét thủy ngân",
+            "milimet thủy ngân",
+            "mili mét thủy ngân",
+            "milimét hg",
+            "mm hg",
+            "mili thủy ngân",
+            "ti li mét thủy ngân"
+          ],
+          "accept_en": [
+            "mmhg",
+            "millimeters of mercury",
+            "millimetres of mercury",
+            "mm hg",
+            "millimeter of mercury",
+            "mm of mercury"
+          ],
+          "in_bank": false,
+          "id": "5-3"
+        },
+        {
+          "zh": "白细胞计数升高",
+          "type": "term",
+          "pref_vi": "số lượng bạch cầu tăng",
+          "pref_en": "elevated white blood cell count",
+          "accept_vi": [
+            "bạch cầu tăng",
+            "tăng bạch cầu",
+            "số lượng bạch cầu tăng",
+            "bạch cầu cao",
+            "bạch cầu tăng cao",
+            "bạch cầu lên",
+            "tăng số lượng bạch cầu",
+            "bạch cầu tăng lên",
+            "công thức bạch cầu tăng",
+            "chỉ số bạch cầu tăng",
+            "bạch cầu"
+          ],
+          "accept_en": [
+            "white blood cell",
+            "wbc",
+            "leukocyt",
+            "white cell",
+            "white blood count"
+          ],
+          "bank_id": "PATH-TERM-001049",
+          "in_bank": true,
+          "id": "5-4"
+        },
+        {
+          "zh": "舌苔薄白",
+          "type": "term",
+          "pref_vi": "rêu lưỡi trắng mỏng",
+          "pref_en": "thin white tongue coating",
+          "accept_en": [
+            "tongue coating",
+            "white coating",
+            "thin white",
+            "tongue coat"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "rêu lưỡi trắng mỏng",
+            "rêu trắng mỏng",
+            "rêu lưỡi mỏng trắng",
+            "lưỡi rêu trắng mỏng",
+            "rêu mỏng trắng",
+            "rêu lưỡi trắng nhạt",
+            "lưỡi có rêu trắng mỏng",
+            "rêu lưỡi mỏng và trắng",
+            "rêu trắng mỏng của lưỡi"
+          ],
+          "id": "5-5"
+        },
+        {
+          "zh": "脉象紧而数",
+          "type": "term",
+          "pref_vi": "mạch căng (khẩn) và nhanh (sác)",
+          "pref_en": "tight and rapid pulse",
+          "all_vi": [
+            [
+              "mạch"
+            ],
+            [
+              "căng",
+              "khẩn",
+              "chặt",
+              "thắt"
+            ],
+            [
+              "nhanh",
+              "sác",
+              "số",
+              "dồn",
+              "gấp"
+            ]
+          ],
+          "accept_en": [
+            "pulse",
+            "tight",
+            "rapid",
+            "tense",
+            "wiry",
+            "fast"
+          ],
+          "in_bank": false,
+          "id": "5-6"
+        }
+      ]
     },
     {
       "seq": 6,
       "text_zh": "医生诊断为刚痉，认为是风寒阻滞经络，气血运行不畅，导致筋脉拘急、项背强直。",
       "text_vi": "Bác sĩ chẩn đoán là \"cương kính\" (một dạng co giật cứng), cho rằng do phong hàn làm tắc trở kinh lạc, khí huyết vận hành không thông, dẫn đến gân mạch co rút, cổ gáy cứng đờ.",
       "text_en": "The physician diagnosed \"rigid tetany,\" attributing it to wind-cold obstructing the channels and impaired qi-blood circulation, causing muscle spasm and neck-back rigidity.",
-      "text_pinyin": "yī shēng zhěn duàn wèi gāng jìng ， rèn wéi shì fēng hán zǔ zhì jīng luò ， qì xue yùn xing bù chàng ， dǎo zhì jīn mài jū jí 、 xiàng bèi qiáng zhí 。"
+      "text_pinyin": "yī shēng zhěn duàn wèi gāng jìng ， rèn wéi shì fēng hán zǔ zhì jīng luò ， qì xue yùn xing bù chàng ， dǎo zhì jīn mài jū jí 、 xiàng bèi qiáng zhí 。",
+      "key_units": [
+        {
+          "zh": "诊断",
+          "type": "term",
+          "pref_vi": "chẩn đoán",
+          "pref_en": "diagnosed",
+          "accept_en": [
+            "diagnos"
+          ],
+          "bank_id": "we-term-222",
+          "in_bank": true,
+          "accept_vi": [
+            "chẩn đoán",
+            "chẩn đoán là"
+          ],
+          "id": "6-1"
+        },
+        {
+          "zh": "刚痉",
+          "type": "term",
+          "pref_vi": "cương kính (刚痉)",
+          "pref_en": "rigid tetany (gang jing)",
+          "accept_en": [
+            "rigid tetany",
+            "rigid convulsion",
+            "gang jing",
+            "gangjing",
+            "tetany"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "cương kính",
+            "cương kinh",
+            "cương kỉnh",
+            "kính chứng"
+          ],
+          "id": "6-2"
+        },
+        {
+          "zh": "风寒",
+          "type": "term",
+          "pref_vi": "phong hàn",
+          "pref_en": "wind-cold",
+          "accept_vi": [
+            "phong hàn",
+            "gió lạnh",
+            "phong và hàn",
+            "phong, hàn",
+            "phong-hàn"
+          ],
+          "accept_en": [
+            "wind-cold",
+            "wind cold",
+            "wind and cold",
+            "cold and wind",
+            "wind-chill"
+          ],
+          "in_bank": false,
+          "id": "6-3"
+        },
+        {
+          "zh": "阻滞",
+          "type": "term",
+          "pref_vi": "tắc trở",
+          "pref_en": "obstructing",
+          "accept_en": [
+            "obstruct",
+            "block",
+            "imped",
+            "stagna",
+            "hinder",
+            "congest"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "tắc trở",
+            "ngưng trệ",
+            "bế tắc",
+            "cản trở",
+            "tắc nghẽn",
+            "trở trệ",
+            "làm tắc",
+            "ứ trệ",
+            "uất trệ",
+            "đình trệ",
+            "ngăn trở",
+            "làm trở ngại",
+            "bít tắc"
+          ],
+          "id": "6-4"
+        },
+        {
+          "zh": "经络",
+          "type": "term",
+          "pref_vi": "kinh lạc",
+          "pref_en": "channels and collaterals",
+          "accept_en": [
+            "channel",
+            "meridian",
+            "collateral",
+            "jingluo"
+          ],
+          "bank_id": "tq-c34b6d6d36",
+          "in_bank": true,
+          "accept_vi": [
+            "kinh lạc",
+            "kinh mạch",
+            "đường kinh"
+          ],
+          "id": "6-5"
+        },
+        {
+          "zh": "气血运行不畅",
+          "type": "term",
+          "pref_vi": "khí huyết vận hành không thông",
+          "pref_en": "impaired qi-blood circulation",
+          "accept_en": [
+            "qi and blood",
+            "qi-blood",
+            "qi blood",
+            "circulation",
+            "flow of qi",
+            "qi, blood"
+          ],
+          "in_bank": false,
+          "all_vi": [
+            [
+              "khí huyết"
+            ],
+            [
+              "không thông",
+              "không thuận",
+              "trở ngại",
+              "không lưu thông",
+              "bất sướng",
+              "ứ trệ",
+              "không điều hòa",
+              "kém lưu thông",
+              "tắc",
+              "trì trệ",
+              "bị cản trở",
+              "không thông suốt",
+              "kém thông",
+              "cản trở",
+              "bị tắc",
+              "không suôn sẻ",
+              "không trơn tru",
+              "vận hành kém",
+              "vận hành không"
+            ]
+          ],
+          "id": "6-6"
+        },
+        {
+          "zh": "筋脉拘急",
+          "type": "term",
+          "pref_vi": "gân mạch co rút",
+          "pref_en": "spasm of sinews and vessels",
+          "accept_vi": [
+            "gân mạch co rút",
+            "gân mạch co cứng",
+            "co rút gân",
+            "gân co",
+            "cân mạch",
+            "gân mạch",
+            "co cứng gân mạch",
+            "gân co rút",
+            "gân mạch co thắt",
+            "gân co cứng",
+            "co thắt gân",
+            "co giật gân",
+            "gân cơ co",
+            "co cứng gân",
+            "gân bị co",
+            "gân cơ co rút",
+            "cân mạch co rút",
+            "co rút cân",
+            "co cứng cân mạch"
+          ],
+          "accept_en": [
+            "muscle spasm",
+            "spasm",
+            "tendon",
+            "sinew",
+            "cramp",
+            "tendons",
+            "contract",
+            "spastic"
+          ],
+          "in_bank": false,
+          "id": "6-7"
+        },
+        {
+          "zh": "项背强直",
+          "type": "term",
+          "pref_vi": "cổ gáy cứng đờ",
+          "pref_en": "rigidity of the nape and back",
+          "accept_en": [
+            "neck and back",
+            "stiff neck",
+            "rigid neck",
+            "neck rigid",
+            "rigidity",
+            "back rigid",
+            "stiff back",
+            "stiff nape",
+            "nape"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "cổ gáy cứng",
+            "cứng cổ gáy",
+            "gáy lưng cứng",
+            "cứng gáy lưng",
+            "gáy và lưng cứng",
+            "cổ lưng cứng",
+            "cứng cổ lưng",
+            "cổ và lưng cứng",
+            "cứng cổ và lưng",
+            "lưng gáy cứng",
+            "gáy cứng",
+            "cứng gáy",
+            "cổ cứng",
+            "lưng cứng",
+            "cứng lưng",
+            "cứng cổ"
+          ],
+          "id": "6-8"
+        }
+      ]
     },
     {
       "seq": 7,
       "text_zh": "治疗以祛风散寒、解肌和营为法，方中用了葛根、麻黄、桂枝、白芍等药物，并配合全蝎蜈蚣研末冲服，盖被取汗。",
       "text_vi": "Phương pháp điều trị là khu phong tán hàn, giải cơ hòa doanh; trong bài thuốc dùng Cát căn, Ma hoàng, Quế chi, Bạch thược..., kết hợp bột toàn yết và ngô công uống kèm, đắp chăn cho ra mồ hôi.",
       "text_en": "Treatment followed the principle of dispelling wind, scattering cold, releasing the muscle layer and harmonizing nutritive qi; the formula included Pueraria root, Ephedra, Cinnamon twig, and White peony, combined with powdered scorpion and centipede taken separately, with the patient covered in blankets to induce sweating.",
-      "text_pinyin": "zhì liáo yǐ qū fēng sàn hán 、 jiě jī hé yíng wèi fǎ ， fāng zhōng yòng le gé gēn 、 má huáng 、 guì zhī 、 bái sháo děng yào wù ， bìng pèi hé quán xiē wú gōng yán mò chōng fú ， gài bèi qǔ hàn 。"
+      "text_pinyin": "zhì liáo yǐ qū fēng sàn hán 、 jiě jī hé yíng wèi fǎ ， fāng zhōng yòng le gé gēn 、 má huáng 、 guì zhī 、 bái sháo děng yào wù ， bìng pèi hé quán xiē wú gōng yán mò chōng fú ， gài bèi qǔ hàn 。",
+      "key_units": [
+        {
+          "zh": "祛风散寒",
+          "type": "term",
+          "pref_vi": "khu phong tán hàn",
+          "pref_en": "dispelling wind and scattering cold",
+          "accept_en": [
+            "dispel wind",
+            "dispelling wind",
+            "expel wind",
+            "expelling wind",
+            "scatter cold",
+            "scattering cold",
+            "disperse cold",
+            "dispelling cold",
+            "dispel cold"
+          ],
+          "in_bank": false,
+          "all_vi": [
+            [
+              "khu phong",
+              "trừ phong",
+              "xua phong",
+              "khử phong",
+              "tán phong"
+            ],
+            [
+              "tán hàn",
+              "trừ hàn",
+              "xua hàn",
+              "khu hàn",
+              "thanh hàn"
+            ]
+          ],
+          "id": "7-1"
+        },
+        {
+          "zh": "解肌和营",
+          "type": "term",
+          "pref_vi": "giải cơ hòa doanh",
+          "pref_en": "releasing the muscle layer and harmonizing nutritive qi",
+          "accept_en": [
+            "release the muscle",
+            "releasing the muscle",
+            "muscle layer",
+            "harmoniz",
+            "nutritive",
+            "muscle level",
+            "harmonising",
+            "ying"
+          ],
+          "in_bank": false,
+          "all_vi": [
+            [
+              "giải cơ",
+              "giải biểu"
+            ],
+            [
+              "hòa doanh",
+              "hòa dinh",
+              "hoà doanh",
+              "hoà dinh",
+              "điều hòa doanh"
+            ]
+          ],
+          "id": "7-2"
+        },
+        {
+          "zh": "葛根",
+          "type": "term",
+          "pref_vi": "Cát căn",
+          "pref_en": "Pueraria root (Ge Gen)",
+          "accept_vi": [
+            "cát căn"
+          ],
+          "accept_en": [
+            "pueraria",
+            "kudzu",
+            "ge gen",
+            "gegen"
+          ],
+          "bank_id": "HERB-000030",
+          "in_bank": true,
+          "id": "7-3"
+        },
+        {
+          "zh": "麻黄",
+          "type": "term",
+          "pref_vi": "Ma hoàng",
+          "pref_en": "Ephedra (Ma Huang)",
+          "accept_vi": [
+            "ma hoàng"
+          ],
+          "accept_en": [
+            "ephedra",
+            "ma huang",
+            "mahuang"
+          ],
+          "bank_id": "HERB-000001",
+          "in_bank": true,
+          "id": "7-4"
+        },
+        {
+          "zh": "桂枝",
+          "type": "term",
+          "pref_vi": "Quế chi",
+          "pref_en": "Cinnamon twig (Gui Zhi)",
+          "accept_vi": [
+            "quế chi"
+          ],
+          "accept_en": [
+            "cinnamon twig",
+            "cinnamon",
+            "gui zhi",
+            "guizhi",
+            "cassia twig",
+            "cinnamomi"
+          ],
+          "bank_id": "HERB-000002",
+          "in_bank": true,
+          "id": "7-5"
+        },
+        {
+          "zh": "白芍",
+          "type": "term",
+          "pref_vi": "Bạch thược",
+          "pref_en": "White peony (Bai Shao)",
+          "accept_vi": [
+            "bạch thược"
+          ],
+          "accept_en": [
+            "white peony",
+            "bai shao",
+            "baishao",
+            "peony",
+            "paeonia",
+            "white paeony"
+          ],
+          "bank_id": "HERB-000491",
+          "in_bank": true,
+          "id": "7-6"
+        },
+        {
+          "zh": "全蝎",
+          "type": "term",
+          "pref_vi": "Toàn yết",
+          "pref_en": "Scorpion (Quan Xie)",
+          "accept_vi": [
+            "toàn yết",
+            "bọ cạp",
+            "toàn hạt",
+            "toàn kiệt"
+          ],
+          "accept_en": [
+            "scorpion",
+            "quan xie",
+            "quanxie",
+            "whole scorpion"
+          ],
+          "bank_id": "HERB-000424",
+          "in_bank": true,
+          "id": "7-7"
+        },
+        {
+          "zh": "蜈蚣",
+          "type": "term",
+          "pref_vi": "Ngô công",
+          "pref_en": "Centipede (Wu Gong)",
+          "accept_vi": [
+            "ngô công",
+            "rết",
+            "con rết",
+            "ngô công"
+          ],
+          "accept_en": [
+            "centipede",
+            "wu gong",
+            "wugong"
+          ],
+          "bank_id": "HERB-000425",
+          "in_bank": true,
+          "id": "7-8"
+        },
+        {
+          "zh": "研末冲服",
+          "type": "term",
+          "pref_vi": "tán bột uống kèm",
+          "pref_en": "powdered and taken separately",
+          "accept_en": [
+            "powder",
+            "ground",
+            "pulveri",
+            "grind",
+            "taken separately",
+            "powdered",
+            "crushed"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "bột",
+            "tán bột",
+            "nghiền bột",
+            "nghiền thành bột",
+            "tán thành bột",
+            "xay bột",
+            "uống kèm",
+            "pha uống",
+            "hòa uống",
+            "uống riêng",
+            "uống cùng",
+            "tán mịn",
+            "nghiền mịn"
+          ],
+          "id": "7-9"
+        },
+        {
+          "zh": "盖被取汗",
+          "type": "term",
+          "pref_vi": "đắp chăn cho ra mồ hôi",
+          "pref_en": "covered with blankets to induce sweating",
+          "accept_en": [
+            "blanket",
+            "covered",
+            "quilt",
+            "under the covers",
+            "covers",
+            "wrapped"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "đắp chăn",
+            "trùm chăn",
+            "đắp mền",
+            "phủ chăn",
+            "ủ chăn",
+            "quấn chăn",
+            "đắp kín",
+            "đắp chăn ấm"
+          ],
+          "id": "7-10"
+        }
+      ]
     },
     {
       "seq": 8,
       "text_zh": "服药一剂后，患者全身微微出汗，抽搐随即停止。",
       "text_vi": "Sau khi uống 1 thang, bệnh nhân toát mồ hôi nhẹ khắp người, cơn co giật liền dừng lại.",
       "text_en": "After one dose, the patient broke into a light sweat all over and the convulsions stopped immediately.",
-      "text_pinyin": "fú yào yī jì hòu ， huàn zhě quán shēn wēi wēi chū hàn ， chōu chù suí jí tíng zhǐ 。"
+      "text_pinyin": "fú yào yī jì hòu ， huàn zhě quán shēn wēi wēi chū hàn ， chōu chù suí jí tíng zhǐ 。",
+      "key_units": [
+        {
+          "zh": "一剂",
+          "type": "number",
+          "pref_vi": "1 thang",
+          "pref_en": "one dose",
+          "accept_en": [
+            "one dose",
+            "1 dose",
+            "single dose",
+            "one decoction",
+            "one dosage",
+            "one portion"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "1 thang",
+            "một thang",
+            "1 thang thuốc",
+            "một thang thuốc",
+            "1 liều",
+            "một liều",
+            "1 liều thuốc",
+            "một liều thuốc"
+          ],
+          "id": "8-1"
+        },
+        {
+          "zh": "微微出汗",
+          "type": "term",
+          "pref_vi": "toát mồ hôi nhẹ",
+          "pref_en": "a light sweat",
+          "accept_en": [
+            "light sweat",
+            "slight sweat",
+            "mild sweat",
+            "perspir",
+            "sweating lightly",
+            "sweating slightly",
+            "broke into a sweat",
+            "sweat"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "mồ hôi nhẹ",
+            "ra mồ hôi",
+            "toát mồ hôi",
+            "vã mồ hôi",
+            "mồ hôi lấm tấm",
+            "ra chút mồ hôi",
+            "đổ mồ hôi nhẹ",
+            "rịn mồ hôi",
+            "toát ít mồ hôi"
+          ],
+          "id": "8-2"
+        },
+        {
+          "zh": "抽搐",
+          "type": "term",
+          "pref_vi": "cơn co giật",
+          "pref_en": "the convulsions",
+          "accept_en": [
+            "convuls",
+            "seizure",
+            "spasm"
+          ],
+          "bank_id": "PATH-TERM-001566",
+          "in_bank": true,
+          "accept_vi": [
+            "co giật",
+            "co quắp",
+            "lên cơn co giật",
+            "cơn giật"
+          ],
+          "id": "8-3"
+        },
+        {
+          "zh": "停止",
+          "type": "term",
+          "pref_vi": "dừng lại",
+          "pref_en": "stopped",
+          "accept_en": [
+            "stop",
+            "cease",
+            "halt",
+            "subside",
+            "disappear",
+            "resolved"
+          ],
+          "in_bank": false,
+          "accept_vi": [
+            "dừng",
+            "ngừng",
+            "ngưng",
+            "chấm dứt",
+            "hết co giật",
+            "hết giật",
+            "dừng lại",
+            "ngừng lại",
+            "ngưng lại",
+            "biến mất",
+            "không còn"
+          ],
+          "id": "8-4"
+        }
+      ]
     }
   ],
   "source_note_vi": "Diễn giải lại từ y án thật trong giáo trình 《金匮要略》第五版 (Nhà xuất bản Trung y dược Trung Quốc), mục \"医案举隅\". Tư liệu gốc trích dẫn trong giáo trình: 何任、张志民、连建伟《金匮方百家医案评议》, Nhà xuất bản Khoa học kỹ thuật Chiết Giang, 1991. Không chép nguyên văn giáo trình.",

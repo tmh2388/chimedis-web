@@ -8,6 +8,7 @@ import mysql from 'mysql2/promise';
 import { runImport } from './import-herbal-sheets.js';
 import { buildAPI } from './build-api.js';
 import { verifyFirebaseToken, isFirebaseConfigured } from './firebase-admin.js';
+import { analyzeInterpretation, buildVocabHint, normalize as normalizeInterp } from './lib/interpret-check.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,7 +20,7 @@ const app = express();
 // /api/pronunciation-score có parser riêng giới hạn 25mb (audio base64) nên loại khỏi parser mặc định 100kb.
 const defaultJson = express.json();
 app.use(cors());
-app.use((req, res, next) => (req.path === '/api/pronunciation-score' ? next() : defaultJson(req, res, next)));
+app.use((req, res, next) => (['/api/pronunciation-score', '/api/interpret-check'].includes(req.path) ? next() : defaultJson(req, res, next)));
 const PORT = process.env.PORT || 3000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
 
@@ -832,6 +833,69 @@ app.post('/api/pronunciation-score', express.json({ limit: '25mb' }), requireOpe
   } catch (err) {
     console.error('Lỗi chấm phát âm:', err);
     res.status(500).json({ success: false, error: 'internal_error' });
+  }
+});
+
+// ===== Chấm bài dịch theo đơn vị ý (key_units) =====
+// AI CHỈ dùng để phiên âm giọng nói (model phiên âm rẻ, ngôn ngữ đích cố định, gợi ý từ vựng từ chính
+// bài học). Việc quyết định đúng/sót là đối chiếu xác định trong lib/interpret-check.js. Kết quả chỉ
+// gồm mã trạng thái; giao diện tự lấy câu chữ từ bảng I18N nên ngôn ngữ nhận xét luôn đúng.
+async function transcribeWithOpenAI(buf, lang, hint) {
+  const prompt = lang === 'en'
+    ? `Traditional Chinese Medicine case discussion. Terms: ${hint}`
+    : `Thảo luận ca bệnh y học cổ truyền bằng tiếng Việt. Thuật ngữ: ${hint}`;
+  const models = ['gpt-4o-mini-transcribe', 'whisper-1'];
+  let lastErr = null;
+  for (const model of models) {
+    const form = new FormData();
+    form.append('file', new Blob([buf], { type: 'audio/wav' }), 'speech.wav');
+    form.append('model', model);
+    form.append('language', lang);
+    form.append('response_format', 'json');
+    form.append('temperature', '0');
+    form.append('prompt', prompt.slice(0, 900));
+    const r = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+      body: form,
+    });
+    if (r.ok) {
+      const j = await r.json();
+      let text = String(j.text || '').trim();
+      // Phiên âm đôi khi "nhại lại" prompt khi audio gần như im lặng — coi như không nghe được.
+      const nt = normalizeInterp(text), np = normalizeInterp(prompt);
+      if (nt && (np.includes(nt) || nt.includes(np))) text = '';
+      return { text, model };
+    }
+    lastErr = `${model}: ${r.status} ${(await r.text()).slice(0, 200)}`;
+    if (![400, 404].includes(r.status)) break;
+  }
+  throw new Error(lastErr || 'transcription_failed');
+}
+
+app.post('/api/interpret-check', express.json({ limit: '25mb' }), requireOpenAI, async (req, res) => {
+  try {
+    const { dialogue_id, seq, target_lang, audio_base64, fluency } = req.body || {};
+    if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
+    const lang = target_lang === 'en' ? 'en' : 'vi';
+    const dialogue = findListeningDialogue(dialogue_id);
+    const seg = dialogue && (dialogue.segments || []).find((x) => x.seq === Number(seq));
+    if (!seg || !Array.isArray(seg.key_units) || !seg.key_units.length) {
+      return res.status(400).json({ success: false, error: 'no_key_units' });
+    }
+    const buf = Buffer.from(audio_base64, 'base64');
+    if (buf.length < 2000) return res.json({ success: true, data: { transcript: '', lang_ok: false, lang_reason: 'empty', units: [], counts: { ok: 0, partial: 0, missed: 0 }, total: seg.key_units.length, fluency: null } });
+    const { text, model } = await transcribeWithOpenAI(buf, lang, buildVocabHint(seg.key_units, lang));
+    const stats = fluency && typeof fluency === 'object' ? {
+      speech_ms: Number(fluency.speech_ms) || 0,
+      pause_count: Number(fluency.pause_count) || 0,
+      longest_pause_ms: Number(fluency.longest_pause_ms) || 0,
+    } : null;
+    const data = analyzeInterpretation({ units: seg.key_units, transcript: text, lang, fluencyStats: stats });
+    res.json({ success: true, data: { ...data, stt_model: model } });
+  } catch (err) {
+    console.error('interpret-check lỗi:', err.message);
+    res.status(500).json({ success: false, error: 'interpret_check_failed' });
   }
 });
 

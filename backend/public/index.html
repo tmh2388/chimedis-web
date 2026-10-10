@@ -723,6 +723,19 @@ header{transition:padding .2s ease}
 .lsc-lab{font-weight:700;color:var(--muc-mo,#8a7d6a);font-size:11px}
 .lsc-txt{color:var(--muc,#2a2118)}
 .practice-pinyin{color:var(--muc-mo,#8a7d6a);font-size:11.5px;font-style:italic;margin:2px 0 0}
+.interp-summary{margin:8px 0 6px;font-weight:700;font-size:13px}
+.interp-summary .n{color:var(--son,#B4472B)}
+.interp-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
+.interp-chip{border:1px solid var(--vien,#E4DCCC);border-radius:999px;padding:5px 10px;font-size:12.5px;background:#fff;color:inherit;text-align:left;line-height:1.35;cursor:default}
+.interp-chip.link{cursor:pointer}
+.interp-chip .hz{font-weight:700;margin-right:4px}
+.interp-chip .hint{color:var(--muc-mo,#6B6156);font-size:11.5px;display:block}
+.interp-chip.ok{border-color:#9CCB9C;background:#EEF7EE}
+.interp-chip.partial{border-color:#E3C26C;background:#FBF3DC}
+.interp-chip.missed{border-color:#E2A08F;background:#FBEDE8}
+.interp-flu{font-size:12px;color:var(--muc-mo,#6B6156);margin:2px 0 6px}
+.interp-flu .flag{color:#8A5A0F;font-weight:700}
+.interp-warn{background:#FBEDE8;border:1px solid #E2A08F;border-radius:8px;padding:8px 10px;font-size:12.5px;margin:6px 0}
 .lsc-txt.ref{color:var(--thamthm,#0E3A3A);font-weight:600}
 .lsc-actions{display:flex;gap:8px;margin-top:6px}
 .lsc-btn{font-family:inherit;font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px;border:0;cursor:pointer}
@@ -1785,6 +1798,12 @@ Object.assign(I18N.vi, {
   practice_no_mic: 'Không xin được quyền micro/camera. Nếu đang dùng app, hãy kiểm tra app đã được cập nhật bản mới nhất; hoặc thử mở bằng trình duyệt Safari/Chrome.',
   practice_no_speech_detected: 'Không nghe rõ giọng nói, thử ghi âm lại gần micro hơn.',
   practice_pronunciation: 'Phát âm:', practice_grammar: 'Ngữ pháp:', practice_corrected: 'Gợi ý sửa đúng:',
+  interp_summary: 'Ý chính đã chuyển tải:', interp_ok: 'Đủ ý', interp_partial: 'Mới được một phần', interp_missed: 'Chưa thấy trong bài dịch',
+  interp_expected: 'Gợi ý:', interp_accent_note: 'nhận dạng thiếu dấu — hãy nói rõ hơn', interp_not_in_bank: 'Thuật ngữ này chưa có trong kho từ',
+  interp_open_term: 'Mở thẻ từ', interp_wrong_lang_vi: 'Bạn cần dịch sang TIẾNG VIỆT nhưng bản ghi chưa phải tiếng Việt.',
+  interp_wrong_lang_en: 'Bạn cần dịch sang TIẾNG ANH nhưng bản ghi chưa phải tiếng Anh.',
+  interp_fluency: 'Độ trôi chảy', interp_rate_unit: 'từ/giây', interp_pauses: 'quãng ngắt', interp_longest: 'dài nhất',
+  interp_flag_slow: 'hơi chậm — thử nói liền mạch hơn', interp_flag_fast: 'hơi nhanh — chú ý rõ từng ý', interp_flag_pauses: 'có quãng ngắt dài',
   practice_your_recording: 'Đoạn ghi âm của bạn',
 });
 Object.assign(I18N.zh, {
@@ -1808,6 +1827,12 @@ Object.assign(I18N.zh, {
   practice_no_mic: '无法获取麦克风/摄像头权限。如果正在使用 App，请确认已更新到最新版本；或尝试用 Safari/Chrome 浏览器打开。',
   practice_no_speech_detected: '未能听清语音，请靠近麦克风重新录制。',
   practice_pronunciation: '发音：', practice_grammar: '语法：', practice_corrected: '建议改为：',
+  interp_summary: '已传达要点：', interp_ok: '完整', interp_partial: '仅部分', interp_missed: '译文中未见',
+  interp_expected: '参考：', interp_accent_note: '识别缺少声调符号——请说得更清楚', interp_not_in_bank: '该术语尚未收入词库',
+  interp_open_term: '打开词条', interp_wrong_lang_vi: '需要译成越南语，但录音不是越南语。',
+  interp_wrong_lang_en: '需要译成英语，但录音不是英语。',
+  interp_fluency: '流畅度', interp_rate_unit: '词/秒', interp_pauses: '次停顿', interp_longest: '最长',
+  interp_flag_slow: '偏慢——尝试连贯表达', interp_flag_fast: '偏快——注意每个要点清晰', interp_flag_pauses: '停顿过长',
   practice_your_recording: '你的录音',
 });
 Object.assign(I18N.en, {
@@ -1831,6 +1856,12 @@ Object.assign(I18N.en, {
   practice_no_mic: 'Could not get microphone/camera permission. If using the app, check you have the latest update; or try opening with Safari/Chrome.',
   practice_no_speech_detected: "Couldn't hear clearly, try recording closer to the microphone.",
   practice_pronunciation: 'Pronunciation:', practice_grammar: 'Grammar:', practice_corrected: 'Suggested correction:',
+  interp_summary: 'Key points conveyed:', interp_ok: 'Covered', interp_partial: 'Partly covered', interp_missed: 'Not found in your rendition',
+  interp_expected: 'Suggested:', interp_accent_note: 'recognised without diacritics — speak more clearly', interp_not_in_bank: 'This term is not in the term bank yet',
+  interp_open_term: 'Open term card', interp_wrong_lang_vi: 'You need to interpret into VIETNAMESE, but the recording is not Vietnamese.',
+  interp_wrong_lang_en: 'You need to interpret into ENGLISH, but the recording is not English.',
+  interp_fluency: 'Fluency', interp_rate_unit: 'words/s', interp_pauses: 'pauses', interp_longest: 'longest',
+  interp_flag_slow: 'a bit slow — try to keep it flowing', interp_flag_fast: 'a bit fast — keep each point clear', interp_flag_pauses: 'long pauses',
   practice_your_recording: 'Your recording',
 });
 
@@ -2713,11 +2744,70 @@ function listenHighlightMarked(marked){
   return esc(marked).replace(/\(\(([^)]+)\)\)/g, '<mark class="listen-err-mark">$1</mark>');
 }
 
+// Chấm theo đơn vị ý (bài có key_units): phiên âm + đối chiếu xác định ở backend, giao diện chỉ dựng từ MÃ
+// trạng thái và bảng I18N → ngôn ngữ nhận xét luôn khớp ngôn ngữ giao diện.
+async function listenLineInterpret(seq, trimmedBlob, d, seg, targetLang, reference){
+  const lang = targetLang === 'text_en' ? 'en' : 'vi';
+  listenSetBadge(seq, 'checking', t('practice_scoring'));
+  const base64 = await blobToBase64(trimmedBlob);
+  const esc = (s) => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const recordingUrl = lineRecordingUrls[seq];
+  const playbackHtml = recordingUrl
+    ? `<div class="practice-playback"><audio controls src="${recordingUrl}"></audio><span>${t('practice_your_recording')}</span></div>`
+    : '';
+  let json;
+  try{
+    const res = await fetch(`${API_BASE}/api/interpret-check`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dialogue_id: d.id, seq, target_lang: lang, audio_base64: base64, fluency: trimmedBlob.fluency || null }),
+    });
+    json = await res.json();
+  }catch(e){
+    listenSetBadge(seq, 'bad', `${t('practice_error')}: ${e.message}`);
+    return;
+  }
+  const r = json && json.success ? json.data : null;
+  if(!r || !r.transcript){
+    listenSetBadge(seq, 'bad', playbackHtml + esc(t('practice_no_speech_detected')));
+    return;
+  }
+  const label = { ok: t('interp_ok'), partial: t('interp_partial'), missed: t('interp_missed') };
+  const icon = { ok: '✓', partial: '◐', missed: '✗' };
+  const chips = r.lang_ok ? r.units.map(u => {
+    const link = u.bank_id ? ` link" onclick="openPopup('${esc(u.bank_id)}')" title="${esc(t('interp_open_term'))}` : '" title="' + esc(u.in_bank ? '' : t('interp_not_in_bank'));
+    const hint = u.status === 'ok'
+      ? (u.accent_only ? `<span class="hint">${esc(t('interp_accent_note'))}</span>` : '')
+      : `<span class="hint">${esc(label[u.status])} · ${esc(t('interp_expected'))} ${esc(u.pref || '')}</span>`;
+    return `<button type="button" class="interp-chip ${u.status}${link}"><span class="hz">${icon[u.status]} ${esc(u.zh)}</span>${hint}</button>`;
+  }).join('') : '';
+  const warn = !r.lang_ok && r.lang_reason !== 'empty'
+    ? `<div class="interp-warn">${esc(t(lang === 'en' ? 'interp_wrong_lang_en' : 'interp_wrong_lang_vi'))}</div>` : '';
+  const f = r.fluency;
+  const fluHtml = f ? `<div class="interp-flu">${esc(t('interp_fluency'))}: ${f.rate_wps} ${esc(t('interp_rate_unit'))} · ${f.pause_count} ${esc(t('interp_pauses'))}${f.pause_count ? ` (${esc(t('interp_longest'))} ${f.longest_pause_s}s)` : ''}${f.flags.length ? ' · <span class="flag">' + f.flags.map(x => esc(t('interp_flag_' + x))).join('; ') + '</span>' : ''}</div>` : '';
+  const html = `
+    <div class="listen-selfcheck">
+      ${playbackHtml}
+      <div class="lsc-row"><span class="lsc-lab">${t('listen_you_said')}</span><span class="lsc-txt">${esc(r.transcript)}</span></div>
+      ${warn}
+      ${r.lang_ok ? `<div class="interp-summary">${esc(t('interp_summary'))} <span class="n">${r.counts.ok}/${r.total}</span>${r.counts.partial ? ` · ${esc(t('interp_partial'))} ${r.counts.partial}` : ''}</div>
+      <div class="interp-chips">${chips}</div>` : ''}
+      ${fluHtml}
+      <div class="lsc-row"><span class="lsc-lab">${t('listen_reference')}</span><span class="lsc-txt ref">${esc(reference)}</span></div>
+    </div>`;
+  listenSetBadge(seq, 'show', html);
+  const score = r.total ? Math.round(100 * (r.counts.ok + 0.5 * r.counts.partial) / r.total) : 0;
+  listenPushProgress(d.id, seq, targetLang, r.transcript, score);
+}
+
 async function listenLineScore(seq, trimmedBlob){
   const d = listenCurrentDialogue; if(!d) return;
   const seg = d.segments.find(s => s.seq === seq);
   const targetLang = listenRecognitionLang(d);
   const reference = seg ? seg[targetLang] : '';
+  if(seg && Array.isArray(seg.key_units) && seg.key_units.length && (targetLang === 'text_vi' || targetLang === 'text_en')){
+    return listenLineInterpret(seq, trimmedBlob, d, seg, targetLang, reference);
+  }
   listenSetBadge(seq, 'checking', t('practice_scoring'));
   const base64 = await blobToBase64(trimmedBlob);
   let json;
@@ -2939,6 +3029,23 @@ async function trimSilenceToWav(blob, minSilenceMs){
   if(channelData.length > segStart) keepRanges.push([segStart, channelData.length]);
   if(!keepRanges.length) keepRanges.push([0, channelData.length]); // toàn im lặng — giữ nguyên, để backend tự báo lỗi rõ ràng hơn là trả file rỗng
 
+  // Số liệu trôi chảy đo trên bản gốc (trước khi cắt lặng): thời gian nói thật + các quãng ngắt >= 0,6s
+  // nằm GIỮA lúc nói (bỏ phần lặng đầu/cuối). Không dùng AI — đo thẳng từ âm lượng.
+  const winMs = windowSize / sampleRate * 1000;
+  const firstLoud = isLoud.indexOf(true), lastLoud = isLoud.lastIndexOf(true);
+  const fluencyStats = { speech_ms: 0, pause_count: 0, longest_pause_ms: 0 };
+  if(firstLoud >= 0){
+    let run = 0;
+    for(let k = firstLoud; k <= lastLoud; k++){
+      if(isLoud[k]){
+        fluencyStats.speech_ms += winMs;
+        if(run * winMs >= 600){ fluencyStats.pause_count++; fluencyStats.longest_pause_ms = Math.max(fluencyStats.longest_pause_ms, run * winMs); }
+        run = 0;
+      } else run++;
+    }
+    fluencyStats.speech_ms = Math.round(fluencyStats.speech_ms);
+    fluencyStats.longest_pause_ms = Math.round(fluencyStats.longest_pause_ms);
+  }
   const totalLength = keepRanges.reduce((s, [a, b]) => s + (b - a), 0);
   const trimmed = audioCtx.createBuffer(audioBuffer.numberOfChannels, totalLength, sampleRate);
   for(let ch = 0; ch < audioBuffer.numberOfChannels; ch++){
@@ -2947,7 +3054,9 @@ async function trimSilenceToWav(blob, minSilenceMs){
     let pos = 0;
     for(const [a, b] of keepRanges){ dst.set(src.subarray(a, b), pos); pos += (b - a); }
   }
-  return audioBufferToWavBlob(trimmed);
+  const wavBlob = audioBufferToWavBlob(trimmed);
+  wavBlob.fluency = fluencyStats;
+  return wavBlob;
 }
 
 function audioBufferToWavBlob(buffer){
