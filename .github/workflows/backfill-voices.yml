@@ -1,0 +1,35 @@
+name: Backfill extra TTS voices
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+      - name: Sinh giọng bổ sung cho mọi bài tiếng Trung đã có
+        env:
+          GOOGLE_CREDENTIALS_JSON_B64: ${{ secrets.GOOGLE_CREDENTIALS_JSON_B64 }}
+        run: python scripts/audio_build.py backfill-voices
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backend/public/audio/listening
+          git diff --cached --quiet && exit 0
+          git commit -m "Sinh giọng bổ sung (Aoede/Zephyr/Orus) cho các bài tiếng Trung"
+          for i in 1 2 3 4 5; do
+            git push && exit 0
+            git pull --rebase origin main
+            sleep $((RANDOM % 10 + 5))
+          done
+          exit 1

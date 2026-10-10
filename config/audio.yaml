@@ -7,6 +7,13 @@ voices_google_en:
 voices_google_zh:
   narrator: "cmn-CN-Wavenet-C"
 
+# Giọng người học có thể chọn trong app (ngoài giọng mặc định narrator ở trên). Lưu ở <id>/<khóa>/NN-text_zh.mp3.
+# Chirp 3 HD: khóa là tên hiển thị gốc (Aoede, Zephyr nữ; Orus nam) — người dùng chọn sau khi nghe thử 2026-10-10.
+voices_extra_zh:
+  aoede: "cmn-CN-Chirp3-HD-Aoede"
+  zephyr: "cmn-CN-Chirp3-HD-Zephyr"
+  orus: "cmn-CN-Chirp3-HD-Orus"
+
 provider_settings:
   google:
     speaking_rate: 1.0

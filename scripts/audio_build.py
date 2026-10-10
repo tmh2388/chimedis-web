@@ -52,11 +52,18 @@ def google_tts(text, voice_name, settings, out_mp3, language_code=None):
     language_code = language_code or settings.get("language_code", "en-US")
     input_text = texttospeech.SynthesisInput(text=text)
     voice = texttospeech.VoiceSelectionParams(language_code=language_code, name=voice_name)
-    audio_config = texttospeech.AudioConfig(
-        audio_encoding=texttospeech.AudioEncoding.MP3,
-        speaking_rate=settings.get("speaking_rate", 1.0),
-        pitch=settings.get("pitch", 0.0),
-    )
+    if "Chirp3" in voice_name or "Chirp-HD" in voice_name:
+        # Chirp 3 HD không hỗ trợ pitch.
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3,
+            speaking_rate=settings.get("speaking_rate", 1.0),
+        )
+    else:
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3,
+            speaking_rate=settings.get("speaking_rate", 1.0),
+            pitch=settings.get("pitch", 0.0),
+        )
     for attempt in range(5):
         try:
             resp = client.synthesize_speech(input=input_text, voice=voice, audio_config=audio_config)
@@ -130,3 +137,45 @@ def build_passage(file_path, lang="text_en", voice_key="narrator"):
 
     full_mp3 = out_dir / f"full-{lang}.mp3"
     concat_mp3s(seg_files, full_mp3, pause_ms)
+
+    if lang == "text_zh":
+        build_extra_voices(file_path)
+
+
+def build_extra_voices(file_path, lang="text_zh"):
+    """Sinh thêm các giọng người học có thể chọn (voices_extra_zh) cho đoạn tiếng Trung — chỉ file từng câu
+    (app phát nối tiếp từng câu), lưu ở <id>/<khóa giọng>/NN-text_zh.mp3. Đã có file thì bỏ qua."""
+    cfg = load_audio_config()
+    extra = cfg.get("voices_extra_zh") or {}
+    if not extra:
+        return
+    settings = cfg["provider_settings"]["google"]
+    data = json.loads(Path(file_path).read_text(encoding="utf-8"))
+    if data.get("source_lang") == "en":
+        return
+    base = ROOT / "backend" / "public" / "audio" / "listening" / data["category"] / data["id"]
+    for key, voice in extra.items():
+        out_dir = base / key
+        out_dir.mkdir(parents=True, exist_ok=True)
+        for seg in data["segments"]:
+            out_mp3 = out_dir / f"{seg['seq']:02d}-{lang}.mp3"
+            if out_mp3.exists() and out_mp3.stat().st_size > 0:
+                continue
+            print(f"[{data['id']}] {key} đoạn {seg['seq']}...", file=__import__("sys").stderr)
+            google_tts(seg[lang], voice, settings, out_mp3, language_code=LANG_LOCALE.get(lang, "cmn-CN"))
+
+
+def backfill_extra_voices():
+    root = ROOT / "backend" / "data" / "listening"
+    for f in sorted(root.glob("*/*.json")):
+        if f.name.startswith("."):
+            continue
+        build_extra_voices(f)
+
+
+if __name__ == "__main__":
+    import sys as _sys
+    if len(_sys.argv) > 1 and _sys.argv[1] == "backfill-voices":
+        backfill_extra_voices()
+    else:
+        print("Dùng: python scripts/audio_build.py backfill-voices", file=_sys.stderr)
