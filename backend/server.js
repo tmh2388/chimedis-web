@@ -11,6 +11,9 @@ import { buildAPI } from './build-api.js';
 import { verifyFirebaseToken, isFirebaseConfigured } from './firebase-admin.js';
 import { analyzeInterpretation, buildVocabHint, normalize as normalizeInterp } from './lib/interpret-check.js';
 import { syncGeneralTerms } from './lib/general-terms-sync.js';
+import { resolvePlan, requirePlan, ensurePlanColumns, LIMITS } from './lib/plan.js';
+import { signTicket, verifyTicket, TICKET_TTL_SEC } from './lib/media-ticket.js';
+import * as userDocs from './lib/user-docs.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,6 +41,8 @@ const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
 // Gieo/cập nhật thuật ngữ "Tổng hợp" từ backend/data/general-terms/*.json vào MySQL mỗi khi DB sẵn sàng
 // (lúc khởi động và cả khi tự phục hồi sau sự cố).
 if (mysqlPool) {
+  onDbUp(() => ensurePlanColumns(mysqlPool).catch(() => {}));
+  onDbUp(() => userDocs.initUserDocs(mysqlPool).catch((e) => console.error('[user-docs] init:', e.message)));
   onDbUp(() => syncGeneralTerms(mysqlPool, path.join(__dirname, 'data', 'general-terms'))
     .then((r) => console.log(`[general-terms] đồng bộ: ${r.total} thuật ngữ trong file, ${r.written} dòng thay đổi`))
     .catch((err) => console.error('⚠️  Không đồng bộ được thuật ngữ Tổng hợp:', err.message)));
@@ -796,7 +801,7 @@ function extractJsonObject(text) {
   return JSON.parse(jsonSlice);
 }
 
-app.post('/api/pronunciation-score', express.json({ limit: '25mb' }), requireOpenAI, async (req, res) => {
+app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool, 'pro'), express.json({ limit: '25mb' }), requireOpenAI, async (req, res) => {
   try {
     const { audio_base64, format, reference_zh, ui_lang } = req.body || {};
     if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
@@ -879,7 +884,7 @@ async function transcribeWithOpenAI(buf, lang, hint) {
   throw new Error(lastErr || 'transcription_failed');
 }
 
-app.post('/api/interpret-check', express.json({ limit: '25mb' }), requireOpenAI, async (req, res) => {
+app.post('/api/interpret-check', verifyFirebaseToken, requirePlan(mysqlPool, 'pro'), express.json({ limit: '25mb' }), requireOpenAI, async (req, res) => {
   try {
     const { dialogue_id, seq, target_lang, audio_base64, fluency } = req.body || {};
     if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
@@ -953,6 +958,74 @@ app.put('/api/listening-progress', requireMysql, verifyFirebaseToken, async (req
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 // Middleware
+// ===== Audio chỉ cho người đã đăng nhập: vé ngắn hạn ?t= (xem lib/media-ticket.js) =====
+app.use('/audio/listening', (req, res, next) => {
+  if (process.env.AUDIO_AUTH === 'off') return next();
+  if (!verifyTicket(req.query.t)) return res.status(401).json({ success: false, error: 'login_required' });
+  res.set('Cache-Control', 'private, max-age=3600');
+  next();
+});
+
+app.get('/api/me', verifyFirebaseToken, async (req, res) => {
+  const plan = await resolvePlan(mysqlPool, req.firebaseUser);
+  res.json({ success: true, data: { uid: req.firebaseUser.uid, email: req.firebaseUser.email, plan, limits: LIMITS[plan] || LIMITS.free } });
+});
+
+app.post('/api/media-ticket', verifyFirebaseToken, (req, res) => {
+  res.json({ success: true, data: { ticket: signTicket(req.firebaseUser.uid), expires_in: TICKET_TTL_SEC } });
+});
+
+// ===== Tự Thêm: tài liệu riêng của người dùng Pro (AI tự biên tập + tạo audio) =====
+const requireDocsDb = (req, res, next) => (mysqlPool ? next() : res.status(503).json({ success: false, error: 'db_unavailable' }));
+const proOnly = [verifyFirebaseToken, requirePlan(mysqlPool, 'pro')];
+
+app.get('/api/my-docs', ...proOnly, requireDocsDb, async (req, res) => {
+  try { res.json({ success: true, data: await userDocs.listDocs(mysqlPool, req.firebaseUser.uid) }); }
+  catch (e) { res.status(500).json({ success: false, error: 'list_failed' }); }
+});
+
+app.post('/api/my-docs', ...proOnly, requireDocsDb, requireOpenAI, async (req, res) => {
+  try {
+    const { title, text, voice } = req.body || {};
+    const t = String(text || '');
+    if (t.trim().length < 20) return res.status(400).json({ success: false, error: 'too_short' });
+    const q = await userDocs.quotaCheck(mysqlPool, req.firebaseUser.uid, req.plan, t.length);
+    if (!q.ok) return res.status(q.code === 'pro_required' ? 403 : 429).json({ success: false, error: q.code, max: q.max });
+    const id = await userDocs.createDoc(mysqlPool, req.firebaseUser.uid, { title, text: t, voice });
+    res.status(202).json({ success: true, data: { id } });
+  } catch (e) { console.error('my-docs create:', e.message); res.status(500).json({ success: false, error: 'create_failed' }); }
+});
+
+app.get('/api/my-docs/:id', ...proOnly, requireDocsDb, async (req, res) => {
+  try {
+    const row = await userDocs.getDocRow(mysqlPool, req.firebaseUser.uid, req.params.id);
+    if (!row) return res.status(404).json({ success: false, error: 'not_found' });
+    if (row.status !== 'ready') return res.json({ success: true, data: { id: `my-${row.id}`, status: row.status, progress: row.progress, error: row.error } });
+    res.json({ success: true, data: { ...userDocs.toDialogue(row), status: 'ready' } });
+  } catch (e) { res.status(500).json({ success: false, error: 'get_failed' }); }
+});
+
+app.delete('/api/my-docs/:id', ...proOnly, requireDocsDb, async (req, res) => {
+  try {
+    const ok = await userDocs.deleteDoc(mysqlPool, req.firebaseUser.uid, req.params.id);
+    res.status(ok ? 200 : 404).json({ success: ok });
+  } catch (e) { res.status(500).json({ success: false, error: 'delete_failed' }); }
+});
+
+// Audio tài liệu riêng: vé ?t= (chủ vé phải là chủ tài liệu), giọng ?voice=default|aoede|zephyr|orus (tạo lần đầu, lưu DB).
+app.get('/api/my-docs/:id/audio/:seq', requireDocsDb, async (req, res) => {
+  try {
+    const tk = verifyTicket(req.query.t);
+    if (!tk) return res.status(401).json({ success: false, error: 'login_required' });
+    const row = await userDocs.getDocRow(mysqlPool, tk.uid, req.params.id);
+    if (!row || row.status !== 'ready') return res.status(404).json({ success: false, error: 'not_found' });
+    const mp3 = await userDocs.getOrMakeAudio(mysqlPool, row, Number(req.params.seq), String(req.query.voice || row.voice));
+    if (!mp3) return res.status(404).json({ success: false, error: 'not_found' });
+    res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, max-age=3600' });
+    res.send(mp3);
+  } catch (e) { console.error('my-docs audio:', e.message); res.status(500).json({ success: false, error: 'audio_failed' }); }
+});
+
 app.use(express.static(PUBLIC_DIR));
 // Gói giao diện cho app iOS (live update) — dựng từ chính PUBLIC_DIR, xem lib/app-bundle.js.
 // Chẩn đoán live-update: ghi lại mỗi lần app hỏi/tải gói giao diện (để biết app thật có đang cập nhật không).

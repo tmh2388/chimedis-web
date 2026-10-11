@@ -747,6 +747,34 @@ header{transition:padding .2s ease}
 .lsc-actions{display:flex;gap:8px;margin-top:6px}
 .lsc-btn{font-family:inherit;font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px;border:0;cursor:pointer}
 .lsc-btn.good{background:#1F7A41;color:#fff}
+.up-scrim{position:absolute;inset:0;background:rgba(14,58,58,.55);z-index:90;display:flex;align-items:center;justify-content:center;padding:20px}
+.up-box{background:#fff;border-radius:18px;padding:20px 18px;max-width:360px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.up-box h3{font-size:17px;margin:0 0 8px;color:var(--thamthm,#0E3A3A)}
+.up-box p{font-size:13.5px;margin:0 0 10px;line-height:1.5}
+.up-box ul{margin:0 0 14px;padding-left:18px;font-size:13px;line-height:1.55;color:var(--muc-mo,#6B6156)}
+.up-actions{display:flex;gap:10px;flex-wrap:wrap}
+.up-cta{background:var(--son,#C8452F);color:#fff;border-radius:999px;padding:9px 16px;font-weight:700;font-size:13px;text-decoration:none}
+.up-actions button{background:#f1ebde;border:0;border-radius:999px;padding:9px 16px;font-size:13px;cursor:pointer}
+.lsc-btn.analyze{background:var(--thamthm,#0E3A3A);color:#fff;margin-top:8px}
+.pro-tag{background:#E9B949;color:#3a2a00;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:999px;margin-left:6px;vertical-align:middle}
+.mydoc-box{background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:16px;padding:14px;margin-top:10px}
+.mydoc-box h3{font-size:15px;margin:0 0 6px}
+.mydoc-box p{font-size:12.5px;color:var(--muc-mo,#6B6156);margin:0 0 10px;line-height:1.5}
+.mydoc-box textarea{width:100%;min-height:150px;border:1px solid var(--vien,#e5ddcc);border-radius:12px;padding:10px;font:inherit;font-size:13.5px;resize:vertical}
+.mydoc-box input[type=text]{width:100%;border:1px solid var(--vien,#e5ddcc);border-radius:10px;padding:8px 10px;font:inherit;font-size:13.5px;margin-bottom:8px}
+.mydoc-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--muc-mo,#6B6156)}
+.mydoc-go{background:var(--son,#C8452F);color:#fff;border:0;border-radius:999px;padding:10px 18px;font-weight:700;font-size:13.5px;cursor:pointer;margin-top:10px}
+.mydoc-go:disabled{opacity:.5}
+.mydoc-item{display:flex;align-items:center;gap:10px;padding:10px 4px;border-top:1px solid var(--vien,#e5ddcc)}
+.mydoc-item:first-child{border-top:0}
+.mydoc-item .mt{flex:1;min-width:0;text-align:left;background:none;border:0;font:inherit;cursor:pointer;padding:0}
+.mydoc-item .mt strong{display:block;font-size:14px;color:var(--muc,#2a2118);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mydoc-item .mt small{color:var(--muc-mo,#8a7d6a);font-size:11.5px}
+.mydoc-st{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:#efe7d8;color:#6B6156;white-space:nowrap}
+.mydoc-st.ready{background:#E3F2E3;color:#2F7D2F}.mydoc-st.error{background:#FBEDE8;color:#B4472B}
+.mydoc-del{background:none;border:0;color:#B4472B;font-size:12px;cursor:pointer}
+.mydoc-notice{background:#FBF3DC;border:1px solid #E3C26C;border-radius:14px;padding:14px;margin-top:10px;font-size:13px;line-height:1.55}
+.mydoc-notice button{margin-top:10px}
 .lsc-btn.retry{background:var(--ngua-am,#efe7d8);color:var(--tham-2,#7a6a58)}
 .listen-recordfab.on{background:var(--thamthm,#0E3A3A)}
 .listen-campip{position:absolute;left:12px;bottom:calc(88px + env(safe-area-inset-bottom));width:96px;height:128px;border-radius:14px;overflow:hidden;z-index:46;background:#000;box-shadow:0 6px 18px rgba(0,0,0,.28);touch-action:none;border:2px solid #fff}
@@ -1543,7 +1571,9 @@ window.chimedisAuthStateChanged = async function(user){
       await syncSettingsWithServer();
       await syncProgressWithServer();
     }catch(e){ console.warn('[Chimedis] Lỗi đồng bộ sau đăng nhập:', e.message); }
-  }
+    await loadPlan();
+    if(state.tab === 'listenhome' || state.tab === 'listendialogue') render();
+  } else { state.plan = 'free'; listenTicket = null; }
   // Vừa đăng nhập -> tải lại /api/terms KÈM token để nhận domain gated "Thang phương".
   // Vừa đăng xuất -> tải lại KHÔNG token để loại "Thang phương" khỏi payload/cache.
   if(!!user !== wasLoggedIn){
@@ -1792,7 +1822,23 @@ Object.assign(I18N.vi, {
   listen_cat_y_an: 'Y Án', listen_cat_bao_chi: 'Báo Chí', listen_cat_tu_them: 'Tự Thêm', listen_cat_hoc_thuat: 'Học Thuật (Anh→Trung)',
   listen_empty: 'Chưa có hội thoại nào trong mục này.',
   listen_level_all: 'Tất cả', listen_level_so_cap: 'Sơ cấp', listen_level_trung_cap: 'Trung cấp', listen_level_cao_cap: 'Cao cấp',
-  listen_play_full: 'Phát toàn bài', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)', listen_stop: 'Dừng',
+  listen_play_full: 'Phát toàn bài', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)',
+  login_to_listen: 'Đăng nhập để nghe audio', login_to_record: 'Đăng nhập để ghi âm', login_to_analyze: 'Đăng nhập để dùng phân tích AI',
+  up_title: 'Tính năng dành cho gói Pro', up_body_analyze: 'Phân tích AI (chấm điểm, đối chiếu ý chính, gợi ý sửa) chỉ dành cho gói Pro.',
+  up_body_upload: 'Tải tài liệu riêng, để AI tự biên tập và tạo audio, là tính năng của gói Pro.',
+  up_feat1: 'Phân tích AI: đối chiếu thuật ngữ, ý chính, độ trôi chảy', up_feat2: 'Tự Thêm: tài liệu của bạn, AI biên tập + tạo audio',
+  up_contact: 'Liên hệ nâng cấp', up_later: 'Để sau', an_btn: 'Phân tích AI', an_again: 'Phân tích lại',
+  my_title: 'Tài liệu của bạn', my_login: 'Đăng nhập để tải tài liệu riêng của bạn.',
+  my_pro_detail: 'Bạn dán hoặc tải tệp .txt (tiếng Trung hoặc tiếng Anh) — AI dọn rác, tách câu, dịch Việt/Anh/Trung, thêm pinyin, chấm mức độ và tạo audio.',
+  my_hint: 'Dán văn bản (tối đa 6000 ký tự) hoặc chọn tệp .txt. AI chỉ BIÊN TẬP (dọn đầu/chân trang, lỗi xuống dòng, tách câu), giữ nguyên nội dung, rồi dịch và tạo audio.',
+  my_title_ph: 'Tiêu đề (không bắt buộc)', my_paste_ph: 'Dán văn bản tiếng Trung hoặc tiếng Anh vào đây…', my_file: 'Tệp .txt', my_chars: 'Ký tự',
+  my_submit: 'Biên tập bằng AI & tạo bài', my_list: 'Tài liệu đã tải', my_empty: 'Chưa có tài liệu nào.', my_untitled: 'Tài liệu chưa đặt tên',
+  my_st_queued: 'Đang chờ', my_st_editing: 'AI đang biên tập', my_st_audio: 'Đang tạo audio', my_st_ready: 'Sẵn sàng', my_st_error: 'Lỗi',
+  my_delete: 'Xoá', my_delete_confirm: 'Xoá tài liệu này và audio của nó?', my_submitted: 'Đã nhận — AI đang xử lý, vài phút nữa là xong.',
+  my_disclaimer: 'Bạn chịu trách nhiệm về quyền sử dụng tài liệu. Tài liệu và audio chỉ hiển thị riêng cho bạn.',
+  my_err_too_short: 'Văn bản quá ngắn (tối thiểu 20 ký tự).', my_err_too_long: 'Văn bản quá dài (tối đa 6000 ký tự).',
+  my_err_doc_limit: 'Bạn đã đạt số tài liệu tối đa — hãy xoá bớt.', my_err_daily_limit: 'Đã hết lượt tải hôm nay — thử lại ngày mai.',
+  my_err_lang: 'Chỉ hỗ trợ tài liệu tiếng Trung hoặc tiếng Anh.', my_err_edit: 'Không xử lý được tài liệu — thử lại sau.', listen_stop: 'Dừng',
   listen_target_lang: 'Nhắc lại bằng', listen_vi: 'Tiếng Việt', listen_en: 'Tiếng Anh',
   listen_listening: '🎙 Đang nghe...', listen_points: 'điểm', listen_retry: 'Không nhận diện được, thử lại',
   listen_no_speech: 'Trình duyệt không hỗ trợ ghi âm giọng nói',
@@ -1821,7 +1867,23 @@ Object.assign(I18N.zh, {
   listen_cat_y_an: '医案', listen_cat_bao_chi: '新闻', listen_cat_tu_them: '自建内容', listen_cat_hoc_thuat: '学术（英→中）',
   listen_empty: '此分类暂无对话。',
   listen_level_all: '全部', listen_level_so_cap: '初级', listen_level_trung_cap: '中级', listen_level_cao_cap: '高级',
-  listen_play_full: '播放全文', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）', listen_stop: '停止',
+  listen_play_full: '播放全文', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）',
+  login_to_listen: '登录后才能收听音频', login_to_record: '登录后才能录音', login_to_analyze: '登录后才能使用 AI 分析',
+  up_title: '此功能仅限 Pro 套餐', up_body_analyze: 'AI 分析（评分、要点对照、修改建议）仅限 Pro 套餐。',
+  up_body_upload: '上传自己的文档，由 AI 自动编辑并生成音频，是 Pro 套餐的功能。',
+  up_feat1: 'AI 分析：术语、要点、流畅度对照', up_feat2: '自建内容：您的文档，AI 编辑并生成音频',
+  up_contact: '联系升级', up_later: '稍后', an_btn: 'AI 分析', an_again: '重新分析',
+  my_title: '我的文档', my_login: '登录后才能上传您自己的文档。',
+  my_pro_detail: '粘贴文本或上传 .txt（中文或英文）——AI 清理杂项、分句、翻译成越/英/中、添加拼音、评定难度并生成音频。',
+  my_hint: '粘贴文本（最多 6000 字）或选择 .txt 文件。AI 只做“编辑”（清理页眉页脚、断行错误、分句），保持原意，再翻译并生成音频。',
+  my_title_ph: '标题（可选）', my_paste_ph: '在此粘贴中文或英文文本…', my_file: '.txt 文件', my_chars: '字数',
+  my_submit: 'AI 编辑并生成', my_list: '已上传文档', my_empty: '还没有文档。', my_untitled: '未命名文档',
+  my_st_queued: '排队中', my_st_editing: 'AI 编辑中', my_st_audio: '生成音频', my_st_ready: '已就绪', my_st_error: '出错',
+  my_delete: '删除', my_delete_confirm: '删除此文档及其音频？', my_submitted: '已收到——AI 正在处理，几分钟后完成。',
+  my_disclaimer: '您须自行确保拥有文档的使用权。文档和音频仅您本人可见。',
+  my_err_too_short: '文本太短（至少 20 个字符）。', my_err_too_long: '文本太长（最多 6000 字）。',
+  my_err_doc_limit: '文档数量已达上限——请先删除一些。', my_err_daily_limit: '今日次数已用完——请明天再试。',
+  my_err_lang: '仅支持中文或英文文档。', my_err_edit: '无法处理该文档——请稍后重试。', listen_stop: '停止',
   listen_target_lang: '跟读语言', listen_vi: '越南语', listen_en: '英语',
   listen_listening: '🎙 正在聆听...', listen_points: '分', listen_retry: '无法识别，请重试',
   listen_no_speech: '此浏览器不支持语音识别',
@@ -1850,7 +1912,23 @@ Object.assign(I18N.en, {
   listen_cat_y_an: 'Case Studies', listen_cat_bao_chi: 'News', listen_cat_tu_them: 'Custom', listen_cat_hoc_thuat: 'Academic (EN→ZH)',
   listen_empty: 'No dialogues in this category yet.',
   listen_level_all: 'All', listen_level_so_cap: 'Beginner', listen_level_trung_cap: 'Intermediate', listen_level_cao_cap: 'Advanced',
-  listen_play_full: 'Play full dialogue', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)', listen_stop: 'Stop',
+  listen_play_full: 'Play full dialogue', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)',
+  login_to_listen: 'Sign in to listen to audio', login_to_record: 'Sign in to record', login_to_analyze: 'Sign in to use AI analysis',
+  up_title: 'A Pro plan feature', up_body_analyze: 'AI analysis (scoring, key-point comparison, correction hints) is available on the Pro plan.',
+  up_body_upload: 'Uploading your own documents, with AI editing and audio generation, is a Pro plan feature.',
+  up_feat1: 'AI analysis: terminology, key points, fluency', up_feat2: 'My documents: AI editing + audio for your own texts',
+  up_contact: 'Contact us to upgrade', up_later: 'Not now', an_btn: 'AI analysis', an_again: 'Analyze again',
+  my_title: 'Your documents', my_login: 'Sign in to upload your own documents.',
+  my_pro_detail: 'Paste text or upload a .txt (Chinese or English) — AI cleans it, splits sentences, translates to Vietnamese/English/Chinese, adds pinyin, rates the level and generates audio.',
+  my_hint: 'Paste text (up to 6000 characters) or pick a .txt file. AI only EDITS (removes headers/footers, broken line breaks, splits sentences), keeps the content, then translates and generates audio.',
+  my_title_ph: 'Title (optional)', my_paste_ph: 'Paste Chinese or English text here…', my_file: '.txt file', my_chars: 'Characters',
+  my_submit: 'Edit with AI & create lesson', my_list: 'Uploaded documents', my_empty: 'No documents yet.', my_untitled: 'Untitled document',
+  my_st_queued: 'Queued', my_st_editing: 'AI editing', my_st_audio: 'Generating audio', my_st_ready: 'Ready', my_st_error: 'Error',
+  my_delete: 'Delete', my_delete_confirm: 'Delete this document and its audio?', my_submitted: 'Received — AI is processing it, ready in a few minutes.',
+  my_disclaimer: 'You are responsible for having the right to use the document. Documents and audio are visible only to you.',
+  my_err_too_short: 'Text is too short (at least 20 characters).', my_err_too_long: 'Text is too long (max 6000 characters).',
+  my_err_doc_limit: 'You have reached the document limit — please delete some.', my_err_daily_limit: 'Daily limit reached — try again tomorrow.',
+  my_err_lang: 'Only Chinese or English documents are supported.', my_err_edit: 'Could not process the document — please try again later.', listen_stop: 'Stop',
   listen_target_lang: 'Repeat in', listen_vi: 'Vietnamese', listen_en: 'English',
   listen_listening: '🎙 Listening...', listen_points: 'pts', listen_retry: "Couldn't recognize, try again",
   listen_no_speech: 'This browser does not support speech recognition',
@@ -2427,6 +2505,7 @@ function listenHome(){
 async function loadListenCategory(cat){
   state._listenCategory = cat;
   state._listenLevel = 'all';
+  if(cat === 'tu_them'){ render(); return; }
   try{
     const res = await fetch(`${API_BASE}/api/listening/dialogues?category=${encodeURIComponent(cat)}`);
     const json = await res.json();
@@ -2438,9 +2517,12 @@ async function loadListenCategory(cat){
 async function openListenDialogue(id){
   listenStopPlayback();
   try{
-    const res = await fetch(`${API_BASE}/api/listening/dialogues/${encodeURIComponent(id)}`);
+    const isMine = String(id).startsWith('my-');
+    const res = isMine
+      ? await authFetch(`/api/my-docs/${encodeURIComponent(String(id).slice(3))}`)
+      : await fetch(`${API_BASE}/api/listening/dialogues/${encodeURIComponent(id)}`);
     const json = await res.json();
-    listenCurrentDialogue = json.data || null;
+    listenCurrentDialogue = (json.data && json.data.segments) ? json.data : null;
   }catch(e){ listenCurrentDialogue = null; }
   state.tab = 'listendialogue';
   render(); scrollToTop();
@@ -2471,6 +2553,7 @@ function renderListenHome(){
   const tabsHtml = LISTEN_CATEGORIES.map(c =>
     `<span class="tab ${cat===c.key?'active':''}" onclick="loadListenCategory('${c.key}')">${t(c.label_key)}</span>`
   ).join('');
+  if(cat === 'tu_them'){ setTimeout(loadMyDocs, 0); return renderMyDocsHome(tabsHtml); }
   const allItems = listenDialoguesCache[cat] || [];
   const levelsPresent = Array.from(new Set(allItems.map(d => d.level).filter(Boolean)));
   const curLevel = state._listenLevel || 'all';
@@ -2514,6 +2597,7 @@ function setListenVoice(k){
   if(typeof listenStopPlayback === 'function') listenStopPlayback();
 }
 function listenAudioUrl(d, seq, lang){
+  if(d && String(d.id).startsWith('my-')) return `/api/my-docs/${String(d.id).slice(3)}/audio/${seq}?voice=${loadListenVoice()}`;
   const padded = String(seq).padStart(2, '0');
   const voice = lang === 'text_zh' ? loadListenVoice() : 'default';
   const sub = voice !== 'default' ? `${voice}/` : '';
@@ -2593,11 +2677,172 @@ function setListenSpeed(v){
   document.querySelectorAll('.listen-speed-btn').forEach(el => el.classList.toggle('on', parseFloat(el.dataset.speed) === v));
   if(listenAudioEl) listenAudioEl.playbackRate = v;
 }
+// ===== Gói dịch vụ, vé audio, đăng nhập bắt buộc để nghe (2026-10-11) =====
+// free (đã đăng nhập): nghe audio, ghi âm, nghe lại giọng mình. Pro trở lên: phân tích AI + "Tự Thêm". Quyền được
+// server kiểm tra thật (không chỉ ẩn nút): audio cần vé ?t=, AI/tài liệu riêng cần token + gói.
+state.plan = 'free';
+const PLAN_ORDER = ['free', 'pro', 'max'];
+function planAtLeast(min){ return PLAN_ORDER.indexOf(state.plan || 'free') >= PLAN_ORDER.indexOf(min); }
+async function loadPlan(){
+  if(!state.user){ state.plan = 'free'; return; }
+  try{
+    const r = await authFetch('/api/me');
+    const j = await r.json();
+    if(j && j.success && j.data) state.plan = j.data.plan || 'free';
+  }catch(e){ /* giữ gói cũ */ }
+}
+let listenTicket = null;
+async function listenEnsureTicket(force){
+  if(!state.user) return null;
+  if(!force && listenTicket && listenTicket.exp - Date.now() > 5 * 60 * 1000) return listenTicket.v;
+  try{
+    const r = await authFetch('/api/media-ticket', { method: 'POST' });
+    const j = await r.json();
+    if(j && j.success){ listenTicket = { v: j.data.ticket, exp: Date.now() + j.data.expires_in * 1000 }; return listenTicket.v; }
+  }catch(e){}
+  return null;
+}
+function withTicket(u){
+  if(!listenTicket) return u;
+  return u + (u.includes('?') ? '&' : '?') + 't=' + encodeURIComponent(listenTicket.v);
+}
+function listenNeedLogin(kind){
+  listenToast(t(kind === 'record' ? 'login_to_record' : kind === 'analyze' ? 'login_to_analyze' : 'login_to_listen'));
+  openAuthModal();
+}
+function closeUpgradeModal(){ document.getElementById('upgradeModal')?.remove(); }
+function openUpgradeModal(reason){
+  closeUpgradeModal();
+  const body = reason === 'upload' ? t('up_body_upload') : t('up_body_analyze');
+  document.getElementById('app').insertAdjacentHTML('beforeend',
+    `<div id="upgradeModal" class="up-scrim" onclick="if(event.target===this)closeUpgradeModal()"><div class="up-box" role="dialog">` +
+    `<h3>${t('up_title')}</h3><p>${body}</p><ul><li>${t('up_feat1')}</li><li>${t('up_feat2')}</li></ul>` +
+    `<div class="up-actions"><a class="up-cta" href="https://www.facebook.com/havanydao" target="_blank" rel="noopener">${t('up_contact')}</a>` +
+    `<button type="button" onclick="closeUpgradeModal()">${t('up_later')}</button></div></div></div>`);
+}
+const lineLastBlobs = {};
+function listenAnalyzeBtnHtml(seq, again){
+  return `<button type="button" class="lsc-btn analyze" onclick="listenAnalyzeClick(${seq})">✨ ${again ? t('an_again') : t('an_btn')}` +
+    `${planAtLeast('pro') ? '' : '<span class="pro-tag">PRO</span>'}</button>`;
+}
+function listenShowRecordedOnly(seq){
+  const url = lineRecordingUrls[seq];
+  const media = lineVideoUrls[seq] ? listenVideoHtml(seq)
+    : (url ? `<div class="practice-playback"><audio controls src="${url}"></audio><span>${t('practice_your_recording')}</span></div>` : '');
+  listenSetBadge(seq, 'show', `<div class="listen-selfcheck">${media}${listenAnalyzeBtnHtml(seq, false)}</div>`);
+}
+function listenAnalyzeClick(seq){
+  if(!state.user){ listenNeedLogin('analyze'); return; }
+  if(!planAtLeast('pro')){ openUpgradeModal('analyze'); return; }
+  const b = lineLastBlobs[seq];
+  if(b) listenLineScore(seq, b);
+}
+
+// ===== Tự Thêm: tài liệu riêng (Pro) =====
+let myDocs = [], myDocsPoll = null;
+const MY_ERR_KEYS = { too_short: 'my_err_too_short', too_long: 'my_err_too_long', doc_limit: 'my_err_doc_limit', daily_limit: 'my_err_daily_limit',
+  unsupported_language: 'my_err_lang', edit_failed: 'my_err_edit', tts_failed: 'my_err_edit', empty_result: 'my_err_edit', unknown: 'my_err_edit', pro_required: 'up_body_upload', openai_not_configured: 'my_err_edit', db_unavailable: 'my_err_edit' };
+async function loadMyDocs(){
+  if(!state.user || !planAtLeast('pro')){ myDocs = []; return; }
+  try{
+    const r = await authFetch('/api/my-docs');
+    const j = await r.json();
+    myDocs = (j && j.success) ? j.data : [];
+  }catch(e){}
+  renderMyDocList();
+  const pending = myDocs.some(d => ['queued', 'editing', 'audio'].includes(d.status));
+  if(pending && !myDocsPoll){ myDocsPoll = setInterval(() => { if(state.tab !== 'listenhome' || state._listenCategory !== 'tu_them'){ clearInterval(myDocsPoll); myDocsPoll = null; return; } loadMyDocs(); }, 3000); }
+  if(!pending && myDocsPoll){ clearInterval(myDocsPoll); myDocsPoll = null; }
+}
+function myDocStatusLabel(d){
+  if(d.status === 'ready') return t('my_st_ready');
+  if(d.status === 'error') return t('my_st_error');
+  if(d.status === 'audio') return `${t('my_st_audio')} ${d.progress || 0}%`;
+  if(d.status === 'editing') return t('my_st_editing');
+  return t('my_st_queued');
+}
+function renderMyDocList(){
+  const el = document.getElementById('myDocList');
+  if(!el) return;
+  const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  if(!myDocs.length){ el.innerHTML = `<div class="empty">${t('my_empty')}</div>`; return; }
+  el.innerHTML = myDocs.map(d => {
+    const title = esc(d.title || t('my_untitled'));
+    const sub = d.status === 'error' ? esc(t(MY_ERR_KEYS[d.error] || 'my_err_edit')) : `${d.level ? t('listen_level_' + d.level) + ' · ' : ''}${listenFmtDate(d.created_at)}`;
+    const open = d.status === 'ready' ? `onclick="openMyDoc('${d.id}')"` : 'disabled';
+    return `<div class="mydoc-item"><button type="button" class="mt" ${open}><strong>${title}</strong><small>${sub}</small></button>` +
+      `<span class="mydoc-st ${d.status}">${myDocStatusLabel(d)}</span><button type="button" class="mydoc-del" onclick="deleteMyDoc('${d.id}')">${t('my_delete')}</button></div>`;
+  }).join('');
+}
+function renderMyDocsHome(tabsHtml){
+  let inner;
+  if(!state.user){
+    inner = `<div class="mydoc-notice"><b>${t('my_title')}</b><br>${t('my_login')}<br><button class="mydoc-go" onclick="openAuthModal()">${t('dr_login')}</button></div>`;
+  } else if(!planAtLeast('pro')){
+    inner = `<div class="mydoc-notice"><b>${t('my_title')} <span class="pro-tag">PRO</span></b><br>${t('up_body_upload')}<br>${t('my_pro_detail')}<br>` +
+      `<button class="mydoc-go" onclick="openUpgradeModal('upload')">${t('up_contact')}</button></div>`;
+  } else {
+    const voices = LISTEN_VOICES.map(v => `<option value="${v.key}" ${loadListenVoice() === v.key ? 'selected' : ''}>${v.label}</option>`).join('');
+    inner = `<div class="mydoc-box"><h3>${t('my_title')} <span class="pro-tag">PRO</span></h3><p>${t('my_hint')}</p>` +
+      `<input type="text" id="myDocTitle" maxlength="100" placeholder="${t('my_title_ph')}">` +
+      `<textarea id="myDocText" maxlength="6000" placeholder="${t('my_paste_ph')}" oninput="document.getElementById('myDocCount').textContent=this.value.length"></textarea>` +
+      `<div class="mydoc-row"><label>${t('my_file')}: <input type="file" id="myDocFile" accept=".txt,text/plain" onchange="myDocPickFile(this)"></label>` +
+      `<span>${t('my_chars')}: <b id="myDocCount">0</b>/6000</span></div>` +
+      `<div class="mydoc-row"><label>${t('listen_voice_label')}: <select id="myDocVoice">${voices}</select></label></div>` +
+      `<button class="mydoc-go" id="myDocGo" onclick="submitMyDoc()">${t('my_submit')}</button>` +
+      `<p style="margin-top:10px">${t('my_disclaimer')}</p></div>` +
+      `<div class="mydoc-box"><h3>${t('my_list')}</h3><div id="myDocList"></div></div>`;
+  }
+  return `<div class="listen-screen"><div class="study-top"><h2>${t('listen_home')}</h2></div><div class="tabs">${tabsHtml}</div>${inner}</div>`;
+}
+function myDocPickFile(input){
+  const f = input.files && input.files[0];
+  if(!f) return;
+  if(f.size > 200 * 1024){ listenToast(t('my_err_too_long')); input.value = ''; return; }
+  const rd = new FileReader();
+  rd.onload = () => { const ta = document.getElementById('myDocText'); ta.value = String(rd.result || '').slice(0, 6000); document.getElementById('myDocCount').textContent = ta.value.length; };
+  rd.readAsText(f);
+}
+async function submitMyDoc(){
+  const text = document.getElementById('myDocText').value;
+  const title = document.getElementById('myDocTitle').value;
+  const voice = document.getElementById('myDocVoice').value;
+  const btn = document.getElementById('myDocGo');
+  if(text.trim().length < 20){ listenToast(t('my_err_too_short')); return; }
+  btn.disabled = true;
+  try{
+    const r = await authFetch('/api/my-docs', { method: 'POST', body: JSON.stringify({ title, text, voice }) });
+    const j = await r.json();
+    if(r.ok && j.success){
+      document.getElementById('myDocText').value = ''; document.getElementById('myDocTitle').value = ''; document.getElementById('myDocCount').textContent = '0';
+      listenToast(t('my_submitted'));
+      await loadMyDocs();
+    } else if(j && j.error === 'pro_required'){ openUpgradeModal('upload'); }
+    else listenToast(t(MY_ERR_KEYS[j && j.error] || 'my_err_edit'));
+  }catch(e){ listenToast(t('my_err_edit')); }
+  btn.disabled = false;
+}
+async function deleteMyDoc(id){
+  if(!confirm(t('my_delete_confirm'))) return;
+  try{ await authFetch(`/api/my-docs/${id}`, { method: 'DELETE' }); }catch(e){}
+  await loadMyDocs();
+}
+function openMyDoc(id){ openListenDialogue('my-' + id); }
+
 function listenNewAudio(url){
-  const a = new Audio(absUrl(url));
+  const a = new Audio(absUrl(withTicket(url)));
   a.playbackRate = loadListenSpeed();
   const m = url.match(/^(.*\/)(aoede|zephyr|orus)\/(\d+-text_zh\.mp3)$/);
-  if(m) a.addEventListener('error', () => { a.src = absUrl(m[1] + m[3]); a.play().catch(() => {}); }, { once: true });
+  let triedTicket = false, triedVoice = false;
+  a.addEventListener('error', async () => {
+    // Lỗi tải: vé hết hạn/chưa có (xin vé mới, thử lại 1 lần) rồi mới tới nhánh giọng chưa có file (rơi về giọng gốc).
+    if(!triedTicket && state.user){
+      triedTicket = true;
+      const tk = await listenEnsureTicket(true);
+      if(tk){ a.src = absUrl(withTicket(url)); a.play().catch(() => {}); return; }
+    }
+    if(m && !triedVoice){ triedVoice = true; a.src = absUrl(withTicket(m[1] + m[3])); a.play().catch(() => {}); }
+  });
   return a;
 }
 
@@ -2620,7 +2865,12 @@ function listenPlayStep(token){
   listenUpdateIcons();
 }
 // Bấm play/pause chung (nút lớn trên cùng = phát cả bài, hoặc truyền seqs riêng cho 1 câu).
-function listenTogglePlay(seqs){
+async function listenTogglePlay(seqs){
+  if(!state.user){ listenNeedLogin('listen'); return; }
+  await listenEnsureTicket();
+  _listenTogglePlayCore(seqs);
+}
+function _listenTogglePlayCore(seqs){
   if(listenIsPlaying){
     if(listenAudioEl) listenAudioEl.pause();
     listenIsPlaying = false;
@@ -2724,6 +2974,7 @@ function listenLineRecordToggle(seq){
     return;
   }
   if(lineRecordSeq !== null) return; // đã có câu khác đang ghi dở
+  if(!state.user){ listenNeedLogin('record'); return; }
   listenLineRecordStart(seq);
 }
 
@@ -2769,7 +3020,9 @@ function listenLineRecordStop(seq){
       // thu hồi URL cũ của câu này trước, tránh rò rỉ bộ nhớ khi ghi lại nhiều lần.
       if(lineRecordingUrls[finishedSeq]) URL.revokeObjectURL(lineRecordingUrls[finishedSeq]);
       lineRecordingUrls[finishedSeq] = URL.createObjectURL(trimmedBlob);
-      await listenLineScore(finishedSeq, trimmedBlob);
+      lineLastBlobs[finishedSeq] = trimmedBlob;
+      if(planAtLeast('pro')) await listenLineScore(finishedSeq, trimmedBlob);
+      else listenShowRecordedOnly(finishedSeq);
     }catch(err){
       listenSetBadge(finishedSeq, 'bad', `${t('practice_error')}: ${err.message}`);
     }
@@ -2796,12 +3049,13 @@ async function listenLineInterpret(seq, trimmedBlob, d, seg, targetLang, referen
     : '';
   let json;
   try{
-    const res = await fetch(`${API_BASE}/api/interpret-check`, {
+    const res = await authFetch('/api/interpret-check', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dialogue_id: d.id, seq, target_lang: lang, audio_base64: base64, fluency: trimmedBlob.fluency || null }),
     });
     json = await res.json();
+    if(res.status === 403 && json && json.error === 'pro_required'){ state.plan = 'free'; listenShowRecordedOnly(seq); openUpgradeModal('analyze'); return; }
+    if(res.status === 401){ listenShowRecordedOnly(seq); listenNeedLogin('analyze'); return; }
   }catch(e){
     listenSetBadge(seq, 'bad', `${t('practice_error')}: ${e.message}`);
     return;
@@ -2833,6 +3087,7 @@ async function listenLineInterpret(seq, trimmedBlob, d, seg, targetLang, referen
       <div class="interp-chips">${chips}</div>` : ''}
       ${fluHtml}
       <div class="lsc-row"><span class="lsc-lab">${t('listen_reference')}</span><span class="lsc-txt ref">${esc(reference)}</span></div>
+      ${listenAnalyzeBtnHtml(seq, true)}
     </div>`;
   listenSetBadge(seq, 'show', html);
   const score = r.total ? Math.round(100 * (r.counts.ok + 0.5 * r.counts.partial) / r.total) : 0;
@@ -2851,12 +3106,13 @@ async function listenLineScore(seq, trimmedBlob){
   const base64 = await blobToBase64(trimmedBlob);
   let json;
   try{
-    const res = await fetch(`${API_BASE}/api/pronunciation-score`, {
+    const res = await authFetch('/api/pronunciation-score', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ audio_base64: base64, format: 'wav', reference_zh: seg ? seg.text_zh : '', ui_lang: state.lang }),
     });
     json = await res.json();
+    if(res.status === 403 && json && json.error === 'pro_required'){ state.plan = 'free'; listenShowRecordedOnly(seq); openUpgradeModal('analyze'); return; }
+    if(res.status === 401){ listenShowRecordedOnly(seq); listenNeedLogin('analyze'); return; }
   }catch(e){
     listenSetBadge(seq, 'bad', `${t('practice_error')}: ${e.message}`);
     return;
@@ -2894,6 +3150,7 @@ async function listenLineScore(seq, trimmedBlob){
         <p class="practice-score-fb">${esc(json.data.grammar_feedback)}</p>
       </div>
       ${showCorrection ? `<div class="lsc-row"><span class="lsc-lab">${t('practice_corrected')}</span><span class="lsc-txt ref">${esc(correctedText)}</span></div>` : ''}
+      ${listenAnalyzeBtnHtml(seq, true)}
     </div>`;
   listenSetBadge(seq, 'show', html);
   const avgScore = Math.round(((json.data.pronunciation_score || 0) + (json.data.grammar_score || 0)) / 2);
@@ -2930,7 +3187,7 @@ function renderListenDialogue(){
       ${cbRow('zh','listen_cb_zh')}${cbRow('pinyin','listen_cb_pinyin')}${cbRow('vi','listen_cb_vi')}${cbRow('en','listen_cb_en')}
     </div>
     ${!feat.record ? `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>` : ''}
-    ${d.source_lang !== 'en' ? `<div class="listen-voicerow"><label for="listenVoiceSel">${t('listen_voice_label')}:</label><select id="listenVoiceSel" onchange="setListenVoice(this.value)">${LISTEN_VOICES.map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${v.label}</option>`).join('')}</select></div>` : ''}
+    ${(d.source_lang !== 'en' || String(d.id).startsWith('my-')) ? `<div class="listen-voicerow"><label for="listenVoiceSel">${t('listen_voice_label')}:</label><select id="listenVoiceSel" onchange="setListenVoice(this.value)">${LISTEN_VOICES.map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${v.label}</option>`).join('')}</select></div>` : ''}
     <div class="listen-playbar">
       <div class="listen-speedrow">
         ${LISTEN_SPEEDS.map(v => `<button class="listen-speed-btn ${loadListenSpeed()===v?'on':''}" data-speed="${v}" onclick="setListenSpeed(${v})">${v}×</button>`).join('')}
