@@ -1,0 +1,67 @@
+{
+  "id": "ya-auto-yaan-006",
+  "category": "y_an",
+  "modality": "duoc",
+  "level": "trung_cap",
+  "auto": true,
+  "mt_translated": true,
+  "title_vi": "Trương Tích Thuần y án: một trường hợp tiêu khát chứng",
+  "title_zh": "张锡纯医案：消渴症一例",
+  "title_en": "Zhang Xichun medical case: a case of xiaoke (consumptive thirst / diabetes)",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "一位二十多岁的同乡在天津经商，患了消渴症。",
+      "text_vi": "Một người cùng quê khoảng hai mươi tuổi đang ở Thiên Tân kinh doanh, mắc tiêu khát chứng.",
+      "text_en": "A fellow townsman in his twenties who was trading in Tianjin developed xiaoke (consumptive thirst / diabetes).",
+      "text_pinyin": "yī wèi èr shí duō suì de tóng xiāng zài tiān jīn jīng shāng ， huàn le xiāo kě zhèng 。"
+    },
+    {
+      "seq": 2,
+      "text_zh": "他出现口渴多饮、多食易饥、尿多消瘦等症状。",
+      "text_vi": "Anh ta xuất hiện các triệu chứng: khát uống nhiều, ăn nhiều nhưng dễ đói, tiểu nhiều và gầy sút.",
+      "text_en": "He presented symptoms of excessive thirst and drinking, increased appetite with easy hunger, polyuria, and emaciation.",
+      "text_pinyin": "tā chū xiàn kǒu kě duō yǐn 、 duō shí yì jī 、 niào duō xiāo shòu děng zhèng zhuàng 。"
+    },
+    {
+      "seq": 3,
+      "text_zh": "他在天津治疗三月余，换过十余位医生却无效，便回乡来求治张锡纯。",
+      "text_vi": "Anh ta đã điều trị ở Thiên Tân hơn ba tháng, đã thay hơn mười bác sĩ nhưng không hiệu quả, nên về quê đến tìm Trương Tích Thuần chữa trị.",
+      "text_en": "He had been treated in Tianjin for over three months and consulted more than ten physicians without effect, so he returned home to seek treatment from Zhang Xichun.",
+      "text_pinyin": "tā zài tiān jīn zhì liáo sān yuè yú ， huàn guò shí yú wèi yī shēng què wú xiào ， biàn huí xiāng lái qiú zhì zhāng xī chún 。"
+    },
+    {
+      "seq": 4,
+      "text_zh": "张锡纯为他诊脉，见脉象细微。",
+      "text_vi": "Trương Tích Thuần chẩn mạch cho anh ta, thấy mạch tượng tế vi.",
+      "text_en": "Zhang Xichun examined his pulse and found the pulse thin and faint.",
+      "text_pinyin": "zhāng xī chún wèi tā zhěn mài ， jiàn mài xiàng xì wēi 。"
+    },
+    {
+      "seq": 5,
+      "text_zh": "张用玉液汤加减，方中有生山药、生黄芪、知母、山萸肉、葛根、五味子、天花粉、生鸡内金和野台参。",
+      "text_vi": "Trương dùng Ngọc dịch thang gia giảm, phương gồm: sinh sơn dược, sinh hoàng kỳ, tri mẫu, sơn du nhục, cát căn, ngũ vị tử, thiên hoa phấn, sinh kê nội kim và dã thái sâm.",
+      "text_en": "Zhang prescribed Yuye Tang (Jade Liquid Decoction) with modifications; the formula included sheng shan yao, sheng huang qi, zhi mu, shan yu rou, ge gen, wu wei zi, tian hua fen, sheng ji nei jin, and ye tai shen.",
+      "text_pinyin": "zhāng yòng yù yè tāng jiā jiǎn ， fāng zhōng yǒu shēng shān yào 、 shēng huáng qí 、 zhī mǔ 、 shān yú ròu 、 gé gēn 、 wǔ wèi zi 、 tiān huā fěn 、 shēng jī nèi jīn hé yě tái cān 。"
+    },
+    {
+      "seq": 6,
+      "text_zh": "服数剂后，他的口渴止住了，但小便仍然频多。",
+      "text_vi": "Uống vài liều sau, cơn khát của anh chấm dứt, nhưng tiểu vẫn còn nhiều.",
+      "text_en": "After taking several doses, his thirst stopped, but his urination remained frequent.",
+      "text_pinyin": "fú shù jì hòu ， tā de kǒu kě zhǐ zhù le ， dàn xiǎo biàn réng rán pín duō 。"
+    },
+    {
+      "seq": 7,
+      "text_zh": "张于是加重山萸肉的用量，连服十剂后病愈。",
+      "text_vi": "Trương bèn tăng gia lượng sơn du nhục, uống liên tiếp mười liều thì khỏi bệnh.",
+      "text_en": "Zhang then increased the amount of shan yu rou; after ten consecutive doses the patient was cured.",
+      "text_pinyin": "zhāng yú shì jiā zhòng shān yú ròu de yòng liàng ， lián fú shí jì hòu bìng yù 。"
+    }
+  ],
+  "source_note_vi": "Diễn giải tự động (AI) từ dữ kiện y án thật (Dược/Thực liệu), nguồn: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Chưa qua rà soát thủ công.",
+  "source_note_zh": "由 AI 根据真实医案事实自动改写（方药/食疗），来源：张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》。尚未经人工校对。",
+  "source_note_en": "AI-generated narrative from real case facts (Herbal/Dietary therapy), source: 张锡纯《医学衷中参西录》，转引自罗大伦《养命之方》. Not yet human-reviewed.",
+  "created_at": "2026-10-11T01:07:36Z",
+  "updated_at": "2026-10-11T01:07:36Z"
+}
