@@ -14,6 +14,7 @@ import { syncGeneralTerms } from './lib/general-terms-sync.js';
 import { resolvePlan, requirePlan, ensurePlanColumns, LIMITS } from './lib/plan.js';
 import { signTicket, verifyTicket, TICKET_TTL_SEC } from './lib/media-ticket.js';
 import * as userDocs from './lib/user-docs.js';
+import { extractText, MAX_UPLOAD_BYTES } from './lib/doc-extract.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -693,6 +694,9 @@ function listListeningDialogues(category) {
         id: data.id, category: data.category, title: data.title, level: data.level || null,
         title_vi: data.title_vi || data.title, title_zh: data.title_zh || data.title, title_en: data.title_en || data.title,
         created_at: data.created_at || null, updated_at: data.updated_at || data.created_at || null,
+        source_lang: data.source_lang || undefined,
+        // Danh sách câu: để nút phát/dừng ngay trên thẻ ở trang danh sách nghe được cả bài mà không cần mở bài.
+        seqs: Array.isArray(data.segments) ? data.segments.map((x) => x.seq) : [],
       });
     }
   }
@@ -983,6 +987,18 @@ const proOnly = [verifyFirebaseToken, requirePlan(mysqlPool, 'pro')];
 app.get('/api/my-docs', ...proOnly, requireDocsDb, async (req, res) => {
   try { res.json({ success: true, data: await userDocs.listDocs(mysqlPool, req.firebaseUser.uid) }); }
   catch (e) { res.status(500).json({ success: false, error: 'list_failed' }); }
+});
+
+// Đọc chữ từ tệp Word/PDF/TXT người dùng chọn (chưa tạo bài — client hiển thị để kiểm tra rồi mới gửi POST /api/my-docs).
+app.post('/api/my-docs/extract', ...proOnly, express.raw({ type: () => true, limit: MAX_UPLOAD_BYTES }), async (req, res) => {
+  try {
+    const name = String(req.query.name || '').slice(0, 200);
+    const out = await extractText(Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0), name);
+    res.json({ success: true, data: { text: out.text, total_chars: out.total_chars, kind: out.kind } });
+  } catch (e) {
+    const known = ['unsupported_type', 'scanned_pdf', 'empty_file', 'extract_failed'];
+    res.status(known.includes(e.code) ? 422 : 500).json({ success: false, error: known.includes(e.code) ? e.code : 'extract_failed' });
+  }
 });
 
 app.post('/api/my-docs', ...proOnly, requireDocsDb, requireOpenAI, async (req, res) => {

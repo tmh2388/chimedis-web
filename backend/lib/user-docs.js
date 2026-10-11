@@ -365,7 +365,7 @@ export async function processDoc(pool, id) {
     const { passage, warnings } = await editDocument(row.raw_text);
     passage.warnings = warnings;
     await setStatus(pool, id, {
-      title: (row.title || passage.title_vi || '').slice(0, 200),
+      title: (passage.title_vi || row.title || '').slice(0, 200), // AI đặt tiêu đề theo nội dung; tên tệp chỉ là tạm lúc chờ
       source_lang: passage.source_lang, level: passage.level,
       passage_json: JSON.stringify(passage), status: 'audio', progress: 40,
     });
