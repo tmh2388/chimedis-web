@@ -5480,13 +5480,14 @@ async function checkLiveUpdate(force){
     try{ const ownTxt = (await (await fetch('bundle-version.txt', { cache: 'no-store' })).text()).trim(); if(/^\d+\.\d+\.\d+$/.test(ownTxt)) own = ownTxt; }catch(e){}
     if(own === latest.version){ luSet('đã là bản mới nhất'); return; }
     luSet('đang tải ' + latest.version);
-    const b = await cu.download({ url: latest.url, version: latest.version });
+    if(!latest.checksum){ luSet('latest.json thiếu checksum'); return; }
+    const b = await cu.download({ url: latest.url, version: latest.version, checksum: latest.checksum });
     luSet('đã tải xong, đang áp dụng');
     // Đang rảnh (không mở popup/không đang tìm) → áp dụng ngay (WebView tải lại 1 lần); nếu không → lần mở app sau.
     const idle = !state.popupId && !state.searchQuery && !document.getElementById('gsOverlay') && !document.querySelector('.fv');
     if(idle){ await cu.set({ id: b.id }); luSet('đã áp dụng'); } else { await cu.next({ id: b.id }); luSet('sẽ áp dụng ở lần mở sau'); }
   }catch(err){
-    luSet('lỗi: ' + String((err && (err.message || err.code)) || err).slice(0, 90));
+    luSet('lỗi: ' + String((err && (err.message || err.code)) || err).slice(0, 200));
     console.warn('[Chimedis] Live update lỗi:', err && err.message);
   }
   finally{ _luBusy = false; }

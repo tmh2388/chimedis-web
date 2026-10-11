@@ -86,7 +86,8 @@ export function getAppBundle(publicDir) {
   const files = collectBundleFiles(publicDir);
   const version = bundleVersion(files);
   const withVersion = [...files, ['bundle-version.txt', Buffer.from(version)]];
-  cache = { dir: publicDir, version, zip: makeZip(withVersion), files: withVersion };
+  const zip = makeZip(withVersion);
+  cache = { dir: publicDir, version, zip, files: withVersion, checksum: crypto.createHash('sha256').update(zip).digest('hex') };
   return cache;
 }
 
@@ -96,7 +97,8 @@ export function mountAppBundle(app, publicDir, origin = 'https://dict.chimedis.v
     try {
       const b = getAppBundle(publicDir);
       res.set('Cache-Control', 'no-cache');
-      res.json({ version: b.version, url: `${origin}/app-bundle/bundle.zip?v=${b.version}`, size: b.zip.length });
+      // checksum = SHA-256 (hex) của chính file zip: @capgo/capacitor-updater ≥ 8 BẮT BUỘC có (thiếu → "Checksum required", không tải gì).
+      res.json({ version: b.version, url: `${origin}/app-bundle/bundle.zip?v=${b.version}`, size: b.zip.length, checksum: b.checksum });
     } catch (e) { console.error('app-bundle:', e.message); res.status(503).json({ error: 'unavailable' }); }
   });
   app.get('/app-bundle/bundle.zip', (req, res) => {
