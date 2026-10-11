@@ -725,7 +725,15 @@ header{transition:padding .2s ease}
 .practice-pinyin{color:var(--muc-mo,#8a7d6a);font-size:11.5px;font-style:italic;margin:2px 0 0}
 .listen-voicerow{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:12.5px;color:var(--muc-mo,#8a7d6a)}
 .listen-voicerow select{flex:1;min-width:0;max-width:240px;border:1px solid var(--vien,#E4DCCC);border-radius:999px;padding:6px 10px;font-size:13px;background:#fff;color:var(--muc,#2a2118)}
-.listen-dialogue,.listen-screen{max-width:100%;overflow-x:hidden}
+.listen-dialogue{max-width:100%;overflow-x:clip}
+.listen-dialogue .listen-playbar{position:sticky;top:0;z-index:15;box-shadow:0 8px 10px -8px rgba(0,0,0,.28)}
+/* overflow-x:clip (không phải hidden): hidden biến .listen-screen thành khung cuộn và làm hỏng position:sticky bên trong. */
+.listen-screen{max-width:100%;overflow-x:clip}
+/* Tiêu đề + tab (+ lọc mức) đứng yên, chỉ danh sách bên dưới cuộn — giống các tab khác. */
+.listen-sticky{position:sticky;top:0;z-index:20;background:var(--ngua);margin:-14px -16px 0;padding:14px 16px 8px;box-shadow:0 6px 8px -8px rgba(0,0,0,.22)}
+.listen-sticky .study-top{margin-bottom:0}
+.listen-sticky .tabs{margin:10px 0 0}
+.listen-sticky .tabs .tab{padding:9px 2px;font-size:12px;line-height:1.25}
 .listen-dialogue *{min-width:0}
 .listen-card .lc-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .listen-card .lc-tx strong{flex:none}
@@ -2610,9 +2618,9 @@ function renderListenHome(){
       </div>`).join('')
     : `<div class="empty">${t('listen_empty')}</div>`;
   return `<div class="listen-screen">
-    <div class="study-top"><h2>${t('listen_home')}</h2></div>
+    <div class="listen-sticky"><div class="study-top"><h2>${t('listen_home')}</h2></div>
     <div class="tabs">${tabsHtml}</div>
-    ${levelFilterHtml}
+    ${levelFilterHtml}</div>
     <div class="listen-grid">${listHtml}</div>
   </div>`;
 }
@@ -2960,7 +2968,7 @@ function renderMyDocsHome(tabsHtml){
       `<p style="margin-top:10px">${t('my_disclaimer')}</p></div>` +
       `<div class="mydoc-box"><h3>${t('my_list')}</h3><div id="myDocList"></div></div>`;
   }
-  return `<div class="listen-screen"><div class="study-top"><h2>${t('listen_home')}</h2></div><div class="tabs">${tabsHtml}</div>${inner}</div>`;
+  return `<div class="listen-screen"><div class="listen-sticky"><div class="study-top"><h2>${t('listen_home')}</h2></div><div class="tabs">${tabsHtml}</div></div>${inner}</div>`;
 }
 function setMyDocMode(m){
   const ta = document.getElementById('myDocText');

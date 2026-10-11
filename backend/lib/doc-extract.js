@@ -5,7 +5,6 @@
  * Lỗi trả về dạng Error có .code: unsupported_type | scanned_pdf | empty_file | extract_failed.
  */
 import mammoth from 'mammoth';
-import { getDocumentProxy, extractText as pdfExtract } from 'unpdf';
 
 export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 const MAX_RETURN_CHARS = 60000;
@@ -47,6 +46,8 @@ export async function extractText(buffer, filename) {
   let raw = '';
   try {
     if (kind === 'pdf') {
+      // Nạp muộn: unpdf cần Node ≥ 22 — nếu máy chủ chạy Node cũ hơn thì chỉ PDF lỗi, không làm sập cả server lúc khởi động.
+      const { getDocumentProxy, extractText: pdfExtract } = await import('unpdf');
       const pdf = await getDocumentProxy(new Uint8Array(buffer));
       raw = (await pdfExtract(pdf, { mergePages: true })).text;
     }
