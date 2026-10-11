@@ -509,6 +509,9 @@ header{transition:padding .2s ease}
   color:var(--muc);cursor:pointer}
 .auth-social svg,.auth-social img{width:18px;height:18px;flex:0 0 18px}
 .ch-cn [data-social]{display:none!important}
+.ch-cn-note{display:none;margin:10px 0 0;font-size:12px;text-align:center}
+.ch-cn .ch-cn-note{display:block}
+.ch-cn-note a{color:var(--son,#C8452F);text-decoration:underline}
 .auth-social.fb{background:#1877F2;border-color:#1877F2;color:#fff}
 .auth-social.apple{background:#000;border-color:#000;color:#fff}
 .auth-divider{display:flex;align-items:center;gap:10px;color:var(--muc-mo);font-size:11px;margin:2px 0}
@@ -1365,16 +1368,34 @@ const FAVORITES_SENTINEL = '__favorites__';
 const FACEBOOK_LOGIN_ENABLED = true;
 const APPLE_LOGIN_ENABLED = true;
 const IN_NATIVE_APP = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
-// Chế độ Trung Quốc đại lục — CHỈ web (không áp dụng trong app iOS): múi giờ Asia/Shanghai|Chongqing|Harbin|Urumqi|Kashgar hoặc
-// navigator.language === 'zh-CN'; ép bằng localStorage ch_cn = '1' | '0'. Ở chế độ này ẩn nút Google/Apple/Facebook (cần truy cập
-// Google/Apple/Facebook) — chỉ còn email + mật khẩu, đi qua cổng /__fb/* nên không cần VPN.
-const CN_MODE = !IN_NATIVE_APP && (() => {
-  try{ const f = localStorage.getItem('ch_cn'); if(f === '1') return true; if(f === '0') return false; }catch(e){}
-  try{ if(/^Asia\/(Shanghai|Chongqing|Harbin|Urumqi|Kashgar)$/.test(Intl.DateTimeFormat().resolvedOptions().timeZone || '')) return true; }catch(e){}
-  return String(navigator.language || '').toLowerCase() === 'zh-cn';
-})();
-window.CH_CN = CN_MODE;
-if(CN_MODE) document.documentElement.classList.add('ch-cn');
+// Chế độ Trung Quốc đại lục — CHỈ web (không áp dụng trong app iOS). Nút Google/Apple/Facebook (popup, cần truy cập Google) chỉ
+// bị ẨN khi NGHI ở TQ (múi giờ Asia/Shanghai|Chongqing|Harbin|Urumqi|Kashgar hoặc navigator.language 'zh-CN') VÀ thăm dò
+// https://www.google.com/generate_204 thất bại — nên bật VPN thì thăm dò thành công, nút hiện. Ép tay: localStorage ch_cn='0'
+// (luôn hiện) / '1' (luôn ẩn). Cách KHỞI TẠO Auth không phụ thuộc chế độ này (xem khối module Firebase).
+function chDetectGoogleReachable(){
+  if(IN_NATIVE_APP) return Promise.resolve(true);
+  let forced = null; try{ forced = localStorage.getItem('ch_cn'); }catch(e){}
+  if(forced === '0') return Promise.resolve(true);
+  if(forced === '1') return Promise.resolve(false);
+  let suspected = false;
+  try{ suspected = /^Asia\/(Shanghai|Chongqing|Harbin|Urumqi|Kashgar)$/.test(Intl.DateTimeFormat().resolvedOptions().timeZone || ''); }catch(e){}
+  if(!suspected) suspected = String(navigator.language || '').toLowerCase() === 'zh-cn';
+  if(!suspected) return Promise.resolve(true);
+  return (async () => {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 3500);
+    try{ await fetch('https://www.google.com/generate_204', { mode: 'no-cors', cache: 'no-store', signal: ctl.signal }); return true; }
+    catch(e){ return false; }
+    finally{ clearTimeout(timer); }
+  })();
+}
+window.googleReachable = chDetectGoogleReachable();
+window.googleReachable.then((ok) => { document.documentElement.classList.toggle('ch-cn', !ok); });
+// Lối thoát trong hộp đăng nhập: đã bật VPN mà thăm dò sai → người dùng tự bật hiện nút và nhớ lựa chọn.
+window.chForceSocial = function(){
+  try{ localStorage.setItem('ch_cn', '0'); }catch(e){}
+  document.documentElement.classList.remove('ch-cn');
+};
 
 
 
@@ -1548,6 +1569,7 @@ function renderAuthModal(){
       ${FACEBOOK_LOGIN_ENABLED ? `<button class="auth-social fb" data-social onclick="doSignInFacebook()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg><span>${t('auth_facebook')}</span></button>` : ''}
       ${APPLE_LOGIN_ENABLED ? `<button class="auth-social apple" data-social onclick="doSignInApple()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.468 2.276-1.223 3.09-.813.87-2.144 1.54-3.253 1.45-.132-1.1.45-2.28 1.174-3.03.81-.85 2.204-1.47 3.302-1.51.019.16.019.32 0 0zM20.5 17.29c-.61 1.4-.9 2.02-1.68 3.26-1.09 1.72-2.63 3.87-4.53 3.88-1.69.02-2.12-1.11-4.42-1.1-2.3.01-2.77 1.12-4.46 1.1-1.9-.01-3.35-1.94-4.44-3.66C-.42 16.42-.83 10.3 1.66 7.04c1.16-1.53 2.98-2.5 4.71-2.5 1.76 0 2.86 1.12 4.32 1.12 1.41 0 2.27-1.12 4.31-1.12 1.53 0 3.16.83 4.32 2.27-3.8 2.08-3.18 7.5.98 8.4z"/></svg><span>${t('auth_apple')}</span></button>` : ''}
       <div class="auth-divider" data-social>${t('auth_or')}</div>
+      <p class="ch-cn-note"><a href="#" onclick="chForceSocial();return false">${t('cn_show_social')}</a></p>
       ${isSignup ? `<input class="auth-field" id="authName" placeholder="${t('auth_name_ph')}">` : ''}
       <input class="auth-field" id="authEmail" type="email" autocomplete="email" placeholder="${t('auth_email_ph')}">
       <input class="auth-field" id="authPassword" type="password" autocomplete="${isSignup ? 'new-password' : 'current-password'}" placeholder="${t('auth_password_ph')}">
@@ -2776,6 +2798,7 @@ function listenNeedLogin(kind){
 }
 // Ghi đè/ bổ sung chuỗi cho Tự Thêm (Word/PDF/TXT, 2 chế độ) và gói dịch vụ (2026-10-11).
 Object.assign(I18N.vi, {
+  cn_show_social: 'Đã bật VPN mà không thấy nút Google? Bấm để hiện',
   dr_plan: 'Gói dịch vụ', plan_current: 'Gói hiện tại', plan_name_free: 'Free', plan_name_pro: 'Pro', plan_name_max: 'Max',
   plans_title: 'Gói dịch vụ: Free và Pro khác nhau thế nào?', plans_intro: 'Bạn cần đăng nhập để nghe, ghi âm và nghe lại giọng của mình. Gói Pro mở thêm phân tích AI và tài liệu riêng.',
   plans_compare: 'So sánh gói', plans_see_upgrade: 'Xem quyền lợi gói Pro', plans_yours: 'Gói của bạn', plans_close: 'Đóng', plans_free_price: 'Miễn phí', plans_per_month: '/tháng',
@@ -2794,6 +2817,7 @@ Object.assign(I18N.vi, {
   my_err_empty: 'Tệp trống hoặc không có chữ.', my_err_extract: 'Không đọc được tệp này. Thử tệp khác, hoặc dán nội dung.', my_err_file_big: 'Tệp quá lớn (tối đa 10 MB).',
 });
 Object.assign(I18N.zh, {
+  cn_show_social: '已开启 VPN 却看不到 Google 登录按钮？点此显示',
   dr_plan: '服务套餐', plan_current: '当前套餐', plan_name_free: 'Free', plan_name_pro: 'Pro', plan_name_max: 'Max',
   plans_title: '套餐：Free 与 Pro 有何不同？', plans_intro: '登录后可收听音频、录音并回听自己的声音。Pro 套餐另开通 AI 分析与自建文档。',
   plans_compare: '对比套餐', plans_see_upgrade: '查看 Pro 权益', plans_yours: '您的套餐', plans_close: '关闭', plans_free_price: '免费', plans_per_month: '/月',
@@ -2812,6 +2836,7 @@ Object.assign(I18N.zh, {
   my_err_empty: '文件为空或没有文字。', my_err_extract: '无法读取该文件。请换一个文件，或直接粘贴内容。', my_err_file_big: '文件过大（最大 10 MB）。',
 });
 Object.assign(I18N.en, {
+  cn_show_social: 'On a VPN but don\'t see the Google button? Tap to show',
   dr_plan: 'Plans', plan_current: 'Current plan', plan_name_free: 'Free', plan_name_pro: 'Pro', plan_name_max: 'Max',
   plans_title: 'Plans: how Free and Pro differ', plans_intro: 'Sign in to listen, record and replay your own voice. Pro adds AI analysis and your own documents.',
   plans_compare: 'Compare plans', plans_see_upgrade: 'See what Pro includes', plans_yours: 'Your plan', plans_close: 'Close', plans_free_price: 'Free', plans_per_month: '/month',
@@ -5544,7 +5569,7 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
     getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult,
     GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithCredential,
     signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut,
-    setPersistence, browserLocalPersistence, initializeAuth, indexedDBLocalPersistence,
+    setPersistence, browserLocalPersistence, initializeAuth, indexedDBLocalPersistence, browserPopupRedirectResolver,
   } from './vendor/firebase/firebase-auth.js';
 
   const FIREBASE_CONFIG = {
@@ -5555,6 +5580,8 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
   };
 
   let auth = null;
+  // Trong app iOS giữ nguyên hành vi cũ (không truyền resolver → undefined); chỉ web mới truyền.
+  const POPUP_RESOLVER = (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) ? undefined : browserPopupRedirectResolver;
   try{
     const app = initializeApp(FIREBASE_CONFIG);
     // 2026-10-09: từ build 9 app iOS chạy giao diện đóng gói sẵn ở capacitor://localhost. getAuth() mặc định
@@ -5562,10 +5589,11 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
     // (Google native xong, có email báo, nhưng signInWithCredential không bao giờ trả về → popup đứng im, không lỗi).
     // Trong app: initializeAuth chỉ với localStorage, không IndexedDB, không resolver popup/iframe.
     const _inNativeApp = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
-    // Chế độ TQ (chỉ web, xem CH_CN): initializeAuth KHÔNG kèm popupRedirectResolver để không nạp apis.google.com (bị chặn).
+    // Web: LUÔN initializeAuth không kèm popupRedirectResolver (không gọi apis.google.com lúc tải trang — chặn được ở TQ); khi bấm
+    // nút mạng xã hội thì truyền POPUP_RESOLVER vào signInWithPopup/Redirect/getRedirectResult nên vẫn hoạt động (cả khi bật VPN).
     auth = _inNativeApp
       ? initializeAuth(app, { persistence: browserLocalPersistence })
-      : (window.CH_CN ? initializeAuth(app, { persistence: [indexedDBLocalPersistence, browserLocalPersistence] }) : getAuth(app));
+      : initializeAuth(app, { persistence: [indexedDBLocalPersistence, browserLocalPersistence] });
     // 2026-09-12: bản trước dùng indexedDBLocalPersistence để sửa lỗi "mỗi lần mở app phải
     // đăng nhập lại" (xem lịch sử bên dưới) NHƯNG gây lỗi NẶNG HƠN: mở IndexedDB trong
     // WKWebView của app iOS bị TREO (Promise không bao giờ resolve/reject) — Firebase Auth xếp
@@ -5603,7 +5631,11 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
     });
   }
 
-  if(auth && !window.CH_CN){ getRedirectResult(auth).catch((e) => console.warn('[Chimedis] redirect result:', e && e.message)); }
+  if(auth){
+    // App: như cũ. Web: chỉ khi Google tới được (ở TQ không VPN thì bỏ qua, tránh treo/báo lỗi).
+    const _rr = POPUP_RESOLVER === undefined ? getRedirectResult(auth) : window.googleReachable.then((ok) => ok ? getRedirectResult(auth, POPUP_RESOLVER) : null);
+    Promise.resolve(_rr).catch((e) => console.warn('[Chimedis] redirect result:', e && e.message));
+  }
 
   // signInWithPopup KHÔNG hoạt động trong WebView app Capacitor (cửa sổ OAuth mở Safari
   // ngoài, credential không quay ngược vào WebView) — và signInWithRedirect cũng không (app
@@ -5642,12 +5674,12 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
     if(!auth) throw new Error('Firebase chưa cấu hình');
     if(IN_NATIVE){
       if(provider instanceof GoogleAuthProvider && fbAuthPlugin()) return nativeGoogleSignIn();
-      return signInWithRedirect(auth, provider); // Facebook trong app: chưa có native, tạm redirect
+      return signInWithRedirect(auth, provider, POPUP_RESOLVER); // Facebook trong app: chưa có native, tạm redirect
     }
-    try{ return await signInWithPopup(auth, provider); }
+    try{ return await signInWithPopup(auth, provider, POPUP_RESOLVER); }
     catch(e){
       if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment','auth/cancelled-popup-request','auth/popup-closed-by-user'].includes(e.code)){
-        return signInWithRedirect(auth, provider);
+        return signInWithRedirect(auth, provider, POPUP_RESOLVER);
       }
       throw e;
     }
@@ -5672,10 +5704,10 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
       }
       // Trình duyệt web: popup, chặn popup thì redirect.
       const provider = new OAuthProvider('apple.com'); provider.addScope('email'); provider.addScope('name');
-      try{ return await signInWithPopup(auth, provider); }
+      try{ return await signInWithPopup(auth, provider, POPUP_RESOLVER); }
       catch(e){
         if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment','auth/cancelled-popup-request'].includes(e.code)){
-          return signInWithRedirect(auth, provider);
+          return signInWithRedirect(auth, provider, POPUP_RESOLVER);
         }
         throw e;
       }
