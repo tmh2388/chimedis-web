@@ -185,5 +185,9 @@ export async function buildAPI() {
 
 const isMainModule = process.argv[1] && import.meta.url === `file://${process.argv[1]}`;
 if (isMainModule) {
-  buildAPI().catch(() => process.exit(1));
+  // Lỗi đọc Google Sheets (chưa chia sẻ sheet cho service account, hết quota, mạng...) KHÔNG được làm hỏng deploy:
+  // trước đây thoát mã 1 → Hostinger báo "Build failed" và giữ mãi bản cũ. Ghi dữ liệu rỗng như khi chưa cấu hình rồi đi tiếp.
+  buildAPI().catch((e) => {
+    writePlaceholderData(`Không đọc được Google Sheets (${e && e.message}). Nếu cần đồng bộ: chia sẻ sheet cho email service account (quyền Người xem).`);
+  });
 }
