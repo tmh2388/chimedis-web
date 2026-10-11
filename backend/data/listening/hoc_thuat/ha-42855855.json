@@ -1,0 +1,115 @@
+{
+  "id": "ha-42855855",
+  "category": "hoc_thuat",
+  "level": "cao_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Molecular mechanism of Xanthotoxol against gastric cancer: A comprehensive study integrating network pharmacology, computer simulations, and experimental validation.",
+  "title_zh": "黄曲霉醇抗胃癌的分子机制：一项整合网络药理学、计算机模拟和实验验证的综合研究。",
+  "title_vi": "Cơ chế phân tử của Xanthotoxol chống ung thư dạ dày: Một nghiên cứu toàn diện tích hợp dược lý mạng, mô phỏng máy tính và xác nhận thực nghiệm.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Gastric cancer (GC) is a prevalent malignant tumor of the digestive system worldwide.",
+      "text_zh": "胃癌（ GC ）是全球范围内流行的消化系统恶性肿瘤。",
+      "text_vi": "Ung thư dạ dày (GC) là một khối u ác tính phổ biến của hệ tiêu hóa trên toàn thế giới.",
+      "text_pinyin": "wèi ái （ GC ） shì quán qiú fàn wéi nèi liú xíng de xiāo huà xì tǒng è xìng zhǒng liú 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "Xanthotoxol (Xan), a natural compound extracted from traditional Chinese medicine such as Angelica archangelica, has demonstrated antitumor properties.",
+      "text_zh": "黄曲霉素（ XAN ）是一种从当归等中药中提取的天然化合物，具有抗肿瘤特性。",
+      "text_vi": "Xanthotoxol (Xan), một hợp chất tự nhiên được chiết xuất từ y học cổ truyền Trung Quốc như Angelica archangelica, đã chứng minh các đặc tính chống khối u.",
+      "text_pinyin": "huáng qū méi sù （ XAN ） shì yī zhǒng cóng dāng guī děng zhōng yào zhōng tí qǔ de tiān rán huà hé wù ， jù yǒu kàng zhǒng liú tè xìng 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "However, its specific effects on GC remain unreported.",
+      "text_zh": "然而，其对GC的具体影响仍未报告。",
+      "text_vi": "Tuy nhiên, các tác động cụ thể của nó đối với GC vẫn chưa được báo cáo.",
+      "text_pinyin": "rán ér ， qí duì GC de jù tǐ yǐng xiǎng réng wèi bào gào 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "Hub targets of Xan in GC were identified by integrating weighted gene co-expression network analysis (WGCNA) with network pharmacology.",
+      "text_zh": "通过将加权基因共表达网络分析（ WGCNA ）与网络药理学相结合，确定GC中XAN的Hub靶点。",
+      "text_vi": "Các đích trung tâm của Xan trong GC được xác định bằng cách tích hợp phân tích mạng đồng biểu hiện gen có trọng số (WGCNA) với dược lý mạng.",
+      "text_pinyin": "tōng guò jiāng jiā quán jī yīn gòng biǎo dá wǎng luò fēn xī （ WGCNA ） yǔ wǎng luò yào lǐ xué xiāng jié hé ， què dìng GC zhōng XAN de Hub bǎ diǎn 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "Molecular docking and molecular dynamics (MD) simulations were conducted to analyze the interaction between the hub targets and Xan.",
+      "text_zh": "进行了分子对接和分子动力学（ MD ）模拟，以分析HUB靶与XAN之间的相互作用。",
+      "text_vi": "Các mô phỏng docking phân tử và động lực học phân tử (MD) được tiến hành để phân tích sự tương tác giữa các đích trung tâm và Xan.",
+      "text_pinyin": "jìn xíng le fèn zǐ duì jiē hé fèn zǐ dòng lì xué （ MD ） mó nǐ ， yǐ fēn xī HUB bǎ yǔ XAN zhī jiān de xiāng hù zuò yòng 。"
+    },
+    {
+      "seq": 6,
+      "text_en": "The effects of Xan on GC cell proliferation, cell cycle, apoptosis, migration, and invasion were examined using cell experiments and xenograft tumor model.",
+      "text_zh": "使用细胞实验和异种移植肿瘤模型检查XAN对GC细胞增殖、细胞周期、凋亡、迁移和侵袭的影响。",
+      "text_vi": "Ảnh hưởng của Xan đối với sự tăng sinh tế bào GC, chu kỳ tế bào, sự chết tế bào theo chương trình, sự di chuyển, và sự xâm lấn được kiểm tra bằng cách sử dụng các thử nghiệm tế bào và mô hình khối u ghép ngoại lai.",
+      "text_pinyin": "shǐ yòng xì bāo shí yàn hé yì zhǒng yí zhí zhǒng liú mó xíng jiǎn chá XAN duì GC xì bāo zēng zhí 、 xì bāo zhōu qī 、 diāo wáng 、 qiān yí hé qīn xí de yǐng xiǎng 。"
+    },
+    {
+      "seq": 7,
+      "text_en": "Histopathological evaluation of changes in tumor and liver tissues was performed after Xan intervention.",
+      "text_zh": "XAN干预后进行肿瘤和肝组织变化的组织病理学评估。",
+      "text_vi": "Đánh giá mô bệnh học về những thay đổi trong khối u và mô gan được thực hiện sau khi Xan can thiệp.",
+      "text_pinyin": "XAN gān yù hòu jìn xíng zhǒng liú hé gān zǔ zhī biàn huà de zǔ zhī bìng lǐ xué píng gū 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "Western blot and reverse transcription quantitative polymerase chain reaction (RT-qPCR) were employed to analyze hub target expression and clarify Xan's molecular mechanism against GC.",
+      "text_zh": "采用Western blot和逆转录定量聚合酶链反应（ RT-qPCR ）分析HUB靶点表达，阐明Xan抗GC的分子机制。",
+      "text_vi": "Phản ứng chuỗi polymeraza định lượng phiên mã ngược và thấm tách Western (RT-qPCR) được sử dụng để phân tích sự biểu hiện đích trung tâm và làm rõ cơ chế phân tử của Xan chống lại GC.",
+      "text_pinyin": "cǎi yòng Western blot hé nì zhuǎn lù dìng liàng jù hé méi liàn fǎn yìng （ RT-qPCR ） fēn xī HUB bǎ diǎn biǎo dá ， chǎn míng Xan kàng GC de fèn zǐ jī zhì 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "A total of six hub genes highly correlated with GC were identified (MMP12, KDR, CCND1, PDGFRB, PLAU, and PLK1).",
+      "text_zh": "共鉴定出6个与GC高度相关的hub基因（ MMP12、KDR、CCND1、PDGFRB、PLAU和PLK1 ）。",
+      "text_vi": "Tổng cộng sáu gen trung tâm có mối tương quan cao với GC đã được xác định (MMP12, KDR, CCND1, PDGFRB, PLAU và PLK1).",
+      "text_pinyin": "gòng jiàn dìng chū 6 gè yǔ GC gāo dù xiāng guān de hub jī yīn （ MMP12、KDR、CCND1、PDGFRB、PLAU hé PLK1 ）。"
+    },
+    {
+      "seq": 10,
+      "text_en": "Molecular docking and MD simulations revealed a significant binding affinity between Xan and hub genes.",
+      "text_zh": "分子对接和MD模拟揭示了XAN和HUB基因之间的显著结合亲和力。",
+      "text_vi": "Các mô phỏng docking phân tử và MD cho thấy ái lực gắn kết đáng kể giữa Xan và các gen trung tâm.",
+      "text_pinyin": "fèn zǐ duì jiē hé MD mó nǐ jiē shì le XAN hé HUB jī yīn zhī jiān de xiǎn zhù jié hé qīn hé lì 。"
+    },
+    {
+      "seq": 11,
+      "text_en": "Experiments demonstrated that Xan inhibited proliferation, cell cycle, migration, and invasion while promoting apoptosis.",
+      "text_zh": "实验表明， XAN抑制增殖、细胞周期、迁移和侵袭，同时促进细胞凋亡。",
+      "text_vi": "Các thử nghiệm đã chứng minh rằng Xan ức chế sự tăng sinh, chu kỳ tế bào, sự di chuyển và sự xâm lấn trong khi thúc đẩy quá trình chết tế bào theo chương trình.",
+      "text_pinyin": "shí yàn biǎo míng ， XAN yì zhì zēng zhí 、 xì bāo zhōu qī 、 qiān yí hé qīn xí ， tóng shí cù jìn xì bāo diāo wáng 。"
+    },
+    {
+      "seq": 12,
+      "text_en": "Xan could alleviate liver injury caused by subcutaneous tumor in mice.",
+      "text_zh": "XAN可减轻小鼠皮下肿瘤引起的肝损伤。",
+      "text_vi": "Xan có thể làm giảm tổn thương gan do khối u dưới da ở chuột.",
+      "text_pinyin": "XAN kě jiǎn qīng xiǎo shǔ pí xià zhǒng liú yǐn qǐ de gān sǔn shāng 。"
+    },
+    {
+      "seq": 13,
+      "text_en": "Furthermore, Xan upregulated MMP12 expression and downregulated KDR, CCND1, PDGFRB, PLAU, and PLK1 in GC cells.",
+      "text_zh": "此外， Xan在GC细胞中上调MMP12表达并下调KDR、CCND1、PDGFRB、PLAU和PLK1。",
+      "text_vi": "Hơn nữa, Xan đã điều hòa tăng sự biểu hiện MMP12 và điều hòa giảm KDR, CCND1, PDGFRB, PLAU, và PLK1 trong các tế bào GC.",
+      "text_pinyin": "cǐ wài ， Xan zài GC xì bāo zhōng shàng diào MMP12 biǎo dá bìng xià tiáo KDR、CCND1、PDGFRB、PLAU hé PLK1。"
+    },
+    {
+      "seq": 14,
+      "text_en": "Xan shows promise as a GC treatment by modulating MMP12, KDR, CCND1, PDGFRB, PLAU, and PLK1 expression, which inhibits proliferation, cell cycle, migration, and invasion, while enhancing apoptosis and reducing liver damage.",
+      "text_zh": "XAN通过调节MMP12、KDR、CCND1、PDGFRB、PLAU和PLK1表达显示出作为GC治疗的前景，其抑制增殖、细胞周期、迁移和侵袭，同时增强凋亡并减少肝损伤。",
+      "text_vi": "Xan thể hiện sự hứa hẹn như một phương pháp điều trị GC bằng cách điều biến sự biểu hiện MMP12, KDR, CCND1, PDGFRB, PLAU, và PLK1, mà ức chế sự tăng sinh, chu kỳ tế bào, sự di chuyển, và sự xâm lấn, đồng thời tăng cường quá trình chết tế bào theo chương trình và giảm tổn thương gan.",
+      "text_pinyin": "XAN tōng guò tiáo jié MMP12、KDR、CCND1、PDGFRB、PLAU hé PLK1 biǎo dá xiǎn shì chū zuò wéi GC zhì liáo de qián jǐng ， qí yì zhì zēng zhí 、 xì bāo zhōu qī 、 qiān yí hé qīn xí ， tóng shí zēng qiáng diāo wáng bìng jiǎn shǎo gān sǔn shāng 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42855855), Animal models and experimental medicine (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42855855/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42855855), Animal models and experimental medicine (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42855855/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42855855），Animal models and experimental medicine (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42855855/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-11T00:35:11Z",
+  "updated_at": "2026-10-11T00:35:11Z"
+}
