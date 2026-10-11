@@ -240,6 +240,23 @@ export async function synthesize(text, lang, voiceKey) {
   return Buffer.from(await r.arrayBuffer());
 }
 
+/** Tự kiểm tra TTS lúc khởi động (1 câu ngắn): trả { provider, ok, error? } — hiện qua /api/health, không lộ bí mật. */
+export const ttsStatus = { provider: googleTtsConfigured() ? 'google' : 'openai', ok: null, error: null, checkedAt: null };
+export async function ttsSelfTest() {
+  ttsStatus.provider = googleTtsConfigured() ? 'google' : 'openai';
+  try {
+    const mp3 = await synthesize('测试', 'zh', 'aoede');
+    ttsStatus.ok = !!(mp3 && mp3.length > 500);
+    ttsStatus.error = ttsStatus.ok ? null : 'empty_audio';
+  } catch (e) {
+    ttsStatus.ok = false;
+    ttsStatus.error = String(e && (e.code || e.status || e.message) || 'error').replace(/[^\w .:-]/g, '').slice(0, 80);
+  }
+  ttsStatus.checkedAt = new Date().toISOString();
+  console.log(`[tts] tự kiểm tra: ${ttsStatus.provider} → ${ttsStatus.ok ? 'OK' : 'LỖI ' + ttsStatus.error}`);
+  return ttsStatus;
+}
+
 // ===== Dữ liệu =====
 export const newId = () => 'd' + crypto.randomBytes(9).toString('base64url').replace(/[-_]/g, 'x').slice(0, 14);
 

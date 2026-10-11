@@ -41,6 +41,7 @@ const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
 // Gieo/cập nhật thuật ngữ "Tổng hợp" từ backend/data/general-terms/*.json vào MySQL mỗi khi DB sẵn sàng
 // (lúc khởi động và cả khi tự phục hồi sau sự cố).
 if (mysqlPool) {
+  userDocs.ttsSelfTest().catch(() => {});
   onDbUp(() => ensurePlanColumns(mysqlPool).catch(() => {}));
   onDbUp(() => userDocs.initUserDocs(mysqlPool).catch((e) => console.error('[user-docs] init:', e.message)));
   onDbUp(() => syncGeneralTerms(mysqlPool, path.join(__dirname, 'data', 'general-terms'))
@@ -1265,7 +1266,7 @@ app.post('/api/build-now', async (req, res) => {
  */
 app.get('/api/health', (req, res) => {
   const db = dbStatus();
-  res.json({ status: db.configured && !db.ok ? 'degraded' : 'ok', timestamp: new Date().toISOString(), dbStatus: db });
+  res.json({ status: db.configured && !db.ok ? 'degraded' : 'ok', timestamp: new Date().toISOString(), dbStatus: db, tts: userDocs.ttsStatus });
 });
 
 app.get('/health', (req, res) => {
