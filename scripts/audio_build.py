@@ -69,6 +69,7 @@ def google_tts(text, voice_name, settings, out_mp3, language_code=None):
         try:
             resp = client.synthesize_speech(input=input_text, voice=voice, audio_config=audio_config)
             out_mp3.write_bytes(resp.audio_content)
+            compress_mp3(out_mp3)
             return
         except Exception as exc:
             if attempt == 4:
@@ -106,6 +107,27 @@ def concat_mp3s(parts, output_mp3, pause_ms):
             ],
             check=True,
         )
+
+
+def compress_mp3(path):
+    """Nén mp3 giọng nói về mono 24kHz 32kbps (đủ rõ cho giọng đọc, nhỏ hơn ~2 lần so với 64kbps của Wavenet) — kho bài
+    tăng dần nên dung lượng repo/deploy phải kiểm soát. Không có ffmpeg thì giữ nguyên."""
+    import shutil
+    import subprocess
+    import tempfile
+    if not shutil.which("ffmpeg"):
+        return
+    tmp = Path(tempfile.mkstemp(suffix=".mp3")[1])
+    try:
+        r = subprocess.run(
+            ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", str(path), "-ac", "1", "-ar", "24000",
+             "-c:a", "libmp3lame", "-b:a", "32k", str(tmp)],
+            capture_output=True,
+        )
+        if r.returncode == 0 and tmp.stat().st_size > 0:
+            shutil.move(str(tmp), str(path))
+    finally:
+        tmp.unlink(missing_ok=True)
 
 
 def tts_prepare(text, lang="text_zh"):
@@ -169,9 +191,7 @@ def build_passage(file_path, lang="text_en", voice_key="narrator"):
         google_tts(tts_text(seg, lang), voice, settings, out_mp3, language_code=locale)
         seg_files.append(out_mp3)
 
-    full_mp3 = out_dir / f"full-{lang}.mp3"
-    concat_mp3s(seg_files, full_mp3, pause_ms)
-
+    # Không sinh full-<lang>.mp3: app phát nối tiếp từng câu, file ghép toàn bài không được dùng và tốn ~25% dung lượng.
     if lang == "text_zh":
         build_extra_voices(file_path)
 
@@ -207,6 +227,32 @@ def backfill_extra_voices():
         build_extra_voices(f)
 
 
+def slim_audio():
+    """Dọn kho audio hiện có: xoá full-*.mp3 (không dùng) và nén mọi mp3 > 40kbps về 32kbps mono."""
+    import subprocess
+    root = ROOT / "backend" / "public" / "audio" / "listening"
+    removed = 0
+    saved = 0
+    for f in sorted(root.rglob("full-*.mp3")):
+        saved += f.stat().st_size
+        f.unlink()
+        removed += 1
+    recompressed = 0
+    for f in sorted(root.rglob("*.mp3")):
+        try:
+            out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=bit_rate", "-of", "csv=p=0", str(f)],
+                                 capture_output=True, text=True).stdout.strip().split("\n")[0]
+            br = int(out) if out.isdigit() else 0
+        except Exception:
+            br = 0
+        if br > 40000:
+            before = f.stat().st_size
+            compress_mp3(f)
+            saved += max(0, before - f.stat().st_size)
+            recompressed += 1
+    print(f"slim-audio: xoá {removed} file full, nén lại {recompressed} file, tiết kiệm ~{saved // 1024} KB", file=__import__("sys").stderr)
+
+
 def regen_prosody(lang="text_zh"):
     """Sinh lại audio (mọi giọng) cho các đoạn mà văn bản TTS khác văn bản hiển thị (tts_prepare hoặc `tts_zh`),
     rồi nối lại full-text_zh.mp3. Dùng khi đổi quy tắc ngắt nghỉ."""
@@ -232,14 +278,13 @@ def regen_prosody(lang="text_zh"):
                 out_mp3 = out_dir / f"{seg['seq']:02d}-{lang}.mp3"
                 print(f"[{data['id']}] {key or 'default'} đoạn {seg['seq']}: {tts_text(seg, lang)}", file=__import__("sys").stderr)
                 google_tts(tts_text(seg, lang), voice, settings, out_mp3, language_code=LANG_LOCALE.get(lang, "cmn-CN"))
-        parts = [base / f"{seg['seq']:02d}-{lang}.mp3" for seg in data["segments"]]
-        if all(p.exists() for p in parts):
-            concat_mp3s(parts, base / f"full-{lang}.mp3", pause_ms)
 
 
 if __name__ == "__main__":
     import sys as _sys
-    if len(_sys.argv) > 1 and _sys.argv[1] == "regen-prosody":
+    if len(_sys.argv) > 1 and _sys.argv[1] == "slim-audio":
+        slim_audio()
+    elif len(_sys.argv) > 1 and _sys.argv[1] == "regen-prosody":
         regen_prosody()
     elif len(_sys.argv) > 1 and _sys.argv[1] == "backfill-voices":
         backfill_extra_voices()

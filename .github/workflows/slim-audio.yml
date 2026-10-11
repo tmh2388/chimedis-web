@@ -1,0 +1,35 @@
+name: Slim audio library
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  slim:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+      - name: Xoá full-*.mp3 và nén audio về 32kbps mono
+        run: python scripts/audio_build.py slim-audio
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A backend/public/audio/listening
+          git diff --cached --quiet && exit 0
+          git commit -m "Gọn kho audio: bỏ file ghép toàn bài (không dùng), nén 32kbps mono"
+          for i in 1 2 3 4 5; do
+            git push && exit 0
+            git pull --rebase origin main
+            sleep $((RANDOM % 10 + 5))
+          done
+          exit 1

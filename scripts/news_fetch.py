@@ -33,12 +33,13 @@ import requests
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import audio_build  # noqa: E402
 import openai_helper  # noqa: E402
+import level_balance  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTENT_DIR = ROOT / "backend" / "data" / "listening" / "bao_chi"
 AUDIO_DIR = ROOT / "backend" / "public" / "audio" / "listening" / "bao_chi"
 SEEN_FILE = CONTENT_DIR / ".processed_news.json"
-MAX_KEPT_AUTO = 20  # chỉ đếm bài "auto": true — bài Claude soạn tay (vd. bc-01) không bị xoá
+MAX_KEPT_AUTO = 60  # (nâng từ 20 ngày 2026-10-11; tương đương ~2 tháng) chỉ đếm bài "auto": true — bài Claude soạn tay (vd. bc-01) không bị xoá
 
 RSS_URL = "https://news.google.com/rss/search"
 # Loại trừ "中药材"/"林业"/"草原" để tránh lẫn tin nông-lâm nghiệp trồng dược liệu (đã
@@ -201,7 +202,9 @@ def main():
     for item in candidates:
         facts = f"标题：{item['title']}\n摘要：{item['desc']}" if item["desc"] else f"标题：{item['title']}"
         print(f"[news] đang diễn giải: {item['title'][:60]}...", file=sys.stderr)
-        generated = openai_helper.generate_passage(facts, citation_hint=f"{item['source']} ({item['pub_date']})")
+        target = level_balance.pick_target_level("bao_chi")
+        print(f"[news] mức mục tiêu: {target} (hiện có {level_balance.count_levels('bao_chi')})", file=sys.stderr)
+        generated = openai_helper.generate_passage(facts, citation_hint=f"{item['source']} ({item['pub_date']})", target_level=target)
         passage = build_passage_json(item, generated)
         out_path = CONTENT_DIR / f"{passage['id']}.json"
         out_path.write_text(json.dumps(passage, ensure_ascii=False, indent=2), encoding="utf-8")

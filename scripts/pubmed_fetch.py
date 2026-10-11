@@ -33,12 +33,13 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import audio_build  # noqa: E402  (sinh audio ngay sau khi tạo JSON, cùng 1 tiến trình)
+import level_balance  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTENT_DIR = ROOT / "backend" / "data" / "listening" / "hoc_thuat"
 AUDIO_DIR = ROOT / "backend" / "public" / "audio" / "listening" / "hoc_thuat"
 SEEN_FILE = CONTENT_DIR / ".processed_pmids.json"
-MAX_KEPT = 30  # giữ tối đa 30 bài — ~1-2 tháng ở nhịp 1 bài/ngày (quyết định 2026-10-09)
+MAX_KEPT = 60  # (nâng từ 30 ngày 2026-10-11) giữ tối đa 60 bài — ~1-2 tháng ở nhịp 1 bài/ngày (quyết định 2026-10-09)
 
 ESEARCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 EFETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
@@ -240,17 +241,33 @@ def main():
 
     seen_ordered = load_seen()
     seen_set = set(seen_ordered)
-    candidate_ids = esearch(args.query, retmax=args.max + len(seen_set) + 10)
-    new_ids = [p for p in candidate_ids if p not in seen_set][: args.max]
+    pool = max(args.max * 6, 12)  # lấy dư ứng viên để chọn được bài khớp mức đang thiếu
+    candidate_ids = esearch(args.query, retmax=pool + len(seen_set) + 10)
+    new_ids = [p for p in candidate_ids if p not in seen_set][:pool]
     if not new_ids:
         print("Không có bài PubMed mới.", file=sys.stderr)
         return
 
-    articles = efetch(new_ids)
+    candidates = efetch(new_ids)
     CONTENT_DIR.mkdir(parents=True, exist_ok=True)
+    articles = []
+    for _ in range(args.max):
+        if not candidates:
+            break
+        target = level_balance.pick_target_level("hoc_thuat")
+        # chọn bài có mức đo được trùng mục tiêu; không có thì lấy bài gần mức nhất
+        def dist(a):
+            lv = level_balance.english_level(a["abstract"])
+            return abs(level_balance.LEVELS.index(lv) - level_balance.LEVELS.index(target))
+        best = min(candidates, key=dist)
+        candidates.remove(best)
+        best["_level"] = level_balance.english_level(best["abstract"])
+        print(f"[pubmed] mức mục tiêu {target} → chọn PMID {best['pmid']} ({best['_level']})", file=sys.stderr)
+        articles.append(best)
     for article in articles:
         print(f"[pubmed] PMID {article['pmid']}: {article['title'][:70]}...", file=sys.stderr)
         passage = build_passage_json(article, email)
+        passage["level"] = article["_level"]
         out_path = CONTENT_DIR / f"{passage['id']}.json"
         out_path.write_text(json.dumps(passage, ensure_ascii=False, indent=2), encoding="utf-8")
         seen_ordered.append(article["pmid"])

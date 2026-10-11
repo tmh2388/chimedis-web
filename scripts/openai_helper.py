@@ -75,10 +75,36 @@ def require_env(name):
     return value
 
 
-def generate_passage(facts_zh, citation_hint=""):
-    """Gọi OpenAI, trả về dict {title_vi, title_zh, title_en, level, segments}."""
+LEVEL_GUIDE = {
+    "so_cap": (
+        "MỨC YÊU CẦU = so_cap. Viết thật dễ nghe/dễ dịch: mỗi câu ngắn (tối đa ~18 chữ Hán), một ý một câu, từ vựng phổ "
+        "thông; thuật ngữ y khoa nếu buộc phải dùng thì diễn đạt giản dị ngay trong câu; tránh cấu trúc cổ văn/danh từ hoá. "
+        "Vẫn GIỮ ĐÚNG mọi dữ kiện."
+    ),
+    "trung_cap": (
+        "MỨC YÊU CẦU = trung_cap. Văn tường thuật tự nhiên, có thuật ngữ y khoa cơ bản (tên bệnh, huyệt/thuốc thường gặp), "
+        "câu phức vừa phải (~20-35 chữ Hán)."
+    ),
+    "cao_cap": (
+        "MỨC YÊU CẦU = cao_cap. Văn phong chuyên môn: thuật ngữ Trung y chuyên sâu, cấu trúc câu dài/phức hoặc có sắc thái "
+        "cổ văn, nhiều danh từ y lý (~30-50 chữ Hán/câu). Vẫn không bịa thêm dữ kiện."
+    ),
+}
+
+
+def generate_passage(facts_zh, citation_hint="", target_level=None):
+    """Gọi OpenAI, trả về dict {title_vi, title_zh, title_en, level, segments}.
+
+    target_level (so_cap|trung_cap|cao_cap): ép mô hình viết ở đúng mức đó và khoá trường `level` — dùng để kho bài
+    được phân đều các mức (xem scripts/level_balance.py).
+    """
     api_key = require_env("OPENAI_API_KEY")
     user_content = f"Dữ kiện (tiếng Trung):\n{facts_zh}"
+    schema = PASSAGE_SCHEMA
+    if target_level in LEVEL_GUIDE:
+        user_content += f"\n\n{LEVEL_GUIDE[target_level]} Trường level phải là \"{target_level}\"."
+        schema = json.loads(json.dumps(PASSAGE_SCHEMA))
+        schema["properties"]["level"] = {"type": "string", "enum": [target_level]}
     if citation_hint:
         user_content += f"\n\n(Nguồn tham khảo, chỉ để bạn hiểu ngữ cảnh, không cần nhắc trong bài: {citation_hint})"
 
@@ -90,7 +116,7 @@ def generate_passage(facts_zh, citation_hint=""):
         ],
         "response_format": {
             "type": "json_schema",
-            "json_schema": {"name": "listening_passage", "schema": PASSAGE_SCHEMA, "strict": True},
+            "json_schema": {"name": "listening_passage", "schema": schema, "strict": True},
         },
     }
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}

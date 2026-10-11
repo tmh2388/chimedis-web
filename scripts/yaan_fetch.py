@@ -20,6 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import audio_build  # noqa: E402
 import openai_helper  # noqa: E402
+import level_balance  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 BANK_FILE = ROOT / "backend" / "data" / "yaan_source_bank.json"
@@ -114,7 +115,9 @@ def main():
     CONTENT_DIR.mkdir(parents=True, exist_ok=True)
     for case in candidates:
         print(f"[yaan] đang diễn giải {case['id']} ({case['modality']})...", file=sys.stderr)
-        generated = openai_helper.generate_passage(case["facts_zh"], citation_hint=case["citation"])
+        target = level_balance.pick_target_level("y_an")
+        print(f"[yaan] mức mục tiêu: {target} (hiện có {level_balance.count_levels('y_an')})", file=sys.stderr)
+        generated = openai_helper.generate_passage(case["facts_zh"], citation_hint=case["citation"], target_level=target)
         passage = build_passage_json(case, generated)
         out_path = CONTENT_DIR / f"{passage['id']}.json"
         out_path.write_text(json.dumps(passage, ensure_ascii=False, indent=2), encoding="utf-8")
