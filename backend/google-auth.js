@@ -19,24 +19,38 @@ import { google } from 'googleapis';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+/**
+ * Đọc service account từ giá trị biến môi trường: chấp nhận base64 của file JSON (chuẩn) HOẶC dán thẳng nguyên văn JSON.
+ * Giá trị sai KHÔNG làm sập server (trước đây JSON.parse ném lỗi ngay lúc import → deploy hỏng): trả null và ghi log.
+ */
+export function parseServiceAccount(raw, label = 'GOOGLE_CREDENTIALS_JSON_B64') {
+  const v = String(raw || '').trim();
+  if (!v) return null;
+  const tryJson = (text) => {
+    try {
+      const o = JSON.parse(text);
+      return o && typeof o === 'object' && o.client_email && o.private_key ? o : null;
+    } catch (_) { return null; }
+  };
+  const parsed = v.startsWith('{') ? tryJson(v) : tryJson(Buffer.from(v.replace(/\s+/g, ''), 'base64').toString('utf8'));
+  if (!parsed) console.error(`[google-auth] ${label} không phải JSON service account hợp lệ (cần base64 của file .json hoặc nguyên văn JSON) — bỏ qua.`);
+  return parsed;
+}
+
 export function createGoogleAuth(scopes) {
-  const b64 = process.env.GOOGLE_CREDENTIALS_JSON_B64;
-  if (b64 && b64.trim()) {
-    const credentials = JSON.parse(Buffer.from(b64.trim(), 'base64').toString('utf8'));
-    return new google.auth.GoogleAuth({ credentials, scopes });
-  }
+  const fromB64 = parseServiceAccount(process.env.GOOGLE_CREDENTIALS_JSON_B64, 'GOOGLE_CREDENTIALS_JSON_B64');
+  if (fromB64) return new google.auth.GoogleAuth({ credentials: fromB64, scopes });
 
   const raw = process.env.GOOGLE_CREDENTIALS_JSON;
-  if (raw && raw.trim().startsWith('{')) {
-    return new google.auth.GoogleAuth({ credentials: JSON.parse(raw), scopes });
-  }
+  const fromJson = raw && raw.trim().startsWith('{') ? parseServiceAccount(raw, 'GOOGLE_CREDENTIALS_JSON') : null;
+  if (fromJson) return new google.auth.GoogleAuth({ credentials: fromJson, scopes });
 
-  const keyFile = raw || path.join(__dirname, 'credentials.json');
+  const keyFile = (raw && !raw.trim().startsWith('{') ? raw : null) || path.join(__dirname, 'credentials.json');
   return new google.auth.GoogleAuth({ keyFile, scopes });
 }
 
 export function hasGoogleCredentials() {
-  if ((process.env.GOOGLE_CREDENTIALS_JSON_B64 || '').trim()) return true;
-  if ((process.env.GOOGLE_CREDENTIALS_JSON || '').trim()) return true;
+  if (parseServiceAccount(process.env.GOOGLE_CREDENTIALS_JSON_B64, 'GOOGLE_CREDENTIALS_JSON_B64')) return true;
+  if (parseServiceAccount(process.env.GOOGLE_CREDENTIALS_JSON, 'GOOGLE_CREDENTIALS_JSON')) return true;
   return fs.existsSync(path.join(__dirname, 'credentials.json'));
 }
