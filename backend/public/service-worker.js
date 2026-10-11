@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'chimedis-v21';
+const CACHE_VERSION = 'chimedis-v22';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 
@@ -8,6 +8,8 @@ const SHELL_ASSETS = [
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
+  '/vendor/firebase/firebase-app.js',
+  '/vendor/firebase/firebase-auth.js',
 ];
 
 self.addEventListener('install', (event) => {
@@ -35,6 +37,9 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
 
   const url = new URL(request.url);
+
+  // Cổng chuyển tiếp đăng nhập Firebase: luôn đi mạng, không bao giờ cache (có GET cấu hình theo phiên).
+  if (url.pathname.startsWith('/__fb/')) return;
 
   // API calls: network-first, fall back to cache when offline
   if (url.pathname.startsWith('/api/')) {

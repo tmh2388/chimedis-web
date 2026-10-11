@@ -16,7 +16,7 @@ import crypto from 'crypto';
 import zlib from 'zlib';
 
 const TOP_FILES = ['index.html', 'manifest.json', 'favicon.ico', 'privacy.html'];
-const DIRS = ['icons'];
+const DIRS = ['icons', 'vendor/firebase']; // vendor/firebase: SDK đăng nhập tự phục vụ (index.html import ./vendor/firebase/*)
 
 const CRC_TABLE = (() => {
   const t = new Uint32Array(256);

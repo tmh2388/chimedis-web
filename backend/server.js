@@ -30,6 +30,47 @@ const app = express();
 // /api/pronunciation-score có parser riêng giới hạn 25mb (audio base64) nên loại khỏi parser mặc định 100kb.
 const defaultJson = express.json();
 app.use(cors());
+
+// ===== Cổng chuyển tiếp API đăng nhập Firebase (2026-10-11) =====
+// Người dùng ở Trung Quốc đại lục không truy cập được *.googleapis.com / gstatic.com nên không đăng nhập được. SDK Firebase bản
+// tự phục vụ (frontend/vendor/firebase, đã vá bởi scripts/vendor-firebase.mjs) gọi API qua CHÍNH tên miền này:
+// /__fb/idtk → identitytoolkit.googleapis.com, /__fb/stk → securetoken.googleapis.com; máy chủ (ở Mỹ) chuyển tiếp.
+// Chỉ cho phép đúng các đường dẫn đăng nhập, có giới hạn tần suất. PHẢI đứng TRƯỚC express.json() (body cần ở dạng thô,
+// endpoint token gửi form-urlencoded). Cùng quy ước với chimedis-home (docs/DICT-china-login.md).
+const FB_TARGETS = {
+  idtk: { host: 'https://identitytoolkit.googleapis.com', allow: /^\/(v1\/accounts[:/]|v1\/projects\/[^/]+\/(config|accounts)|v2\/(projects\/[^/]+\/)?(accounts|recaptchaConfig|passwordPolicy)|v1\/recaptchaParams|v2\/passwordPolicy)/ },
+  stk: { host: 'https://securetoken.googleapis.com', allow: /^\/v1\/token$/ },
+};
+const fbRate = new Map();
+app.all(/^\/__fb\/(idtk|stk)(\/.*)$/, express.raw({ type: '*/*', limit: '256kb' }), async (req, res) => {
+  const [, which, rest] = req.path.match(/^\/__fb\/(idtk|stk)(\/.*)$/);
+  const tgt = FB_TARGETS[which];
+  const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  const now = Date.now();
+  const hits = (fbRate.get(ip) || []).filter((t) => now - t < 60_000);
+  if (hits.length >= 120) return res.status(429).json({ error: { message: 'TOO_MANY_ATTEMPTS_TRY_LATER' } });
+  hits.push(now); fbRate.set(ip, hits);
+  if (fbRate.size > 5000) for (const [k, v] of fbRate) if (!v.length || now - v[v.length - 1] > 60_000) fbRate.delete(k);
+  if (!tgt.allow.test(rest) || !['GET', 'POST'].includes(req.method)) return res.status(404).json({ error: { message: 'NOT_FOUND' } });
+  try {
+    const qs = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+    // Khoá API có thể giới hạn referrer — dùng cùng referrer đã được cho phép với chimedis-home.
+    const headers = { Referer: 'https://chimedis.vn/', Origin: 'https://chimedis.vn' };
+    for (const h of ['content-type', 'x-client-version', 'x-firebase-locale', 'x-firebase-gmpid', 'x-firebase-client']) if (req.headers[h]) headers[h] = req.headers[h];
+    const r = await fetch(tgt.host + rest + qs, {
+      method: req.method, headers,
+      body: req.method === 'POST' && Buffer.isBuffer(req.body) && req.body.length ? req.body : undefined,
+    });
+    res.status(r.status);
+    res.set('content-type', r.headers.get('content-type') || 'application/json');
+    res.send(Buffer.from(await r.arrayBuffer()));
+  } catch (e) {
+    console.error('fb proxy:', e.message);
+    res.status(502).json({ error: { message: 'PROXY_ERROR' } });
+  }
+});
+// Mọi đường dẫn /__fb/ còn lại (ngoài idtk/stk) → 404 JSON, không rơi về trang chủ (SPA fallback).
+app.all(/^\/__fb(\/|$)/, (req, res) => res.status(404).json({ error: { message: 'NOT_FOUND' } }));
 app.use((req, res, next) => (['/api/pronunciation-score', '/api/interpret-check'].includes(req.path) ? next() : defaultJson(req, res, next)));
 const PORT = process.env.PORT || 3000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
