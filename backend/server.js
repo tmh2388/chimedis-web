@@ -38,7 +38,7 @@ app.use(cors());
 // Chỉ cho phép đúng các đường dẫn đăng nhập, có giới hạn tần suất. PHẢI đứng TRƯỚC express.json() (body cần ở dạng thô,
 // endpoint token gửi form-urlencoded). Cùng quy ước với chimedis-home (docs/DICT-china-login.md).
 const FB_TARGETS = {
-  idtk: { host: 'https://identitytoolkit.googleapis.com', allow: /^\/(v1\/accounts[:/]|v1\/projects\/[^/]+\/(config|accounts)|v2\/(projects\/[^/]+\/)?(accounts|recaptchaConfig|passwordPolicy)|v1\/recaptchaParams|v2\/passwordPolicy)/ },
+  idtk: { host: 'https://identitytoolkit.googleapis.com', allow: /^\/(v1\/accounts[:/]|v1\/projects$|v1\/projects\/[^/]+\/(config|accounts)|v2\/(projects\/[^/]+\/)?(accounts|recaptchaConfig|passwordPolicy)|v1\/recaptchaParams|v2\/passwordPolicy)/ },
   stk: { host: 'https://securetoken.googleapis.com', allow: /^\/v1\/token$/ },
 };
 const fbRate = new Map();
