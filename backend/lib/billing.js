@@ -259,7 +259,8 @@ export function parseBankEmail(text) {
   while ((m = re.exec(t))) all.push({ sign: m[1], n: Number(m[2].replace(/[.,\s]/g, '')) });
   const plus = all.find((x) => x.sign === '+');
   return { code, amounts: all.filter((x) => x.sign !== '-').map((x) => x.n), plusAmount: plus ? plus.n : null,
-    incoming: !!plus || /(ghi\s*có|tiền\s*vào|credit)/i.test(t) };
+    incoming: !!plus || /(ghi\s*có|tiền\s*vào|nhận\s*(được\s*)?tiền|đã\s*nhận|credit)/i.test(t),
+    outgoing: all.some((x) => x.sign === '-') || /(ghi\s*nợ|chuyển\s*tiền\s*đi|biên\s*lai|chuyển\s*khoản\s*thành\s*công|giao\s*dịch\s*chuyển|debit)/i.test(t) };
 }
 
 /**
@@ -271,6 +272,11 @@ export async function handleBankEmail(pool, { messageId, subject, body }) {
   if (!p.code) return { matched: false, status: 'no_code' };
   const order = await getOrder(pool, p.code);
   if (!order) return { matched: false, status: 'unknown_code', code: p.code };
+  // Biên lai chuyển tiền ĐI, hoặc thư không có dấu hiệu tiền VÀO → không bao giờ tự duyệt (để quản trị viên xem).
+  if (p.outgoing || !p.incoming) {
+    await pool.query("UPDATE orders SET note = ? WHERE code = ? AND status IN ('pending', 'cancelled')", [p.outgoing ? 'Email là biên lai chuyển tiền đi — bỏ qua' : 'Email không rõ là tiền vào — kiểm tra rồi Duyệt', p.code]);
+    return { matched: true, status: p.outgoing ? 'outgoing_ignored' : 'not_incoming', code: p.code };
+  }
   const note = async (txt) => { await pool.query("UPDATE orders SET note = ? WHERE code = ? AND status IN ('pending', 'cancelled')", [txt, p.code]); };
   let amount = null;
   if (p.amounts.includes(order.amount)) amount = order.amount;
