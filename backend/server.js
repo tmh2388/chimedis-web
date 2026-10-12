@@ -1380,8 +1380,8 @@ app.post('/api/payments/email', requireDocsDb, async (req, res) => {
     console.log('[billing] email', r.status, r.code || '');
     res.status(200).json({ success: true, status: r.status });
   } catch (e) {
-    console.error('email webhook:', e.message);
-    res.status(500).json({ success: false });
+    console.error('email webhook:', e.code || '', e.message);
+    res.status(500).json({ success: false, error: String(e.code || 'error'), detail: String(e.message || '').slice(0, 160) });
   }
 });
 
