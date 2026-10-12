@@ -13,6 +13,7 @@ import { analyzeInterpretation, buildVocabHint, normalize as normalizeInterp } f
 import { syncGeneralTerms } from './lib/general-terms-sync.js';
 import { resolvePlan, requirePlan, ensurePlanColumns, LIMITS, atLeast, planInfo, isAdmin } from './lib/plan.js';
 import * as billing from './lib/billing.js';
+import * as laoshi from './lib/laoshi.js';
 import crypto from 'node:crypto';
 import { signTicket, verifyTicket, TICKET_TTL_SEC } from './lib/media-ticket.js';
 import * as userDocs from './lib/user-docs.js';
@@ -1181,6 +1182,27 @@ app.get('/api/csdl/audio/:id/:seq', withLessonIndex(async (req, res) => {
   }
 }));
 
+// ===== Lão Sư Trung Y: thầy giáo AI (gói Max) — xem lib/laoshi.js =====
+onDbUp(() => laoshi.ensureTable(mysqlPool).catch((e) => console.error('[laoshi] init:', e.message)));
+const maxOnly = [verifyFirebaseToken, requirePlan(mysqlPool, 'max')];
+app.get('/api/laoshi/opening', ...maxOnly, withLessonIndex((req, res) => {
+  res.json({ success: true, data: laoshi.opening({ lang: String(req.query.lang || 'vi') }) });
+}));
+app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLessonIndex(async (req, res) => {
+  const lim = (LIMITS.max && LIMITS.max.laoshiPerDay) || 60;
+  const use = await laoshi.consume(mysqlPool, req.firebaseUser.uid, lim);
+  if (!use.ok) return res.status(429).json({ success: false, error: 'daily_limit', limit: lim });
+  try {
+    const { messages, quiz, lang } = req.body || {};
+    const out = await laoshi.reply({ messages, quiz, lang: ['vi', 'zh', 'en'].includes(lang) ? lang : 'vi' });
+    res.json({ success: true, data: { ...out, used: use.used, limit: lim } });
+  } catch (e) {
+    if (e.code === 'empty') return res.status(400).json({ success: false, error: 'empty' });
+    console.error('laoshi:', e.message);
+    res.status(502).json({ success: false, error: 'upstream' });
+  }
+}));
+
 // ===== Gói & thanh toán chuyển khoản (xem lib/billing.js) — chỉ giao diện web có nút mua =====
 onDbUp(() => billing.ensureTables(mysqlPool).catch((e) => console.error('[billing] init:', e.message)));
 const adminOnly = [verifyFirebaseToken, (req, res, next) => (isAdmin(req.firebaseUser) ? next() : res.status(403).json({ success: false, error: 'admin_required' }))];
@@ -1217,6 +1239,12 @@ app.get('/api/orders/:code', verifyFirebaseToken, requireDocsDb, async (req, res
     res.json({ success: true, data: orderView(o) });
   } catch (e) { res.status(500).json({ success: false, error: 'get_failed' }); }
 });
+app.post('/api/orders/:code/cancel', verifyFirebaseToken, requireDocsDb, async (req, res) => {
+  try {
+    const ok = await billing.cancelOwnOrder(mysqlPool, req.params.code, req.firebaseUser.uid);
+    res.status(ok ? 200 : 409).json({ success: ok, error: ok ? undefined : 'not_pending' });
+  } catch (e) { res.status(500).json({ success: false, error: 'cancel_failed' }); }
+});
 app.post('/api/redeem', verifyFirebaseToken, requireDocsDb, async (req, res) => {
   try {
     const r = await billing.redeem(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, (req.body || {}).code);
@@ -1241,6 +1269,24 @@ app.post('/api/payments/sepay', requireDocsDb, async (req, res) => {
     res.status(200).json({ success: true });
   } catch (e) {
     console.error('sepay webhook:', e.message);
+    res.status(500).json({ success: false });
+  }
+});
+
+// Email "biến động số dư" của ngân hàng, do Google Apps Script trong hộp thư nhận tiền chuyển lên (xem docs/payments-email-appsscript.md).
+app.post('/api/payments/email', requireDocsDb, async (req, res) => {
+  const key = process.env.EMAIL_WEBHOOK_SECRET;
+  const given = String(req.headers['x-webhook-secret'] || '');
+  if (!key || !given || given.length !== key.length || !crypto.timingSafeEqual(Buffer.from(given), Buffer.from(key))) {
+    return res.status(401).json({ success: false, error: 'unauthorized' });
+  }
+  try {
+    const b = req.body || {};
+    const r = await billing.handleBankEmail(mysqlPool, { messageId: b.messageId, subject: String(b.subject || '').slice(0, 300), body: String(b.body || '').slice(0, 20000) });
+    console.log('[billing] email', r.status, r.code || '');
+    res.status(200).json({ success: true, status: r.status });
+  } catch (e) {
+    console.error('email webhook:', e.message);
     res.status(500).json({ success: false });
   }
 });

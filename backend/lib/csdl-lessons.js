@@ -267,3 +267,47 @@ export const segmentText = (lesson, seq) => {
   const s = lesson && lesson.segments.find((x) => x.seq === Number(seq));
   return s ? s.text_zh : null;
 };
+
+// ===== Tìm kiếm nhẹ để nối đất cho trợ lý (Lão Sư): trả các mục liên quan nhất tới câu hỏi =====
+const fold = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+const HAN = /[一-鿿]/;
+// Từ đệm tiếng Việt (đã bỏ dấu) — không dùng để tìm mục.
+const STOP = new Set('nao dau vay thay qua nam gia khong duoc nhung cac nhu nay the sao cua cho hay roi con vua dang chua minh em thi la va hoc gioi biet noi hoi'.split(' '));
+export function searchTerms(query, k = 3) {
+  if (!index) return [];
+  const q = clean(query);
+  if (q.length < 2) return [];
+  const han = [...q].filter((c) => HAN.test(c)).join('');
+  const bigrams = new Set();
+  for (let i = 0; i + 1 < han.length; i++) bigrams.add(han.slice(i, i + 2));
+  const words = fold(q).split(/[^a-z0-9]+/).filter((w) => w.length >= 3 && !STOP.has(w));
+  const scored = [];
+  for (const t of index.byId.values()) {
+    let sc = 0;
+    if (han && t.hz && han.includes(t.hz)) sc += 8;       // tên mục xuất hiện nguyên vẹn trong câu hỏi
+    if (t.hz) for (const b of bigrams) if (t.hz.includes(b)) sc += 2;
+    const vi = fold(t.vi), en = fold(t.en);
+    for (const w of words) { if (vi === w || en === w) sc += 6; else if (vi.includes(w)) sc += 2; else if (en.includes(w)) sc += 1; }
+    if (vi && vi.length >= 4 && ` ${fold(q).replace(/[^a-z0-9]+/g, ' ')} `.includes(` ${vi.replace(/[^a-z0-9]+/g, ' ')} `)) sc += 7; // nguyên cụm (theo ranh giới từ) nằm trong câu hỏi
+    if (sc > 0) scored.push([sc, t]);
+  }
+  scored.sort((a, b) => b[0] - a[0]);
+  if (!scored.length) return [];
+  // Chỉ giữ mục khớp đủ mạnh và không quá xa mục tốt nhất — tránh đưa nhiễu làm mô hình lạc đề.
+  const floor = Math.max(4, scored[0][0] * 0.5);
+  return scored.filter((x) => x[0] >= floor).slice(0, k).map((x) => x[1]);
+}
+/** Tóm tắt dữ kiện của một mục (từ chính bài dựng) để đưa vào ngữ cảnh. */
+export function factsFor(t, maxSegs = 5) {
+  const l = buildLesson(t);
+  if (!l) return '';
+  return `[${t.group1}] ${t.hz} (${t.py || ''}) — ${t.vi} / ${t.en}\n` + l.segments.slice(0, maxSegs).map((s) => `- ${s.text_zh} | ${s.text_vi}`).join('\n');
+}
+export function randomOf(group1, n, excludeId, seed = Date.now()) {
+  if (!index) return [];
+  const arr = (index.byField.get(group1) || []).filter((t) => t.id !== excludeId);
+  const out = [];
+  let h = seed >>> 0 || 1;
+  for (let i = 0; i < n && arr.length; i++) { h = (h * 1664525 + 1013904223) >>> 0; out.push(arr.splice(h % arr.length, 1)[0]); }
+  return out;
+}

@@ -12,9 +12,9 @@
 export const PLANS = ['free', 'pro', 'max'];
 
 export const LIMITS = {
-  free: { docs: 0, docsPerDay: 0, charsPerDoc: 0 },
-  pro: { docs: 15, docsPerDay: 5, charsPerDoc: 6000 },
-  max: { docs: 60, docsPerDay: 20, charsPerDoc: 20000 },
+  free: { docs: 0, docsPerDay: 0, charsPerDoc: 0, laoshiPerDay: 0 },
+  pro: { docs: 15, docsPerDay: 5, charsPerDoc: 6000, laoshiPerDay: 0 },
+  max: { docs: 60, docsPerDay: 20, charsPerDoc: 20000, laoshiPerDay: Number(process.env.LAOSHI_DAILY_LIMIT) || 60 },
 };
 
 export function normalizePlan(p) { return PLANS.includes(p) ? p : 'free'; }

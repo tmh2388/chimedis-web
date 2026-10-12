@@ -86,6 +86,8 @@ export async function createOrder(pool, user, plan, period) {
     [user.uid, plan, period],
   );
   if (ex) return ex;
+  // Người dùng chọn lại gói/kỳ hạn: các đơn chờ KHÁC bị thay thế (vẫn nhận tiền nếu lỡ chuyển — xem approveOrder cho phép 'cancelled').
+  await pool.query("UPDATE orders SET status = 'cancelled', note = 'Thay bằng đơn mới' WHERE firebase_uid = ? AND status = 'pending'", [user.uid]);
   for (let i = 0; i < 5; i++) {
     const code = 'CHM' + rnd(6);
     try {
@@ -104,6 +106,14 @@ export async function getOrder(pool, code) {
   const [[row]] = await pool.query('SELECT * FROM orders WHERE code = ?', [String(code).toUpperCase()]);
   return row || null;
 }
+/** Người dùng tự huỷ đơn chờ để chọn lại gói. */
+export async function cancelOwnOrder(pool, code, uid) {
+  const [res] = await pool.query(
+    "UPDATE orders SET status = 'cancelled', note = 'Người dùng huỷ' WHERE code = ? AND firebase_uid = ? AND status = 'pending'",
+    [String(code).toUpperCase(), uid],
+  );
+  return res.affectedRows > 0;
+}
 export async function listMine(pool, uid, limit = 10) {
   const [rows] = await pool.query('SELECT * FROM orders WHERE firebase_uid = ? ORDER BY created_at DESC LIMIT ?', [uid, limit]);
   return rows;
@@ -116,7 +126,7 @@ export async function listAdmin(pool, status = 'pending', limit = 100) {
 /** Duyệt đơn (idempotent): chỉ đơn pending mới được kích hoạt; trả { order, expires } hoặc null nếu không áp dụng. */
 export async function approveOrder(pool, code, { method, bankRef = null, paidAmount = null, note = null }) {
   const [res] = await pool.query(
-    "UPDATE orders SET status = 'paid', method = ?, bank_ref = ?, paid_amount = ?, note = ?, paid_at = NOW() WHERE code = ? AND status = 'pending'",
+    "UPDATE orders SET status = 'paid', method = ?, bank_ref = ?, paid_amount = ?, note = ?, paid_at = NOW() WHERE code = ? AND status IN ('pending', 'cancelled')",
     [method, bankRef, paidAmount, note, String(code).toUpperCase()],
   );
   if (!res.affectedRows) return null;
@@ -134,7 +144,7 @@ export async function approveOrder(pool, code, { method, bankRef = null, paidAmo
 }
 
 export async function rejectOrder(pool, code, note = null) {
-  const [res] = await pool.query("UPDATE orders SET status = 'cancelled', note = ? WHERE code = ? AND status = 'pending'", [note, String(code).toUpperCase()]);
+  const [res] = await pool.query("UPDATE orders SET status = 'rejected', note = ? WHERE code = ? AND status IN ('pending', 'cancelled')", [note, String(code).toUpperCase()]);
   return res.affectedRows > 0;
 }
 
@@ -158,9 +168,9 @@ export async function handleIncomingTransfer(pool, { content, amount, ref }) {
   }
   const order = await getOrder(pool, code);
   if (!order) return { matched: false, status: 'unknown_code', code };
-  if (order.status !== 'pending') return { matched: true, status: 'already_' + order.status, code };
+  if (order.status !== 'pending' && order.status !== 'cancelled') return { matched: true, status: 'already_' + order.status, code };
   if (Number(amount) < order.amount) {
-    await pool.query('UPDATE orders SET note = ? WHERE code = ? AND status = ?', [`Thiếu tiền: nhận ${amount}/${order.amount}`, code, 'pending']);
+    await pool.query("UPDATE orders SET note = ? WHERE code = ? AND status IN ('pending', 'cancelled')", [`Thiếu tiền: nhận ${amount}/${order.amount}`, code]);
     return { matched: true, status: 'underpaid', code };
   }
   const r = await approveOrder(pool, code, { method: 'bank_auto', bankRef: ref ? String(ref) : null, paidAmount: Number(amount) });
@@ -194,4 +204,38 @@ export async function redeem(pool, user, rawCode) {
   const [[row]] = await pool.query('SELECT plan, months FROM redeem_codes WHERE code = ?', [code]);
   const expires = await grantPlan(pool, { uid: user.uid, email: user.email, plan: row.plan, months: row.months });
   return { plan: row.plan, months: row.months, expires };
+}
+
+/**
+ * Đọc email "biến động số dư" của ngân hàng (do Apps Script trong hộp thư nhận tiền chuyển lên).
+ * Khuôn email có thể đổi nên bộ đọc DUNG THỨ: mã đơn tìm trong toàn văn; số tiền = số có đơn vị VND/₫/đ
+ * (ưu tiên số có dấu '+'). Không đọc được số tiền → KHÔNG tự duyệt, chỉ ghi chú để quản trị viên xem.
+ */
+export function parseBankEmail(text) {
+  const t = String(text || '').replace(/ /g, ' ');
+  const code = findCode(t);
+  const re = /([+\-]?)\s*(\d{1,3}(?:[.,\s]\d{3})+|\d+)\s*(?:VND|VNĐ|₫|đồng|đ)(?!\p{L})/giu;
+  let m; const all = [];
+  while ((m = re.exec(t))) all.push({ sign: m[1], n: Number(m[2].replace(/[.,\s]/g, '')) });
+  const plus = all.find((x) => x.sign === '+');
+  return { code, amounts: all.filter((x) => x.sign !== '-').map((x) => x.n), plusAmount: plus ? plus.n : null,
+    incoming: !!plus || /(ghi\s*có|tiền\s*vào|credit)/i.test(t) };
+}
+
+/**
+ * Xử lý một email báo tiền. Chống duyệt nhầm do đọc phải SỐ DƯ: chỉ duyệt khi MỘT số tiền trong thư bằng ĐÚNG số tiền đơn
+ * (hoặc số có dấu '+' không nhỏ hơn). Còn lại → để chờ kèm ghi chú cho quản trị viên.
+ */
+export async function handleBankEmail(pool, { messageId, subject, body }) {
+  const p = parseBankEmail(`${subject || ''}\n${body || ''}`);
+  if (!p.code) return { matched: false, status: 'no_code' };
+  const order = await getOrder(pool, p.code);
+  if (!order) return { matched: false, status: 'unknown_code', code: p.code };
+  const note = async (txt) => { await pool.query("UPDATE orders SET note = ? WHERE code = ? AND status IN ('pending', 'cancelled')", [txt, p.code]); };
+  let amount = null;
+  if (p.amounts.includes(order.amount)) amount = order.amount;
+  else if (p.plusAmount != null && p.plusAmount >= order.amount) amount = p.plusAmount;
+  else if (p.plusAmount != null) { await note(`Thiếu tiền: email báo ${p.plusAmount}/${order.amount}`); return { matched: true, status: 'underpaid', code: p.code }; }
+  if (amount == null) { await note('Email báo có tiền nhưng chưa đối chiếu được số tiền — kiểm tra rồi Duyệt'); return { matched: true, status: 'amount_unreadable', code: p.code }; }
+  return handleIncomingTransfer(pool, { content: p.code, amount, ref: `email-${String(messageId || p.code + amount).slice(0, 60)}` });
 }

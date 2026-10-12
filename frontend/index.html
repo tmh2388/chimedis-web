@@ -767,6 +767,7 @@ header{transition:padding .2s ease}
 .up-actions{display:flex;gap:10px;flex-wrap:wrap}
 .up-cta{background:var(--son,#C8452F);color:#fff;border-radius:999px;padding:9px 16px;font-weight:700;font-size:13px;text-decoration:none}
 .up-actions button{background:#f1ebde;border:0;border-radius:999px;padding:9px 16px;font-size:13px;cursor:pointer}
+.up-actions .up-cta,.up-actions button.up-cta{background:var(--son,#C8452F);color:#fff;font-weight:700}
 .lsc-btn.analyze{background:var(--thamthm,#0E3A3A);color:#fff;margin-top:8px}
 .pro-tag{background:#E9B949;color:#3a2a00;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:999px;margin-left:6px;vertical-align:middle}
 .mydoc-box{background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:16px;padding:14px;margin-top:10px}
@@ -793,6 +794,21 @@ header{transition:padding .2s ease}
 .ck-seg small{color:#2F7D2F;font-weight:800}
 .ck-price{font-size:26px;font-weight:800;color:var(--son,#C8452F);margin:10px 0 12px}
 .ck-price small{font-size:13px;color:var(--muc-mo,#6B6156);font-weight:600}
+.ls-screen{padding-bottom:env(safe-area-inset-bottom)}
+.ls-title{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+.ls-title small{font-size:11px;color:var(--muc-mo,#6B6156);font-weight:400}
+.ls-msgs{flex:1;min-height:0;overflow-y:auto;padding:12px 14px;background:#fff;display:flex;flex-direction:column;gap:10px}
+.ls-msg{max-width:88%;padding:10px 12px;border-radius:14px;font-size:14.5px;line-height:1.55;word-break:break-word}
+.ls-msg.assistant{align-self:flex-start;background:#F1EBDE;color:var(--muc,#2a2118);border-bottom-left-radius:4px}
+.ls-msg.user{align-self:flex-end;background:var(--thamthm,#0E3A3A);color:#fff;border-bottom-right-radius:4px}
+.ls-typing{opacity:.65;font-style:italic}
+.ls-chips{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;background:#fff;border-top:1px solid var(--vien,#e5ddcc)}
+.ls-chips button{flex:none;background:#f1ebde;border:0;border-radius:999px;padding:7px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.ls-input{display:flex;gap:8px;padding:8px 12px;background:#fff;align-items:flex-end}
+.ls-input textarea{flex:1;min-width:0;border:1px solid var(--vien,#e5ddcc);border-radius:12px;padding:10px;font:inherit;font-size:14.5px;resize:none;max-height:120px}
+.ls-disc{margin:0;padding:0 14px 8px;background:#fff;font-size:11px;color:var(--muc-mo,#8a7d6a)}
+.ck-sum{font-size:14px;margin:6px 0 4px}
+.ck-link{background:none;border:0;color:var(--son,#C8452F);text-decoration:underline;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;padding:6px 0;display:block}
 .ck-qr{display:block;width:100%;max-width:300px;margin:6px auto;border-radius:12px;border:1px solid var(--vien,#e5ddcc)}
 .ck-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--vien,#e5ddcc);font-size:13px}
 .ck-row span{width:92px;color:var(--muc-mo,#6B6156);flex:none}
@@ -849,6 +865,7 @@ header{transition:padding .2s ease}
 .plans-tbl .cur{background:#FBF3DC}
 .plans-tbl .price{font-weight:800;color:var(--son,#C8452F)}
 .plans-tbl .no{color:#b9ad98}
+.pl-buy{background:var(--son,#C8452F);color:#fff;border:0;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
 .plans-cur{display:inline-block;background:#E3F2E3;color:#2F7D2F;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;margin-top:2px}
 .plan-chip{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12.5px}
 .plan-chip b{background:#efe7d8;border-radius:999px;padding:3px 11px;color:var(--thamthm,#0E3A3A)}
@@ -976,6 +993,7 @@ header{transition:padding .2s ease}
       <div class="drawer-sec" data-i18n="dr_account">Tài khoản</div>
       <div class="drawer-item" id="drawerLoginItem" onclick="openAuthModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span data-i18n="dr_login" id="drawerLoginLabel">Đăng nhập / Đăng ký</span></div>
       <div class="drawer-item" id="drawerPlanItem" onclick="closeDrawer();openPlansModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/></svg><span data-i18n="dr_plan">Gói dịch vụ</span></div>
+      <div class="drawer-item" id="drawerLaoshiItem" onclick="closeDrawer();openLaoshi()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 11h6M9 14h4"/></svg><span data-i18n="dr_laoshi">Lão Sư Trung Y</span><span class="pro-tag">MAX</span></div>
       <div class="drawer-item" id="drawerAdminItem" style="display:none" onclick="closeDrawer();openAdmin()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg><span data-i18n="dr_admin">Quản trị</span></div>
       <div class="drawer-item" id="drawerFavItem" onclick="openFavoritesView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.8C.7 8.4 2.4 5 6 5c2 0 3.3 1 6 3.5C14.7 6 16 5 18 5c3.6 0 5.3 3.4 3.5 7.2C19 16.65 12 21 12 21z"/></svg><span data-i18n="dr_favorites">Từ đã lưu</span></div>
       <div class="drawer-item" id="drawerStudyItem" onclick="openStudyView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="dr_progress">Tiến độ học tập</span><span class="drawer-badge" id="studyDueBadge" hidden>0</span></div>
@@ -2975,6 +2993,17 @@ Object.assign(I18N.vi, {
   admin_grant: 'Cấp gói thủ công', admin_do_grant: 'Cấp', admin_codes: 'Mã kích hoạt', admin_make_codes: 'Tạo mã', admin_months: 'tháng',
   admin_used: 'đã dùng', admin_unused: 'chưa dùng', admin_no_user: 'Không thấy người dùng này (họ cần đăng nhập ít nhất một lần).',
   plans_note: 'Thanh toán bằng chuyển khoản ngân hàng quét mã QR; gói được kích hoạt sau khi nhận tiền. Gia hạn được cộng dồn vào ngày hết hạn hiện tại.',
+  up_title_max: 'Tính năng dành cho gói Max',
+  dr_laoshi: 'Lão Sư Trung Y', up_body_laoshi: 'Trò chuyện với Lão Sư Trung Y (thầy giáo AI dí dỏm, chủ động hỏi và đố) là tính năng của gói Max.',
+  plans_r_workbench: 'Workbench nghiên cứu: AI phân tích, hạn mức cao', plans_wb_basic: 'Cơ bản', plans_r_laoshi: 'Trò chuyện cùng AI Lão Sư Trung Y',
+  plans_choose: 'Chọn gói này', plans_renew: 'Gia hạn',
+  ck_scan_short: 'Quét mã QR bằng app ngân hàng — số tiền và nội dung đã điền sẵn.', ck_show_bank: 'Chuyển khoản thủ công (xem số tài khoản)', ck_hide_bank: 'Ẩn thông tin tài khoản',
+  ck_change: 'Đổi gói / huỷ đơn này',
+  laoshi_title: 'Lão Sư Trung Y', laoshi_sub: 'Thầy giáo AI — học Trung y có cười', laoshi_ph: 'Hỏi thầy một điều, hoặc cứ trả lời câu đố…', laoshi_send: 'Gửi',
+  laoshi_new: 'Buổi mới', laoshi_new_confirm: 'Bắt đầu buổi học mới? Cuộc trò chuyện hiện tại sẽ bị xoá khỏi máy này.', laoshi_typing: 'Thầy đang nghĩ… (đang rót thêm trà)',
+  laoshi_err: 'Ối, thầy bị nghẹn chữ một chút. Em thử lại sau ít phút nhé!', laoshi_limit: 'Hôm nay thầy nói nhiều quá, khản cả giọng rồi! Hẹn em ngày mai nhé.',
+  laoshi_disclaimer: 'Công cụ học tập — không thay thế chẩn đoán hay điều trị. Thầy có thể nhầm; hãy đối chiếu giáo trình.',
+  laoshi_chip_quiz: 'Đố thầy một câu', laoshi_chip_topic: 'Hôm nay học gì?', laoshi_chip_story: 'Kể một chuyện Trung y vui', laoshi_chip_explain: 'Giải thích dễ nhớ giúp em',
   verify_title: 'Email chưa được xác minh', verify_body: 'Mở thư chúng tôi vừa gửi (xem cả mục Spam) và bấm liên kết xác minh. Gói Pro theo email chỉ có hiệu lực sau khi xác minh.',
   verify_resend: 'Gửi lại thư', verify_done: 'Tôi đã xác minh', verify_sent: 'Đã gửi thư xác minh.', verify_ok: 'Đã xác minh email.', verify_not_yet: 'Chưa thấy xác minh — hãy bấm liên kết trong thư rồi thử lại.',
   my_trim_title: 'Tệp vượt giới hạn', my_trim_body: 'Tệp có {n} ký tự, gói của bạn cho tối đa {max} ký tự mỗi tài liệu. Cắt phần đuôi cho vừa (giữ phần đầu, dừng ở cuối câu gần nhất)?',
@@ -3017,6 +3046,17 @@ Object.assign(I18N.zh, {
   admin_grant: '手动开通', admin_do_grant: '开通', admin_codes: '激活码', admin_make_codes: '生成', admin_months: '个月',
   admin_used: '已使用', admin_unused: '未使用', admin_no_user: '找不到该用户（需至少登录一次）。',
   plans_note: '通过银行转账扫码支付；收款后开通套餐。续费将累加到当前到期日之后。',
+  up_title_max: '此功能仅限 Max 套餐',
+  dr_laoshi: '中医老师', up_body_laoshi: '与「中医老师」（幽默、会主动提问和出题的 AI 老师）对话是 Max 套餐的功能。',
+  plans_r_workbench: '研究工作台：AI 分析，高额度', plans_wb_basic: '基础', plans_r_laoshi: '与 AI 中医老师对话',
+  plans_choose: '选择此套餐', plans_renew: '续费',
+  ck_scan_short: '用银行 App 扫码——金额和内容已自动填好。', ck_show_bank: '手动转账（查看账号）', ck_hide_bank: '隐藏账户信息',
+  ck_change: '更换套餐 / 取消此订单',
+  laoshi_title: '中医老师', laoshi_sub: 'AI 老师——学中医，也要笑一笑', laoshi_ph: '问老师一个问题，或直接回答题目…', laoshi_send: '发送',
+  laoshi_new: '新课堂', laoshi_new_confirm: '开始新课堂？当前对话将从本机删除。', laoshi_typing: '老师在想……（正在添茶）',
+  laoshi_err: '哎呀，老师卡壳了一下。请稍后再试！', laoshi_limit: '今天老师话说多了，嗓子哑了！明天再见。',
+  laoshi_disclaimer: '学习工具——不能替代诊断或治疗。老师也会出错，请对照教材。',
+  laoshi_chip_quiz: '考老师一个问题', laoshi_chip_topic: '今天学什么？', laoshi_chip_story: '讲个有趣的中医故事', laoshi_chip_explain: '帮我好记地解释一下',
   verify_title: '邮箱尚未验证', verify_body: '请打开我们刚发送的邮件（也请查看垃圾邮件）并点击验证链接。按邮箱开通的 Pro 套餐需验证后才生效。',
   verify_resend: '重新发送', verify_done: '我已验证', verify_sent: '验证邮件已发送。', verify_ok: '邮箱已验证。', verify_not_yet: '尚未检测到验证——请点击邮件中的链接后重试。',
   my_trim_title: '文件超出限制', my_trim_body: '文件有 {n} 个字符，您的套餐每个文档最多 {max} 个字符。是否截去末尾使其符合限制（保留开头，在最近的句末处截断）？',
@@ -3059,6 +3099,17 @@ Object.assign(I18N.en, {
   admin_grant: 'Grant manually', admin_do_grant: 'Grant', admin_codes: 'Activation codes', admin_make_codes: 'Create', admin_months: 'months',
   admin_used: 'used', admin_unused: 'unused', admin_no_user: 'User not found (they must have signed in at least once).',
   plans_note: 'Pay by bank transfer with a QR code; the plan is activated once the payment is received. Renewals add on to your current expiry date.',
+  up_title_max: 'A Max plan feature',
+  dr_laoshi: 'Chinese Medicine Teacher', up_body_laoshi: 'Chatting with the Chinese Medicine Teacher (a witty AI teacher who asks and quizzes you proactively) is a Max plan feature.',
+  plans_r_workbench: 'Research workbench: AI analysis, higher quota', plans_wb_basic: 'Basic', plans_r_laoshi: 'Chat with the AI Chinese Medicine Teacher',
+  plans_choose: 'Choose this plan', plans_renew: 'Renew',
+  ck_scan_short: 'Scan the QR with your banking app — amount and content are pre-filled.', ck_show_bank: 'Manual transfer (show account details)', ck_hide_bank: 'Hide account details',
+  ck_change: 'Change plan / cancel this order',
+  laoshi_title: 'Chinese Medicine Teacher', laoshi_sub: 'AI teacher — learning TCM, with a smile', laoshi_ph: 'Ask the teacher something, or just answer the quiz…', laoshi_send: 'Send',
+  laoshi_new: 'New class', laoshi_new_confirm: 'Start a new class? The current conversation will be removed from this device.', laoshi_typing: 'The teacher is thinking… (pouring more tea)',
+  laoshi_err: 'Oops, the teacher choked on words. Please try again in a few minutes!', laoshi_limit: 'The teacher talked too much today and lost their voice! See you tomorrow.',
+  laoshi_disclaimer: 'A learning tool — not a substitute for diagnosis or treatment. The teacher can be wrong; check your textbooks.',
+  laoshi_chip_quiz: 'Quiz me', laoshi_chip_topic: 'What shall we learn today?', laoshi_chip_story: 'Tell me a fun TCM story', laoshi_chip_explain: 'Explain it in a memorable way',
   verify_title: 'Email not verified yet', verify_body: 'Open the message we just sent (check Spam too) and tap the verification link. An email-based Pro plan only takes effect after verification.',
   verify_resend: 'Resend email', verify_done: 'I have verified', verify_sent: 'Verification email sent.', verify_ok: 'Email verified.', verify_not_yet: 'Not verified yet — tap the link in the email, then try again.',
   my_trim_title: 'File exceeds the limit', my_trim_body: 'The file has {n} characters; your plan allows {max} per document. Trim the end to fit (keeps the beginning, stops at the nearest sentence end)?',
@@ -3110,6 +3161,7 @@ function openPlansModal(){
     const rows = [
       [t('plans_r_listen'), yes], [t('plans_r_record'), yes], [t('plans_r_voice'), yes],
       [t('plans_r_ai'), cur === 'free' ? no : yes], [t('plans_r_upload'), cur === 'free' ? no : yes],
+      [t('plans_r_workbench'), cur === 'max' ? yes : t('plans_wb_basic')], [t('plans_r_laoshi'), cur === 'max' ? yes : no],
       [t('plans_r_docs'), cur === 'free' ? no : n(lim.docs)], [t('plans_r_perday'), cur === 'free' ? no : n(lim.docsPerDay)],
       [t('plans_r_chars'), cur === 'free' ? no : n(lim.chars)],
     ].map(([l, v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
@@ -3132,15 +3184,18 @@ function openPlansModal(){
     row(t('plans_r_ai'), p => p === 'free' ? no : yes) +
     row(t('plans_r_csdl'), p => p === 'free' ? t('plans_csdl_free') : t('plans_csdl_pro')) +
     row(t('plans_r_upload'), p => p === 'free' ? no : yes) +
+    row(t('plans_r_workbench'), p => p === 'max' ? yes : t('plans_wb_basic')) +
+    row(t('plans_r_laoshi'), p => p === 'max' ? yes : no) +
     row(t('plans_r_docs'), p => p === 'free' ? no : n(PLAN_LIMITS[p].docs)) +
     row(t('plans_r_perday'), p => p === 'free' ? no : n(PLAN_LIMITS[p].docsPerDay)) +
     row(t('plans_r_chars'), p => p === 'free' ? no : n(PLAN_LIMITS[p].chars)) +
+    `<tr><td></td>${cols.map(p => `<td class="${cur === p ? 'cur' : ''}">${p === 'free' ? '' : `<button type="button" class="pl-buy" onclick="closePlansModal();openCheckout('${p}')">${cur === p ? t('plans_renew') : t('plans_choose')}</button>`}</td>`).join('')}</tr>` +
     `</tbody></table>`;
   document.getElementById('app').insertAdjacentHTML('beforeend',
     `<div id="plansModal" class="up-scrim" onclick="if(event.target===this)closePlansModal()"><div class="up-box plans-box" role="dialog" style="max-height:90%;overflow:auto">` +
     `<h3>${t('plans_title')}</h3><p>${t('plans_intro')}</p>${table}` +
     `<p style="font-size:12px;color:var(--muc-mo,#6B6156)">${t('plans_note')}</p>` +
-    `<div class="up-actions">${cur === 'free' || cur === 'pro' ? `<button type="button" class="up-cta" style="border:0;cursor:pointer" onclick="closePlansModal();openCheckout()">${t('plans_buy')}</button>` : ''}` +
+    `<div class="up-actions">` +
     `<button type="button" onclick="closePlansModal()">${t('plans_close')}</button></div></div></div>`);
 }
 // ===== Thanh toán chuyển khoản (web) & quản trị =====
@@ -3148,8 +3203,10 @@ function openPlansModal(){
 let ckState = { plan: 'pro', period: 'year', order: null, cfg: null, timer: null };
 function updateAdminItem(){ const el = document.getElementById('drawerAdminItem'); if(el) el.style.display = state.isAdmin && !NO_PURCHASE_UI ? '' : 'none'; }
 function closeCheckout(){ clearInterval(ckState.timer); ckState.timer = null; document.getElementById('checkoutModal')?.remove(); }
-async function openCheckout(){
+async function openCheckout(plan, period){
   if(NO_PURCHASE_UI) return;
+  if(plan === 'pro' || plan === 'max') ckState.plan = plan;
+  if(period === 'month' || period === 'year') ckState.period = period;
   if(!state.user){ openAuthModal(); listenToast(t('ck_login')); return; }
   closeCheckout();
   ckState.order = null;
@@ -3159,7 +3216,8 @@ async function openCheckout(){
   try{
     const r = await authFetch('/api/orders'); const j = await r.json();
     const pend = (j.data || []).find(o => o.status === 'pending' && new Date(o.expires_at) > new Date());
-    if(pend){ ckState.order = pend; ckState.plan = pend.plan; ckState.period = pend.period; renderCheckout(); ckStartPolling(); }
+    // Có đơn chờ: hiện lại đơn đó (kèm nút "Đổi gói / huỷ"). Nếu người dùng vừa chọn gói khác từ bảng gói thì để họ chọn tiếp.
+    if(pend && !(plan && (plan !== pend.plan || (period && period !== pend.period)))){ ckState.order = pend; ckState.plan = pend.plan; ckState.period = pend.period; renderCheckout(); ckStartPolling(); }
   }catch(e){}
 }
 function ckPrice(plan, period){
@@ -3184,12 +3242,17 @@ function renderCheckout(){
       `<button type="button" class="mydoc-go" style="width:100%" onclick="ckCreate()">${t('ck_create')}</button>`;
   } else {
     const row = (l, v, copy) => `<div class="ck-row"><span>${l}</span><b>${myDocEsc(v)}</b>${copy ? `<button type="button" onclick="ckCopy('${String(copy).replace(/'/g, '')}')">${t('ck_copy')}</button>` : ''}</div>`;
-    body = `<p class="ck-scan">${t('ck_scan')}</p>` +
+    const bank = ckState.showBank
+      ? row(t('ck_bank'), cfg.bank_name || '', '') + row(t('ck_account'), cfg.account || '', cfg.account) + row(t('ck_owner'), cfg.account_name || '', '')
+      : '';
+    body = `<div class="ck-sum"><b>${t('plan_name_' + o.plan)}</b> · ${t('ck_period_' + o.period)} · ${ckMoney(o.amount)}</div>` +
+      `<p class="ck-scan">${t('ck_scan_short')}</p>` +
       (o.qr_url ? `<img class="ck-qr" src="${o.qr_url}" alt="VietQR">` : '') +
-      row(t('ck_bank'), cfg.bank_name || '', '') + row(t('ck_account'), cfg.account || '', cfg.account) + row(t('ck_owner'), cfg.account_name || '', '') +
-      row(t('ck_amount'), ckMoney(o.amount), String(o.amount)) + row(t('ck_content'), o.code, o.code) +
+      row(t('ck_content'), o.code, o.code) +
+      `<button type="button" class="ck-link" onclick="ckToggleBank()">${ckState.showBank ? t('ck_hide_bank') : t('ck_show_bank')}</button>${bank}` +
       `<p class="ck-wait" id="ckWait">${t('ck_waiting')}</p><p class="ck-note">${t(cfg.auto_confirm ? 'ck_auto' : 'ck_manual')}</p>` +
-      (o.note ? `<p class="ck-note" style="color:#B4472B">${myDocEsc(o.note)}</p>` : '');
+      (o.note ? `<p class="ck-note" style="color:#B4472B">${myDocEsc(o.note)}</p>` : '') +
+      `<button type="button" class="ck-link" onclick="ckCancel()">${t('ck_change')}</button>`;
   }
   document.getElementById('app').insertAdjacentHTML('beforeend',
     `<div id="checkoutModal" class="up-scrim" onclick="if(event.target===this)closeCheckout()"><div class="up-box plans-box" role="dialog" style="max-height:92%;overflow:auto">` +
@@ -3198,6 +3261,15 @@ function renderCheckout(){
     `<div class="up-actions"><button type="button" onclick="closeCheckout()">${t('plans_close')}</button></div></div></div>`);
 }
 function ckSet(k, v){ ckState[k] = v; renderCheckout(); }
+function ckToggleBank(){ ckState.showBank = !ckState.showBank; renderCheckout(); }
+// Đổi ý: huỷ đơn chờ rồi quay về bước chọn gói/kỳ hạn. Nếu lỡ đã chuyển tiền, tiền vẫn được ghi nhận theo mã đơn.
+async function ckCancel(){
+  const o = ckState.order;
+  clearInterval(ckState.timer);
+  if(o && o.code){ try{ await authFetch(`/api/orders/${o.code}/cancel`, { method: 'POST' }); }catch(e){} }
+  ckState.order = null;
+  renderCheckout();
+}
 function ckCopy(v){ try{ navigator.clipboard.writeText(v); listenToast(t('ck_copied')); }catch(e){} }
 async function ckCreate(){
   try{
@@ -3276,20 +3348,91 @@ async function adminMakeCodes(){
   else listenToast(t('auth_err_generic'));
 }
 function closeUpgradeModal(){ document.getElementById('upgradeModal')?.remove(); }
+// ===== Lão Sư Trung Y — thầy giáo AI dí dỏm, chủ động hỏi/đố (gói Max). Máy chủ: lib/laoshi.js =====
+const LS_KEY = 'chimedis_laoshi_v1';
+let laoshi = { msgs: [], quiz: null, busy: false };
+const lsKey = () => `${LS_KEY}_${(state.user && state.user.uid) || 'anon'}`;
+function laoshiLoad(){
+  laoshi.msgs = []; laoshi.quiz = null;
+  try{ const j = JSON.parse(localStorage.getItem(lsKey()) || 'null'); if(j && Array.isArray(j.msgs)){ laoshi.msgs = j.msgs.slice(-40); laoshi.quiz = j.quiz || null; } }catch(e){}
+}
+function laoshiSave(){ try{ localStorage.setItem(lsKey(), JSON.stringify({ msgs: laoshi.msgs.slice(-40), quiz: laoshi.quiz })); }catch(e){} }
+function lsFmt(s){
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+}
+function closeLaoshi(){ document.getElementById('laoshiScreen')?.remove(); }
+function openLaoshi(){
+  if(!state.user){ listenNeedLogin('analyze'); return; }
+  if(!planAtLeast('max')){ openUpgradeModal('laoshi'); return; }
+  closeLaoshi();
+  laoshiLoad();
+  document.getElementById('app').insertAdjacentHTML('beforeend',
+    `<div id="laoshiScreen" class="mydoc-editor ls-screen" role="dialog">` +
+    `<div class="mde-head"><div class="ls-title"><b>${t('laoshi_title')}</b><small>${t('laoshi_sub')}</small></div>` +
+    `<button type="button" class="mde-btn" onclick="laoshiReset()">${t('laoshi_new')}</button>` +
+    `<button type="button" class="mde-btn" onclick="closeLaoshi()">${t('plans_close')}</button></div>` +
+    `<div id="lsMsgs" class="ls-msgs"></div>` +
+    `<div class="ls-chips">${['quiz', 'topic', 'story', 'explain'].map(k => `<button type="button" onclick="laoshiSend(t('laoshi_chip_${k}'))">${t('laoshi_chip_' + k)}</button>`).join('')}</div>` +
+    `<div class="ls-input"><textarea id="lsInput" rows="1" placeholder="${t('laoshi_ph')}" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();laoshiSend()}"></textarea>` +
+    `<button type="button" class="mde-btn primary" onclick="laoshiSend()">${t('laoshi_send')}</button></div>` +
+    `<p class="ls-disc">${t('laoshi_disclaimer')}</p></div>`);
+  laoshiRender();
+  if(!laoshi.msgs.length) laoshiOpening();
+}
+function laoshiRender(){
+  const box = document.getElementById('lsMsgs');
+  if(!box) return;
+  box.innerHTML = laoshi.msgs.map(m => `<div class="ls-msg ${m.role}">${lsFmt(m.content)}</div>`).join('') +
+    (laoshi.busy ? `<div class="ls-msg assistant ls-typing">${t('laoshi_typing')}</div>` : '');
+  box.scrollTop = box.scrollHeight;
+}
+async function laoshiOpening(){
+  laoshi.busy = true; laoshiRender();
+  try{
+    const r = await authFetch(`/api/laoshi/opening?lang=${encodeURIComponent(state.lang)}`);
+    const j = await r.json();
+    if(r.ok && j.success){ laoshi.msgs.push({ role: 'assistant', content: j.data.text }); laoshi.quiz = j.data.quiz || null; laoshiSave(); }
+    else if(r.status === 403){ state.plan = 'free'; closeLaoshi(); openUpgradeModal('laoshi'); }
+  }catch(e){ laoshi.msgs.push({ role: 'assistant', content: t('laoshi_err') }); }
+  laoshi.busy = false; laoshiRender();
+}
+function laoshiReset(){
+  if(!confirm(t('laoshi_new_confirm'))) return;
+  laoshi.msgs = []; laoshi.quiz = null; laoshiSave(); laoshiRender(); laoshiOpening();
+}
+async function laoshiSend(text){
+  const input = document.getElementById('lsInput');
+  const msg = String(text || (input && input.value) || '').trim();
+  if(!msg || laoshi.busy) return;
+  if(input) input.value = '';
+  laoshi.msgs.push({ role: 'user', content: msg });
+  laoshi.busy = true; laoshiRender();
+  const quiz = laoshi.quiz; laoshi.quiz = null; // câu đố chỉ dùng cho lượt trả lời kế tiếp
+  try{
+    const r = await authFetch('/api/laoshi/chat', { method: 'POST', body: JSON.stringify({ messages: laoshi.msgs.slice(-12), quiz, lang: state.lang }) });
+    const j = await r.json().catch(() => ({}));
+    if(r.ok && j.success){ laoshi.msgs.push({ role: 'assistant', content: j.data.text }); }
+    else if(r.status === 429){ laoshi.msgs.push({ role: 'assistant', content: t('laoshi_limit') }); }
+    else if(r.status === 403){ state.plan = 'free'; closeLaoshi(); openUpgradeModal('laoshi'); }
+    else { laoshi.msgs.push({ role: 'assistant', content: t('laoshi_err') }); }
+  }catch(e){ laoshi.msgs.push({ role: 'assistant', content: t('laoshi_err') }); }
+  laoshi.busy = false; laoshiSave(); laoshiRender();
+}
 function openUpgradeModal(reason){
   closeUpgradeModal();
-  const body = reason === 'upload' ? t('up_body_upload') : reason === 'csdl' ? t('up_body_csdl') : t('up_body_analyze');
+  const body = reason === 'upload' ? t('up_body_upload') : reason === 'csdl' ? t('up_body_csdl') : reason === 'laoshi' ? t('up_body_laoshi') : t('up_body_analyze');
   if(NO_PURCHASE_UI){
     // App iOS: chỉ thông báo tính năng thuộc gói cao hơn — không giá, không nút mua, không liên kết.
     document.getElementById('app').insertAdjacentHTML('beforeend',
       `<div id="upgradeModal" class="up-scrim" onclick="if(event.target===this)closeUpgradeModal()"><div class="up-box" role="dialog">` +
-      `<h3>${t('up_title')}</h3><p>${body}</p><div class="up-actions"><button type="button" onclick="closeUpgradeModal()">${t('plans_close')}</button></div></div></div>`);
+      `<h3>${t(reason === 'laoshi' ? 'up_title_max' : 'up_title')}</h3><p>${body}</p><div class="up-actions"><button type="button" onclick="closeUpgradeModal()">${t('plans_close')}</button></div></div></div>`);
     return;
   }
   document.getElementById('app').insertAdjacentHTML('beforeend',
     `<div id="upgradeModal" class="up-scrim" onclick="if(event.target===this)closeUpgradeModal()"><div class="up-box" role="dialog">` +
-    `<h3>${t('up_title')}</h3><p>${body}</p><ul><li>${t('up_feat1')}</li><li>${t('up_feat2')}</li></ul>` +
-    `<div class="up-actions"><button type="button" class="up-cta" style="border:0;cursor:pointer" onclick="closeUpgradeModal();openCheckout()">${t('plans_buy')}</button>` +
+    `<h3>${t(reason === 'laoshi' ? 'up_title_max' : 'up_title')}</h3><p>${body}</p><ul><li>${t('up_feat1')}</li><li>${t('up_feat2')}</li></ul>` +
+    `<div class="up-actions"><button type="button" class="up-cta" style="border:0;cursor:pointer" onclick="closeUpgradeModal();openCheckout(${reason === 'laoshi' ? "'max'" : ''})">${t('plans_buy')}</button>` +
     `<button type="button" onclick="closeUpgradeModal();openPlansModal()">${t('plans_compare')}</button>` +
     `<button type="button" onclick="closeUpgradeModal()">${t('up_later')}</button></div></div></div>`);
 }
