@@ -5,7 +5,7 @@
  */
 import { synthesize } from './user-docs.js';
 
-const VOICES = ['default', 'aoede', 'zephyr', 'orus'];
+const VOICES = ['default', 'aoede']; // nam (Wavenet) + nữ (Chirp 3 HD)
 const MAX_ROWS = Number(process.env.CSDL_AUDIO_MAX_ROWS) || 12000; // ~ 24KB/câu → khoảng 300MB
 const PER_USER_PER_HOUR = Number(process.env.CSDL_TTS_PER_USER_HOUR) || 60;
 const GLOBAL_PER_HOUR = Number(process.env.CSDL_TTS_GLOBAL_HOUR) || 1500;
@@ -38,7 +38,7 @@ const inflight = new Map();
 let inserts = 0;
 
 /** @returns {Promise<Buffer>} mp3. Ném Error có .code = 'rate_limited' | 'db_unavailable' | lỗi TTS. */
-export async function getAudio(pool, { lessonId, seq, text, voice, uid }) {
+export async function getAudio(pool, { lessonId, seq, text, voice, uid, chargeUser = true, beforeGenerate = null }) {
   if (!pool || !tableReady) throw Object.assign(new Error('db_unavailable'), { code: 'db_unavailable' });
   const v = VOICES.includes(voice) ? voice : 'default';
   const [rows] = await pool.query('SELECT mp3 FROM csdl_audio WHERE lesson_id = ? AND seq = ? AND voice = ?', [lessonId, seq, v]);
@@ -46,8 +46,9 @@ export async function getAudio(pool, { lessonId, seq, text, voice, uid }) {
   const key = `${lessonId}|${seq}|${v}`;
   if (inflight.has(key)) return inflight.get(key);
   if (!allow(uid)) throw Object.assign(new Error('rate_limited'), { code: 'rate_limited' });
+  if (beforeGenerate) await beforeGenerate(); // ngân sách người dùng (bài trong ngày thì miễn — nền tảng chịu)
   const p = (async () => {
-    const mp3 = await synthesize(text, 'zh', v);
+    const mp3 = await synthesize(text, 'zh', v, { uid: chargeUser ? uid : null });
     await pool.query('INSERT IGNORE INTO csdl_audio (lesson_id, seq, voice, mp3) VALUES (?,?,?,?)', [lessonId, seq, v, mp3]);
     if (++inserts % 100 === 0) prune(pool).catch(() => {});
     return mp3;

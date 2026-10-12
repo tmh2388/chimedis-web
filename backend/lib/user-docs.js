@@ -14,6 +14,7 @@
 import crypto from 'node:crypto';
 import { google } from 'googleapis';
 import { pinyin } from 'pinyin';
+import * as budget from './ai-budget.js';
 import { createGoogleAuth, hasGoogleCredentials } from '../google-auth.js';
 import { LIMITS } from './plan.js';
 
@@ -24,13 +25,14 @@ const CHUNK_CHARS = 1500;
 const MIN_CHARS = 20;
 const LEVEL_RANK = { so_cap: 0, trung_cap: 1, cao_cap: 2 };
 
-export const VOICE_KEYS = ['default', 'aoede', 'zephyr', 'orus'];
+// 2 giọng: default = nam (Wavenet), aoede = nữ (Chirp 3 HD).
+export const VOICE_KEYS = ['default', 'aoede'];
 
 const GOOGLE_VOICES = {
-  zh: { default: 'cmn-CN-Wavenet-C', aoede: 'cmn-CN-Chirp3-HD-Aoede', zephyr: 'cmn-CN-Chirp3-HD-Zephyr', orus: 'cmn-CN-Chirp3-HD-Orus' },
-  en: { default: 'en-US-Wavenet-D', aoede: 'en-US-Chirp3-HD-Aoede', zephyr: 'en-US-Chirp3-HD-Zephyr', orus: 'en-US-Chirp3-HD-Orus' },
+  zh: { default: 'cmn-CN-Wavenet-C', aoede: 'cmn-CN-Chirp3-HD-Aoede' },
+  en: { default: 'en-US-Wavenet-D', aoede: 'en-US-Chirp3-HD-Aoede' },
 };
-const OPENAI_VOICES = { default: 'onyx', aoede: 'nova', zephyr: 'shimmer', orus: 'echo' };
+const OPENAI_VOICES = { default: 'onyx', aoede: 'nova' };
 
 const SYSTEM_PROMPT = `Bạn là biên tập viên tài liệu luyện nghe–dịch (dịch cabin) cho sinh viên/bác sĩ Trung y.
 
@@ -130,7 +132,7 @@ export function splitChunks(text, max = CHUNK_CHARS) {
   return chunks.map((c) => c.trim()).filter(Boolean);
 }
 
-async function openaiEdit(chunk, isFirst) {
+async function openaiEdit(chunk, isFirst, acc) {
   const body = {
     model: EDIT_MODEL,
     messages: [
@@ -148,6 +150,7 @@ async function openaiEdit(chunk, isFirst) {
     });
     if (r.ok) {
       const j = await r.json();
+      if (acc) acc.cost += budget.costFromUsage(EDIT_MODEL, j.usage);
       return JSON.parse(j.choices[0].message.content);
     }
     lastErr = `${r.status} ${(await r.text()).slice(0, 160)}`;
@@ -158,14 +161,14 @@ async function openaiEdit(chunk, isFirst) {
 }
 
 /** Biên tập toàn bộ văn bản; trả { passage, warnings }. Ném Error có mã (unsupported_language, too_short...). */
-export async function editDocument(rawText) {
+export async function editDocument(rawText, acc = null) {
   const text = cleanInput(rawText);
   if (text.length < MIN_CHARS) throw new Error('too_short');
   const chunks = splitChunks(text);
   let meta = null, level = 0;
   const segments = [];
   for (let i = 0; i < chunks.length; i++) {
-    const out = await openaiEdit(chunks[i], i === 0);
+    const out = await openaiEdit(chunks[i], i === 0, acc);
     if (out.source_lang === 'other') throw new Error('unsupported_language');
     if (!meta) meta = out;
     level = Math.max(level, LEVEL_RANK[out.level] ?? 1);
@@ -212,7 +215,8 @@ function googleTts() {
   return ttsClient;
 }
 
-export async function synthesize(text, lang, voiceKey) {
+/** opts.uid: nếu có thì ghi chi phí TTS vào ngân sách người dùng (chỉ gọi khi KHÔNG trúng đệm). */
+export async function synthesize(text, lang, voiceKey, opts = {}) {
   const key = VOICE_KEYS.includes(voiceKey) ? voiceKey : 'default';
   const l = lang === 'en' ? 'en' : 'zh';
   if (googleTtsConfigured()) {
@@ -224,6 +228,7 @@ export async function synthesize(text, lang, voiceKey) {
         audioConfig: { audioEncoding: 'MP3', speakingRate: 1.0 },
       },
     });
+    if (opts.uid) budget.charge({ uid: opts.uid, app: 'dict', feature: 'tts', costUsd: budget.costForTts(text.length, key === 'default' ? 'wavenet' : 'chirp') });
     return Buffer.from(r.data.audioContent, 'base64');
   }
   const r = await fetch(`${OPENAI_BASE}/v1/audio/speech`, {
@@ -237,6 +242,7 @@ export async function synthesize(text, lang, voiceKey) {
     }),
   });
   if (!r.ok) throw new Error(`tts_failed: ${r.status} ${(await r.text()).slice(0, 120)}`);
+  if (opts.uid) budget.charge({ uid: opts.uid, app: 'dict', feature: 'tts', costUsd: budget.costForTts(text.length, 'openai') });
   return Buffer.from(await r.arrayBuffer());
 }
 
@@ -320,7 +326,7 @@ export function toDialogue(row) {
   };
 }
 
-export async function getOrMakeAudio(pool, row, seq, voiceKey) {
+export async function getOrMakeAudio(pool, row, seq, voiceKey, beforeGenerate = null) {
   const voice = VOICE_KEYS.includes(voiceKey) ? voiceKey : 'default';
   const [rows] = await pool.query('SELECT mp3 FROM user_document_audio WHERE doc_id = ? AND seq = ? AND voice = ?', [row.id, seq, voice]);
   if (rows[0]) return rows[0].mp3;
@@ -329,7 +335,8 @@ export async function getOrMakeAudio(pool, row, seq, voiceKey) {
   if (!seg) return null;
   const lang = p.source_lang === 'en' ? 'en' : 'zh';
   const text = lang === 'en' ? seg.text_en : seg.text_zh;
-  const mp3 = await synthesize(text, lang, voice);
+  if (beforeGenerate) await beforeGenerate(); // kiểm tra ngân sách TRƯỚC khi tốn chi phí sinh giọng
+  const mp3 = await synthesize(text, lang, voice, { uid: row.user_uid });
   await pool.query('INSERT IGNORE INTO user_document_audio (doc_id, seq, voice, mp3) VALUES (?,?,?,?)', [row.id, seq, voice, mp3]);
   return mp3;
 }
@@ -362,8 +369,10 @@ export async function processDoc(pool, id) {
   if (!row) return;
   try {
     await setStatus(pool, id, { status: 'editing', progress: 5, error: null });
-    const { passage, warnings } = await editDocument(row.raw_text);
+    const acc = { cost: 0 };
+    const { passage, warnings } = await editDocument(row.raw_text, acc);
     passage.warnings = warnings;
+    budget.charge({ uid: row.user_uid, app: 'dict', feature: 'tu_them_edit', costUsd: acc.cost });
     await setStatus(pool, id, {
       title: (passage.title_vi || row.title || '').slice(0, 200), // AI đặt tiêu đề theo nội dung; tên tệp chỉ là tạm lúc chờ
       source_lang: passage.source_lang, level: passage.level,
@@ -373,7 +382,7 @@ export async function processDoc(pool, id) {
     const segs = passage.segments;
     for (let i = 0; i < segs.length; i++) {
       const text = lang === 'en' ? segs[i].text_en : segs[i].text_zh;
-      const mp3 = await synthesize(text, lang, row.voice);
+      const mp3 = await synthesize(text, lang, row.voice, { uid: row.user_uid });
       await pool.query('INSERT IGNORE INTO user_document_audio (doc_id, seq, voice, mp3) VALUES (?,?,?,?)', [id, segs[i].seq, row.voice, mp3]);
       await setStatus(pool, id, { progress: 40 + Math.round(((i + 1) / segs.length) * 58) });
     }

@@ -14,6 +14,7 @@ import { syncGeneralTerms } from './lib/general-terms-sync.js';
 import { resolvePlan, requirePlan, ensurePlanColumns, LIMITS, atLeast, planInfo, isAdmin } from './lib/plan.js';
 import * as billing from './lib/billing.js';
 import * as laoshi from './lib/laoshi.js';
+import * as aiBudget from './lib/ai-budget.js';
 import crypto from 'node:crypto';
 import { signTicket, verifyTicket, TICKET_TTL_SEC } from './lib/media-ticket.js';
 import * as userDocs from './lib/user-docs.js';
@@ -774,7 +775,7 @@ function availableVoices(d) {
   const has = (sub) => (d.segments || []).every((s) => {
     try { return fs.statSync(path.join(base, sub, `${String(s.seq).padStart(2, '0')}-${lang}.mp3`)).size > 0; } catch { return false; }
   });
-  return ['default', 'aoede', 'zephyr', 'orus'].filter((v) => has(v === 'default' ? '' : v));
+  return ['default', 'aoede'].filter((v) => has(v === 'default' ? '' : v));
 }
 
 app.get('/api/listening/dialogues/:id', (req, res) => {
@@ -866,6 +867,7 @@ app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool,
   try {
     const { audio_base64, format, reference_zh, ui_lang } = req.body || {};
     if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
+    if (!(await budgetGate(req, res))) return;
     const feedbackLang = FEEDBACK_LANG_NAME[ui_lang] ? ui_lang : 'vi';
 
     const userText = reference_zh
@@ -900,6 +902,7 @@ app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool,
       return res.status(502).json({ success: false, error: 'openai_error' });
     }
     const data = await openaiRes.json();
+    aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'phan_tich_phat_am', costUsd: aiBudget.costFromUsage('gpt-audio-mini', data.usage) });
     const parsed = extractJsonObject(data.choices[0].message.content);
     res.json({ success: true, data: parsed });
   } catch (err) {
@@ -956,8 +959,11 @@ app.post('/api/interpret-check', verifyFirebaseToken, requirePlan(mysqlPool, 'pr
       return res.status(400).json({ success: false, error: 'no_key_units' });
     }
     const buf = Buffer.from(audio_base64, 'base64');
+    if (!(await budgetGate(req, res))) return;
     if (buf.length < 2000) return res.json({ success: true, data: { transcript: '', lang_ok: false, lang_reason: 'empty', units: [], counts: { ok: 0, partial: 0, missed: 0 }, total: seg.key_units.length, fluency: null } });
     const { text, model } = await transcribeWithOpenAI(buf, lang, buildVocabHint(seg.key_units, lang));
+    // Phiên âm tính theo phút ($0,003/phút); ước lượng thời lượng từ kích thước (WAV 16-bit mono 16 kHz ≈ 32 KB/giây).
+    aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'dich_phien_am', costUsd: Math.max(5, buf.length / 32000) / 60 * 0.003 });
     const stats = fluency && typeof fluency === 'object' ? {
       speech_ms: Number(fluency.speech_ms) || 0,
       pause_count: Number(fluency.pause_count) || 0,
@@ -1064,6 +1070,7 @@ app.post('/api/my-docs', ...proOnly, requireDocsDb, requireOpenAI, async (req, r
     const { title, text, voice } = req.body || {};
     const t = String(text || '');
     if (t.trim().length < 20) return res.status(400).json({ success: false, error: 'too_short' });
+    if (!(await budgetGate(req, res))) return;
     const q = await userDocs.quotaCheck(mysqlPool, req.firebaseUser.uid, req.plan, t.length);
     if (!q.ok) return res.status(q.code === 'pro_required' ? 403 : 429).json({ success: false, error: q.code, max: q.max });
     const id = await userDocs.createDoc(mysqlPool, req.firebaseUser.uid, { title, text: t, voice });
@@ -1087,18 +1094,24 @@ app.delete('/api/my-docs/:id', ...proOnly, requireDocsDb, async (req, res) => {
   } catch (e) { res.status(500).json({ success: false, error: 'delete_failed' }); }
 });
 
-// Audio tài liệu riêng: vé ?t= (chủ vé phải là chủ tài liệu), giọng ?voice=default|aoede|zephyr|orus (tạo lần đầu, lưu DB).
+// Audio tài liệu riêng: vé ?t= (chủ vé phải là chủ tài liệu), giọng ?voice=default|aoede (tạo lần đầu, lưu DB).
 app.get('/api/my-docs/:id/audio/:seq', requireDocsDb, async (req, res) => {
   try {
     const tk = verifyTicket(req.query.t);
     if (!tk) return res.status(401).json({ success: false, error: 'login_required' });
     const row = await userDocs.getDocRow(mysqlPool, tk.uid, req.params.id);
     if (!row || row.status !== 'ready') return res.status(404).json({ success: false, error: 'not_found' });
-    const mp3 = await userDocs.getOrMakeAudio(mysqlPool, row, Number(req.params.seq), String(req.query.voice || row.voice));
+    const mp3 = await userDocs.getOrMakeAudio(mysqlPool, row, Number(req.params.seq), String(req.query.voice || row.voice), async () => {
+      const b = await aiBudget.getBudget({ uid: tk.uid, plan: tk.plan });
+      if (b.state !== 'ok') throw Object.assign(new Error('budget'), { code: 'budget', budget: aiBudget.publicView(b) });
+    });
     if (!mp3) return res.status(404).json({ success: false, error: 'not_found' });
     res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, max-age=3600' });
     res.send(mp3);
-  } catch (e) { console.error('my-docs audio:', e.message); res.status(500).json({ success: false, error: 'audio_failed' }); }
+  } catch (e) {
+    if (e.code === 'budget') return res.status(429).json({ success: false, error: 'budget', reason: e.budget.state, budget: e.budget });
+    console.error('my-docs audio:', e.message); res.status(500).json({ success: false, error: 'audio_failed' });
+  }
 });
 
 // ===== Học Thuật: bài nghe dựng tự động từ kho CSDL (xem lib/csdl-lessons.js) =====
@@ -1172,15 +1185,41 @@ app.get('/api/csdl/audio/:id/:seq', withLessonIndex(async (req, res) => {
   const text = csdl.segmentText(lesson, req.params.seq);
   if (!text) return res.status(404).json({ success: false, error: 'not_found' });
   try {
-    const mp3 = await csdlAudio.getAudio(mysqlPool, { lessonId: id, seq: Number(req.params.seq), text, voice: String(req.query.voice || 'default'), uid: tk.uid });
+    const isDaily = csdl.dailyIds().has(id); // bài trong ngày: nền tảng chịu chi phí, không trừ ngân sách người dùng
+    const mp3 = await csdlAudio.getAudio(mysqlPool, {
+      lessonId: id, seq: Number(req.params.seq), text, voice: String(req.query.voice || 'default'), uid: tk.uid, chargeUser: !isDaily,
+      beforeGenerate: isDaily ? null : async () => {
+        const b = await aiBudget.getBudget({ uid: tk.uid, plan: tk.plan });
+        if (b.state !== 'ok') throw Object.assign(new Error('budget'), { code: 'budget', budget: aiBudget.publicView(b) });
+      },
+    });
     res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, max-age=86400' });
     res.send(mp3);
   } catch (e) {
     if (e.code === 'rate_limited') return res.status(429).json({ success: false, error: 'rate_limited' });
+    if (e.code === 'budget') return res.status(429).json({ success: false, error: 'budget', reason: e.budget.state, budget: e.budget });
     console.error('csdl audio:', e.message);
     res.status(500).json({ success: false, error: 'audio_failed' });
   }
 }));
+
+// ===== Ngân sách AI/TTS dùng chung dict + workbench (xem lib/ai-budget.js) =====
+// Trả null (và đã trả lời 429) nếu hết hạn mức giờ/ngày/tháng; ngược lại trả trạng thái để dùng tiếp.
+async function budgetGate(req, res, plan) {
+  try {
+    const p = plan || req.plan || await resolvePlan(mysqlPool, req.firebaseUser);
+    const b = await aiBudget.getBudget({ uid: req.firebaseUser.uid, plan: p });
+    if (b.state !== 'ok') { res.status(429).json({ success: false, error: 'budget', reason: b.state, budget: aiBudget.publicView(b) }); return null; }
+    return b;
+  } catch (e) { console.error('budgetGate:', e.message); return {}; } // lỗi ghi sổ không được chặn tính năng
+}
+app.get('/api/budget', verifyFirebaseToken, async (req, res) => {
+  try {
+    const plan = await resolvePlan(mysqlPool, req.firebaseUser);
+    const b = await aiBudget.getBudget({ uid: req.firebaseUser.uid, plan });
+    res.json({ success: true, data: { ...aiBudget.publicView(b), packs: billing.PACKS } });
+  } catch (e) { res.status(500).json({ success: false, error: 'budget_failed' }); }
+});
 
 // ===== Lão Sư Trung Y: thầy giáo AI (gói Max) — xem lib/laoshi.js =====
 onDbUp(() => laoshi.ensureTable(mysqlPool).catch((e) => console.error('[laoshi] init:', e.message)));
@@ -1189,13 +1228,15 @@ app.get('/api/laoshi/opening', ...maxOnly, withLessonIndex((req, res) => {
   res.json({ success: true, data: laoshi.opening({ lang: String(req.query.lang || 'vi') }) });
 }));
 app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLessonIndex(async (req, res) => {
+  if (!(await budgetGate(req, res, req.plan))) return;
   const lim = (LIMITS.max && LIMITS.max.laoshiPerDay) || 60;
   const use = await laoshi.consume(mysqlPool, req.firebaseUser.uid, lim);
   if (!use.ok) return res.status(429).json({ success: false, error: 'daily_limit', limit: lim });
   try {
     const { messages, quiz, lang } = req.body || {};
     const out = await laoshi.reply({ messages, quiz, lang: ['vi', 'zh', 'en'].includes(lang) ? lang : 'vi' });
-    res.json({ success: true, data: { ...out, used: use.used, limit: lim } });
+    aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'laoshi', costUsd: out.costUsd });
+    res.json({ success: true, data: { text: out.text, refs: out.refs, used: use.used, limit: lim } });
   } catch (e) {
     if (e.code === 'empty') return res.status(400).json({ success: false, error: 'empty' });
     console.error('laoshi:', e.message);
@@ -1205,9 +1246,12 @@ app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLesso
 
 // ===== Gói & thanh toán chuyển khoản (xem lib/billing.js) — chỉ giao diện web có nút mua =====
 onDbUp(() => billing.ensureTables(mysqlPool).catch((e) => console.error('[billing] init:', e.message)));
+aiBudget.init(mysqlPool);
+onDbUp(() => aiBudget.ensureTables(mysqlPool).catch((e) => console.error('[ai-budget] init:', e.message)));
 const adminOnly = [verifyFirebaseToken, (req, res, next) => (isAdmin(req.firebaseUser) ? next() : res.status(403).json({ success: false, error: 'admin_required' }))];
 const orderView = (o) => o && {
   code: o.code, plan: o.plan, period: o.plan_period, amount: o.amount, status: o.status, method: o.method, note: o.note,
+  kind: o.kind || 'plan', credits: o.credits || null,
   created_at: o.created_at, expires_at: o.expires_at, paid_at: o.paid_at, qr_url: billing.qrUrl(o),
 };
 
@@ -1219,11 +1263,14 @@ app.get('/api/billing/config', (req, res) => {
 app.post('/api/orders', verifyFirebaseToken, requireDocsDb, async (req, res) => {
   if (!billing.bankConfig().configured) return res.status(503).json({ success: false, error: 'payments_not_configured' });
   try {
-    const { plan, period } = req.body || {};
-    const o = await billing.createOrder(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, String(plan), String(period));
+    const { plan, period, kind, pack } = req.body || {};
+    const u = { uid: req.firebaseUser.uid, email: req.firebaseUser.email };
+    const o = kind === 'topup'
+      ? await billing.createTopupOrder(mysqlPool, u, String(pack))
+      : await billing.createOrder(mysqlPool, u, String(plan), String(period));
     res.status(201).json({ success: true, data: orderView(o) });
   } catch (e) {
-    if (e.code === 'bad_plan') return res.status(400).json({ success: false, error: 'bad_plan' });
+    if (e.code === 'bad_plan' || e.code === 'bad_pack') return res.status(400).json({ success: false, error: e.code });
     console.error('orders create:', e.message);
     res.status(500).json({ success: false, error: 'order_failed' });
   }
@@ -1314,6 +1361,17 @@ app.post('/api/admin/grant', ...adminOnly, requireDocsDb, async (req, res) => {
     const exp = await billing.grantPlan(mysqlPool, { uid: u.firebase_uid, email: u.email, plan: String(plan), months: Number(months) });
     res.json({ success: true, data: { expires_at: exp } });
   } catch (e) { res.status(400).json({ success: false, error: 'grant_failed' }); }
+});
+app.post('/api/admin/credits', ...adminOnly, requireDocsDb, async (req, res) => {
+  try {
+    const { email, credits } = req.body || {};
+    const [[u]] = await mysqlPool.query('SELECT firebase_uid FROM users WHERE email = ? ORDER BY id DESC LIMIT 1', [String(email || '').trim().toLowerCase()]);
+    if (!u) return res.status(404).json({ success: false, error: 'user_not_found' });
+    const n = Number(credits);
+    if (!Number.isFinite(n) || n === 0 || Math.abs(n) > 100000) return res.status(400).json({ success: false, error: 'bad_credits' });
+    await aiBudget.addCredits({ uid: u.firebase_uid, credits: n, reason: 'admin', ref: `admin-${Date.now()}`, pool: mysqlPool });
+    res.json({ success: true });
+  } catch (e) { res.status(400).json({ success: false, error: 'credits_failed' }); }
 });
 app.post('/api/admin/codes', ...adminOnly, requireDocsDb, async (req, res) => {
   try {

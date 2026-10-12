@@ -10,12 +10,19 @@
  * Chỉ dùng ở web — app iOS không có giao diện mua (App Store Guideline 3.1.1/3.1.3).
  */
 import crypto from 'node:crypto';
+import * as aiBudget from './ai-budget.js';
 
 export const PRICES = {
   pro: { month: 99000, year: 990000 }, // năm = 10 tháng
   max: { month: 249000, year: 2490000 },
 };
 export const PERIOD_MONTHS = { month: 1, year: 12 };
+// Gói nạp credit (1 credit = 0,01 USD chi phí AI/TTS). Giá bán ≈ 2,3× giá vốn, mua nhiều rẻ hơn. Chỉ bán ở web (App Store 3.1.1).
+export const PACKS = {
+  p100: { credits: 100, amount: 59000 },
+  p300: { credits: 300, amount: 159000 },
+  p800: { credits: 800, amount: 399000 },
+};
 const ORDER_TTL_HOURS = 72;
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // bỏ ký tự dễ nhầm (0/O, 1/I/L)
 
@@ -50,6 +57,13 @@ export async function ensureTables(pool) {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, expires_at DATETIME NOT NULL, paid_at DATETIME NULL,
     KEY idx_uid (firebase_uid), KEY idx_status (status, created_at)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`);
+  // Cột mới cho đơn nạp credit (bảng đã có sẵn trên production → kiểm tra trước rồi mới ALTER).
+  try {
+    const [cols] = await pool.query("SELECT COLUMN_NAME AS n FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders' AND COLUMN_NAME IN ('kind', 'credits')");
+    const have = new Set((cols || []).map((c) => c.n));
+    if (!have.has('kind')) await pool.query("ALTER TABLE orders ADD COLUMN kind VARCHAR(8) NOT NULL DEFAULT 'plan'");
+    if (!have.has('credits')) await pool.query('ALTER TABLE orders ADD COLUMN credits INT NULL');
+  } catch (e) { console.error('[billing] cột kind/credits:', e.message); }
   await pool.query(`CREATE TABLE IF NOT EXISTS redeem_codes (
     code VARCHAR(24) NOT NULL PRIMARY KEY, plan VARCHAR(16) NOT NULL, months INT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, created_by VARCHAR(255) NULL,
@@ -102,6 +116,28 @@ export async function createOrder(pool, user, plan, period) {
   throw new Error('order_code_collision');
 }
 
+/** Đơn nạp credit: dùng cột plan='topup', plan_period='once'. */
+export async function createTopupOrder(pool, user, packKey) {
+  const pack = PACKS[packKey];
+  if (!pack) throw Object.assign(new Error('bad_pack'), { code: 'bad_pack' });
+  const [[ex]] = await pool.query(
+    "SELECT * FROM orders WHERE firebase_uid = ? AND kind = 'topup' AND credits = ? AND status = 'pending' AND expires_at > NOW() ORDER BY created_at DESC LIMIT 1",
+    [user.uid, pack.credits]);
+  if (ex) return ex;
+  await pool.query("UPDATE orders SET status = 'cancelled', note = 'Thay bằng đơn mới' WHERE firebase_uid = ? AND status = 'pending'", [user.uid]);
+  for (let i = 0; i < 5; i++) {
+    const code = 'CHM' + rnd(6);
+    try {
+      await pool.query(
+        "INSERT INTO orders (code, firebase_uid, email, plan, plan_period, amount, kind, credits, expires_at) VALUES (?,?,?,?,?,?,?,?, DATE_ADD(NOW(), INTERVAL ? HOUR))",
+        [code, user.uid, user.email || null, 'topup', 'once', pack.amount, 'topup', pack.credits, ORDER_TTL_HOURS]);
+      const [[row]] = await pool.query('SELECT * FROM orders WHERE code = ?', [code]);
+      return row;
+    } catch (e) { if (e.errno !== 1062) throw e; }
+  }
+  throw new Error('order_code_collision');
+}
+
 export async function getOrder(pool, code) {
   const [[row]] = await pool.query('SELECT * FROM orders WHERE code = ?', [String(code).toUpperCase()]);
   return row || null;
@@ -133,6 +169,10 @@ export async function approveOrder(pool, code, { method, bankRef = null, paidAmo
   const order = await getOrder(pool, code);
   const months = PERIOD_MONTHS[order.plan_period] || 1;
   try {
+    if (order.kind === 'topup') {
+      await aiBudget.addCredits({ uid: order.firebase_uid, credits: order.credits, reason: 'topup', ref: `order-${order.code}`, pool });
+      return { order, expires: null };
+    }
     const expires = await grantPlan(pool, { uid: order.firebase_uid, email: order.email, plan: order.plan, months });
     return { order, expires };
   } catch (e) {

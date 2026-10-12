@@ -9,6 +9,7 @@
  *  - CHI PHÍ: chỉ gói Max, giới hạn lượt/ngày, độ dài cố định, lịch sử cắt gọn.
  */
 import * as csdl from './csdl-lessons.js';
+import { costFromUsage } from './ai-budget.js';
 
 const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
 const MODEL = process.env.LAOSHI_MODEL || 'gpt-5-mini';
@@ -121,7 +122,7 @@ export async function reply({ messages, quiz = null, lang = 'vi' }) {
       const j = await r.json();
       const text = String(j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || '').trim();
       if (!text) { lastErr = 'empty_completion'; break; }
-      return { text, refs: refs.map((t) => ({ id: t.id, vi: t.vi, hz: t.hz })) };
+      return { text, refs: refs.map((t) => ({ id: t.id, vi: t.vi, hz: t.hz })), costUsd: costFromUsage(MODEL, j.usage) };
     }
     lastErr = `${r.status} ${(await r.text()).slice(0, 160)}`;
     if (![429, 500, 502, 503, 504].includes(r.status)) break;

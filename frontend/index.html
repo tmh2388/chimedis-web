@@ -788,6 +788,22 @@ header{transition:padding .2s ease}
 .mydoc-del{background:none;border:0;color:#B4472B;font-size:12px;cursor:pointer}
 .mydoc-notice{background:#FBF3DC;border:1px solid #E3C26C;border-radius:14px;padding:14px;margin-top:10px;font-size:13px;line-height:1.55}
 .mydoc-notice button{margin-top:10px}
+.ck-packs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.ck-packs button{background:#fff;border:2px solid var(--vien,#e5ddcc);border-radius:14px;padding:12px 6px;font:inherit;font-size:13px;cursor:pointer;text-align:center;line-height:1.35}
+.ck-packs button.on{border-color:var(--son,#C8452F);background:#FBF3DC}
+.ck-packs b{font-size:20px;color:var(--thamthm,#0E3A3A)}
+.ck-packs small{color:var(--son,#C8452F);font-weight:700}
+.bud-box{width:100%;max-width:300px;margin-top:10px;text-align:left}
+.bud-title{font-size:12px;font-weight:800;color:var(--muc-mo,#6B6156);margin-bottom:4px}
+.bud-title small{font-weight:400}
+.bud-row{display:flex;align-items:center;gap:8px;font-size:12px;margin:4px 0}
+.bud-row span{width:64px;flex:none;color:var(--muc-mo,#6B6156)}
+.bud-bar{flex:1;height:7px;border-radius:99px;background:#efe7d8;overflow:hidden}
+.bud-bar i{display:block;height:100%;background:var(--thamthm,#0E3A3A);border-radius:99px}
+.bud-bar i.full{background:#B4472B}
+.bud-row b{width:62px;text-align:right;flex:none;font-size:11.5px}
+.bud-credits{font-size:12.5px;margin-top:6px}
+.bud-credits button{background:var(--son,#C8452F);color:#fff;border:0;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-left:6px}
 .ck-seg{display:flex;gap:6px;margin:8px 0;background:#f1ebde;border-radius:12px;padding:4px}
 .ck-seg button{flex:1;border:0;background:none;border-radius:9px;padding:10px 6px;font:inherit;font-size:13.5px;font-weight:700;color:var(--muc-mo,#6B6156);cursor:pointer}
 .ck-seg button.on{background:#fff;color:var(--thamthm,#0E3A3A);box-shadow:0 1px 3px rgba(0,0,0,.12)}
@@ -1626,9 +1642,11 @@ function renderAuthModal(){
         ${state.user.emailVerified === false ? `<div class="verify-box"><b>${t('verify_title')}</b><br>${t('verify_body')}<div class="verify-actions"><button type="button" onclick="doResendVerify()">${t('verify_resend')}</button><button type="button" onclick="doRefreshVerify()">${t('verify_done')}</button></div></div>` : ''}
         <div class="plan-chip">${t('plan_current')}: <b class="${state.plan === 'free' ? '' : 'pro'}">${t('plan_name_' + (state.plan || 'free'))}</b></div>
         ${state.planExpires && state.plan !== 'free' ? `<div class="plan-chip" style="margin-top:2px">${t('plan_until')}: ${listenFmtDate(state.planExpires)}</div>` : ''}
+        <div id="budgetBox" class="bud-box"></div>
         <button type="button" class="auth-plan-link" onclick="closeAuthModal();openPlansModal()">${NO_PURCHASE_UI ? t('plans_my') : (state.plan === 'free' ? t('plans_see_upgrade') : t('plans_compare'))}</button>
         <button class="auth-signout" onclick="doSignOut()">${t('auth_signout')}</button>
       </div>`;
+    setTimeout(loadBudgetBox, 0);
     return;
   }
   const isSignup = state.authMode === 'signup';
@@ -2862,11 +2880,10 @@ function renderListenHome(){
 // Giọng đọc người học chọn được (chỉ cho bài nghe tiếng Trung). 'default' = giọng gốc của bài; các giọng khác
 // nằm ở <id>/<khóa>/NN-text_zh.mp3, thiếu file thì tự rơi về giọng mặc định (bài mới chưa kịp sinh giọng đó).
 const LISTEN_VOICE_KEY = 'chimedis_listen_voice';
+// 2 giọng (2026-10-12): nam = "default" (Wavenet), nữ = "aoede" (Chirp 3 HD). Nhãn theo ngôn ngữ giao diện.
 const LISTEN_VOICES = [
-  { key: 'default', label: 'Wavenet ♂' },
-  { key: 'aoede', label: 'Aoede ♀' },
-  { key: 'zephyr', label: 'Zephyr ♀' },
-  { key: 'orus', label: 'Orus ♂' },
+  { key: 'default', lk: 'voice_male' },
+  { key: 'aoede', lk: 'voice_female' },
 ];
 function loadListenVoice(){
   try{ const v = localStorage.getItem(LISTEN_VOICE_KEY); return LISTEN_VOICES.some(x => x.key === v) ? v : 'default'; }catch(e){ return 'default'; }
@@ -3046,10 +3063,18 @@ Object.assign(I18N.vi, {
   admin_grant: 'Cấp gói thủ công', admin_do_grant: 'Cấp', admin_codes: 'Mã kích hoạt', admin_make_codes: 'Tạo mã', admin_months: 'tháng',
   admin_used: 'đã dùng', admin_unused: 'chưa dùng', admin_no_user: 'Không thấy người dùng này (họ cần đăng nhập ít nhất một lần).',
   plans_note: 'Thanh toán bằng chuyển khoản ngân hàng quét mã QR; gói được kích hoạt sau khi nhận tiền. Gia hạn được cộng dồn vào ngày hết hạn hiện tại.',
+  bud_title: 'Đã hết hạn mức AI', bud_hour: 'Bạn đã dùng hết hạn mức AI của giờ này. Thử lại sau khoảng {min} phút.',
+  bud_day: 'Bạn đã dùng hết hạn mức AI của hôm nay. Hạn mức làm mới vào ngày mai.', bud_month: 'Bạn đã dùng hết hạn mức AI của tháng này (và chưa có credit nạp thêm).',
+  bud_credit_hint: 'Cần dùng ngay? Nạp thêm credit — dùng được bất cứ lúc nào, không bị giới hạn theo giờ/ngày.', bud_topup: 'Nạp thêm credit',
+  bud_usage: 'Mức dùng AI', bud_unit: 'credit', bud_month_lbl: 'Tháng', bud_day_lbl: 'Hôm nay', bud_hour_lbl: 'Giờ này', bud_credits_lbl: 'Credit đã nạp',
+  ck_topup_hint: 'Credit dùng chung cho mọi tính năng AI (dict và workbench), dùng khi đã hết hạn mức tháng; không bị giới hạn theo giờ/ngày.',
+  ck_back_plans: 'Quay lại chọn gói', ck_paid_topup: 'Đã nhận tiền — credit đã được cộng vào tài khoản!',
+  plans_r_budget: 'Ngân sách AI mỗi tháng (credit)', admin_credits: 'Cộng/trừ credit', admin_do_credits: 'Áp dụng',
+  voice_male: 'Giọng nam ♂', voice_female: 'Giọng nữ ♀',
   auth_checking: 'Đang kiểm tra tài khoản…',
   up_title_max: 'Tính năng dành cho gói Max',
   dr_laoshi: 'Lão Sư Trung Y', up_body_laoshi: 'Trò chuyện với Lão Sư Trung Y (thầy giáo AI dí dỏm, chủ động hỏi và đố) là tính năng của gói Max.',
-  plans_r_workbench: 'Workbench nghiên cứu: AI phân tích, hạn mức cao', plans_wb_basic: 'Cơ bản', plans_r_laoshi: 'Trò chuyện cùng AI Lão Sư Trung Y',
+  plans_r_workbench: 'Workbench nghiên cứu: AI phân tích, hạn mức cao', plans_wb_basic: 'Chỉ cộng tác', plans_r_laoshi: 'Trò chuyện cùng AI Lão Sư Trung Y',
   plans_choose: 'Chọn gói này', plans_renew: 'Gia hạn',
   ck_scan_short: 'Quét mã QR bằng app ngân hàng — số tiền và nội dung đã điền sẵn.', ck_show_bank: 'Chuyển khoản thủ công (xem số tài khoản)', ck_hide_bank: 'Ẩn thông tin tài khoản',
   ck_change: 'Đổi gói / huỷ đơn này',
@@ -3100,10 +3125,18 @@ Object.assign(I18N.zh, {
   admin_grant: '手动开通', admin_do_grant: '开通', admin_codes: '激活码', admin_make_codes: '生成', admin_months: '个月',
   admin_used: '已使用', admin_unused: '未使用', admin_no_user: '找不到该用户（需至少登录一次）。',
   plans_note: '通过银行转账扫码支付；收款后开通套餐。续费将累加到当前到期日之后。',
+  bud_title: 'AI 额度已用完', bud_hour: '本小时的 AI 额度已用完，请约 {min} 分钟后再试。',
+  bud_day: '今天的 AI 额度已用完，明天会刷新。', bud_month: '本月 AI 额度已用完（且没有充值的点数）。',
+  bud_credit_hint: '需要立即使用？充值点数——随时可用，不受每小时/每天限制。', bud_topup: '充值点数',
+  bud_usage: 'AI 用量', bud_unit: '点', bud_month_lbl: '本月', bud_day_lbl: '今天', bud_hour_lbl: '本小时', bud_credits_lbl: '已充值点数',
+  ck_topup_hint: '点数通用于所有 AI 功能（词典与工作台），月额度用完后使用；不受每小时/每天限制。',
+  ck_back_plans: '返回选择套餐', ck_paid_topup: '已收款——点数已充入您的账户！',
+  plans_r_budget: '每月 AI 额度（点）', admin_credits: '增减点数', admin_do_credits: '应用',
+  voice_male: '男声 ♂', voice_female: '女声 ♀',
   auth_checking: '正在检查账户…',
   up_title_max: '此功能仅限 Max 套餐',
   dr_laoshi: '中医老师', up_body_laoshi: '与「中医老师」（幽默、会主动提问和出题的 AI 老师）对话是 Max 套餐的功能。',
-  plans_r_workbench: '研究工作台：AI 分析，高额度', plans_wb_basic: '基础', plans_r_laoshi: '与 AI 中医老师对话',
+  plans_r_workbench: '研究工作台：AI 分析，高额度', plans_wb_basic: '仅协作', plans_r_laoshi: '与 AI 中医老师对话',
   plans_choose: '选择此套餐', plans_renew: '续费',
   ck_scan_short: '用银行 App 扫码——金额和内容已自动填好。', ck_show_bank: '手动转账（查看账号）', ck_hide_bank: '隐藏账户信息',
   ck_change: '更换套餐 / 取消此订单',
@@ -3154,10 +3187,18 @@ Object.assign(I18N.en, {
   admin_grant: 'Grant manually', admin_do_grant: 'Grant', admin_codes: 'Activation codes', admin_make_codes: 'Create', admin_months: 'months',
   admin_used: 'used', admin_unused: 'unused', admin_no_user: 'User not found (they must have signed in at least once).',
   plans_note: 'Pay by bank transfer with a QR code; the plan is activated once the payment is received. Renewals add on to your current expiry date.',
+  bud_title: 'AI allowance used up', bud_hour: 'You have used this hour\'s AI allowance. Try again in about {min} minutes.',
+  bud_day: 'You have used today\'s AI allowance. It refreshes tomorrow.', bud_month: 'You have used this month\'s AI allowance (and have no top-up credits).',
+  bud_credit_hint: 'Need it now? Top up credits — usable any time, not limited by hour or day.', bud_topup: 'Top up credits',
+  bud_usage: 'AI usage', bud_unit: 'credits', bud_month_lbl: 'Month', bud_day_lbl: 'Today', bud_hour_lbl: 'This hour', bud_credits_lbl: 'Top-up credits',
+  ck_topup_hint: 'Credits are shared by every AI feature (dictionary and workbench) and used once the monthly allowance runs out; not limited by hour or day.',
+  ck_back_plans: 'Back to plans', ck_paid_topup: 'Payment received — credits added to your account!',
+  plans_r_budget: 'Monthly AI allowance (credits)', admin_credits: 'Add/remove credits', admin_do_credits: 'Apply',
+  voice_male: 'Male voice ♂', voice_female: 'Female voice ♀',
   auth_checking: 'Checking your account…',
   up_title_max: 'A Max plan feature',
   dr_laoshi: 'Chinese Medicine Teacher', up_body_laoshi: 'Chatting with the Chinese Medicine Teacher (a witty AI teacher who asks and quizzes you proactively) is a Max plan feature.',
-  plans_r_workbench: 'Research workbench: AI analysis, higher quota', plans_wb_basic: 'Basic', plans_r_laoshi: 'Chat with the AI Chinese Medicine Teacher',
+  plans_r_workbench: 'Research workbench: AI analysis, higher quota', plans_wb_basic: 'Collaborator only', plans_r_laoshi: 'Chat with the AI Chinese Medicine Teacher',
   plans_choose: 'Choose this plan', plans_renew: 'Renew',
   ck_scan_short: 'Scan the QR with your banking app — amount and content are pre-filled.', ck_show_bank: 'Manual transfer (show account details)', ck_hide_bank: 'Hide account details',
   ck_change: 'Change plan / cancel this order',
@@ -3198,6 +3239,8 @@ const PLAN_LIMITS = {
   pro: { docs: 15, docsPerDay: 5, chars: 6000 },
   max: { docs: 60, docsPerDay: 20, chars: 20000 },
 };
+// Ngân sách AI mỗi tháng (credit; 1 credit = $0,01). Phải khớp backend/lib/ai-budget.js (PLAN_BUDGET_USD).
+const PLAN_BUDGET_CREDITS = { free: 200, pro: 200, max: 400 };
 const PLAN_YEARLY_MONTHS = 10; // trả 10 tháng được 12 tháng
 function planYearPrice(p){ return (PLAN_PRICE[p] || 0) * PLAN_YEARLY_MONTHS; }
 function planYearText(p){ const v = planYearPrice(p); return v ? `${v.toLocaleString('vi-VN')}₫${t('plans_per_year')}` : t('plans_free_price'); }
@@ -3216,7 +3259,7 @@ function openPlansModal(){
     const lim = PLAN_LIMITS[cur] || PLAN_LIMITS.free;
     const rows = [
       [t('plans_r_listen'), yes], [t('plans_r_record'), yes], [t('plans_r_voice'), yes],
-      [t('plans_r_ai'), cur === 'free' ? no : yes], [t('plans_r_upload'), cur === 'free' ? no : yes],
+      [t('plans_r_ai'), cur === 'free' ? no : yes], [t('plans_r_budget'), cur === 'free' ? no : n(PLAN_BUDGET_CREDITS[cur])], [t('plans_r_upload'), cur === 'free' ? no : yes],
       [t('plans_r_workbench'), cur === 'max' ? yes : t('plans_wb_basic')], [t('plans_r_laoshi'), cur === 'max' ? yes : no],
       [t('plans_r_docs'), cur === 'free' ? no : n(lim.docs)], [t('plans_r_perday'), cur === 'free' ? no : n(lim.docsPerDay)],
       [t('plans_r_chars'), cur === 'free' ? no : n(lim.chars)],
@@ -3238,6 +3281,7 @@ function openPlansModal(){
     row(t('plans_r_record'), () => yes) +
     row(t('plans_r_voice'), () => yes) +
     row(t('plans_r_ai'), p => p === 'free' ? no : yes) +
+    row(t('plans_r_budget'), p => p === 'free' ? no : n(PLAN_BUDGET_CREDITS[p])) +
     row(t('plans_r_csdl'), p => p === 'free' ? t('plans_csdl_free') : t('plans_csdl_pro')) +
     row(t('plans_r_upload'), p => p === 'free' ? no : yes) +
     row(t('plans_r_workbench'), p => p === 'max' ? yes : t('plans_wb_basic')) +
@@ -3256,11 +3300,12 @@ function openPlansModal(){
 }
 // ===== Thanh toán chuyển khoản (web) & quản trị =====
 // Chỉ web: app iOS không có giao diện mua (NO_PURCHASE_UI). Máy chủ: lib/billing.js.
-let ckState = { plan: 'pro', period: 'year', order: null, cfg: null, timer: null };
+let ckState = { plan: 'pro', period: 'year', kind: 'plan', pack: 'p300', order: null, cfg: null, timer: null };
 function updateAdminItem(){ const el = document.getElementById('drawerAdminItem'); if(el) el.style.display = state.isAdmin && !NO_PURCHASE_UI ? '' : 'none'; }
 function closeCheckout(){ clearInterval(ckState.timer); ckState.timer = null; document.getElementById('checkoutModal')?.remove(); }
-async function openCheckout(plan, period){
+async function openCheckout(plan, period, kind){
   if(NO_PURCHASE_UI) return;
+  ckState.kind = kind === 'topup' ? 'topup' : 'plan';
   if(plan === 'pro' || plan === 'max') ckState.plan = plan;
   if(period === 'month' || period === 'year') ckState.period = period;
   if(!state.user){ openAuthModal(); listenToast(t('ck_login')); return; }
@@ -3271,9 +3316,9 @@ async function openCheckout(plan, period){
   // Tiếp tục đơn đang chờ (nếu có) để không tạo mã mới mỗi lần mở.
   try{
     const r = await authFetch('/api/orders'); const j = await r.json();
-    const pend = (j.data || []).find(o => o.status === 'pending' && new Date(o.expires_at) > new Date());
+    const pend = (j.data || []).find(o => o.status === 'pending' && new Date(o.expires_at) > new Date() && (ckState.kind === 'topup') === (o.kind === 'topup'));
     // Có đơn chờ: hiện lại đơn đó (kèm nút "Đổi gói / huỷ"). Nếu người dùng vừa chọn gói khác từ bảng gói thì để họ chọn tiếp.
-    if(pend && !(plan && (plan !== pend.plan || (period && period !== pend.period)))){ ckState.order = pend; ckState.plan = pend.plan; ckState.period = pend.period; renderCheckout(); ckStartPolling(); }
+    if(pend && !(plan && (plan !== pend.plan || (period && period !== pend.period)))){ ckState.order = pend; if(pend.kind !== 'topup'){ ckState.plan = pend.plan; ckState.period = pend.period; } renderCheckout(); ckStartPolling(); }
   }catch(e){}
 }
 function ckPrice(plan, period){
@@ -3289,19 +3334,25 @@ function renderCheckout(){
   if(!cfg.configured){
     body = `<p>${t('ck_not_configured')}</p>`;
   } else if(o && o.status === 'paid'){
-    body = `<div class="ck-ok">✓ ${t('ck_paid')}</div>`;
+    body = `<div class="ck-ok">✓ ${t(o.kind === 'topup' ? 'ck_paid_topup' : 'ck_paid')}</div>`;
+  } else if(!o && ckState.kind === 'topup'){
+    const packs = (ckState.cfg && ckState.cfg.packs) || { p100: { credits: 100, amount: 59000 }, p300: { credits: 300, amount: 159000 }, p800: { credits: 800, amount: 399000 } };
+    body = `<p class="ck-scan">${t('ck_topup_hint')}</p><div class="ck-packs">${Object.keys(packs).map(k => `<button type="button" class="${ckState.pack === k ? 'on' : ''}" onclick="ckSet('pack','${k}')"><b>${myNum(packs[k].credits)}</b> ${t('bud_unit')}<br><small>${ckMoney(packs[k].amount)}</small></button>`).join('')}</div>` +
+      `<button type="button" class="mydoc-go" style="width:100%" onclick="ckCreate()">${t('ck_create')}</button>` +
+      `<button type="button" class="ck-link" onclick="ckSet('kind','plan')">${t('ck_back_plans')}</button>`;
   } else if(!o){
     body = `<div class="ck-seg">${['pro', 'max'].map(p => `<button type="button" class="${ckState.plan === p ? 'on' : ''}" onclick="ckSet('plan','${p}')">${t('plan_name_' + p)}</button>`).join('')}</div>` +
       `<div class="ck-seg">${['month', 'year'].map(pd => `<button type="button" class="${ckState.period === pd ? 'on' : ''}" onclick="ckSet('period','${pd}')">${t('ck_period_' + pd)}${pd === 'year' ? ` <small>−${save}%</small>` : ''}</button>`).join('')}</div>` +
       `<div class="ck-price">${ckMoney(ckPrice(ckState.plan, ckState.period))}<small> / ${t('ck_period_' + ckState.period).toLowerCase()}</small></div>` +
       (state.plan && state.plan !== 'free' && state.plan !== ckState.plan && state.planExpires ? `<p class="ck-note" style="color:#B4472B">${t('ck_switch_warn').replace('{plan}', t('plan_name_' + state.plan)).replace('{date}', listenFmtDate(state.planExpires))}</p>` : '') +
-      `<button type="button" class="mydoc-go" style="width:100%" onclick="ckCreate()">${t('ck_create')}</button>`;
+      `<button type="button" class="mydoc-go" style="width:100%" onclick="ckCreate()">${t('ck_create')}</button>` +
+      `<button type="button" class="ck-link" onclick="ckSet('kind','topup')">${t('bud_topup')}</button>`;
   } else {
     const row = (l, v, copy) => `<div class="ck-row"><span>${l}</span><b>${myDocEsc(v)}</b>${copy ? `<button type="button" onclick="ckCopy('${String(copy).replace(/'/g, '')}')">${t('ck_copy')}</button>` : ''}</div>`;
     const bank = ckState.showBank
       ? row(t('ck_bank'), cfg.bank_name || '', '') + row(t('ck_account'), cfg.account || '', cfg.account) + row(t('ck_owner'), cfg.account_name || '', '')
       : '';
-    body = `<div class="ck-sum"><b>${t('plan_name_' + o.plan)}</b> · ${t('ck_period_' + o.period)} · ${ckMoney(o.amount)}</div>` +
+    body = `<div class="ck-sum">${o.kind === 'topup' ? `<b>${myNum(o.credits)} ${t('bud_unit')}</b>` : `<b>${t('plan_name_' + o.plan)}</b> · ${t('ck_period_' + o.period)}`} · ${ckMoney(o.amount)}</div>` +
       `<p class="ck-scan">${t('ck_scan_short')}</p>` +
       (o.qr_url ? `<img class="ck-qr" src="${o.qr_url}" alt="VietQR">` : '') +
       row(t('ck_content'), o.code, o.code) +
@@ -3312,7 +3363,7 @@ function renderCheckout(){
   }
   document.getElementById('app').insertAdjacentHTML('beforeend',
     `<div id="checkoutModal" class="up-scrim" onclick="if(event.target===this)closeCheckout()"><div class="up-box plans-box" role="dialog" style="max-height:92%;overflow:auto">` +
-    `<h3>${t('ck_title')}</h3>${body}` +
+    `<h3>${t(ckState.kind === 'topup' ? 'bud_topup' : 'ck_title')}</h3>${body}` +
     (cfg.configured && !(o && o.status === 'paid') ? `<div class="ck-redeem"><label>${t('ck_redeem')}</label><div><input id="ckCode" placeholder="CH-XXXX-XXXX" autocapitalize="characters"><button type="button" onclick="ckRedeem()">${t('ck_redeem_btn')}</button></div></div>` : '') +
     `<div class="up-actions"><button type="button" onclick="closeCheckout()">${t('plans_close')}</button></div></div></div>`);
 }
@@ -3329,7 +3380,8 @@ async function ckCancel(){
 function ckCopy(v){ try{ navigator.clipboard.writeText(v); listenToast(t('ck_copied')); }catch(e){} }
 async function ckCreate(){
   try{
-    const r = await authFetch('/api/orders', { method: 'POST', body: JSON.stringify({ plan: ckState.plan, period: ckState.period }) });
+    const body = ckState.kind === 'topup' ? { kind: 'topup', pack: ckState.pack } : { plan: ckState.plan, period: ckState.period };
+    const r = await authFetch('/api/orders', { method: 'POST', body: JSON.stringify(body) });
     const j = await r.json();
     if(r.ok && j.success){ ckState.order = j.data; renderCheckout(); ckStartPolling(); }
     else listenToast(t(j && j.error === 'payments_not_configured' ? 'ck_not_configured' : 'auth_err_generic'));
@@ -3345,6 +3397,7 @@ function ckStartPolling(){
         clearInterval(ckState.timer);
         ckState.order = j.data;
         if(j.data.status === 'paid'){ await loadPlan(); try{ await listenEnsureTicket(true); }catch(e){} }
+        loadBudgetBox();
         renderCheckout();
       }
     }catch(e){}
@@ -3381,6 +3434,7 @@ async function adminRefresh(){
     const codes = (co.data || []).slice(0, 30).map(c => `<div class="adm-row"><div><b>${esc(c.code)}</b> — ${t('plan_name_' + c.plan)} · ${c.months} ${t('admin_months')}</div><small>${c.used_by_uid ? t('admin_used') : t('admin_unused')}</small></div>`).join('');
     box.innerHTML = `<h3 class="csdl-sec">${t('admin_pending')}</h3>${orders}` +
       `<h3 class="csdl-sec">${t('admin_grant')}</h3><div class="adm-form"><input id="admEmail" placeholder="email"><select id="admPlan"><option value="pro">Pro</option><option value="max">Max</option></select><input id="admMonths" type="number" min="1" value="1" style="width:70px"><button type="button" class="mde-btn primary" onclick="adminGrant()">${t('admin_do_grant')}</button></div>` +
+      `<h3 class="csdl-sec">${t('admin_credits')}</h3><div class="adm-form"><input id="crEmail" placeholder="email"><input id="crN" type="number" value="100" style="width:90px"><button type="button" class="mde-btn primary" onclick="adminCredits()">${t('admin_do_credits')}</button></div>` +
       `<h3 class="csdl-sec">${t('admin_codes')}</h3><div class="adm-form"><select id="codePlan"><option value="pro">Pro</option><option value="max">Max</option></select><input id="codeMonths" type="number" min="1" value="12" style="width:70px"><input id="codeCount" type="number" min="1" max="50" value="5" style="width:70px"><button type="button" class="mde-btn primary" onclick="adminMakeCodes()">${t('admin_make_codes')}</button></div><div id="adminNewCodes"></div>${codes}`;
   }catch(e){ box.textContent = t('auth_err_generic'); }
 }
@@ -3395,6 +3449,12 @@ async function adminGrant(){
   const r = await authFetch('/api/admin/grant', { method: 'POST', body: JSON.stringify({ email, plan, months }) });
   const j = await r.json().catch(() => ({}));
   listenToast(r.ok ? `OK → ${listenFmtDate(j.data.expires_at)}` : (j.error === 'user_not_found' ? t('admin_no_user') : t('auth_err_generic')));
+}
+async function adminCredits(){
+  const email = document.getElementById('crEmail').value.trim(), credits = Number(document.getElementById('crN').value);
+  const r = await authFetch('/api/admin/credits', { method: 'POST', body: JSON.stringify({ email, credits }) });
+  const j = await r.json().catch(() => ({}));
+  listenToast(r.ok ? 'OK' : (j.error === 'user_not_found' ? t('admin_no_user') : t('auth_err_generic')));
 }
 async function adminMakeCodes(){
   const plan = document.getElementById('codePlan').value, months = Number(document.getElementById('codeMonths').value), count = Number(document.getElementById('codeCount').value);
@@ -3469,11 +3529,59 @@ async function laoshiSend(text){
     const r = await authFetch('/api/laoshi/chat', { method: 'POST', body: JSON.stringify({ messages: laoshi.msgs.slice(-12), quiz, lang: state.lang }) });
     const j = await r.json().catch(() => ({}));
     if(r.ok && j.success){ laoshi.msgs.push({ role: 'assistant', content: j.data.text }); }
+    else if(r.status === 429 && j && j.error === 'budget'){ laoshi.msgs.push({ role: 'assistant', content: budgetText(j) }); laoshiRender(); openBudgetModal(j); }
     else if(r.status === 429){ laoshi.msgs.push({ role: 'assistant', content: t('laoshi_limit') }); }
     else if(r.status === 403){ state.plan = 'free'; closeLaoshi(); openUpgradeModal('laoshi'); }
     else { laoshi.msgs.push({ role: 'assistant', content: t('laoshi_err') }); }
   }catch(e){ laoshi.msgs.push({ role: 'assistant', content: t('laoshi_err') }); }
   laoshi.busy = false; laoshiSave(); laoshiRender();
+}
+// ===== Ngân sách AI: hạn mức tháng/ngày/giờ + credit nạp thêm (dùng chung với workbench). Máy chủ: lib/ai-budget.js =====
+function budgetText(b){
+  if(!b) return t('bud_month');
+  if(b.reason === 'hour' || b.state === 'hour'){ const m = Math.max(1, Math.ceil(((b.budget && b.budget.retryAfterS) || b.retryAfterS || 3600) / 60)); return t('bud_hour').replace('{min}', m); }
+  if(b.reason === 'day' || b.state === 'day') return t('bud_day');
+  return t('bud_month');
+}
+function closeBudgetModal(){ document.getElementById('budgetModal')?.remove(); }
+// Hiện thông báo hết hạn mức; ở web kèm nút nạp credit (app iOS: chỉ thông báo, không nút mua).
+function openBudgetModal(j){
+  closeBudgetModal();
+  const b = j && (j.budget || j);
+  const canBuy = !NO_PURCHASE_UI;
+  document.getElementById('app').insertAdjacentHTML('beforeend',
+    `<div id="budgetModal" class="up-scrim" onclick="if(event.target===this)closeBudgetModal()"><div class="up-box" role="dialog">` +
+    `<h3>${t('bud_title')}</h3><p>${budgetText(j)}</p>` +
+    (canBuy ? `<p style="font-size:12.5px;color:var(--muc-mo,#6B6156)">${t('bud_credit_hint')}</p>` : '') +
+    `<div class="up-actions">${canBuy ? `<button type="button" class="up-cta" style="border:0;cursor:pointer" onclick="closeBudgetModal();openCheckout(null,null,'topup')">${t('bud_topup')}</button>` : ''}` +
+    `<button type="button" onclick="closeBudgetModal()">${t('plans_close')}</button></div></div></div>`);
+}
+// Âm thanh sinh theo yêu cầu bị từ chối vì ngân sách: audio không cho biết mã lỗi → hỏi /api/budget rồi báo.
+let _budProbeAt = 0;
+async function budgetProbeAfterAudioError(){
+  if(!state.user || Date.now() - _budProbeAt < 15000) return;
+  _budProbeAt = Date.now();
+  try{
+    const r = await authFetch('/api/budget'); const j = await r.json();
+    if(j && j.success && j.data && j.data.state !== 'ok') openBudgetModal({ budget: j.data, reason: j.data.state });
+  }catch(e){}
+}
+async function loadBudgetBox(){
+  const box = document.getElementById('budgetBox');
+  if(!box || !state.user) return;
+  try{
+    const r = await authFetch('/api/budget'); const j = await r.json();
+    if(!(j && j.success)) return;
+    const b = j.data;
+    const bar = (lab, u) => {
+      const pct = u.limit ? Math.min(100, Math.round(u.used / u.limit * 100)) : 0;
+      return `<div class="bud-row"><span>${lab}</span><div class="bud-bar"><i class="${pct >= 100 ? 'full' : ''}" style="width:${pct}%"></i></div><b>${myNum(u.used)}/${myNum(u.limit)}</b></div>`;
+    };
+    box.innerHTML = `<div class="bud-title">${t('bud_usage')} <small>(${t('bud_unit')})</small></div>` +
+      bar(t('bud_month_lbl'), b.month) + bar(t('bud_day_lbl'), b.day) + bar(t('bud_hour_lbl'), b.hour) +
+      `<div class="bud-credits">${t('bud_credits_lbl')}: <b>${myNum(b.credits)}</b>` +
+      (NO_PURCHASE_UI ? '' : ` <button type="button" onclick="closeAuthModal();openCheckout(null,null,'topup')">${t('bud_topup')}</button>`) + `</div>`;
+  }catch(e){}
 }
 function openUpgradeModal(reason){
   closeUpgradeModal();
@@ -3565,7 +3673,7 @@ function renderMyDocsHome(tabsHtml){
       (NO_PURCHASE_UI ? '' : `<button class="mydoc-go" onclick="openUpgradeModal('upload')">${t('plans_buy')}</button> ` +
       `<button class="mydoc-go" style="background:#f1ebde;color:#3a2a00" onclick="openPlansModal()">${t('plans_compare')}</button>`) + `</div>`;
   } else {
-    const voices = LISTEN_VOICES.map(v => `<option value="${v.key}" ${loadListenVoice() === v.key ? 'selected' : ''}>${v.label}</option>`).join('');
+    const voices = LISTEN_VOICES.map(v => `<option value="${v.key}" ${loadListenVoice() === v.key ? 'selected' : ''}>${t(v.lk)}</option>`).join('');
     const draft = myDocDraft[myDocMode];
     const fileMode = myDocMode === 'file';
     const fileInfo = fileMode && myDocFileName
@@ -3701,7 +3809,8 @@ async function submitMyDoc(){
       myDocDraft[myDocMode] = ''; if(myDocMode === 'file'){ myDocFileName = ''; myDocFileTotal = 0; }
       listenToast(t('my_submitted'));
       render();
-    } else if(j && j.error === 'pro_required'){ openUpgradeModal('upload'); }
+    } else if(j && j.error === 'budget'){ openBudgetModal(j); }
+    else if(j && j.error === 'pro_required'){ openUpgradeModal('upload'); }
     else listenToast(t(MY_ERR_KEYS[j && j.error] || 'my_err_edit').replace('{max}', String((j && j.max) || myDocMax())));
   }catch(e){ listenToast(t('my_err_edit')); }
   myDocBusy = false;
@@ -3717,9 +3826,10 @@ function openMyDoc(id){ openListenDialogue('my-' + id); }
 function listenNewAudio(url){
   const a = new Audio(absUrl(withTicket(url)));
   a.playbackRate = loadListenSpeed();
-  const m = url.match(/^(.*\/)(aoede|zephyr|orus)\/(\d+-text_(?:zh|en)\.mp3)$/);
+  const m = url.match(/^(.*\/)(aoede)\/(\d+-text_(?:zh|en)\.mp3)$/);
   let triedTicket = false, triedVoice = false;
   a.addEventListener('error', async () => {
+    if(/^\/api\/(csdl|my-docs)\//.test(url)) budgetProbeAfterAudioError();
     // Lỗi tải: vé hết hạn/chưa có (xin vé mới, thử lại 1 lần) rồi mới tới nhánh giọng chưa có file (rơi về giọng gốc).
     if(!triedTicket && state.user){
       triedTicket = true;
@@ -3952,6 +4062,7 @@ async function listenLineInterpret(seq, trimmedBlob, d, seg, targetLang, referen
       body: JSON.stringify({ dialogue_id: d.id, seq, target_lang: lang, audio_base64: base64, fluency: trimmedBlob.fluency || null }),
     });
     json = await res.json();
+    if(res.status === 429 && json && json.error === 'budget'){ listenShowRecordedOnly(seq); openBudgetModal(json); return; }
     if(res.status === 403 && json && json.error === 'pro_required'){ state.plan = 'free'; listenShowRecordedOnly(seq); openUpgradeModal('analyze'); return; }
     if(res.status === 401){ listenShowRecordedOnly(seq); listenNeedLogin('analyze'); return; }
   }catch(e){
@@ -4009,6 +4120,7 @@ async function listenLineScore(seq, trimmedBlob){
       body: JSON.stringify({ audio_base64: base64, format: 'wav', reference_zh: seg ? seg.text_zh : '', ui_lang: state.lang }),
     });
     json = await res.json();
+    if(res.status === 429 && json && json.error === 'budget'){ listenShowRecordedOnly(seq); openBudgetModal(json); return; }
     if(res.status === 403 && json && json.error === 'pro_required'){ state.plan = 'free'; listenShowRecordedOnly(seq); openUpgradeModal('analyze'); return; }
     if(res.status === 401){ listenShowRecordedOnly(seq); listenNeedLogin('analyze'); return; }
   }catch(e){
@@ -4085,7 +4197,7 @@ function renderListenDialogue(){
       ${cbRow('zh','listen_cb_zh')}${cbRow('pinyin','listen_cb_pinyin')}${cbRow('vi','listen_cb_vi')}${cbRow('en','listen_cb_en')}
     </div>
     ${!feat.record ? `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>` : ''}
-    ${true ? `<div class="listen-voicerow"><label for="listenVoiceSel">${t('listen_voice_label')}:</label><select id="listenVoiceSel" onchange="setListenVoice(this.value)">${LISTEN_VOICES.filter(v => !Array.isArray(d.voices) || d.voices.includes(v.key)).map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${v.label}</option>`).join('')}</select></div>` : ''}
+    ${true ? `<div class="listen-voicerow"><label for="listenVoiceSel">${t('listen_voice_label')}:</label><select id="listenVoiceSel" onchange="setListenVoice(this.value)">${LISTEN_VOICES.filter(v => !Array.isArray(d.voices) || d.voices.includes(v.key)).map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${t(v.lk)}</option>`).join('')}</select></div>` : ''}
     <div class="listen-playbar">
       <div class="listen-speedrow">
         ${LISTEN_SPEEDS.map(v => `<button class="listen-speed-btn ${loadListenSpeed()===v?'on':''}" data-speed="${v}" onclick="setListenSpeed(${v})">${v}×</button>`).join('')}
