@@ -49,6 +49,30 @@ export async function resolvePlan(pool, fbUser) {
   }
 }
 
+/** Gói + ngày hết hạn (nếu có) để hiện trong tài khoản. source: 'env' (không hết hạn) | 'db' | 'none'. */
+export async function planInfo(pool, fbUser) {
+  const base = { plan: 'free', expires_at: null, source: 'none' };
+  if (!fbUser) return base;
+  const fromEnv = fbUser.emailVerified ? planFromEnv(fbUser.email) : null;
+  if (fromEnv) return { plan: fromEnv, expires_at: null, source: 'env' };
+  if (!pool) return base;
+  try {
+    const [rows] = await pool.query('SELECT plan, plan_expires_at FROM users WHERE firebase_uid = ? LIMIT 1', [fbUser.uid]);
+    const r = rows && rows[0];
+    if (!r) return base;
+    const exp = r.plan_expires_at ? new Date(r.plan_expires_at) : null;
+    if (exp && exp.getTime() < Date.now()) return { plan: 'free', expires_at: exp.toISOString(), source: 'expired' };
+    const plan = normalizePlan(r.plan);
+    return { plan, expires_at: exp ? exp.toISOString() : null, source: plan === 'free' ? 'none' : 'db' };
+  } catch (_) { return base; }
+}
+
+/** Quản trị viên (ADMIN_EMAILS, mặc định chủ dự án) — bắt buộc email đã xác minh. */
+export function isAdmin(fbUser) {
+  if (!fbUser || !fbUser.emailVerified || !fbUser.email) return false;
+  return csv(process.env.ADMIN_EMAILS || 'tmh2388@gmail.com').includes(String(fbUser.email).toLowerCase());
+}
+
 /** Middleware: yêu cầu gói tối thiểu `min` (đặt SAU verifyFirebaseToken). */
 export function requirePlan(pool, min) {
   return async (req, res, next) => {

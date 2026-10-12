@@ -11,9 +11,13 @@ import { buildAPI } from './build-api.js';
 import { verifyFirebaseToken, isFirebaseConfigured } from './firebase-admin.js';
 import { analyzeInterpretation, buildVocabHint, normalize as normalizeInterp } from './lib/interpret-check.js';
 import { syncGeneralTerms } from './lib/general-terms-sync.js';
-import { resolvePlan, requirePlan, ensurePlanColumns, LIMITS } from './lib/plan.js';
+import { resolvePlan, requirePlan, ensurePlanColumns, LIMITS, atLeast, planInfo, isAdmin } from './lib/plan.js';
+import * as billing from './lib/billing.js';
+import crypto from 'node:crypto';
 import { signTicket, verifyTicket, TICKET_TTL_SEC } from './lib/media-ticket.js';
 import * as userDocs from './lib/user-docs.js';
+import * as csdl from './lib/csdl-lessons.js';
+import * as csdlAudio from './lib/csdl-audio.js';
 import { extractText, MAX_UPLOAD_BYTES } from './lib/doc-extract.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -1013,12 +1017,14 @@ app.use('/audio/listening', (req, res, next) => {
 });
 
 app.get('/api/me', verifyFirebaseToken, async (req, res) => {
-  const plan = await resolvePlan(mysqlPool, req.firebaseUser);
-  res.json({ success: true, data: { uid: req.firebaseUser.uid, email: req.firebaseUser.email, email_verified: !!req.firebaseUser.emailVerified, plan, limits: LIMITS[plan] || LIMITS.free } });
+  const info = await planInfo(mysqlPool, req.firebaseUser);
+  const plan = info.plan;
+  res.json({ success: true, data: { plan_expires_at: info.expires_at, plan_source: info.source, is_admin: isAdmin(req.firebaseUser), uid: req.firebaseUser.uid, email: req.firebaseUser.email, email_verified: !!req.firebaseUser.emailVerified, plan, limits: LIMITS[plan] || LIMITS.free } });
 });
 
-app.post('/api/media-ticket', verifyFirebaseToken, (req, res) => {
-  res.json({ success: true, data: { ticket: signTicket(req.firebaseUser.uid), expires_in: TICKET_TTL_SEC } });
+app.post('/api/media-ticket', verifyFirebaseToken, async (req, res) => {
+  const plan = await resolvePlan(mysqlPool, req.firebaseUser);
+  res.json({ success: true, data: { ticket: signTicket(req.firebaseUser.uid, TICKET_TTL_SEC, plan), expires_in: TICKET_TTL_SEC } });
 });
 
 // ===== Tự Thêm: tài liệu riêng của người dùng Pro (AI tự biên tập + tạo audio) =====
@@ -1082,6 +1088,186 @@ app.get('/api/my-docs/:id/audio/:seq', requireDocsDb, async (req, res) => {
     res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, max-age=3600' });
     res.send(mp3);
   } catch (e) { console.error('my-docs audio:', e.message); res.status(500).json({ success: false, error: 'audio_failed' }); }
+});
+
+// ===== Học Thuật: bài nghe dựng tự động từ kho CSDL (xem lib/csdl-lessons.js) =====
+// Công khai: danh sách lĩnh vực + bài trong ngày (mỗi lĩnh vực 1 bài). Pro: duyệt/tìm mọi mục và nghe bất kỳ mục nào.
+// Công thức dựng KHÔNG gọi AI; audio sinh theo yêu cầu bằng Google TTS rồi lưu đệm (lib/csdl-audio.js).
+let lessonIndexAt = 0, lessonIndexPromise = null;
+async function ensureLessonIndex() {
+  if (csdl.hasIndex() && Date.now() - lessonIndexAt < 30 * 60 * 1000) return;
+  if (!lessonIndexPromise) {
+    lessonIndexPromise = (async () => {
+      if (process.env.CSDL_TERMS_FILE) { // chỉ để kiểm thử cục bộ với bản sao dữ liệu /api/terms
+        const raw = JSON.parse(fs.readFileSync(process.env.CSDL_TERMS_FILE, 'utf8'));
+        csdl.buildIndex(Array.isArray(raw) ? raw : raw.data);
+        lessonIndexAt = Date.now();
+        return;
+      }
+      const termsPath = path.join(__dirname, 'public', 'data', 'terms.json');
+      const sheetTerms = fs.existsSync(termsPath) ? JSON.parse(fs.readFileSync(termsPath, 'utf8')) : [];
+      // KHÔNG nạp Thang Phương (miền cần đăng nhập) — bài Học Thuật chỉ dùng dữ liệu công khai.
+      const baseTerms = [
+        ...sheetTerms, ...(await getHerbTerms()), ...(await getAnatomyTerms()), ...(await getAcupointTerms()), ...(await getApprovedCandidateTerms()),
+      ];
+      const terms = [...baseTerms, ...dedupeGeneralTerms(await getGeneralTerms(), baseTerms)];
+      csdl.buildIndex(terms);
+      lessonIndexAt = Date.now();
+    })().finally(() => { lessonIndexPromise = null; });
+  }
+  await lessonIndexPromise;
+}
+const withLessonIndex = (handler) => async (req, res) => {
+  try { await ensureLessonIndex(); return await handler(req, res); }
+  catch (e) { console.error('csdl:', e.message); res.status(500).json({ success: false, error: 'csdl_failed' }); }
+};
+onDbUp(() => csdlAudio.ensureTable(mysqlPool).catch((e) => console.error('[csdl-audio] init:', e.message)));
+
+app.get('/api/csdl/fields', withLessonIndex((req, res) => {
+  res.set('Cache-Control', 'public, max-age=300');
+  res.json({ success: true, data: { fields: csdl.stats(), day: csdl.dayIso() } });
+}));
+
+app.get('/api/csdl/daily', withLessonIndex((req, res) => {
+  res.set('Cache-Control', 'public, max-age=300');
+  res.json({ success: true, data: csdl.dailyPicks().map((t) => csdl.meta(t)) });
+}));
+
+app.get('/api/csdl/list', ...proOnly, withLessonIndex((req, res) => {
+  const { field, group2, q, offset, limit } = req.query;
+  res.json({ success: true, data: csdl.browse({ field, group2, q, offset: Number(offset) || 0, limit: Number(limit) || 30 }) });
+}));
+
+app.get('/api/csdl/lesson/:id', withLessonIndex(async (req, res) => {
+  const id = String(req.params.id);
+  if (!csdl.dailyIds().has(id)) {
+    const decoded = await optionalFirebaseUser(req);
+    const user = decoded ? { uid: decoded.uid, email: decoded.email || null, emailVerified: decoded.email_verified === true } : null;
+    const plan = await resolvePlan(mysqlPool, user);
+    if (!user) return res.status(401).json({ success: false, error: 'login_required' });
+    if (!atLeast(plan, 'pro')) return res.status(403).json({ success: false, error: 'pro_required', plan, required: 'pro' });
+  }
+  const lesson = csdl.lessonById(id);
+  if (!lesson) return res.status(404).json({ success: false, error: 'not_found' });
+  res.json({ success: true, data: lesson });
+}));
+
+app.get('/api/csdl/audio/:id/:seq', withLessonIndex(async (req, res) => {
+  const tk = verifyTicket(req.query.t);
+  if (!tk) return res.status(401).json({ success: false, error: 'login_required' });
+  const id = String(req.params.id);
+  if (!csdl.dailyIds().has(id) && !atLeast(tk.plan, 'pro')) return res.status(403).json({ success: false, error: 'pro_required' });
+  const lesson = csdl.lessonById(id);
+  const text = csdl.segmentText(lesson, req.params.seq);
+  if (!text) return res.status(404).json({ success: false, error: 'not_found' });
+  try {
+    const mp3 = await csdlAudio.getAudio(mysqlPool, { lessonId: id, seq: Number(req.params.seq), text, voice: String(req.query.voice || 'default'), uid: tk.uid });
+    res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, max-age=86400' });
+    res.send(mp3);
+  } catch (e) {
+    if (e.code === 'rate_limited') return res.status(429).json({ success: false, error: 'rate_limited' });
+    console.error('csdl audio:', e.message);
+    res.status(500).json({ success: false, error: 'audio_failed' });
+  }
+}));
+
+// ===== Gói & thanh toán chuyển khoản (xem lib/billing.js) — chỉ giao diện web có nút mua =====
+onDbUp(() => billing.ensureTables(mysqlPool).catch((e) => console.error('[billing] init:', e.message)));
+const adminOnly = [verifyFirebaseToken, (req, res, next) => (isAdmin(req.firebaseUser) ? next() : res.status(403).json({ success: false, error: 'admin_required' }))];
+const orderView = (o) => o && {
+  code: o.code, plan: o.plan, period: o.plan_period, amount: o.amount, status: o.status, method: o.method, note: o.note,
+  created_at: o.created_at, expires_at: o.expires_at, paid_at: o.paid_at, qr_url: billing.qrUrl(o),
+};
+
+app.get('/api/billing/config', (req, res) => {
+  const b = billing.bankConfig();
+  res.json({ success: true, data: { configured: b.configured, auto_confirm: !!process.env.SEPAY_API_KEY, prices: billing.PRICES, bank_name: b.bankName, account_name: b.accountName, account: b.configured ? b.account : '' } });
+});
+
+app.post('/api/orders', verifyFirebaseToken, requireDocsDb, async (req, res) => {
+  if (!billing.bankConfig().configured) return res.status(503).json({ success: false, error: 'payments_not_configured' });
+  try {
+    const { plan, period } = req.body || {};
+    const o = await billing.createOrder(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, String(plan), String(period));
+    res.status(201).json({ success: true, data: orderView(o) });
+  } catch (e) {
+    if (e.code === 'bad_plan') return res.status(400).json({ success: false, error: 'bad_plan' });
+    console.error('orders create:', e.message);
+    res.status(500).json({ success: false, error: 'order_failed' });
+  }
+});
+app.get('/api/orders', verifyFirebaseToken, requireDocsDb, async (req, res) => {
+  try { res.json({ success: true, data: (await billing.listMine(mysqlPool, req.firebaseUser.uid)).map(orderView) }); }
+  catch (e) { res.status(500).json({ success: false, error: 'list_failed' }); }
+});
+app.get('/api/orders/:code', verifyFirebaseToken, requireDocsDb, async (req, res) => {
+  try {
+    const o = await billing.getOrder(mysqlPool, req.params.code);
+    if (!o || o.firebase_uid !== req.firebaseUser.uid) return res.status(404).json({ success: false, error: 'not_found' });
+    res.json({ success: true, data: orderView(o) });
+  } catch (e) { res.status(500).json({ success: false, error: 'get_failed' }); }
+});
+app.post('/api/redeem', verifyFirebaseToken, requireDocsDb, async (req, res) => {
+  try {
+    const r = await billing.redeem(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, (req.body || {}).code);
+    if (!r) return res.status(400).json({ success: false, error: 'invalid_code' });
+    res.json({ success: true, data: { plan: r.plan, months: r.months, expires_at: r.expires } });
+  } catch (e) { console.error('redeem:', e.message); res.status(500).json({ success: false, error: 'redeem_failed' }); }
+});
+
+// Webhook dịch vụ theo dõi giao dịch ngân hàng (định dạng SePay: Authorization: Apikey <khoá>; body có transferType/transferAmount/content).
+app.post('/api/payments/sepay', requireDocsDb, async (req, res) => {
+  const key = process.env.SEPAY_API_KEY;
+  const given = String(req.headers.authorization || '').replace(/^Apikey\s+/i, '');
+  if (!key || !given || given.length !== key.length || !crypto.timingSafeEqual(Buffer.from(given), Buffer.from(key))) {
+    return res.status(401).json({ success: false, error: 'unauthorized' });
+  }
+  try {
+    const b = req.body || {};
+    if (String(b.transferType).toLowerCase() === 'in') {
+      const r = await billing.handleIncomingTransfer(mysqlPool, { content: `${b.content || ''} ${b.code || ''} ${b.description || ''}`, amount: b.transferAmount, ref: b.referenceCode || (b.id != null ? `sepay-${b.id}` : null) });
+      console.log('[billing] sepay', r.status, r.code || '');
+    }
+    res.status(200).json({ success: true });
+  } catch (e) {
+    console.error('sepay webhook:', e.message);
+    res.status(500).json({ success: false });
+  }
+});
+
+app.get('/api/admin/orders', ...adminOnly, requireDocsDb, async (req, res) => {
+  try { res.json({ success: true, data: (await billing.listAdmin(mysqlPool, String(req.query.status || 'pending'))).map((o) => ({ ...orderView(o), email: o.email, uid: o.firebase_uid, bank_ref: o.bank_ref })) }); }
+  catch (e) { res.status(500).json({ success: false, error: 'list_failed' }); }
+});
+app.post('/api/admin/orders/:code/approve', ...adminOnly, requireDocsDb, async (req, res) => {
+  try {
+    const r = await billing.approveOrder(mysqlPool, req.params.code, { method: 'admin', note: `Duyệt bởi ${req.firebaseUser.email}` });
+    if (!r) return res.status(409).json({ success: false, error: 'not_pending' });
+    res.json({ success: true, data: { code: r.order.code, plan: r.order.plan, expires_at: r.expires } });
+  } catch (e) { console.error('approve:', e.message); res.status(500).json({ success: false, error: 'approve_failed' }); }
+});
+app.post('/api/admin/orders/:code/reject', ...adminOnly, requireDocsDb, async (req, res) => {
+  const ok = await billing.rejectOrder(mysqlPool, req.params.code, `Từ chối bởi ${req.firebaseUser.email}`).catch(() => false);
+  res.status(ok ? 200 : 409).json({ success: ok, error: ok ? undefined : 'not_pending' });
+});
+app.post('/api/admin/grant', ...adminOnly, requireDocsDb, async (req, res) => {
+  try {
+    const { email, plan, months } = req.body || {};
+    const [[u]] = await mysqlPool.query('SELECT firebase_uid, email FROM users WHERE email = ? ORDER BY id DESC LIMIT 1', [String(email || '').trim().toLowerCase()]);
+    if (!u) return res.status(404).json({ success: false, error: 'user_not_found' });
+    const exp = await billing.grantPlan(mysqlPool, { uid: u.firebase_uid, email: u.email, plan: String(plan), months: Number(months) });
+    res.json({ success: true, data: { expires_at: exp } });
+  } catch (e) { res.status(400).json({ success: false, error: 'grant_failed' }); }
+});
+app.post('/api/admin/codes', ...adminOnly, requireDocsDb, async (req, res) => {
+  try {
+    const { plan, months, count } = req.body || {};
+    res.status(201).json({ success: true, data: await billing.createCodes(mysqlPool, { plan: String(plan), months: Number(months), count: Number(count) || 1, by: req.firebaseUser.email }) });
+  } catch (e) { res.status(400).json({ success: false, error: 'codes_failed' }); }
+});
+app.get('/api/admin/codes', ...adminOnly, requireDocsDb, async (req, res) => {
+  try { res.json({ success: true, data: await billing.listCodes(mysqlPool) }); }
+  catch (e) { res.status(500).json({ success: false, error: 'list_failed' }); }
 });
 
 app.use(express.static(PUBLIC_DIR));

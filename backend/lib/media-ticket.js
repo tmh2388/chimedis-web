@@ -12,13 +12,14 @@ export const TICKET_TTL_SEC = 6 * 3600;
 
 const sign = (payload) => crypto.createHmac('sha256', SECRET).update(payload).digest('base64url');
 
-export function signTicket(uid, ttlSec = TICKET_TTL_SEC) {
+/** `plan` được nhúng vào vé (gói tại thời điểm cấp, hiệu lực tối đa TTL) để máy chủ audio quyết định quyền mà không phải tra lại. */
+export function signTicket(uid, ttlSec = TICKET_TTL_SEC, plan = 'free') {
   const exp = Math.floor(Date.now() / 1000) + ttlSec;
-  const payload = `${Buffer.from(String(uid)).toString('base64url')}.${exp}`;
+  const payload = `${Buffer.from(`${uid}\u0001${plan}`).toString('base64url')}.${exp}`;
   return `${payload}.${sign(payload)}`;
 }
 
-/** Trả về { uid, exp } nếu vé hợp lệ và còn hạn, ngược lại null. */
+/** Trả về { uid, plan, exp } nếu vé hợp lệ và còn hạn, ngược lại null. */
 export function verifyTicket(ticket) {
   const parts = String(ticket || '').split('.');
   if (parts.length !== 3) return null;
@@ -28,5 +29,6 @@ export function verifyTicket(ticket) {
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
   const exp = Number(expStr);
   if (!Number.isFinite(exp) || exp < Math.floor(Date.now() / 1000)) return null;
-  return { uid: Buffer.from(uidB64, 'base64url').toString('utf8'), exp };
+  const [uid, plan] = Buffer.from(uidB64, 'base64url').toString('utf8').split('\u0001');
+  return { uid, plan: plan || 'free', exp };
 }

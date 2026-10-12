@@ -787,6 +787,36 @@ header{transition:padding .2s ease}
 .mydoc-del{background:none;border:0;color:#B4472B;font-size:12px;cursor:pointer}
 .mydoc-notice{background:#FBF3DC;border:1px solid #E3C26C;border-radius:14px;padding:14px;margin-top:10px;font-size:13px;line-height:1.55}
 .mydoc-notice button{margin-top:10px}
+.ck-seg{display:flex;gap:6px;margin:8px 0;background:#f1ebde;border-radius:12px;padding:4px}
+.ck-seg button{flex:1;border:0;background:none;border-radius:9px;padding:10px 6px;font:inherit;font-size:13.5px;font-weight:700;color:var(--muc-mo,#6B6156);cursor:pointer}
+.ck-seg button.on{background:#fff;color:var(--thamthm,#0E3A3A);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.ck-seg small{color:#2F7D2F;font-weight:800}
+.ck-price{font-size:26px;font-weight:800;color:var(--son,#C8452F);margin:10px 0 12px}
+.ck-price small{font-size:13px;color:var(--muc-mo,#6B6156);font-weight:600}
+.ck-qr{display:block;width:100%;max-width:300px;margin:6px auto;border-radius:12px;border:1px solid var(--vien,#e5ddcc)}
+.ck-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--vien,#e5ddcc);font-size:13px}
+.ck-row span{width:92px;color:var(--muc-mo,#6B6156);flex:none}
+.ck-row b{flex:1;min-width:0;word-break:break-all}
+.ck-row button{background:#f1ebde;border:0;border-radius:999px;padding:5px 10px;font-size:12px;cursor:pointer}
+.ck-scan,.ck-note{font-size:12.5px;color:var(--muc-mo,#6B6156);line-height:1.5}
+.ck-wait{font-weight:700;margin:10px 0 2px}
+.ck-ok{font-size:18px;font-weight:800;color:#2F7D2F;padding:18px 0;text-align:center}
+.ck-redeem{margin-top:12px;border-top:1px solid var(--vien,#e5ddcc);padding-top:10px;font-size:12.5px}
+.ck-redeem div{display:flex;gap:6px;margin-top:6px}
+.ck-redeem input{flex:1;min-width:0;border:1px solid var(--vien,#e5ddcc);border-radius:10px;padding:8px 10px;font:inherit;text-transform:uppercase}
+.ck-redeem button{background:var(--thamthm,#0E3A3A);color:#fff;border:0;border-radius:10px;padding:8px 12px;cursor:pointer}
+.adm-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--vien,#e5ddcc);font-size:13px}
+.adm-form{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.adm-form input,.adm-form select{border:1px solid var(--vien,#e5ddcc);border-radius:10px;padding:8px 10px;font:inherit;min-width:0}
+.csdl-sec{margin:16px 2px 6px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muc-mo,#6B6156)}
+.csdl-hint{font-size:12.5px;color:var(--muc-mo,#6B6156);line-height:1.5;margin:8px 2px}
+.csdl-tools{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+.csdl-tools select,.csdl-tools input{flex:1;min-width:140px;border:1px solid var(--vien,#e5ddcc);border-radius:10px;padding:9px 10px;font:inherit;font-size:13.5px;background:#fff}
+.csdl-total{font-size:12px;color:var(--muc-mo,#6B6156);margin:4px 2px 6px}
+.csdl-row{display:flex;align-items:baseline;gap:10px;width:100%;text-align:left;background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:12px;padding:11px 12px;margin-bottom:6px;font:inherit;cursor:pointer}
+.csdl-row b{font-size:16px;color:var(--muc,#2a2118)}
+.csdl-row span{flex:1;min-width:0;font-size:13.5px;color:var(--muc,#2a2118)}
+.csdl-row small{font-size:11px;color:var(--muc-mo,#8a7d6a)}
 .mydoc-big{background:#f1ebde;border:0;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;color:var(--thamthm,#0E3A3A);cursor:pointer}
 .mydoc-editor{position:absolute;inset:0;z-index:95;background:var(--ngua);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
 .mde-head{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--vien,#e5ddcc);background:#fff;flex-wrap:wrap}
@@ -946,6 +976,7 @@ header{transition:padding .2s ease}
       <div class="drawer-sec" data-i18n="dr_account">Tài khoản</div>
       <div class="drawer-item" id="drawerLoginItem" onclick="openAuthModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span data-i18n="dr_login" id="drawerLoginLabel">Đăng nhập / Đăng ký</span></div>
       <div class="drawer-item" id="drawerPlanItem" onclick="closeDrawer();openPlansModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/></svg><span data-i18n="dr_plan">Gói dịch vụ</span></div>
+      <div class="drawer-item" id="drawerAdminItem" style="display:none" onclick="closeDrawer();openAdmin()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg><span data-i18n="dr_admin">Quản trị</span></div>
       <div class="drawer-item" id="drawerFavItem" onclick="openFavoritesView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.8C.7 8.4 2.4 5 6 5c2 0 3.3 1 6 3.5C14.7 6 16 5 18 5c3.6 0 5.3 3.4 3.5 7.2C19 16.65 12 21 12 21z"/></svg><span data-i18n="dr_favorites">Từ đã lưu</span></div>
       <div class="drawer-item" id="drawerStudyItem" onclick="openStudyView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="dr_progress">Tiến độ học tập</span><span class="drawer-badge" id="studyDueBadge" hidden>0</span></div>
       <div class="drawer-item" id="drawerListenItem" onclick="openListenView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg><span data-i18n="dr_listen">Luyện nghe</span></div>
@@ -1379,6 +1410,10 @@ const FAVORITES_SENTINEL = '__favorites__';
 const FACEBOOK_LOGIN_ENABLED = true;
 const APPLE_LOGIN_ENABLED = true;
 const IN_NATIVE_APP = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+// App Store (Guideline 3.1.1 / 3.1.3): trong app iOS KHÔNG hiện giá, nút mua, liên kết thanh toán ngoài hay ô nhập mã. App chỉ
+// hiện gói đang dùng và quyền lợi; mua gói thực hiện ở web (dict.chimedis.vn). Mua trong app (IAP) sẽ làm ở giai đoạn sau.
+// localStorage ch_force_app='1' cho phép kiểm thử giao diện kiểu app ngay trên trình duyệt (chỉ ẨN phần mua, không mở thêm gì).
+const NO_PURCHASE_UI = IN_NATIVE_APP || (() => { try{ return localStorage.getItem('ch_force_app') === '1'; }catch(e){ return false; } })();
 // Chế độ Trung Quốc đại lục — CHỈ web (không áp dụng trong app iOS). Nút Google/Apple/Facebook (popup, cần truy cập Google) chỉ
 // bị ẨN khi NGHI ở TQ (múi giờ Asia/Shanghai|Chongqing|Harbin|Urumqi|Kashgar hoặc navigator.language 'zh-CN') VÀ thăm dò
 // https://www.google.com/generate_204 thất bại — nên bật VPN thì thăm dò thành công, nút hiện. Ép tay: localStorage ch_cn='0'
@@ -1564,7 +1599,8 @@ function renderAuthModal(){
         <div class="aa-email">${state.user.email || ''}</div>
         ${state.user.emailVerified === false ? `<div class="verify-box"><b>${t('verify_title')}</b><br>${t('verify_body')}<div class="verify-actions"><button type="button" onclick="doResendVerify()">${t('verify_resend')}</button><button type="button" onclick="doRefreshVerify()">${t('verify_done')}</button></div></div>` : ''}
         <div class="plan-chip">${t('plan_current')}: <b class="${state.plan === 'free' ? '' : 'pro'}">${t('plan_name_' + (state.plan || 'free'))}</b></div>
-        <button type="button" class="auth-plan-link" onclick="closeAuthModal();openPlansModal()">${state.plan === 'free' ? t('plans_see_upgrade') : t('plans_compare')}</button>
+        ${state.planExpires && state.plan !== 'free' ? `<div class="plan-chip" style="margin-top:2px">${t('plan_until')}: ${listenFmtDate(state.planExpires)}</div>` : ''}
+        <button type="button" class="auth-plan-link" onclick="closeAuthModal();openPlansModal()">${NO_PURCHASE_UI ? t('plans_my') : (state.plan === 'free' ? t('plans_see_upgrade') : t('plans_compare'))}</button>
         <button class="auth-signout" onclick="doSignOut()">${t('auth_signout')}</button>
       </div>`;
     return;
@@ -1915,7 +1951,7 @@ Object.assign(I18N.en, {
 // ===================================================================
 Object.assign(I18N.vi, {
   dr_listen: 'Luyện nghe', listen_home: 'Luyện nghe', listen_back: 'Luyện nghe',
-  listen_cat_y_an: 'Y Án', listen_cat_bao_chi: 'Báo Chí', listen_cat_tu_them: 'Tự Thêm', listen_cat_hoc_thuat: 'Học Thuật (Anh→Trung)',
+  listen_cat_y_an: 'Y Án', listen_cat_bao_chi: 'Báo Chí', listen_cat_tu_them: 'Tự Thêm', listen_cat_hoc_thuat: 'Bài Báo Quốc Tế', listen_cat_csdl: 'Học Thuật',
   listen_empty: 'Chưa có hội thoại nào trong mục này.',
   listen_level_all: 'Tất cả', listen_level_so_cap: 'Sơ cấp', listen_level_trung_cap: 'Trung cấp', listen_level_cao_cap: 'Cao cấp',
   listen_play_full: 'Phát toàn bài', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)',
@@ -1960,7 +1996,7 @@ Object.assign(I18N.vi, {
 });
 Object.assign(I18N.zh, {
   dr_listen: '听力练习', listen_home: '听力练习', listen_back: '听力练习',
-  listen_cat_y_an: '医案', listen_cat_bao_chi: '新闻', listen_cat_tu_them: '自建内容', listen_cat_hoc_thuat: '学术（英→中）',
+  listen_cat_y_an: '医案', listen_cat_bao_chi: '新闻', listen_cat_tu_them: '自建内容', listen_cat_hoc_thuat: '国际论文', listen_cat_csdl: '学术',
   listen_empty: '此分类暂无对话。',
   listen_level_all: '全部', listen_level_so_cap: '初级', listen_level_trung_cap: '中级', listen_level_cao_cap: '高级',
   listen_play_full: '播放全文', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）',
@@ -2005,7 +2041,7 @@ Object.assign(I18N.zh, {
 });
 Object.assign(I18N.en, {
   dr_listen: 'Listening Practice', listen_home: 'Listening Practice', listen_back: 'Listening Practice',
-  listen_cat_y_an: 'Case Studies', listen_cat_bao_chi: 'News', listen_cat_tu_them: 'Custom', listen_cat_hoc_thuat: 'Academic (EN→ZH)',
+  listen_cat_y_an: 'Case Studies', listen_cat_bao_chi: 'News', listen_cat_tu_them: 'Custom', listen_cat_hoc_thuat: 'International Papers', listen_cat_csdl: 'Academic',
   listen_empty: 'No dialogues in this category yet.',
   listen_level_all: 'All', listen_level_so_cap: 'Beginner', listen_level_trung_cap: 'Intermediate', listen_level_cao_cap: 'Advanced',
   listen_play_full: 'Play full dialogue', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)',
@@ -2565,6 +2601,7 @@ const LISTEN_SENTINEL = '__listen__';
 const LISTEN_CATEGORIES = [
   { key: 'bao_chi', label_key: 'listen_cat_bao_chi' },
   { key: 'y_an', label_key: 'listen_cat_y_an' },
+  { key: 'csdl', label_key: 'listen_cat_csdl' },
   { key: 'hoc_thuat', label_key: 'listen_cat_hoc_thuat' },
   { key: 'tu_them', label_key: 'listen_cat_tu_them' },
 ];
@@ -2603,6 +2640,7 @@ async function loadListenCategory(cat){
   state._listenCategory = cat;
   state._listenLevel = 'all';
   if(cat === 'tu_them'){ render(); return; }
+  if(cat === 'csdl'){ render(); loadCsdlHome(); return; }
   try{
     const res = await fetch(`${API_BASE}/api/listening/dialogues?category=${encodeURIComponent(cat)}`);
     const json = await res.json();
@@ -2615,9 +2653,14 @@ async function openListenDialogue(id){
   listenStopPlayback();
   try{
     const isMine = String(id).startsWith('my-');
+    const isDb = String(id).startsWith('db-');
     const res = isMine
       ? await authFetch(`/api/my-docs/${encodeURIComponent(String(id).slice(3))}`)
-      : await fetch(`${API_BASE}/api/listening/dialogues/${encodeURIComponent(id)}`);
+      : isDb
+        ? await authFetch(`/api/csdl/lesson/${encodeURIComponent(id)}`)
+        : await fetch(`${API_BASE}/api/listening/dialogues/${encodeURIComponent(id)}`);
+    if(isDb && res.status === 401){ listenNeedLogin('listen'); return; }
+    if(isDb && res.status === 403){ state.plan = 'free'; openUpgradeModal('csdl'); return; }
     const json = await res.json();
     listenCurrentDialogue = (json.data && json.data.segments) ? json.data : null;
   }catch(e){ listenCurrentDialogue = null; }
@@ -2645,12 +2688,107 @@ function listenFmtDate(iso){
   if(isNaN(dt)) return '';
   return dt.toLocaleDateString(state.lang === 'zh' ? 'zh-CN' : state.lang === 'en' ? 'en-GB' : 'vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Asia/Ho_Chi_Minh' });
 }
+// ===== Học Thuật: bài dựng tự động từ kho CSDL (server: lib/csdl-lessons.js) =====
+const csdlState = { loaded: false, loading: false, daily: [], fields: [], field: '', group2: '', q: '', items: [], total: 0, busy: false, timer: null };
+async function loadCsdlHome(){
+  if(csdlState.loading) return;
+  csdlState.loading = true;
+  try{
+    const [d, f] = await Promise.all([
+      fetch(`${API_BASE}/api/csdl/daily`).then(r => r.json()),
+      fetch(`${API_BASE}/api/csdl/fields`).then(r => r.json()),
+    ]);
+    csdlState.daily = d.data || [];
+    csdlState.fields = (f.data && f.data.fields) || [];
+    listenDialoguesCache.csdl = csdlState.daily;
+    csdlState.loaded = true;
+  }catch(e){}
+  csdlState.loading = false;
+  if(state.tab === 'listenhome' && state._listenCategory === 'csdl') render();
+}
+const csdlFieldLabel = (f) => f[state.lang] || f.vi;
+const csdlGroupLabel = (g) => (state.lang === 'zh' ? g.zh : state.lang === 'en' ? g.en : g.vi) || g.key;
+function renderCsdlHome(tabsHtml){
+  const pro = planAtLeast('pro');
+  const total = csdlState.fields.reduce((n, f) => n + f.count, 0);
+  const dailyHtml = csdlState.daily.length ? csdlState.daily.map(listenCardHtml).join('')
+    : `<div class="empty">${csdlState.loaded ? t('listen_empty') : t('csdl_loading')}</div>`;
+  const chips = csdlState.fields.map(f => `<span class="listen-level-pill ${csdlState.field === f.key ? 'on' : ''}" onclick="csdlPickField('${f.key}')">${csdlFieldLabel(f)} <small>${myNum(f.count)}</small>${pro ? '' : '<span class="pro-tag">PRO</span>'}</span>`).join('');
+  let browse = '';
+  if(pro && csdlState.field){
+    const f = csdlState.fields.find(x => x.key === csdlState.field);
+    const opts = [`<option value="">${t('csdl_all_groups')}</option>`].concat((f ? f.groups : []).map(g => `<option value="${String(g.key).replace(/"/g, '&quot;')}" ${csdlState.group2 === g.key ? 'selected' : ''}>${csdlGroupLabel(g)} (${g.count})</option>`)).join('');
+    browse = `<div class="csdl-tools"><select onchange="csdlPickGroup(this.value)">${opts}</select>` +
+      `<input type="search" id="csdlSearch" placeholder="${t('csdl_search_ph')}" value="${myDocEsc(csdlState.q)}" oninput="csdlSearchInput(this.value)"></div>` +
+      `<div id="csdlResults">${csdlResultsHtml()}</div>`;
+  }
+  const hint = pro ? (csdlState.field ? '' : `<p class="csdl-hint">${t('csdl_pick_hint')}</p>`)
+    : `<p class="csdl-hint">${t('csdl_pro_hint').replace('{n}', myNum(total))}</p>`;
+  return `<div class="listen-screen">
+    <div class="listen-sticky"><div class="study-top"><h2>${t('listen_home')}</h2></div><div class="tabs">${tabsHtml}</div></div>
+    <p class="csdl-sec">${t('csdl_today')}</p>
+    <div class="listen-grid">${dailyHtml}</div>
+    <p class="csdl-sec">${t('csdl_browse')}</p>
+    <div class="listen-levelrow">${chips}</div>
+    ${hint}${browse}
+  </div>`;
+}
+function csdlResultsHtml(){
+  if(csdlState.busy && !csdlState.items.length) return `<div class="empty">${t('csdl_loading')}</div>`;
+  if(!csdlState.items.length) return `<div class="empty">${t('csdl_none')}</div>`;
+  const label = (it) => (state.lang === 'en' ? (it.en || it.vi) : it.vi);
+  const rows = csdlState.items.map(it =>
+    `<button type="button" class="csdl-row" onclick="openListenDialogue('${it.id}')"><b>${myDocEsc(it.hz)}</b><span>${myDocEsc(label(it))}</span><small>${myDocEsc(it.py || '')}</small></button>`).join('');
+  const more = csdlState.items.length < csdlState.total
+    ? `<button type="button" class="mydoc-big" style="margin-top:8px" onclick="csdlFetch(false)">${t('load_more')} (${myNum(csdlState.items.length)}/${myNum(csdlState.total)})</button>` : '';
+  return `<div class="csdl-total">${myNum(csdlState.total)} ${t('csdl_items')}</div>${rows}${more}`;
+}
+function csdlPickField(key){
+  if(!state.user){ listenNeedLogin('listen'); return; }
+  if(!planAtLeast('pro')){ openUpgradeModal('csdl'); return; }
+  csdlState.field = key; csdlState.group2 = ''; csdlState.q = ''; csdlState.items = []; csdlState.total = 0;
+  render(); csdlFetch(true);
+}
+function csdlPickGroup(v){ csdlState.group2 = v; csdlFetch(true); }
+function csdlSearchInput(v){
+  csdlState.q = v;
+  clearTimeout(csdlState.timer);
+  csdlState.timer = setTimeout(() => csdlFetch(true), 300);
+}
+async function csdlFetch(reset){
+  if(csdlState.busy) return;
+  csdlState.busy = true;
+  if(reset){ csdlState.items = []; csdlState.total = 0; }
+  const box = document.getElementById('csdlResults'); if(box) box.innerHTML = csdlResultsHtml();
+  try{
+    const qs = new URLSearchParams({ field: csdlState.field, offset: String(csdlState.items.length), limit: '30' });
+    if(csdlState.group2) qs.set('group2', csdlState.group2);
+    if(csdlState.q.trim()) qs.set('q', csdlState.q.trim());
+    const r = await authFetch(`/api/csdl/list?${qs}`);
+    const j = await r.json();
+    if(r.status === 403){ state.plan = 'free'; openUpgradeModal('csdl'); }
+    else if(j && j.success){ csdlState.items = csdlState.items.concat(j.data.items); csdlState.total = j.data.total; }
+  }catch(e){}
+  csdlState.busy = false;
+  const b2 = document.getElementById('csdlResults'); if(b2) b2.innerHTML = csdlResultsHtml();
+}
+function listenCardHtml(d){
+  return `<div class="listen-card" role="button" tabindex="0" data-id="${d.id}" onclick="openListenDialogue('${d.id}')" onkeydown="if(event.key==='Enter')openListenDialogue('${d.id}')">
+        <span class="lc-tx"><strong>${listenTitle(d)}</strong>${d.updated_at ? `<span class="listen-card-date">${t('listen_updated')} ${listenFmtDate(d.updated_at)}</span>` : ''}</span>
+        ${d.level ? `<span class="listen-level-badge">${t('listen_level_'+d.level)}</span>` : ''}
+        ${(d.seqs && d.seqs.length) ? `<span class="lc-ctl">
+          <button type="button" class="lc-btn play" aria-label="${t('listen_play_full')}" onclick="event.stopPropagation();listenCardToggle('${d.id}')">${LISTEN_PLAY_ICON}</button>
+          <button type="button" class="lc-btn stop" aria-label="${t('listen_stop')}" onclick="event.stopPropagation();listenStopPlayback()"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg></button>
+        </span>` : ''}
+      </div>`;
+}
 function renderListenHome(){
   const cat = state._listenCategory || 'bao_chi';
   const tabsHtml = LISTEN_CATEGORIES.map(c =>
     `<span class="tab ${cat===c.key?'active':''}" onclick="loadListenCategory('${c.key}')">${t(c.label_key)}</span>`
   ).join('');
   if(cat === 'tu_them'){ setTimeout(loadMyDocs, 0); return renderMyDocsHome(tabsHtml); }
+  if(cat === 'csdl'){ setTimeout(listenUpdateIcons, 0); return renderCsdlHome(tabsHtml); }
   setTimeout(listenUpdateIcons, 0);
   const allItems = listenDialoguesCache[cat] || [];
   const levelsPresent = Array.from(new Set(allItems.map(d => d.level).filter(Boolean)));
@@ -2664,14 +2802,7 @@ function renderListenHome(){
       ).join('')}
     </div>` : '';
   const listHtml = items.length
-    ? items.map(d => `<div class="listen-card" role="button" tabindex="0" data-id="${d.id}" onclick="openListenDialogue('${d.id}')" onkeydown="if(event.key==='Enter')openListenDialogue('${d.id}')">
-        <span class="lc-tx"><strong>${listenTitle(d)}</strong>${d.updated_at ? `<span class="listen-card-date">${t('listen_updated')} ${listenFmtDate(d.updated_at)}</span>` : ''}</span>
-        ${d.level ? `<span class="listen-level-badge">${t('listen_level_'+d.level)}</span>` : ''}
-        ${(d.seqs && d.seqs.length) ? `<span class="lc-ctl">
-          <button type="button" class="lc-btn play" aria-label="${t('listen_play_full')}" onclick="event.stopPropagation();listenCardToggle('${d.id}')">${LISTEN_PLAY_ICON}</button>
-          <button type="button" class="lc-btn stop" aria-label="${t('listen_stop')}" onclick="event.stopPropagation();listenStopPlayback()"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg></button>
-        </span>` : ''}
-      </div>`).join('')
+    ? items.map(listenCardHtml).join('')
     : `<div class="empty">${t('listen_empty')}</div>`;
   return `<div class="listen-screen">
     <div class="listen-sticky"><div class="study-top"><h2>${t('listen_home')}</h2></div>
@@ -2699,6 +2830,7 @@ function setListenVoice(k){
 }
 function listenAudioUrl(d, seq, lang){
   if(d && String(d.id).startsWith('my-')) return `/api/my-docs/${String(d.id).slice(3)}/audio/${seq}?voice=${loadListenVoice()}`;
+  if(d && String(d.id).startsWith('db-')) return `/api/csdl/audio/${d.id}/${seq}?voice=${loadListenVoice()}`;
   const padded = String(seq).padStart(2, '0');
   // Giọng chọn được áp cho ngôn ngữ NGUỒN của bài: tiếng Trung (text_zh) hoặc tiếng Anh gốc của mục Học Thuật (text_en).
   const voice = lang === listenSourceField(d) ? loadListenVoice() : 'default';
@@ -2794,11 +2926,11 @@ state.plan = 'free';
 const PLAN_ORDER = ['free', 'pro', 'max'];
 function planAtLeast(min){ return PLAN_ORDER.indexOf(state.plan || 'free') >= PLAN_ORDER.indexOf(min); }
 async function loadPlan(){
-  if(!state.user){ state.plan = 'free'; state.limits = null; return; }
+  if(!state.user){ state.plan = 'free'; state.limits = null; state.planExpires = null; state.isAdmin = false; if(typeof updateAdminItem === 'function') updateAdminItem(); return; }
   try{
     const r = await authFetch('/api/me');
     const j = await r.json();
-    if(j && j.success && j.data){ state.plan = j.data.plan || 'free'; state.limits = j.data.limits || null; }
+    if(j && j.success && j.data){ state.plan = j.data.plan || 'free'; state.limits = j.data.limits || null; state.planExpires = j.data.plan_expires_at || null; state.isAdmin = !!j.data.is_admin; updateAdminItem(); }
   }catch(e){ /* giữ gói cũ */ }
 }
 let listenTicket = null;
@@ -2822,6 +2954,25 @@ function listenNeedLogin(kind){
 }
 // Ghi đè/ bổ sung chuỗi cho Tự Thêm (Word/PDF/TXT, 2 chế độ) và gói dịch vụ (2026-10-11).
 Object.assign(I18N.vi, {
+  dr_admin: 'Quản trị', plans_my: 'Quyền lợi gói của bạn', plans_buy: 'Nâng cấp / Gia hạn', plans_r_year: 'Giá theo năm (tiết kiệm 2 tháng)', plans_per_year: '/năm',
+  plans_r_csdl: 'Học Thuật: nghe mọi mục trong CSDL', plans_csdl_free: 'Bài trong ngày', plans_csdl_pro: 'Toàn bộ, chọn lĩnh vực',
+  plan_until: 'Hạn dùng đến', up_body_csdl: 'Nghe bất kỳ mục nào trong kho Học Thuật (theo lĩnh vực, tìm theo từ khoá) là tính năng của tài khoản Pro.',
+  csdl_today: 'Bài trong ngày', csdl_browse: 'Theo lĩnh vực', csdl_loading: 'Đang tải…', csdl_none: 'Không có mục phù hợp.', csdl_items: 'mục',
+  csdl_search_ph: 'Tìm theo chữ Hán, pinyin, tiếng Việt, tiếng Anh', csdl_all_groups: 'Tất cả nhóm',
+  csdl_pro_hint: 'Nghe bất kỳ mục nào trong {n} mục của kho Học Thuật, theo lĩnh vực bạn chọn, là tính năng của tài khoản Pro. Bài trong ngày luôn nghe được khi đã đăng nhập.',
+  csdl_pick_hint: 'Chọn một lĩnh vực để duyệt và nghe.',
+  ck_switch_warn: 'Bạn đang dùng gói {plan} đến {date}. Đổi sang gói khác sẽ bắt đầu từ hôm nay và phần còn lại của gói hiện tại không được cộng bù.',
+  ck_title: 'Nâng cấp gói', ck_login: 'Đăng nhập để nâng cấp', ck_period_month: 'Theo tháng', ck_period_year: 'Theo năm', ck_create: 'Tạo mã thanh toán',
+  ck_scan: 'Quét mã QR bằng app ngân hàng, hoặc chuyển khoản đúng số tiền và NỘI DUNG bên dưới (không sửa nội dung).',
+  ck_bank: 'Ngân hàng', ck_account: 'Số tài khoản', ck_owner: 'Chủ tài khoản', ck_amount: 'Số tiền', ck_content: 'Nội dung', ck_copy: 'Chép', ck_copied: 'Đã chép',
+  ck_waiting: 'Đang chờ nhận tiền…', ck_paid: 'Đã nhận tiền — gói của bạn đã được kích hoạt!',
+  ck_auto: 'Hệ thống tự xác nhận trong vài phút sau khi ngân hàng báo có.', ck_manual: 'Quản trị viên sẽ xác nhận thủ công, thường trong vài giờ (có thể lâu hơn ngoài giờ làm việc). Trang này tự cập nhật khi xong.',
+  ck_not_configured: 'Thanh toán đang được thiết lập. Bạn vui lòng quay lại sau.',
+  ck_redeem: 'Có mã kích hoạt?', ck_redeem_btn: 'Áp dụng', ck_redeem_ok: 'Đã kích hoạt gói!', ck_redeem_bad: 'Mã không đúng hoặc đã được dùng.',
+  admin_title: 'Quản trị gói', admin_pending: 'Đơn chờ duyệt', admin_no_orders: 'Không có đơn chờ.', admin_approve: 'Duyệt', admin_reject: 'Từ chối',
+  admin_grant: 'Cấp gói thủ công', admin_do_grant: 'Cấp', admin_codes: 'Mã kích hoạt', admin_make_codes: 'Tạo mã', admin_months: 'tháng',
+  admin_used: 'đã dùng', admin_unused: 'chưa dùng', admin_no_user: 'Không thấy người dùng này (họ cần đăng nhập ít nhất một lần).',
+  plans_note: 'Thanh toán bằng chuyển khoản ngân hàng quét mã QR; gói được kích hoạt sau khi nhận tiền. Gia hạn được cộng dồn vào ngày hết hạn hiện tại.',
   verify_title: 'Email chưa được xác minh', verify_body: 'Mở thư chúng tôi vừa gửi (xem cả mục Spam) và bấm liên kết xác minh. Gói Pro theo email chỉ có hiệu lực sau khi xác minh.',
   verify_resend: 'Gửi lại thư', verify_done: 'Tôi đã xác minh', verify_sent: 'Đã gửi thư xác minh.', verify_ok: 'Đã xác minh email.', verify_not_yet: 'Chưa thấy xác minh — hãy bấm liên kết trong thư rồi thử lại.',
   my_trim_title: 'Tệp vượt giới hạn', my_trim_body: 'Tệp có {n} ký tự, gói của bạn cho tối đa {max} ký tự mỗi tài liệu. Cắt phần đuôi cho vừa (giữ phần đầu, dừng ở cuối câu gần nhất)?',
@@ -2833,7 +2984,6 @@ Object.assign(I18N.vi, {
   plans_compare: 'So sánh gói', plans_see_upgrade: 'Xem quyền lợi gói Pro', plans_yours: 'Gói của bạn', plans_close: 'Đóng', plans_free_price: 'Miễn phí', plans_per_month: '/tháng',
   plans_r_price: 'Giá', plans_r_listen: 'Nghe audio tất cả bài', plans_r_record: 'Ghi âm & nghe lại giọng mình', plans_r_voice: 'Chọn giọng đọc, tốc độ',
   plans_r_ai: 'Phân tích AI (chấm điểm, đối chiếu ý)', plans_r_upload: 'Tự Thêm: tải tài liệu, AI biên tập + tạo audio', plans_r_docs: 'Số tài liệu lưu tối đa', plans_r_perday: 'Tài liệu mới mỗi ngày', plans_r_chars: 'Độ dài mỗi tài liệu (ký tự)',
-  plans_note: 'Nâng cấp: liên hệ fanpage Hạ Vân Y Đạo để đăng ký, gói được kích hoạt thủ công. Giá có thể thay đổi trước khi mở thanh toán tự động.',
   my_hint: 'Chọn một cách đưa nội dung vào. AI chỉ BIÊN TẬP (dọn đầu/chân trang, lỗi xuống dòng, tách câu), giữ nguyên nội dung, rồi dịch Việt/Anh/Trung, thêm pinyin, chấm mức độ và tạo audio. AI tự đặt tiêu đề.',
   my_pro_detail: 'Bạn dán nội dung hoặc tải tệp Word, PDF, TXT (tiếng Trung hoặc tiếng Anh) — AI dọn rác, tách câu, dịch Việt/Anh/Trung, thêm pinyin, chấm mức độ và tạo audio.',
   my_mode_paste: 'Dán nội dung', my_mode_file: 'Tải tệp lên', my_file_pick: 'Chọn tệp từ máy', my_file_change: 'Chọn tệp khác', my_file_types: 'Word (.docx), PDF, TXT, tối đa 10 MB',
@@ -2846,6 +2996,25 @@ Object.assign(I18N.vi, {
   my_err_empty: 'Tệp trống hoặc không có chữ.', my_err_extract: 'Không đọc được tệp này. Thử tệp khác, hoặc dán nội dung.', my_err_file_big: 'Tệp quá lớn (tối đa 10 MB).',
 });
 Object.assign(I18N.zh, {
+  dr_admin: '管理', plans_my: '您的套餐权益', plans_buy: '升级 / 续费', plans_r_year: '年付价（省 2 个月）', plans_per_year: '/年',
+  plans_r_csdl: '学术：收听数据库全部条目', plans_csdl_free: '每日一篇', plans_csdl_pro: '全部，可选领域',
+  plan_until: '有效期至', up_body_csdl: '按领域收听「学术」库中的任意条目（可搜索）是 Pro 账户的功能。',
+  csdl_today: '今日推荐', csdl_browse: '按领域', csdl_loading: '加载中…', csdl_none: '没有匹配的条目。', csdl_items: '条',
+  csdl_search_ph: '按汉字、拼音、越南语、英语搜索', csdl_all_groups: '全部分组',
+  csdl_pro_hint: '收听「学术」库 {n} 个条目中的任意一条（可按领域选择）是 Pro 账户的功能。登录后始终可以收听每日一篇。',
+  csdl_pick_hint: '请选择一个领域来浏览和收听。',
+  ck_switch_warn: '您正在使用 {plan} 套餐，有效期至 {date}。更换套餐将从今天起算，当前套餐的剩余时间不会折算。',
+  ck_title: '升级套餐', ck_login: '请先登录再升级', ck_period_month: '按月', ck_period_year: '按年', ck_create: '生成支付码',
+  ck_scan: '用银行 App 扫码，或按下方金额和「内容」转账（请勿修改内容）。',
+  ck_bank: '银行', ck_account: '账号', ck_owner: '户名', ck_amount: '金额', ck_content: '转账内容', ck_copy: '复制', ck_copied: '已复制',
+  ck_waiting: '等待到账…', ck_paid: '已收款——您的套餐已开通！',
+  ck_auto: '银行到账后系统会在几分钟内自动确认。', ck_manual: '由管理员人工确认，通常几小时内完成（非工作时间可能更久）。完成后本页会自动更新。',
+  ck_not_configured: '支付正在配置中，请稍后再来。',
+  ck_redeem: '有激活码？', ck_redeem_btn: '兑换', ck_redeem_ok: '套餐已开通！', ck_redeem_bad: '激活码无效或已被使用。',
+  admin_title: '套餐管理', admin_pending: '待审核订单', admin_no_orders: '没有待审核订单。', admin_approve: '通过', admin_reject: '拒绝',
+  admin_grant: '手动开通', admin_do_grant: '开通', admin_codes: '激活码', admin_make_codes: '生成', admin_months: '个月',
+  admin_used: '已使用', admin_unused: '未使用', admin_no_user: '找不到该用户（需至少登录一次）。',
+  plans_note: '通过银行转账扫码支付；收款后开通套餐。续费将累加到当前到期日之后。',
   verify_title: '邮箱尚未验证', verify_body: '请打开我们刚发送的邮件（也请查看垃圾邮件）并点击验证链接。按邮箱开通的 Pro 套餐需验证后才生效。',
   verify_resend: '重新发送', verify_done: '我已验证', verify_sent: '验证邮件已发送。', verify_ok: '邮箱已验证。', verify_not_yet: '尚未检测到验证——请点击邮件中的链接后重试。',
   my_trim_title: '文件超出限制', my_trim_body: '文件有 {n} 个字符，您的套餐每个文档最多 {max} 个字符。是否截去末尾使其符合限制（保留开头，在最近的句末处截断）？',
@@ -2857,7 +3026,6 @@ Object.assign(I18N.zh, {
   plans_compare: '对比套餐', plans_see_upgrade: '查看 Pro 权益', plans_yours: '您的套餐', plans_close: '关闭', plans_free_price: '免费', plans_per_month: '/月',
   plans_r_price: '价格', plans_r_listen: '收听全部音频', plans_r_record: '录音并回听自己的声音', plans_r_voice: '选择朗读声音、语速',
   plans_r_ai: 'AI 分析（评分、要点对照）', plans_r_upload: '自建内容：上传文档，AI 编辑并生成音频', plans_r_docs: '最多保存文档数', plans_r_perday: '每日新增文档数', plans_r_chars: '单个文档长度（字符）',
-  plans_note: '升级：请联系「夏雲醫道」主页报名，套餐由人工开通。自动支付上线前价格可能调整。',
   my_hint: '选择一种方式提供内容。AI 只做“编辑”（清理页眉页脚、断行错误、分句），保持原意，再翻译成越/英/中、添加拼音、评定难度并生成音频。标题由 AI 自动拟定。',
   my_pro_detail: '粘贴内容或上传 Word、PDF、TXT 文件（中文或英文）——AI 清理杂项、分句、翻译成越/英/中、添加拼音、评定难度并生成音频。',
   my_mode_paste: '粘贴内容', my_mode_file: '上传文件', my_file_pick: '从设备选择文件', my_file_change: '更换文件', my_file_types: 'Word (.docx)、PDF、TXT，最大 10 MB',
@@ -2870,6 +3038,25 @@ Object.assign(I18N.zh, {
   my_err_empty: '文件为空或没有文字。', my_err_extract: '无法读取该文件。请换一个文件，或直接粘贴内容。', my_err_file_big: '文件过大（最大 10 MB）。',
 });
 Object.assign(I18N.en, {
+  dr_admin: 'Admin', plans_my: 'Your plan benefits', plans_buy: 'Upgrade / Renew', plans_r_year: 'Yearly price (2 months free)', plans_per_year: '/year',
+  plans_r_csdl: 'Academic: listen to every database entry', plans_csdl_free: 'Daily lessons', plans_csdl_pro: 'Everything, pick a field',
+  plan_until: 'Valid until', up_body_csdl: 'Listening to any entry in the Academic library, by field and search, is a Pro account feature.',
+  csdl_today: 'Today', csdl_browse: 'By field', csdl_loading: 'Loading…', csdl_none: 'No matching entries.', csdl_items: 'entries',
+  csdl_search_ph: 'Search by Chinese, pinyin, Vietnamese or English', csdl_all_groups: 'All groups',
+  csdl_pro_hint: 'Listening to any of the {n} entries in the Academic library, by the field you choose, is a Pro account feature. Today\'s lessons are always available once you sign in.',
+  csdl_pick_hint: 'Choose a field to browse and listen.',
+  ck_switch_warn: 'You are on the {plan} plan until {date}. Switching plans starts today and the remaining time on your current plan is not credited.',
+  ck_title: 'Upgrade plan', ck_login: 'Sign in to upgrade', ck_period_month: 'Monthly', ck_period_year: 'Yearly', ck_create: 'Create payment code',
+  ck_scan: 'Scan the QR with your banking app, or transfer the exact amount with the CONTENT below (do not edit it).',
+  ck_bank: 'Bank', ck_account: 'Account no.', ck_owner: 'Account name', ck_amount: 'Amount', ck_content: 'Content', ck_copy: 'Copy', ck_copied: 'Copied',
+  ck_waiting: 'Waiting for the payment…', ck_paid: 'Payment received — your plan is active!',
+  ck_auto: 'The system confirms automatically within a few minutes of the bank crediting.', ck_manual: 'An administrator confirms manually, usually within a few hours (longer outside working hours). This page updates itself.',
+  ck_not_configured: 'Payments are being set up. Please come back later.',
+  ck_redeem: 'Have an activation code?', ck_redeem_btn: 'Apply', ck_redeem_ok: 'Plan activated!', ck_redeem_bad: 'The code is invalid or already used.',
+  admin_title: 'Plan administration', admin_pending: 'Pending orders', admin_no_orders: 'No pending orders.', admin_approve: 'Approve', admin_reject: 'Reject',
+  admin_grant: 'Grant manually', admin_do_grant: 'Grant', admin_codes: 'Activation codes', admin_make_codes: 'Create', admin_months: 'months',
+  admin_used: 'used', admin_unused: 'unused', admin_no_user: 'User not found (they must have signed in at least once).',
+  plans_note: 'Pay by bank transfer with a QR code; the plan is activated once the payment is received. Renewals add on to your current expiry date.',
   verify_title: 'Email not verified yet', verify_body: 'Open the message we just sent (check Spam too) and tap the verification link. An email-based Pro plan only takes effect after verification.',
   verify_resend: 'Resend email', verify_done: 'I have verified', verify_sent: 'Verification email sent.', verify_ok: 'Email verified.', verify_not_yet: 'Not verified yet — tap the link in the email, then try again.',
   my_trim_title: 'File exceeds the limit', my_trim_body: 'The file has {n} characters; your plan allows {max} per document. Trim the end to fit (keeps the beginning, stops at the nearest sentence end)?',
@@ -2881,7 +3068,6 @@ Object.assign(I18N.en, {
   plans_compare: 'Compare plans', plans_see_upgrade: 'See what Pro includes', plans_yours: 'Your plan', plans_close: 'Close', plans_free_price: 'Free', plans_per_month: '/month',
   plans_r_price: 'Price', plans_r_listen: 'Listen to all audio', plans_r_record: 'Record & replay your voice', plans_r_voice: 'Choose voice and speed',
   plans_r_ai: 'AI analysis (scoring, key points)', plans_r_upload: 'Your own: upload documents, AI edits + audio', plans_r_docs: 'Max documents stored', plans_r_perday: 'New documents per day', plans_r_chars: 'Length per document (characters)',
-  plans_note: 'To upgrade, contact the Hạ Vân Y Đạo page; plans are activated manually. Prices may change before automatic payment opens.',
   my_hint: 'Choose one way to add content. AI only EDITS (removes headers/footers, broken line breaks, splits sentences), keeps the content, then translates to Vietnamese/English/Chinese, adds pinyin, rates the level and generates audio. AI titles it for you.',
   my_pro_detail: 'Paste text or upload a Word, PDF or TXT file (Chinese or English) — AI cleans it, splits sentences, translates, adds pinyin, rates the level and generates audio.',
   my_mode_paste: 'Paste text', my_mode_file: 'Upload a file', my_file_pick: 'Choose a file from your device', my_file_change: 'Choose another file', my_file_types: 'Word (.docx), PDF, TXT, up to 10 MB',
@@ -2903,6 +3089,9 @@ const PLAN_LIMITS = {
   pro: { docs: 15, docsPerDay: 5, chars: 6000 },
   max: { docs: 60, docsPerDay: 20, chars: 20000 },
 };
+const PLAN_YEARLY_MONTHS = 10; // trả 10 tháng được 12 tháng
+function planYearPrice(p){ return (PLAN_PRICE[p] || 0) * PLAN_YEARLY_MONTHS; }
+function planYearText(p){ const v = planYearPrice(p); return v ? `${v.toLocaleString('vi-VN')}₫${t('plans_per_year')}` : t('plans_free_price'); }
 function planPriceText(p){
   const v = PLAN_PRICE[p];
   return v ? `${v.toLocaleString('vi-VN')}₫${t('plans_per_month')}` : t('plans_free_price');
@@ -2911,18 +3100,35 @@ function closePlansModal(){ document.getElementById('plansModal')?.remove(); }
 function openPlansModal(){
   closePlansModal();
   const cur = state.plan || 'free';
-  const cols = ['free', 'pro', 'max'];
   const yes = '<span aria-label="yes">✓</span>', no = '<span class="no" aria-label="no">—</span>';
   const n = (v) => myNum(v);
+  if(NO_PURCHASE_UI){
+    // App iOS: chỉ liệt kê quyền lợi của gói ĐANG DÙNG — không giá, không so sánh để mua, không liên kết ngoài.
+    const lim = PLAN_LIMITS[cur] || PLAN_LIMITS.free;
+    const rows = [
+      [t('plans_r_listen'), yes], [t('plans_r_record'), yes], [t('plans_r_voice'), yes],
+      [t('plans_r_ai'), cur === 'free' ? no : yes], [t('plans_r_upload'), cur === 'free' ? no : yes],
+      [t('plans_r_docs'), cur === 'free' ? no : n(lim.docs)], [t('plans_r_perday'), cur === 'free' ? no : n(lim.docsPerDay)],
+      [t('plans_r_chars'), cur === 'free' ? no : n(lim.chars)],
+    ].map(([l, v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+    document.getElementById('app').insertAdjacentHTML('beforeend',
+      `<div id="plansModal" class="up-scrim" onclick="if(event.target===this)closePlansModal()"><div class="up-box plans-box" role="dialog" style="max-height:90%;overflow:auto">` +
+      `<h3>${t('plans_my')}: ${t('plan_name_' + cur)}</h3><table class="plans-tbl"><tbody>${rows}</tbody></table>` +
+      `<div class="up-actions"><button type="button" onclick="closePlansModal()">${t('plans_close')}</button></div></div></div>`);
+    return;
+  }
+  const cols = ['free', 'pro', 'max'];
   const cell = (p, html) => `<td class="${cur === p ? 'cur' : ''}">${html}</td>`;
   const row = (label, f) => `<tr><td>${label}</td>${cols.map(p => cell(p, f(p))).join('')}</tr>`;
   const head = cols.map(p => `<th class="${cur === p ? 'cur' : ''}">${t('plan_name_' + p)}${cur === p ? `<br><span class="plans-cur">${t('plans_yours')}</span>` : ''}</th>`).join('');
   const table = `<table class="plans-tbl"><thead><tr><th></th>${head}</tr></thead><tbody>` +
     row(t('plans_r_price'), p => `<span class="price">${planPriceText(p)}</span>`) +
+    row(t('plans_r_year'), p => p === 'free' ? no : `<span class="price">${planYearText(p)}</span>`) +
     row(t('plans_r_listen'), () => yes) +
     row(t('plans_r_record'), () => yes) +
     row(t('plans_r_voice'), () => yes) +
     row(t('plans_r_ai'), p => p === 'free' ? no : yes) +
+    row(t('plans_r_csdl'), p => p === 'free' ? t('plans_csdl_free') : t('plans_csdl_pro')) +
     row(t('plans_r_upload'), p => p === 'free' ? no : yes) +
     row(t('plans_r_docs'), p => p === 'free' ? no : n(PLAN_LIMITS[p].docs)) +
     row(t('plans_r_perday'), p => p === 'free' ? no : n(PLAN_LIMITS[p].docsPerDay)) +
@@ -2932,17 +3138,156 @@ function openPlansModal(){
     `<div id="plansModal" class="up-scrim" onclick="if(event.target===this)closePlansModal()"><div class="up-box plans-box" role="dialog" style="max-height:90%;overflow:auto">` +
     `<h3>${t('plans_title')}</h3><p>${t('plans_intro')}</p>${table}` +
     `<p style="font-size:12px;color:var(--muc-mo,#6B6156)">${t('plans_note')}</p>` +
-    `<div class="up-actions">${cur === 'free' || cur === 'pro' ? `<a class="up-cta" href="https://www.facebook.com/havanydao" target="_blank" rel="noopener">${t('up_contact')}</a>` : ''}` +
+    `<div class="up-actions">${cur === 'free' || cur === 'pro' ? `<button type="button" class="up-cta" style="border:0;cursor:pointer" onclick="closePlansModal();openCheckout()">${t('plans_buy')}</button>` : ''}` +
     `<button type="button" onclick="closePlansModal()">${t('plans_close')}</button></div></div></div>`);
+}
+// ===== Thanh toán chuyển khoản (web) & quản trị =====
+// Chỉ web: app iOS không có giao diện mua (NO_PURCHASE_UI). Máy chủ: lib/billing.js.
+let ckState = { plan: 'pro', period: 'year', order: null, cfg: null, timer: null };
+function updateAdminItem(){ const el = document.getElementById('drawerAdminItem'); if(el) el.style.display = state.isAdmin && !NO_PURCHASE_UI ? '' : 'none'; }
+function closeCheckout(){ clearInterval(ckState.timer); ckState.timer = null; document.getElementById('checkoutModal')?.remove(); }
+async function openCheckout(){
+  if(NO_PURCHASE_UI) return;
+  if(!state.user){ openAuthModal(); listenToast(t('ck_login')); return; }
+  closeCheckout();
+  ckState.order = null;
+  try{ ckState.cfg = (await (await fetch(`${API_BASE}/api/billing/config`)).json()).data; }catch(e){ ckState.cfg = null; }
+  renderCheckout();
+  // Tiếp tục đơn đang chờ (nếu có) để không tạo mã mới mỗi lần mở.
+  try{
+    const r = await authFetch('/api/orders'); const j = await r.json();
+    const pend = (j.data || []).find(o => o.status === 'pending' && new Date(o.expires_at) > new Date());
+    if(pend){ ckState.order = pend; ckState.plan = pend.plan; ckState.period = pend.period; renderCheckout(); ckStartPolling(); }
+  }catch(e){}
+}
+function ckPrice(plan, period){
+  const pr = (ckState.cfg && ckState.cfg.prices) || { pro: { month: PLAN_PRICE.pro, year: planYearPrice('pro') }, max: { month: PLAN_PRICE.max, year: planYearPrice('max') } };
+  return pr[plan][period];
+}
+const ckMoney = (v) => `${Number(v).toLocaleString('vi-VN')}₫`;
+function renderCheckout(){
+  document.getElementById('checkoutModal')?.remove();
+  const o = ckState.order, cfg = ckState.cfg || {};
+  const save = Math.round((1 - ckPrice('pro', 'year') / (ckPrice('pro', 'month') * 12)) * 100);
+  let body;
+  if(!cfg.configured){
+    body = `<p>${t('ck_not_configured')}</p>`;
+  } else if(o && o.status === 'paid'){
+    body = `<div class="ck-ok">✓ ${t('ck_paid')}</div>`;
+  } else if(!o){
+    body = `<div class="ck-seg">${['pro', 'max'].map(p => `<button type="button" class="${ckState.plan === p ? 'on' : ''}" onclick="ckSet('plan','${p}')">${t('plan_name_' + p)}</button>`).join('')}</div>` +
+      `<div class="ck-seg">${['month', 'year'].map(pd => `<button type="button" class="${ckState.period === pd ? 'on' : ''}" onclick="ckSet('period','${pd}')">${t('ck_period_' + pd)}${pd === 'year' ? ` <small>−${save}%</small>` : ''}</button>`).join('')}</div>` +
+      `<div class="ck-price">${ckMoney(ckPrice(ckState.plan, ckState.period))}<small> / ${t('ck_period_' + ckState.period).toLowerCase()}</small></div>` +
+      (state.plan && state.plan !== 'free' && state.plan !== ckState.plan && state.planExpires ? `<p class="ck-note" style="color:#B4472B">${t('ck_switch_warn').replace('{plan}', t('plan_name_' + state.plan)).replace('{date}', listenFmtDate(state.planExpires))}</p>` : '') +
+      `<button type="button" class="mydoc-go" style="width:100%" onclick="ckCreate()">${t('ck_create')}</button>`;
+  } else {
+    const row = (l, v, copy) => `<div class="ck-row"><span>${l}</span><b>${myDocEsc(v)}</b>${copy ? `<button type="button" onclick="ckCopy('${String(copy).replace(/'/g, '')}')">${t('ck_copy')}</button>` : ''}</div>`;
+    body = `<p class="ck-scan">${t('ck_scan')}</p>` +
+      (o.qr_url ? `<img class="ck-qr" src="${o.qr_url}" alt="VietQR">` : '') +
+      row(t('ck_bank'), cfg.bank_name || '', '') + row(t('ck_account'), cfg.account || '', cfg.account) + row(t('ck_owner'), cfg.account_name || '', '') +
+      row(t('ck_amount'), ckMoney(o.amount), String(o.amount)) + row(t('ck_content'), o.code, o.code) +
+      `<p class="ck-wait" id="ckWait">${t('ck_waiting')}</p><p class="ck-note">${t(cfg.auto_confirm ? 'ck_auto' : 'ck_manual')}</p>` +
+      (o.note ? `<p class="ck-note" style="color:#B4472B">${myDocEsc(o.note)}</p>` : '');
+  }
+  document.getElementById('app').insertAdjacentHTML('beforeend',
+    `<div id="checkoutModal" class="up-scrim" onclick="if(event.target===this)closeCheckout()"><div class="up-box plans-box" role="dialog" style="max-height:92%;overflow:auto">` +
+    `<h3>${t('ck_title')}</h3>${body}` +
+    (cfg.configured && !(o && o.status === 'paid') ? `<div class="ck-redeem"><label>${t('ck_redeem')}</label><div><input id="ckCode" placeholder="CH-XXXX-XXXX" autocapitalize="characters"><button type="button" onclick="ckRedeem()">${t('ck_redeem_btn')}</button></div></div>` : '') +
+    `<div class="up-actions"><button type="button" onclick="closeCheckout()">${t('plans_close')}</button></div></div></div>`);
+}
+function ckSet(k, v){ ckState[k] = v; renderCheckout(); }
+function ckCopy(v){ try{ navigator.clipboard.writeText(v); listenToast(t('ck_copied')); }catch(e){} }
+async function ckCreate(){
+  try{
+    const r = await authFetch('/api/orders', { method: 'POST', body: JSON.stringify({ plan: ckState.plan, period: ckState.period }) });
+    const j = await r.json();
+    if(r.ok && j.success){ ckState.order = j.data; renderCheckout(); ckStartPolling(); }
+    else listenToast(t(j && j.error === 'payments_not_configured' ? 'ck_not_configured' : 'auth_err_generic'));
+  }catch(e){ listenToast(t('auth_err_generic')); }
+}
+function ckStartPolling(){
+  clearInterval(ckState.timer);
+  ckState.timer = setInterval(async () => {
+    if(!document.getElementById('checkoutModal') || !ckState.order){ clearInterval(ckState.timer); return; }
+    try{
+      const r = await authFetch(`/api/orders/${ckState.order.code}`); const j = await r.json();
+      if(j.success && j.data.status !== 'pending'){
+        clearInterval(ckState.timer);
+        ckState.order = j.data;
+        if(j.data.status === 'paid'){ await loadPlan(); try{ await listenEnsureTicket(true); }catch(e){} }
+        renderCheckout();
+      }
+    }catch(e){}
+  }, 6000);
+}
+async function ckRedeem(){
+  const code = (document.getElementById('ckCode').value || '').trim();
+  if(!code) return;
+  try{
+    const r = await authFetch('/api/redeem', { method: 'POST', body: JSON.stringify({ code }) });
+    const j = await r.json();
+    if(r.ok && j.success){ await loadPlan(); try{ await listenEnsureTicket(true); }catch(e){} ckState.order = { status: 'paid' }; renderCheckout(); listenToast(t('ck_redeem_ok')); }
+    else listenToast(t('ck_redeem_bad'));
+  }catch(e){ listenToast(t('auth_err_generic')); }
+}
+
+// --- Quản trị: hàng chờ duyệt, cấp gói thủ công, mã kích hoạt ---
+function closeAdmin(){ document.getElementById('adminModal')?.remove(); }
+async function openAdmin(){
+  if(!state.isAdmin) return;
+  closeAdmin();
+  document.getElementById('app').insertAdjacentHTML('beforeend',
+    `<div id="adminModal" class="mydoc-editor" role="dialog" style="overflow:auto"><div class="mde-head"><b style="flex:1">${t('admin_title')}</b><button type="button" class="mde-btn" onclick="closeAdmin()">${t('plans_close')}</button></div>` +
+    `<div id="adminBody" style="padding:12px 14px;background:#fff;flex:1">${t('csdl_loading')}</div></div>`);
+  adminRefresh();
+}
+async function adminRefresh(){
+  const box = document.getElementById('adminBody'); if(!box) return;
+  const esc = myDocEsc;
+  try{
+    const [po, co] = await Promise.all([authFetch('/api/admin/orders?status=pending').then(r => r.json()), authFetch('/api/admin/codes').then(r => r.json())]);
+    const orders = (po.data || []).map(o => `<div class="adm-row"><div><b>${esc(o.code)}</b> — ${esc(o.email || o.uid)}<br><small>${t('plan_name_' + o.plan)} · ${t('ck_period_' + o.period)} · ${ckMoney(o.amount)} · ${new Date(o.created_at).toLocaleString('vi-VN')}${o.note ? ' · ' + esc(o.note) : ''}</small></div>` +
+      `<div><button type="button" class="mde-btn primary" onclick="adminOrder('${o.code}','approve')">${t('admin_approve')}</button> <button type="button" class="mde-btn" onclick="adminOrder('${o.code}','reject')">${t('admin_reject')}</button></div></div>`).join('') || `<p class="csdl-hint">${t('admin_no_orders')}</p>`;
+    const codes = (co.data || []).slice(0, 30).map(c => `<div class="adm-row"><div><b>${esc(c.code)}</b> — ${t('plan_name_' + c.plan)} · ${c.months} ${t('admin_months')}</div><small>${c.used_by_uid ? t('admin_used') : t('admin_unused')}</small></div>`).join('');
+    box.innerHTML = `<h3 class="csdl-sec">${t('admin_pending')}</h3>${orders}` +
+      `<h3 class="csdl-sec">${t('admin_grant')}</h3><div class="adm-form"><input id="admEmail" placeholder="email"><select id="admPlan"><option value="pro">Pro</option><option value="max">Max</option></select><input id="admMonths" type="number" min="1" value="1" style="width:70px"><button type="button" class="mde-btn primary" onclick="adminGrant()">${t('admin_do_grant')}</button></div>` +
+      `<h3 class="csdl-sec">${t('admin_codes')}</h3><div class="adm-form"><select id="codePlan"><option value="pro">Pro</option><option value="max">Max</option></select><input id="codeMonths" type="number" min="1" value="12" style="width:70px"><input id="codeCount" type="number" min="1" max="50" value="5" style="width:70px"><button type="button" class="mde-btn primary" onclick="adminMakeCodes()">${t('admin_make_codes')}</button></div><div id="adminNewCodes"></div>${codes}`;
+  }catch(e){ box.textContent = t('auth_err_generic'); }
+}
+async function adminOrder(code, action){
+  if(!confirm(`${action === 'approve' ? t('admin_approve') : t('admin_reject')} ${code}?`)) return;
+  const r = await authFetch(`/api/admin/orders/${code}/${action}`, { method: 'POST' });
+  listenToast(r.ok ? 'OK' : t('auth_err_generic'));
+  adminRefresh();
+}
+async function adminGrant(){
+  const email = document.getElementById('admEmail').value.trim(), plan = document.getElementById('admPlan').value, months = Number(document.getElementById('admMonths').value);
+  const r = await authFetch('/api/admin/grant', { method: 'POST', body: JSON.stringify({ email, plan, months }) });
+  const j = await r.json().catch(() => ({}));
+  listenToast(r.ok ? `OK → ${listenFmtDate(j.data.expires_at)}` : (j.error === 'user_not_found' ? t('admin_no_user') : t('auth_err_generic')));
+}
+async function adminMakeCodes(){
+  const plan = document.getElementById('codePlan').value, months = Number(document.getElementById('codeMonths').value), count = Number(document.getElementById('codeCount').value);
+  const r = await authFetch('/api/admin/codes', { method: 'POST', body: JSON.stringify({ plan, months, count }) });
+  const j = await r.json().catch(() => ({}));
+  if(r.ok){ document.getElementById('adminNewCodes').innerHTML = `<textarea readonly style="width:100%;height:110px;font:12px monospace">${j.data.map(c => c.code).join('\n')}</textarea>`; adminRefresh(); }
+  else listenToast(t('auth_err_generic'));
 }
 function closeUpgradeModal(){ document.getElementById('upgradeModal')?.remove(); }
 function openUpgradeModal(reason){
   closeUpgradeModal();
-  const body = reason === 'upload' ? t('up_body_upload') : t('up_body_analyze');
+  const body = reason === 'upload' ? t('up_body_upload') : reason === 'csdl' ? t('up_body_csdl') : t('up_body_analyze');
+  if(NO_PURCHASE_UI){
+    // App iOS: chỉ thông báo tính năng thuộc gói cao hơn — không giá, không nút mua, không liên kết.
+    document.getElementById('app').insertAdjacentHTML('beforeend',
+      `<div id="upgradeModal" class="up-scrim" onclick="if(event.target===this)closeUpgradeModal()"><div class="up-box" role="dialog">` +
+      `<h3>${t('up_title')}</h3><p>${body}</p><div class="up-actions"><button type="button" onclick="closeUpgradeModal()">${t('plans_close')}</button></div></div></div>`);
+    return;
+  }
   document.getElementById('app').insertAdjacentHTML('beforeend',
     `<div id="upgradeModal" class="up-scrim" onclick="if(event.target===this)closeUpgradeModal()"><div class="up-box" role="dialog">` +
     `<h3>${t('up_title')}</h3><p>${body}</p><ul><li>${t('up_feat1')}</li><li>${t('up_feat2')}</li></ul>` +
-    `<div class="up-actions"><a class="up-cta" href="https://www.facebook.com/havanydao" target="_blank" rel="noopener">${t('up_contact')}</a>` +
+    `<div class="up-actions"><button type="button" class="up-cta" style="border:0;cursor:pointer" onclick="closeUpgradeModal();openCheckout()">${t('plans_buy')}</button>` +
     `<button type="button" onclick="closeUpgradeModal();openPlansModal()">${t('plans_compare')}</button>` +
     `<button type="button" onclick="closeUpgradeModal()">${t('up_later')}</button></div></div></div>`);
 }
@@ -3016,8 +3361,8 @@ function renderMyDocsHome(tabsHtml){
     inner = `<div class="mydoc-notice"><b>${t('my_title')}</b><br>${t('my_login')}<br><button class="mydoc-go" onclick="openAuthModal()">${t('dr_login')}</button></div>`;
   } else if(!planAtLeast('pro')){
     inner = `<div class="mydoc-notice"><b>${t('my_title')} <span class="pro-tag">PRO</span></b><br>${t('up_body_upload')}<br>${t('my_pro_detail')}<br>` +
-      `<button class="mydoc-go" onclick="openUpgradeModal('upload')">${t('up_contact')}</button> ` +
-      `<button class="mydoc-go" style="background:#f1ebde;color:#3a2a00" onclick="openPlansModal()">${t('plans_compare')}</button></div>`;
+      (NO_PURCHASE_UI ? '' : `<button class="mydoc-go" onclick="openUpgradeModal('upload')">${t('plans_buy')}</button> ` +
+      `<button class="mydoc-go" style="background:#f1ebde;color:#3a2a00" onclick="openPlansModal()">${t('plans_compare')}</button>`) + `</div>`;
   } else {
     const voices = LISTEN_VOICES.map(v => `<option value="${v.key}" ${loadListenVoice() === v.key ? 'selected' : ''}>${v.label}</option>`).join('');
     const draft = myDocDraft[myDocMode];
