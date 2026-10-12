@@ -787,6 +787,14 @@ header{transition:padding .2s ease}
 .mydoc-del{background:none;border:0;color:#B4472B;font-size:12px;cursor:pointer}
 .mydoc-notice{background:#FBF3DC;border:1px solid #E3C26C;border-radius:14px;padding:14px;margin-top:10px;font-size:13px;line-height:1.55}
 .mydoc-notice button{margin-top:10px}
+.mydoc-big{background:#f1ebde;border:0;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;color:var(--thamthm,#0E3A3A);cursor:pointer}
+.mydoc-editor{position:absolute;inset:0;z-index:95;background:var(--ngua);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+.mde-head{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--vien,#e5ddcc);background:#fff;flex-wrap:wrap}
+.mde-count{flex:1;text-align:center;font-size:12.5px;font-weight:700;color:var(--muc-mo,#6B6156);min-width:90px}
+.mde-count.over{color:#B4472B}
+.mde-btn{background:#f1ebde;border:0;border-radius:999px;padding:8px 12px;font-size:13px;cursor:pointer}
+.mde-btn.primary{background:var(--son,#C8452F);color:#fff;font-weight:700}
+.mde-text{flex:1;min-height:0;width:100%;border:0;padding:14px 16px;font:inherit;font-size:15px;line-height:1.6;background:#fff;resize:none;outline:none;box-sizing:border-box}
 .mydoc-modes{display:flex;gap:6px;margin:4px 0 10px;background:#f1ebde;border-radius:12px;padding:4px}
 .mydoc-modes button{flex:1;border:0;background:none;border-radius:9px;padding:9px 8px;font:inherit;font-size:13px;font-weight:700;color:var(--muc-mo,#6B6156);cursor:pointer;min-height:40px}
 .mydoc-modes button.on{background:#fff;color:var(--thamthm,#0E3A3A);box-shadow:0 1px 3px rgba(0,0,0,.12)}
@@ -815,6 +823,9 @@ header{transition:padding .2s ease}
 .plan-chip{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12.5px}
 .plan-chip b{background:#efe7d8;border-radius:999px;padding:3px 11px;color:var(--thamthm,#0E3A3A)}
 .plan-chip b.pro{background:#E9B949;color:#3a2a00}
+.verify-box{margin-top:10px;background:#FBF3DC;border:1px solid #E3C26C;border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.5;text-align:left;max-width:300px}
+.verify-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.verify-actions button{background:#fff;border:1px solid #E3C26C;border-radius:999px;padding:6px 12px;font-size:12px;cursor:pointer}
 .auth-plan-link{margin-top:8px;background:none;border:0;color:var(--son,#C8452F);font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline}
 .lsc-btn.retry{background:var(--ngua-am,#efe7d8);color:var(--tham-2,#7a6a58)}
 .listen-recordfab.on{background:var(--thamthm,#0E3A3A)}
@@ -1551,6 +1562,7 @@ function renderAuthModal(){
         ${state.user.picture ? `<img class="aa-avatar" src="${state.user.picture}" alt="">` : `<span class="acct-avatar-fallback" style="width:60px;height:60px;font-size:22px">${initial}</span>`}
         <div class="aa-name">${state.user.name || t('dr_account')}</div>
         <div class="aa-email">${state.user.email || ''}</div>
+        ${state.user.emailVerified === false ? `<div class="verify-box"><b>${t('verify_title')}</b><br>${t('verify_body')}<div class="verify-actions"><button type="button" onclick="doResendVerify()">${t('verify_resend')}</button><button type="button" onclick="doRefreshVerify()">${t('verify_done')}</button></div></div>` : ''}
         <div class="plan-chip">${t('plan_current')}: <b class="${state.plan === 'free' ? '' : 'pro'}">${t('plan_name_' + (state.plan || 'free'))}</b></div>
         <button type="button" class="auth-plan-link" onclick="closeAuthModal();openPlansModal()">${state.plan === 'free' ? t('plans_see_upgrade') : t('plans_compare')}</button>
         <button class="auth-signout" onclick="doSignOut()">${t('auth_signout')}</button>
@@ -1608,6 +1620,17 @@ async function doSignUpEmail(){
   const name = document.getElementById('authName').value.trim();
   try{ await window.chimedisFirebase.signUpEmail(email, password, name); closeAuthModal(); }
   catch(err){ showAuthError(authErrorMessage(err)); }
+}
+async function doResendVerify(){
+  try{ await window.chimedisFirebase.resendVerification(); listenToast(t('verify_sent')); }
+  catch(e){ listenToast(t('auth_err_generic') + (e && e.code ? ' (' + e.code + ')' : '')); }
+}
+async function doRefreshVerify(){
+  try{
+    const ok = await window.chimedisFirebase.refreshVerified();
+    if(ok){ await loadPlan(); listenToast(t('verify_ok')); renderAuthModal(); }
+    else listenToast(t('verify_not_yet'));
+  }catch(e){ listenToast(t('auth_err_generic')); }
 }
 function doSignOut(){
   window.chimedisFirebase.signOutUser();
@@ -2677,7 +2700,8 @@ function setListenVoice(k){
 function listenAudioUrl(d, seq, lang){
   if(d && String(d.id).startsWith('my-')) return `/api/my-docs/${String(d.id).slice(3)}/audio/${seq}?voice=${loadListenVoice()}`;
   const padded = String(seq).padStart(2, '0');
-  const voice = lang === 'text_zh' ? loadListenVoice() : 'default';
+  // Giọng chọn được áp cho ngôn ngữ NGUỒN của bài: tiếng Trung (text_zh) hoặc tiếng Anh gốc của mục Học Thuật (text_en).
+  const voice = lang === listenSourceField(d) ? loadListenVoice() : 'default';
   const sub = voice !== 'default' ? `${voice}/` : '';
   return `/audio/listening/${d.category}/${d.id}/${sub}${padded}-${lang}.mp3`;
 }
@@ -2798,6 +2822,11 @@ function listenNeedLogin(kind){
 }
 // Ghi đè/ bổ sung chuỗi cho Tự Thêm (Word/PDF/TXT, 2 chế độ) và gói dịch vụ (2026-10-11).
 Object.assign(I18N.vi, {
+  verify_title: 'Email chưa được xác minh', verify_body: 'Mở thư chúng tôi vừa gửi (xem cả mục Spam) và bấm liên kết xác minh. Gói Pro theo email chỉ có hiệu lực sau khi xác minh.',
+  verify_resend: 'Gửi lại thư', verify_done: 'Tôi đã xác minh', verify_sent: 'Đã gửi thư xác minh.', verify_ok: 'Đã xác minh email.', verify_not_yet: 'Chưa thấy xác minh — hãy bấm liên kết trong thư rồi thử lại.',
+  my_trim_title: 'Tệp vượt giới hạn', my_trim_body: 'Tệp có {n} ký tự, gói của bạn cho tối đa {max} ký tự mỗi tài liệu. Cắt phần đuôi cho vừa (giữ phần đầu, dừng ở cuối câu gần nhất)?',
+  my_trim_yes: 'Cắt phần đuôi', my_trim_no: 'Tự chỉnh', my_trim_done: 'Đã cắt phần đuôi cho vừa giới hạn.', my_trim_now: 'Cắt đuôi cho vừa',
+  my_editor_open: 'Mở khung soạn lớn', my_editor_done: 'Xong', my_editor_cancel: 'Huỷ',
   cn_show_social: 'Đã bật VPN mà không thấy nút Google? Bấm để hiện',
   dr_plan: 'Gói dịch vụ', plan_current: 'Gói hiện tại', plan_name_free: 'Free', plan_name_pro: 'Pro', plan_name_max: 'Max',
   plans_title: 'Gói dịch vụ: Free và Pro khác nhau thế nào?', plans_intro: 'Bạn cần đăng nhập để nghe, ghi âm và nghe lại giọng của mình. Gói Pro mở thêm phân tích AI và tài liệu riêng.',
@@ -2817,6 +2846,11 @@ Object.assign(I18N.vi, {
   my_err_empty: 'Tệp trống hoặc không có chữ.', my_err_extract: 'Không đọc được tệp này. Thử tệp khác, hoặc dán nội dung.', my_err_file_big: 'Tệp quá lớn (tối đa 10 MB).',
 });
 Object.assign(I18N.zh, {
+  verify_title: '邮箱尚未验证', verify_body: '请打开我们刚发送的邮件（也请查看垃圾邮件）并点击验证链接。按邮箱开通的 Pro 套餐需验证后才生效。',
+  verify_resend: '重新发送', verify_done: '我已验证', verify_sent: '验证邮件已发送。', verify_ok: '邮箱已验证。', verify_not_yet: '尚未检测到验证——请点击邮件中的链接后重试。',
+  my_trim_title: '文件超出限制', my_trim_body: '文件有 {n} 个字符，您的套餐每个文档最多 {max} 个字符。是否截去末尾使其符合限制（保留开头，在最近的句末处截断）？',
+  my_trim_yes: '截去末尾', my_trim_no: '自行调整', my_trim_done: '已截去末尾以符合限制。', my_trim_now: '截去末尾',
+  my_editor_open: '打开大编辑框', my_editor_done: '完成', my_editor_cancel: '取消',
   cn_show_social: '已开启 VPN 却看不到 Google 登录按钮？点此显示',
   dr_plan: '服务套餐', plan_current: '当前套餐', plan_name_free: 'Free', plan_name_pro: 'Pro', plan_name_max: 'Max',
   plans_title: '套餐：Free 与 Pro 有何不同？', plans_intro: '登录后可收听音频、录音并回听自己的声音。Pro 套餐另开通 AI 分析与自建文档。',
@@ -2836,6 +2870,11 @@ Object.assign(I18N.zh, {
   my_err_empty: '文件为空或没有文字。', my_err_extract: '无法读取该文件。请换一个文件，或直接粘贴内容。', my_err_file_big: '文件过大（最大 10 MB）。',
 });
 Object.assign(I18N.en, {
+  verify_title: 'Email not verified yet', verify_body: 'Open the message we just sent (check Spam too) and tap the verification link. An email-based Pro plan only takes effect after verification.',
+  verify_resend: 'Resend email', verify_done: 'I have verified', verify_sent: 'Verification email sent.', verify_ok: 'Email verified.', verify_not_yet: 'Not verified yet — tap the link in the email, then try again.',
+  my_trim_title: 'File exceeds the limit', my_trim_body: 'The file has {n} characters; your plan allows {max} per document. Trim the end to fit (keeps the beginning, stops at the nearest sentence end)?',
+  my_trim_yes: 'Trim the end', my_trim_no: 'Edit myself', my_trim_done: 'Trimmed the end to fit the limit.', my_trim_now: 'Trim to fit',
+  my_editor_open: 'Open large editor', my_editor_done: 'Done', my_editor_cancel: 'Cancel',
   cn_show_social: 'On a VPN but don\'t see the Google button? Tap to show',
   dr_plan: 'Plans', plan_current: 'Current plan', plan_name_free: 'Free', plan_name_pro: 'Pro', plan_name_max: 'Max',
   plans_title: 'Plans: how Free and Pro differ', plans_intro: 'Sign in to listen, record and replay your own voice. Pro adds AI analysis and your own documents.',
@@ -2874,7 +2913,7 @@ function openPlansModal(){
   const cur = state.plan || 'free';
   const cols = ['free', 'pro', 'max'];
   const yes = '<span aria-label="yes">✓</span>', no = '<span class="no" aria-label="no">—</span>';
-  const n = (v) => Number(v).toLocaleString('vi-VN');
+  const n = (v) => myNum(v);
   const cell = (p, html) => `<td class="${cur === p ? 'cur' : ''}">${html}</td>`;
   const row = (label, f) => `<tr><td>${label}</td>${cols.map(p => cell(p, f(p))).join('')}</tr>`;
   const head = cols.map(p => `<th class="${cur === p ? 'cur' : ''}">${t('plan_name_' + p)}${cur === p ? `<br><span class="plans-cur">${t('plans_yours')}</span>` : ''}</th>`).join('');
@@ -2965,10 +3004,11 @@ function renderMyDocList(){
 let myDocMode = 'paste', myDocFileName = '', myDocFileTotal = 0, myDocBusy = false;
 const myDocDraft = { paste: '', file: '' };
 const myDocMax = () => (state.limits && state.limits.charsPerDoc) || 6000;
+const myNum = (n) => Number(n).toLocaleString(state.lang === 'zh' ? 'zh-CN' : state.lang === 'en' ? 'en-US' : 'vi-VN');
 const myDocEsc = (x) => String(x || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
 function myDocCountHtml(n){
   const max = myDocMax();
-  return `<span class="mydoc-count ${n > max ? 'over' : ''}" id="myDocCountWrap">${t('my_chars')}: <b id="myDocCount">${n.toLocaleString('vi-VN')}</b> / ${max.toLocaleString('vi-VN')}</span>`;
+  return `<span class="mydoc-count ${n > max ? 'over' : ''}" id="myDocCountWrap">${t('my_chars')}: <b id="myDocCount">${myNum(n)}</b> / ${myNum(max)}</span>`;
 }
 function renderMyDocsHome(tabsHtml){
   let inner;
@@ -2983,8 +3023,8 @@ function renderMyDocsHome(tabsHtml){
     const draft = myDocDraft[myDocMode];
     const fileMode = myDocMode === 'file';
     const fileInfo = fileMode && myDocFileName
-      ? `<div class="mydoc-fileinfo"><b>${myDocEsc(myDocFileName)}</b> — ${myDocFileTotal.toLocaleString('vi-VN')} ${t('my_chars').toLowerCase()}` +
-        `${myDocFileTotal > myDocMax() ? `<br><span class="mydoc-warn">${t('my_file_over').replace('{max}', myDocMax().toLocaleString('vi-VN'))}</span>` : ''}</div>`
+      ? `<div class="mydoc-fileinfo"><b>${myDocEsc(myDocFileName)}</b> — ${myNum(myDocFileTotal)} ${t('my_chars').toLowerCase()}` +
+        `${myDocFileTotal > myDocMax() ? `<br><span class="mydoc-warn">${t('my_file_over').replace('{max}', myNum(myDocMax()))}</span>` : ''}</div>`
       : '';
     const showText = !fileMode || !!myDocFileName;
     inner = `<div class="mydoc-box"><h3>${t('my_title')} <span class="pro-tag">PRO</span></h3><p>${t('my_hint')}</p>` +
@@ -2997,7 +3037,7 @@ function renderMyDocsHome(tabsHtml){
         : '') +
       (showText
         ? `<textarea id="myDocText" placeholder="${fileMode ? '' : t('my_paste_ph')}" oninput="myDocInput(this)">${myDocEsc(draft)}</textarea>` +
-          `<div class="mydoc-row">${fileMode ? `<span>${t('my_file_edit_hint')}</span>` : ''}<span style="margin-left:auto" id="myDocCountBox">${myDocCountHtml(draft.length)}</span></div>`
+          `<div class="mydoc-row"><button type="button" class="mydoc-big" onclick="openMyDocEditor()">${t('my_editor_open')}</button>${fileMode ? `<span>${t('my_file_edit_hint')}</span>` : ''}<span style="margin-left:auto" id="myDocCountBox">${myDocCountHtml(draft.length)}</span></div>`
         : '') +
       `<div class="mydoc-row"><label>${t('listen_voice_label')}: <select id="myDocVoice">${voices}</select></label></div>` +
       `<button class="mydoc-go" id="myDocGo" onclick="submitMyDoc()" ${showText ? '' : 'disabled'}>${t('my_submit')}</button>` +
@@ -3031,6 +3071,7 @@ async function myDocPickFile(input){
     if(r.ok && j.success){
       myDocDraft.file = j.data.text; myDocFileName = f.name; myDocFileTotal = j.data.total_chars || j.data.text.length;
       render();
+      if(myDocDraft.file.length > myDocMax() || myDocFileTotal > myDocMax()) openMyDocTrimDialog();
       return;
     }
     if(j && j.error === 'pro_required'){ openUpgradeModal('upload'); }
@@ -3039,6 +3080,63 @@ async function myDocPickFile(input){
   input.value = '';
   if(status) status.innerHTML = '';
 }
+// Cắt phần ĐUÔI cho vừa giới hạn, ưu tiên dừng ở cuối câu/đoạn gần nhất (trong 30% cuối của phần giữ lại).
+function myDocTrimTail(text, max){
+  if(text.length <= max) return text;
+  let cut = text.slice(0, max);
+  const marks = ['。', '！', '？', '. ', '! ', '? ', '\n'];
+  const at = Math.max(...marks.map((m) => cut.lastIndexOf(m)));
+  if(at > max * 0.7) cut = cut.slice(0, at + 1);
+  return cut.trim();
+}
+function closeMyDocTrimDialog(){ document.getElementById('myDocTrimModal')?.remove(); }
+function openMyDocTrimDialog(){
+  closeMyDocTrimDialog();
+  const total = Math.max(myDocFileTotal, (myDocDraft.file || '').length);
+  document.getElementById('app').insertAdjacentHTML('beforeend',
+    `<div id="myDocTrimModal" class="up-scrim"><div class="up-box" role="dialog">` +
+    `<h3>${t('my_trim_title')}</h3><p>${t('my_trim_body').replace('{n}', myNum(total)).replace('{max}', myNum(myDocMax()))}</p>` +
+    `<div class="up-actions"><button type="button" class="up-cta" style="border:0;cursor:pointer" onclick="myDocTrimYes()">${t('my_trim_yes')}</button>` +
+    `<button type="button" onclick="myDocTrimNo()">${t('my_trim_no')}</button></div></div></div>`);
+}
+function myDocTrimYes(){
+  const k = myDocMode;
+  myDocDraft[k] = myDocTrimTail(myDocDraft[k], myDocMax());
+  closeMyDocTrimDialog(); render(); listenToast(t('my_trim_done'));
+}
+function myDocTrimNo(){ closeMyDocTrimDialog(); openMyDocEditor(); }
+// Khung soạn thảo to, cố định toàn màn hình: tiện cắt/sửa văn bản dài.
+function closeMyDocEditor(save){
+  const ed = document.getElementById('myDocEditor');
+  if(!ed) return;
+  if(save){ myDocDraft[myDocMode] = document.getElementById('mdeText').value; }
+  ed.remove();
+  if(save) render();
+}
+function mdeCount(){
+  const v = document.getElementById('mdeText').value.length, max = myDocMax();
+  const el = document.getElementById('mdeCount');
+  el.textContent = `${myNum(v)} / ${myNum(max)}`;
+  el.className = 'mde-count' + (v > max ? ' over' : '');
+}
+function mdeTrim(){
+  const ta = document.getElementById('mdeText');
+  ta.value = myDocTrimTail(ta.value, myDocMax()); mdeCount();
+}
+function openMyDocEditor(){
+  if(document.getElementById('myDocEditor')) return;
+  const cur = (document.getElementById('myDocText') || {}).value;
+  const text = cur !== undefined ? cur : (myDocDraft[myDocMode] || '');
+  document.getElementById('app').insertAdjacentHTML('beforeend',
+    `<div id="myDocEditor" class="mydoc-editor" role="dialog"><div class="mde-head">` +
+    `<button type="button" class="mde-btn" onclick="closeMyDocEditor(false)">${t('my_editor_cancel')}</button>` +
+    `<span id="mdeCount" class="mde-count"></span>` +
+    `<button type="button" class="mde-btn" onclick="mdeTrim()">${t('my_trim_now')}</button>` +
+    `<button type="button" class="mde-btn primary" onclick="closeMyDocEditor(true)">${t('my_editor_done')}</button></div>` +
+    `<textarea id="mdeText" class="mde-text" oninput="mdeCount()"></textarea></div>`);
+  const ta = document.getElementById('mdeText');
+  ta.value = text; mdeCount();
+}
 async function submitMyDoc(){
   if(myDocBusy) return;
   const ta = document.getElementById('myDocText');
@@ -3046,7 +3144,7 @@ async function submitMyDoc(){
   const voice = document.getElementById('myDocVoice').value;
   const btn = document.getElementById('myDocGo');
   if(text.trim().length < 20){ listenToast(t('my_err_too_short')); return; }
-  if(text.length > myDocMax()){ listenToast(t('my_err_too_long').replace('{max}', myDocMax().toLocaleString('vi-VN'))); return; }
+  if(text.length > myDocMax()){ listenToast(t('my_err_too_long').replace('{max}', myNum(myDocMax()))); return; }
   myDocBusy = true; btn.disabled = true;
   // Không bắt đặt tên: AI tự đặt tiêu đề theo nội dung. Tệp thì tạm lấy tên tệp để hiện lúc đang chờ xử lý.
   const title = myDocMode === 'file' ? myDocFileName.replace(/\.[^.]+$/, '') : '';
@@ -3073,7 +3171,7 @@ function openMyDoc(id){ openListenDialogue('my-' + id); }
 function listenNewAudio(url){
   const a = new Audio(absUrl(withTicket(url)));
   a.playbackRate = loadListenSpeed();
-  const m = url.match(/^(.*\/)(aoede|zephyr|orus)\/(\d+-text_zh\.mp3)$/);
+  const m = url.match(/^(.*\/)(aoede|zephyr|orus)\/(\d+-text_(?:zh|en)\.mp3)$/);
   let triedTicket = false, triedVoice = false;
   a.addEventListener('error', async () => {
     // Lỗi tải: vé hết hạn/chưa có (xin vé mới, thử lại 1 lần) rồi mới tới nhánh giọng chưa có file (rơi về giọng gốc).
@@ -3441,7 +3539,7 @@ function renderListenDialogue(){
       ${cbRow('zh','listen_cb_zh')}${cbRow('pinyin','listen_cb_pinyin')}${cbRow('vi','listen_cb_vi')}${cbRow('en','listen_cb_en')}
     </div>
     ${!feat.record ? `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>` : ''}
-    ${(d.source_lang !== 'en' || String(d.id).startsWith('my-')) ? `<div class="listen-voicerow"><label for="listenVoiceSel">${t('listen_voice_label')}:</label><select id="listenVoiceSel" onchange="setListenVoice(this.value)">${LISTEN_VOICES.map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${v.label}</option>`).join('')}</select></div>` : ''}
+    ${true ? `<div class="listen-voicerow"><label for="listenVoiceSel">${t('listen_voice_label')}:</label><select id="listenVoiceSel" onchange="setListenVoice(this.value)">${LISTEN_VOICES.map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${v.label}</option>`).join('')}</select></div>` : ''}
     <div class="listen-playbar">
       <div class="listen-speedrow">
         ${LISTEN_SPEEDS.map(v => `<button class="listen-speed-btn ${loadListenSpeed()===v?'on':''}" data-speed="${v}" onclick="setListenSpeed(${v})">${v}×</button>`).join('')}
@@ -5570,6 +5668,7 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
     GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithCredential,
     signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut,
     setPersistence, browserLocalPersistence, initializeAuth, indexedDBLocalPersistence, browserPopupRedirectResolver,
+    sendEmailVerification,
   } from './vendor/firebase/firebase-auth.js';
 
   const FIREBASE_CONFIG = {
@@ -5622,7 +5721,7 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
 
   function toChimedisUser(fbUser){
     if(!fbUser) return null;
-    return { uid: fbUser.uid, email: fbUser.email, name: fbUser.displayName, picture: fbUser.photoURL };
+    return { uid: fbUser.uid, email: fbUser.email, name: fbUser.displayName, picture: fbUser.photoURL, emailVerified: fbUser.emailVerified !== false };
   }
 
   if(auth){
@@ -5720,10 +5819,24 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
       if(!auth) throw new Error('Firebase chưa cấu hình');
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       if(name) await updateProfile(cred.user, { displayName: name });
+      // Gửi thư xác minh (không chặn đăng nhập; gói Pro theo email và tính năng AI chỉ mở sau khi xác minh).
+      try{ auth.languageCode = ({ vi: 'vi', zh: 'zh-CN', en: 'en' })[(window.state && window.state.lang) || 'vi'] || 'vi'; await sendEmailVerification(cred.user); }catch(e){ console.warn('[Chimedis] gửi thư xác minh lỗi:', e && e.code); }
       // updateProfile không tự phát lại onAuthStateChanged — báo thủ công để header/drawer
       // hiện đúng tên ngay, không phải đợi lần đổi trạng thái đăng nhập tiếp theo.
       if(window.chimedisAuthStateChanged) window.chimedisAuthStateChanged(toChimedisUser(cred.user));
       return cred;
+    },
+    async resendVerification(){
+      if(!auth || !auth.currentUser) throw new Error('not signed in');
+      auth.languageCode = ({ vi: 'vi', zh: 'zh-CN', en: 'en' })[(window.state && window.state.lang) || 'vi'] || 'vi';
+      await sendEmailVerification(auth.currentUser);
+    },
+    async refreshVerified(){
+      if(!auth || !auth.currentUser) return false;
+      await auth.currentUser.reload();
+      await auth.currentUser.getIdToken(true);
+      if(window.chimedisAuthStateChanged) window.chimedisAuthStateChanged(toChimedisUser(auth.currentUser));
+      return auth.currentUser.emailVerified;
     },
     signOutUser(){
       if(!auth) return Promise.resolve();

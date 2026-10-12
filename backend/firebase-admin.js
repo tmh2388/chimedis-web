@@ -45,6 +45,7 @@ export async function verifyFirebaseToken(req, res, next) {
     req.firebaseUser = {
       uid: decoded.uid,
       email: decoded.email || null,
+      emailVerified: decoded.email_verified === true,
       name: decoded.name || null,
       picture: decoded.picture || null,
     };

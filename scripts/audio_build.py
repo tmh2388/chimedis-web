@@ -196,16 +196,17 @@ def build_passage(file_path, lang="text_en", voice_key="narrator"):
         build_extra_voices(file_path)
 
 
-def build_extra_voices(file_path, lang="text_zh"):
-    """Sinh thêm các giọng người học có thể chọn (voices_extra_zh) cho đoạn tiếng Trung — chỉ file từng câu
-    (app phát nối tiếp từng câu), lưu ở <id>/<khóa giọng>/NN-text_zh.mp3. Đã có file thì bỏ qua."""
+def build_extra_voices(file_path, lang=None):
+    """Sinh thêm các giọng người học có thể chọn cho đoạn tiếng Trung (voices_extra_zh) hoặc đoạn tiếng Anh gốc của mục
+    Học Thuật (voices_extra_en) — chỉ file từng câu (app phát nối tiếp từng câu), lưu ở <id>/<khóa giọng>/NN-<lang>.mp3.
+    Đã có file thì bỏ qua."""
     cfg = load_audio_config()
-    extra = cfg.get("voices_extra_zh") or {}
-    if not extra:
-        return
     settings = cfg["provider_settings"]["google"]
     data = json.loads(Path(file_path).read_text(encoding="utf-8"))
-    if data.get("source_lang") == "en":
+    is_en = data.get("source_lang") == "en"
+    lang = lang or ("text_en" if is_en else "text_zh")
+    extra = cfg.get("voices_extra_en" if is_en else "voices_extra_zh") or {}
+    if not extra:
         return
     base = ROOT / "backend" / "public" / "audio" / "listening" / data["category"] / data["id"]
     for key, voice in extra.items():

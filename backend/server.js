@@ -1014,7 +1014,7 @@ app.use('/audio/listening', (req, res, next) => {
 
 app.get('/api/me', verifyFirebaseToken, async (req, res) => {
   const plan = await resolvePlan(mysqlPool, req.firebaseUser);
-  res.json({ success: true, data: { uid: req.firebaseUser.uid, email: req.firebaseUser.email, plan, limits: LIMITS[plan] || LIMITS.free } });
+  res.json({ success: true, data: { uid: req.firebaseUser.uid, email: req.firebaseUser.email, email_verified: !!req.firebaseUser.emailVerified, plan, limits: LIMITS[plan] || LIMITS.free } });
 });
 
 app.post('/api/media-ticket', verifyFirebaseToken, (req, res) => {

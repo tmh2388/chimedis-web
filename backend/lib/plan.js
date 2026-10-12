@@ -33,7 +33,9 @@ export function planFromEnv(email) {
 /** Gói hiện hành của người dùng Firebase (không ném lỗi: mọi sự cố → 'free'). */
 export async function resolvePlan(pool, fbUser) {
   if (!fbUser) return 'free';
-  const fromEnv = planFromEnv(fbUser.email);
+  // Gói theo email (PRO_EMAILS/MAX_EMAILS) CHỈ áp dụng khi email đã xác minh — nếu không, ai đăng ký email/mật khẩu bằng
+  // địa chỉ của chủ sở hữu (chưa verify) sẽ nghiễm nhiên có gói. Google/Apple/Facebook trả email_verified=true.
+  const fromEnv = fbUser.emailVerified ? planFromEnv(fbUser.email) : null;
   if (fromEnv) return fromEnv;
   if (!pool) return 'free';
   try {

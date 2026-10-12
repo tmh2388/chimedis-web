@@ -14,6 +14,13 @@ voices_extra_zh:
   zephyr: "cmn-CN-Chirp3-HD-Zephyr"
   orus: "cmn-CN-Chirp3-HD-Orus"
 
+# Giọng người học chọn cho bài tiếng Anh gốc (mục Học Thuật EN→ZH). Lưu ở <id>/<khóa>/NN-text_en.mp3. Cùng khóa với bản tiếng Trung
+# để app dùng chung một lựa chọn giọng (Chirp 3 HD đa ngôn ngữ).
+voices_extra_en:
+  aoede: "en-US-Chirp3-HD-Aoede"
+  zephyr: "en-US-Chirp3-HD-Zephyr"
+  orus: "en-US-Chirp3-HD-Orus"
+
 provider_settings:
   google:
     speaking_rate: 1.0
