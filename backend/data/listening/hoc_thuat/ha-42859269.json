@@ -1,0 +1,94 @@
+{
+  "id": "ha-42859269",
+  "category": "hoc_thuat",
+  "level": "so_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Ginseng alleviates fatigue by inhibiting autophagy via activation of the PI3K/AKT/mTOR signaling pathway.",
+  "title_zh": "人参通过激活PI3K/AKT/mTOR信号通路抑制自噬来缓解疲劳。",
+  "title_vi": "Nhân sâm làm giảm mệt mỏi bằng cách ức chế quá trình tự thực thông qua việc hoạt hóa con đường truyền tín hiệu PI3K/AKT/mTOR.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Panax ginseng C.",
+      "text_zh": "人参",
+      "text_vi": "Panax ginseng C.",
+      "text_pinyin": "rén shēn"
+    },
+    {
+      "seq": 2,
+      "text_en": "A.",
+      "text_zh": "A.",
+      "text_vi": "A.",
+      "text_pinyin": "A."
+    },
+    {
+      "seq": 3,
+      "text_en": "Mey. (PG) is a commonly used traditional Chinese medicine to relieve fatigue-related symptoms.",
+      "text_zh": "Mey. (PG)是一种常用的中药，用于缓解疲劳相关症状。",
+      "text_vi": "Mey. (PG) là một loại thuốc cổ truyền Trung Quốc thường được sử dụng để làm giảm các triệu chứng liên quan đến mệt mỏi.",
+      "text_pinyin": "Mey. (PG) shì yī zhǒng cháng yòng de zhōng yào ， yòng yú huǎn jiě pí láo xiāng guān zhèng zhuàng 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "However, the underlying mechanisms by which PG alleviates fatigue are still not fully understood.",
+      "text_zh": "然而， PG缓解疲劳的潜在机制仍未完全了解。",
+      "text_vi": "Tuy nhiên, các cơ chế cơ bản mà PG làm giảm mệt mỏi vẫn chưa được hiểu đầy đủ.",
+      "text_pinyin": "rán ér ， PG huǎn jiě pí láo de qián zài jī zhì réng wèi wán quán liǎo jiě 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "This study aims to elucidate the anti-fatigue mechanism of PG in a hyperammonemia induced fatigue mouse model.",
+      "text_zh": "本研究旨在阐明PG在高氨血症诱导的疲劳小鼠模型中的抗疲劳机制。",
+      "text_vi": "Nghiên cứu này nhằm mục đích làm sáng tỏ cơ chế chống mệt mỏi của PG trong mô hình chuột bị mệt mỏi do tăng amoniac máu.",
+      "text_pinyin": "běn yán jiū zhǐ zài chǎn míng PG zài gāo ān xuè zhèng yòu dǎo de pí láo xiǎo shǔ mó xíng zhōng de kàng pí láo jī zhì 。"
+    },
+    {
+      "seq": 6,
+      "text_en": "The therapeutic effects of PG on hyperammonemia-induced fatigue mice were evaluated using behavioral assessments, including rotarod, open field, grip strength, and tail suspension tests, along with serum biochemical analysis and hematoxylin-eosin (HE) staining.",
+      "text_zh": "使用行为评估来评估PG对高氨血症诱导的疲劳小鼠的治疗效果，包括旋转棒、开放场、握力和尾悬浮试验，以及血清生化分析和苏木精-伊红（ HE ）染色。",
+      "text_vi": "Tác dụng điều trị của PG trên chuột mệt mỏi do tăng amoniac máu được đánh giá bằng cách sử dụng các đánh giá hành vi, bao gồm các thử nghiệm rotarod, trường mở, độ bám, và huyền phù đuôi, cùng với phân tích sinh hóa huyết thanh và nhuộm hematoxylin-eosin (HE).",
+      "text_pinyin": "shǐ yòng xíng wéi píng gū lái píng gū PG duì gāo ān xuè zhèng yòu dǎo de pí láo xiǎo shǔ de zhì liáo xiào guǒ ， bāo kuò xuán zhuǎn bàng 、 kāi fàng chǎng 、 wò lì hé wěi xuán fú shì yàn ， yǐ jí xuè qīng shēng huà fēn xī hé sū mù jīng - yī hóng （ HE ） rǎn sè 。"
+    },
+    {
+      "seq": 7,
+      "text_en": "To investigate the molecular mechanisms, an integrated approach combining transcriptomics, proteomics, network pharmacology, immunohistochemistry, immunofluorescence, and Western blot was employed.",
+      "text_zh": "为了研究分子机制，采用了结合转录组学、蛋白质组学、网络药理学、免疫组织化学、免疫荧光和Western印迹的综合方法。",
+      "text_vi": "Để nghiên cứu các cơ chế phân tử, phương pháp tích hợp kết hợp transcriptomics, proteomics, dược lý mạng lưới, immunohistochemistry, immunofluorescence, và Western blot được sử dụng.",
+      "text_pinyin": "wèi le yán jiū fèn zǐ jī zhì ， cǎi yòng liǎo jié hé zhuǎn lù zǔ xué 、 dàn bái zhì zǔ xué 、 wǎng luò yào lǐ xué 、 miǎn yì zǔ zhī huà xué 、 miǎn yì yíng guāng hé Western yìn jì de zōng hé fāng fǎ 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "PG significantly enhanced the exercise tolerance of hyperammonemia-induced fatigue mice, ameliorated skeletal muscle fiber atrophy, and restored the serum ammonia, creatine kinase, blood urea nitrogen, lactate dehydrogenase, and blood glucose levels.",
+      "text_zh": "PG显著增强高氨血症疲劳小鼠运动耐量，改善骨骼肌纤维萎缩，恢复血清氨、肌酸激酶、血尿素氮、乳酸脱氢酶、血糖水平。",
+      "text_vi": "PG tăng cường đáng kể khả năng chống chịu khi tập thể dục của chuột mệt mỏi do tăng kali máu, teo sợi cơ xương được cải thiện, và phục hồi amoniac huyết thanh, creatine kinase, nitơ urê máu, lactate dehydrogenase và lượng đường trong máu.",
+      "text_pinyin": "PG xiǎn zhù zēng qiáng gāo ān xuè zhèng pí láo xiǎo shǔ yùn dòng nài liàng ， gǎi shàn gǔ gé jī xiān wéi wēi suō ， huī fù xuè qīng ān 、 jī suān jī méi 、 xuè niào sù dàn 、 rǔ suān tuō qīng méi 、 xuè táng shuǐ píng 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "Comprehensive analysis of transcriptomics, proteomics and network pharmacology indicated that the mechanism of anti-fatigue of PG may be mediated by regulating autophagy via the PI3K/AKT signaling pathway.",
+      "text_zh": "对转录组学、蛋白质组学和网络药理学的综合分析表明， PG的抗疲劳机制可能通过PI3K/AKT信号通路调节自噬来介导。",
+      "text_vi": "Phân tích toàn diện về transcriptomics, proteomics và dược lý mạng chỉ ra rằng cơ chế chống mệt mỏi của PG có thể được trung gian bằng cách điều hòa autophagy thông qua con đường truyền tín hiệu PI3K/AKT.",
+      "text_pinyin": "duì zhuǎn lù zǔ xué 、 dàn bái zhì zǔ xué hé wǎng luò yào lǐ xué de zōng hé fēn xī biǎo míng ， PG de kàng pí láo jī zhì kě néng tōng guò PI3K/AKT xìn hào tōng lù tiáo jié zì shì lái jiè dǎo 。"
+    },
+    {
+      "seq": 10,
+      "text_en": "In addition, immunohistochemistry, Western blot, and immunofluorescence analysis confirmed that PG protected against fatigue by activating the PI3K/AKT/mTOR pathway to restore dysregulated autophagy in skeletal muscle under hyperammonemia conditions.",
+      "text_zh": "此外，免疫组化、Western印迹和免疫荧光分析证实， PG通过激活PI3K/AKT/mTOR途径来恢复高氨血症条件下骨骼肌中失调的自噬，从而保护免受疲劳。",
+      "text_vi": "Ngoài ra, hóa mô miễn dịch, thấm tách Western, và phân tích miễn dịch huỳnh quang đã xác nhận rằng PG bảo vệ chống lại sự mệt mỏi bằng cách hoạt hóa con đường PI3K/AKT/mTOR để phục hồi rối loạn tự thực bào được điều hòa trong cơ xương trong điều kiện tăng amoniac máu.",
+      "text_pinyin": "cǐ wài ， miǎn yì zǔ huà 、Western yìn jì hé miǎn yì yíng guāng fēn xī zhèng shí ， PG tōng guò jī huó PI3K/AKT/mTOR tú jìng lái huī fù gāo ān xuè zhèng tiáo jiàn xià gǔ gé jī zhōng shī tiáo de zì shì ， cóng ér bǎo hù miǎn shòu pí láo 。"
+    },
+    {
+      "seq": 11,
+      "text_en": "PG may alleviate fatigue by inhibiting excessive autophagy via the PI3K/AKT/mTOR pathway and restoring the protein balance within skeletal muscle.",
+      "text_zh": "PG可以通过PI3K/AKT/mTOR途径抑制过度的自噬并恢复骨骼肌内的蛋白质平衡来缓解疲劳。",
+      "text_vi": "PG có thể làm giảm bớt sự mệt mỏi bằng cách ức chế quá trình tự thực thông qua con đường PI3K/AKT/mTOR và khôi phục lại sự cân bằng protein trong cơ xương.",
+      "text_pinyin": "PG kě yǐ tōng guò PI3K/AKT/mTOR tú jìng yì zhì guò dù de zì shì bìng huī fù gǔ gé jī nèi de dàn bái zhì píng héng lái huǎn jiě pí láo 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42859269), Molecular biology reports (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42859269/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42859269), Molecular biology reports (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42859269/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42859269），Molecular biology reports (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42859269/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-12T00:49:52Z",
+  "updated_at": "2026-10-12T00:49:52Z"
+}
