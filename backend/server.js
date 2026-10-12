@@ -15,6 +15,7 @@ import { resolvePlan, requirePlan, ensurePlanColumns, LIMITS, atLeast, planInfo,
 import * as billing from './lib/billing.js';
 import * as laoshi from './lib/laoshi.js';
 import * as aiBudget from './lib/ai-budget.js';
+import { scoreChinese, scoreWords, ensureUsageTable, consumeServerAsr } from './lib/quick-score.js';
 import crypto from 'node:crypto';
 import { signTicket, verifyTicket, TICKET_TTL_SEC } from './lib/media-ticket.js';
 import * as userDocs from './lib/user-docs.js';
@@ -77,7 +78,7 @@ app.all(/^\/__fb\/(idtk|stk)(\/.*)$/, express.raw({ type: '*/*', limit: '256kb' 
 });
 // Mọi đường dẫn /__fb/ còn lại (ngoài idtk/stk) → 404 JSON, không rơi về trang chủ (SPA fallback).
 app.all(/^\/__fb(\/|$)/, (req, res) => res.status(404).json({ error: { message: 'NOT_FOUND' } }));
-app.use((req, res, next) => (['/api/pronunciation-score', '/api/interpret-check'].includes(req.path) ? next() : defaultJson(req, res, next)));
+app.use((req, res, next) => (['/api/pronunciation-score', '/api/interpret-check', '/api/quick-check'].includes(req.path) ? next() : defaultJson(req, res, next)));
 const PORT = process.env.PORT || 3000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
 
@@ -916,9 +917,12 @@ app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool,
 // bài học). Việc quyết định đúng/sót là đối chiếu xác định trong lib/interpret-check.js. Kết quả chỉ
 // gồm mã trạng thái; giao diện tự lấy câu chữ từ bảng I18N nên ngôn ngữ nhận xét luôn đúng.
 async function transcribeWithOpenAI(buf, lang, hint) {
-  const prompt = lang === 'en'
-    ? `Traditional Chinese Medicine case discussion. Terms: ${hint}`
-    : `Thảo luận ca bệnh y học cổ truyền bằng tiếng Việt. Thuật ngữ: ${hint}`;
+  // zh: KHÔNG đưa câu mẫu vào prompt — làm vậy mô hình sẽ "tự sửa" theo câu mẫu và che mất lỗi phát âm của người học.
+  const prompt = lang === 'zh'
+    ? '中医学习，请用简体中文逐字转写，不要纠正发音。'
+    : lang === 'en'
+      ? `Traditional Chinese Medicine case discussion. Terms: ${hint}`
+      : `Thảo luận ca bệnh y học cổ truyền bằng tiếng Việt. Thuật ngữ: ${hint}`;
   const models = ['gpt-4o-mini-transcribe', 'whisper-1'];
   let lastErr = null;
   for (const model of models) {
@@ -1217,6 +1221,51 @@ app.get('/api/budget', verifyFirebaseToken, async (req, res) => {
     const b = await aiBudget.getBudget({ uid: req.firebaseUser.uid, plan });
     res.json({ success: true, data: { ...aiBudget.publicView(b), packs: billing.PACKS } });
   } catch (e) { res.status(500).json({ success: false, error: 'budget_failed' }); }
+});
+
+// ===== CHẤM NHANH (tầng 1) — mọi tài khoản đăng nhập, không dùng AI để chấm (lib/quick-score.js) =====
+// Văn bản nói ra lấy từ nhận dạng giọng nói của trình duyệt (miễn phí, client gửi `transcript`), hoặc — khi thiết bị không có
+// (app iOS/WKWebView) — từ dịch vụ phiên âm rẻ phía máy chủ (giới hạn dùng công bằng theo ngày). Việc chấm là thuật toán.
+onDbUp(() => ensureUsageTable(mysqlPool).catch((e) => console.error('[quick-check] init:', e.message)));
+app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }), async (req, res) => {
+  try {
+    const { lang: rawLang, reference, dialogue_id, seq, transcript: tIn, audio_base64 } = req.body || {};
+    const lang = ['zh', 'vi', 'en'].includes(rawLang) ? rawLang : 'zh';
+    const ref = String(reference || '').slice(0, 1500);
+    if (!ref.trim()) return res.status(400).json({ success: false, error: 'missing_reference' });
+    let transcript = typeof tIn === 'string' ? tIn.slice(0, 1500) : null;
+    let source = 'browser';
+    if (transcript === null) {
+      if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
+      if (!process.env.OPENAI_API_KEY) return res.status(503).json({ success: false, error: 'asr_unavailable' });
+      const cap = Number(process.env.QUICK_ASR_DAILY) || 150;
+      if (mysqlPool) {
+        const u = await consumeServerAsr(mysqlPool, req.firebaseUser.uid, cap);
+        if (!u.ok) return res.status(429).json({ success: false, error: 'quick_daily_limit', limit: cap });
+      }
+      const buf = Buffer.from(audio_base64, 'base64');
+      if (buf.length < 2000) return res.json({ success: true, data: { mode: lang === 'zh' ? 'zh' : 'words', empty: true, score: 0, level: 'poor', source: 'server', heard: '' } });
+      const dlg = dialogue_id ? findListeningDialogue(dialogue_id) : null;
+      const segHint = dlg && (dlg.segments || []).find((x) => x.seq === Number(seq));
+      const hint = segHint && Array.isArray(segHint.key_units) ? buildVocabHint(segHint.key_units, lang === 'en' ? 'en' : 'vi') : '';
+      transcript = (await transcribeWithOpenAI(buf, lang, hint)).text;
+      source = 'server';
+    }
+    if (!transcript.trim()) return res.json({ success: true, data: { mode: lang === 'zh' ? 'zh' : 'words', empty: true, score: 0, level: 'poor', source, heard: '' } });
+    if (lang === 'zh') {
+      return res.json({ success: true, data: { mode: 'zh', source, ...scoreChinese(ref, transcript) } });
+    }
+    const dlg = dialogue_id ? findListeningDialogue(dialogue_id) : null;
+    const seg = dlg && (dlg.segments || []).find((x) => x.seq === Number(seq));
+    if (seg && Array.isArray(seg.key_units) && seg.key_units.length) {
+      const data = analyzeInterpretation({ units: seg.key_units, transcript, lang, fluencyStats: null });
+      return res.json({ success: true, data: { mode: 'units', source, ...data } });
+    }
+    return res.json({ success: true, data: { mode: 'words', source, ...scoreWords(ref, transcript) } });
+  } catch (err) {
+    console.error('quick-check lỗi:', err.message);
+    res.status(500).json({ success: false, error: 'quick_check_failed' });
+  }
 });
 
 // ===== Lão Sư Trung Y: thầy giáo AI (gói Max) — xem lib/laoshi.js =====

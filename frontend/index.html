@@ -788,6 +788,22 @@ header{transition:padding .2s ease}
 .mydoc-del{background:none;border:0;color:#B4472B;font-size:12px;cursor:pointer}
 .mydoc-notice{background:#FBF3DC;border:1px solid #E3C26C;border-radius:14px;padding:14px;margin-top:10px;font-size:13px;line-height:1.55}
 .mydoc-notice button{margin-top:10px}
+.qs-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.qs-score{min-width:44px;text-align:center;font-size:20px;font-weight:800;border-radius:12px;padding:4px 8px;color:#fff;background:#C8452F}
+.qs-score.good{background:#2F7D2F}.qs-score.fair{background:#C9962B}.qs-score.poor{background:#B4472B}
+.qs-level{font-weight:700;font-size:14px}
+.qs-tag{margin-left:auto;font-size:11px;color:var(--muc-mo,#6B6156);background:#efe7d8;border-radius:999px;padding:2px 8px}
+.qs-chars{font-size:20px;line-height:1.9;word-break:break-word;margin:4px 0}
+.qs-ch{padding:0 1px;border-radius:3px}
+.qs-ch.homophone{background:#FFF3C4}
+.qs-ch.tone{background:#FFD9A8;border-bottom:2px solid #E08A00}
+.qs-ch.wrong{background:#F8C9C0;color:#8E2A18}
+.qs-ch.missed{background:#EFE7D8;color:#9a8f7c;text-decoration:line-through}
+.qs-legend{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0;font-size:11.5px}
+.qs-leg{border-radius:999px;padding:2px 8px}
+.qs-leg.homophone{background:#FFF3C4}.qs-leg.tone{background:#FFD9A8}.qs-leg.wrong{background:#F8C9C0}.qs-leg.missed{background:#EFE7D8}
+.qs-extra{font-size:12.5px;color:#8E2A18;margin:2px 0}
+.qs-note{font-size:11.5px;color:var(--muc-mo,#6B6156);margin-top:6px;line-height:1.45}
 .ck-packs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
 .ck-packs button{background:#fff;border:2px solid var(--vien,#e5ddcc);border-radius:14px;padding:12px 6px;font:inherit;font-size:13px;cursor:pointer;text-align:center;line-height:1.35}
 .ck-packs button.on{border-color:var(--son,#C8452F);background:#FBF3DC}
@@ -3070,6 +3086,11 @@ Object.assign(I18N.vi, {
   ck_topup_hint: 'Credit dùng chung cho mọi tính năng AI (dict và workbench), dùng khi đã hết hạn mức tháng; không bị giới hạn theo giờ/ngày.',
   ck_back_plans: 'Quay lại chọn gói', ck_paid_topup: 'Đã nhận tiền — credit đã được cộng vào tài khoản!',
   plans_r_budget: 'Ngân sách AI mỗi tháng (credit)', admin_credits: 'Cộng/trừ credit', admin_do_credits: 'Áp dụng',
+  qs_title: 'Chấm nhanh', qs_good: 'Tốt', qs_fair: 'Khá', qs_poor: 'Cần luyện thêm', qs_heard: 'Nghe được',
+  qs_homophone: 'đồng âm / gần giống', qs_tone: 'sai thanh', qs_wrong: 'sai chữ', qs_missed: 'bỏ sót', qs_extra: 'Thừa',
+  qs_note: 'Chấm nhanh dựa trên nhận dạng giọng nói nên có thể bỏ sót lỗi nhỏ về thanh điệu. Muốn kiểm tra ngữ điệu và trôi chảy, hãy dùng phân tích sâu bằng AI.',
+  qs_limit: 'Hôm nay bạn đã dùng hết lượt chấm nhanh bằng máy chủ. Hãy thử trên trình duyệt có nhận dạng giọng nói hoặc quay lại ngày mai.', qs_unavailable: 'Chưa chấm nhanh được lúc này. Bạn vẫn nghe lại được bản ghi.',
+  an_deep: 'Phân tích sâu bằng AI',
   voice_male: 'Giọng nam ♂', voice_female: 'Giọng nữ ♀',
   auth_checking: 'Đang kiểm tra tài khoản…',
   up_title_max: 'Tính năng dành cho gói Max',
@@ -3132,6 +3153,11 @@ Object.assign(I18N.zh, {
   ck_topup_hint: '点数通用于所有 AI 功能（词典与工作台），月额度用完后使用；不受每小时/每天限制。',
   ck_back_plans: '返回选择套餐', ck_paid_topup: '已收款——点数已充入您的账户！',
   plans_r_budget: '每月 AI 额度（点）', admin_credits: '增减点数', admin_do_credits: '应用',
+  qs_title: '快速评分', qs_good: '很好', qs_fair: '良好', qs_poor: '需多练习', qs_heard: '识别到',
+  qs_homophone: '同音/相近', qs_tone: '声调错误', qs_wrong: '错字', qs_missed: '漏读', qs_extra: '多读',
+  qs_note: '快速评分基于语音识别，可能漏掉细微的声调问题。如需检查语调和流利度，请使用 AI 深度分析。',
+  qs_limit: '今天的服务器快速评分次数已用完。请在支持语音识别的浏览器中尝试，或明天再来。', qs_unavailable: '暂时无法快速评分。您仍可回放录音。',
+  an_deep: 'AI 深度分析',
   voice_male: '男声 ♂', voice_female: '女声 ♀',
   auth_checking: '正在检查账户…',
   up_title_max: '此功能仅限 Max 套餐',
@@ -3194,6 +3220,11 @@ Object.assign(I18N.en, {
   ck_topup_hint: 'Credits are shared by every AI feature (dictionary and workbench) and used once the monthly allowance runs out; not limited by hour or day.',
   ck_back_plans: 'Back to plans', ck_paid_topup: 'Payment received — credits added to your account!',
   plans_r_budget: 'Monthly AI allowance (credits)', admin_credits: 'Add/remove credits', admin_do_credits: 'Apply',
+  qs_title: 'Quick score', qs_good: 'Good', qs_fair: 'Fair', qs_poor: 'Needs practice', qs_heard: 'Heard',
+  qs_homophone: 'homophone / close', qs_tone: 'wrong tone', qs_wrong: 'wrong character', qs_missed: 'missed', qs_extra: 'Extra',
+  qs_note: 'Quick score is based on speech recognition, so it can miss small tone errors. For intonation and fluency, use the deep AI analysis.',
+  qs_limit: 'You have used today\'s server quick-score allowance. Try a browser with speech recognition, or come back tomorrow.', qs_unavailable: 'Quick scoring is unavailable right now. You can still replay your recording.',
+  an_deep: 'Deep analysis with AI',
   voice_male: 'Male voice ♂', voice_female: 'Female voice ♀',
   auth_checking: 'Checking your account…',
   up_title_max: 'A Max plan feature',
@@ -3602,7 +3633,7 @@ function openUpgradeModal(reason){
 }
 const lineLastBlobs = {};
 function listenAnalyzeBtnHtml(seq, again){
-  return `<button type="button" class="lsc-btn analyze" onclick="listenAnalyzeClick(${seq})">✨ ${again ? t('an_again') : t('an_btn')}` +
+  return `<button type="button" class="lsc-btn analyze" onclick="listenAnalyzeClick(${seq})">✨ ${again ? t('an_again') : t('an_deep')}` +
     `${planAtLeast('pro') ? '' : '<span class="pro-tag">PRO</span>'}</button>`;
 }
 function listenShowRecordedOnly(seq){
@@ -4002,6 +4033,7 @@ async function listenLineRecordStart(seq){
     lineRecorder = new MediaRecorder(micStream);
     lineRecorder.ondataavailable = (e) => { if(e.data.size) lineRecordChunks.push(e.data); };
     lineRecorder.start();
+    quickAsrStart(listenCurrentDialogue);
     listenVideoAttemptStart(micStream);
     lineRecordSeq = seq;
     listenSetBadge(seq, 'listening', `<span class="practice-rec-dot"></span> ${t('practice_recording')}`);
@@ -4018,6 +4050,7 @@ function listenLineRecordStop(seq){
   const stream = lineRecordStream;
   recorder.onstop = async () => {
     const rawBlob = new Blob(lineRecordChunks, { type: recorder.mimeType || 'audio/webm' });
+    const asrText = await quickAsrStop(); // null = không có nhận dạng của trình duyệt → máy chủ phiên âm
     if(stream) stream.getTracks().forEach(tr => tr.stop());
     lineRecorder = null; lineRecordStream = null; lineRecordSeq = null;
     listenUpdateLineRecordUI();
@@ -4029,8 +4062,8 @@ function listenLineRecordStop(seq){
       if(lineRecordingUrls[finishedSeq]) URL.revokeObjectURL(lineRecordingUrls[finishedSeq]);
       lineRecordingUrls[finishedSeq] = URL.createObjectURL(trimmedBlob);
       lineLastBlobs[finishedSeq] = trimmedBlob;
-      if(planAtLeast('pro')) await listenLineScore(finishedSeq, trimmedBlob);
-      else listenShowRecordedOnly(finishedSeq);
+      // Chấm nhanh (thuật toán, miễn phí) cho mọi tài khoản đăng nhập; "Phân tích sâu bằng AI" chỉ chạy khi người dùng bấm nút.
+      await listenQuickScore(finishedSeq, trimmedBlob, asrText || null);
     }catch(err){
       listenSetBadge(finishedSeq, 'bad', `${t('practice_error')}: ${err.message}`);
     }
@@ -4103,6 +4136,110 @@ async function listenLineInterpret(seq, trimmedBlob, d, seg, targetLang, referen
   listenPushProgress(d.id, seq, targetLang, r.transcript, score);
 }
 
+// ===== CHẤM NHANH (tầng 1): thuật toán, không dùng AI chấm — mọi tài khoản đăng nhập. Máy chủ: lib/quick-score.js =====
+// Văn bản nói ra: nhận dạng giọng nói của TRÌNH DUYỆT (Web Speech API, miễn phí) chạy song song với lúc ghi âm; nếu thiết bị không có
+// (app iOS/WKWebView) hoặc không nghe được thì gửi âm thanh lên máy chủ để phiên âm rẻ (giới hạn dùng công bằng theo ngày).
+let lineAsr = null;
+const quickAsrCtor = () => (IN_NATIVE_APP ? null : (window.SpeechRecognition || window.webkitSpeechRecognition || null));
+function quickTargetLang(d){ const t = listenRecognitionLang(d); return t === 'text_zh' ? 'zh' : t === 'text_en' ? 'en' : 'vi'; }
+function quickAsrStart(d){
+  const R = quickAsrCtor();
+  lineAsr = null;
+  if(!R) return;
+  try{
+    const rec = new R();
+    rec.lang = ({ zh: 'zh-CN', en: 'en-US', vi: 'vi-VN' })[quickTargetLang(d)];
+    rec.continuous = true; rec.interimResults = true;
+    const st = { rec, final: '', interim: '', ended: false, stopped: false };
+    rec.onresult = (e) => {
+      let interim = '';
+      for(let i = e.resultIndex; i < e.results.length; i++){
+        const r = e.results[i];
+        if(r.isFinal) st.final += r[0].transcript; else interim += r[0].transcript;
+      }
+      st.interim = interim;
+    };
+    rec.onerror = () => {};
+    rec.onend = () => { st.ended = true; if(!st.stopped){ try{ rec.start(); st.ended = false; }catch(e){} } }; // Chrome tự ngắt sau vài giây im lặng
+    rec.start();
+    lineAsr = st;
+  }catch(e){ lineAsr = null; }
+}
+// Trả văn bản nghe được (có thể rỗng) hoặc null nếu không chạy được nhận dạng của trình duyệt.
+async function quickAsrStop(){
+  const st = lineAsr; lineAsr = null;
+  if(!st) return null;
+  st.stopped = true;
+  try{ st.rec.stop(); }catch(e){}
+  await new Promise((r) => { const t0 = Date.now(); (function w(){ if(st.ended || Date.now() - t0 > 900) r(); else setTimeout(w, 50); })(); });
+  return (st.final + ' ' + st.interim).trim();
+}
+
+function quickLevelLabel(level){ return t(level === 'good' ? 'qs_good' : level === 'fair' ? 'qs_fair' : 'qs_poor'); }
+async function listenQuickScore(seq, blob, asrText){
+  const d = listenCurrentDialogue; if(!d) return;
+  const seg = d.segments.find((s) => s.seq === seq);
+  const targetLang = listenRecognitionLang(d);
+  const lang = quickTargetLang(d);
+  const reference = seg ? seg[targetLang] : '';
+  const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  listenSetBadge(seq, 'checking', t('practice_scoring'));
+  const body = { lang, reference, dialogue_id: d.id, seq, ui_lang: state.lang };
+  if(asrText) body.transcript = asrText; else body.audio_base64 = await blobToBase64(blob);
+  let json;
+  try{
+    const res = await authFetch('/api/quick-check', { method: 'POST', body: JSON.stringify(body) });
+    json = await res.json();
+    if(res.status === 429){ listenShowRecordedOnly(seq); listenToast(t('qs_limit')); return; }
+    if(res.status === 401){ listenShowRecordedOnly(seq); listenNeedLogin('analyze'); return; }
+    if(!res.ok || !json.success){ listenShowRecordedOnly(seq); listenToast(t('qs_unavailable')); return; }
+  }catch(e){ listenSetBadge(seq, 'bad', `${t('practice_error')}: ${e.message}`); return; }
+  const r = json.data;
+  const recordingUrl = lineRecordingUrls[seq];
+  const playbackHtml = lineVideoUrls[seq] ? listenVideoHtml(seq) : recordingUrl
+    ? `<div class="practice-playback"><audio controls src="${recordingUrl}"></audio><span>${t('practice_your_recording')}</span></div>` : '';
+  if(r.empty){
+    listenSetBadge(seq, 'bad', playbackHtml + esc(t('practice_no_speech_detected')) + listenAnalyzeBtnHtml(seq, false));
+    return;
+  }
+  const pill = (score, level) => `<div class="qs-head"><span class="qs-score ${level}">${score}</span><span class="qs-level">${esc(quickLevelLabel(level))}</span><span class="qs-tag">${esc(t('qs_title'))}</span></div>`;
+  const note = `<div class="qs-note">${esc(t('qs_note'))}</div>`;
+  let inner = '';
+  if(r.mode === 'zh'){
+    const chars = r.chars.map((c) => {
+      const tip = c.heard ? ` title="${esc(t('qs_heard'))}: ${esc(c.heard)}"` : '';
+      return `<span class="qs-ch ${c.status}"${tip}>${esc(c.c)}</span>`;
+    }).join('');
+    const c = r.counts;
+    const legend = [['homophone', c.homophone], ['tone', c.tone], ['wrong', c.wrong], ['missed', c.missed]].filter(([, n]) => n > 0)
+      .map(([k, n]) => `<span class="qs-leg ${k}">${esc(t('qs_' + k))} ${n}</span>`).join('');
+    inner = `${pill(r.score, r.level)}
+      <div class="qs-chars">${chars}</div>
+      ${r.extra && r.extra.length ? `<div class="qs-extra">${esc(t('qs_extra'))}: ${esc(r.extra.join(' '))}</div>` : ''}
+      ${legend ? `<div class="qs-legend">${legend}</div>` : ''}
+      <div class="lsc-row"><span class="lsc-lab">${t('qs_heard')}</span><span class="lsc-txt">${esc(r.heard)}</span></div>
+      <div class="practice-pinyin">${esc(r.heard_pinyin)}</div>`;
+  } else if(r.mode === 'words'){
+    const words = r.words.map((w) => `<span class="qs-ch ${w.status === 'ok' ? 'ok' : 'missed'}">${esc(w.w)}</span>`).join(' ');
+    inner = `${pill(r.score, r.level)}<div class="qs-chars">${words}</div>
+      <div class="lsc-row"><span class="lsc-lab">${t('qs_heard')}</span><span class="lsc-txt">${esc(r.heard)}</span></div>`;
+  } else { // units: đối chiếu theo đơn vị ý (key_units)
+    const total = r.total || 0;
+    const score = total ? Math.round(100 * (r.counts.ok + 0.5 * r.counts.partial) / total) : 0;
+    const level = score >= 80 ? 'good' : score >= 55 ? 'fair' : 'poor';
+    const icon = { ok: '✓', partial: '◐', missed: '✗' };
+    const chips = r.lang_ok ? r.units.map((u) =>
+      `<span class="interp-chip ${u.status}"><span class="hz">${icon[u.status]} ${esc(u.zh)}</span>${u.status === 'ok' ? '' : `<span class="hint">${esc(t('interp_expected'))} ${esc(u.pref || '')}</span>`}</span>`).join('') : '';
+    inner = `${pill(score, level)}
+      ${r.lang_ok ? `<div class="interp-chips">${chips}</div>` : `<div class="interp-warn">${esc(t(lang === 'en' ? 'interp_wrong_lang_en' : 'interp_wrong_lang_vi'))}</div>`}
+      <div class="lsc-row"><span class="lsc-lab">${t('qs_heard')}</span><span class="lsc-txt">${esc(r.transcript || r.heard || '')}</span></div>`;
+    r.score = score;
+  }
+  listenSetBadge(seq, 'show', `<div class="listen-selfcheck">${playbackHtml}${inner}
+      <div class="lsc-row"><span class="lsc-lab">${t('listen_reference')}</span><span class="lsc-txt ref">${esc(reference)}</span></div>
+      ${note}${listenAnalyzeBtnHtml(seq, false)}</div>`);
+  listenPushProgress(d.id, seq, targetLang, r.heard || r.transcript || '', r.score || 0);
+}
 async function listenLineScore(seq, trimmedBlob){
   const d = listenCurrentDialogue; if(!d) return;
   const seg = d.segments.find(s => s.seq === seq);

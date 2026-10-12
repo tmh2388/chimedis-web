@@ -30,3 +30,8 @@ Workbench trả `402 {code:'ai_quota_exceeded', reason, budget}`.
 
 ## Giọng đọc
 2 giọng cho mọi nội dung: `default` (nam, Wavenet) và `aoede` (nữ, Chirp 3 HD). Giọng sinh theo yêu cầu được lưu đệm dùng chung nên chỉ tốn chi phí lần nghe đầu.
+
+## Chấm nhanh (tầng 1) — không tính ngân sách
+`POST /api/quick-check` (mọi tài khoản đăng nhập): chấm bằng thuật toán (`backend/lib/quick-score.js`), không dùng AI để chấm.
+Văn bản nói ra lấy từ nhận dạng giọng nói của trình duyệt (miễn phí) hoặc, nếu thiết bị không có (app iOS), từ dịch vụ phiên âm rẻ phía máy chủ
+với giới hạn dùng công bằng `QUICK_ASR_DAILY` (mặc định 150 lượt/ngày/người). "Phân tích sâu bằng AI" chỉ chạy khi người dùng bấm nút và có tính ngân sách.
