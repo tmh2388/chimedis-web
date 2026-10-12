@@ -1185,13 +1185,11 @@ app.get('/api/csdl/audio/:id/:seq', withLessonIndex(async (req, res) => {
   const text = csdl.segmentText(lesson, req.params.seq);
   if (!text) return res.status(404).json({ success: false, error: 'not_found' });
   try {
-    const isDaily = csdl.dailyIds().has(id); // bài trong ngày: nền tảng chịu chi phí, không trừ ngân sách người dùng
+    // Kho Học Thuật là tài sản của nền tảng: người dùng KHÔNG bị trừ ngân sách khi nghe (cả bài trong ngày lẫn bài Pro duyệt).
+    // Toàn kho chỉ ~237 nghìn ký tự (~$11 nếu sinh hết cả hai giọng, một lần), mỗi câu sinh một lần rồi dùng chung → chi phí
+    // nhỏ và có trần; chống lạm dụng bằng giới hạn tần suất sinh mới theo người dùng/toàn hệ thống (lib/csdl-audio.js).
     const mp3 = await csdlAudio.getAudio(mysqlPool, {
-      lessonId: id, seq: Number(req.params.seq), text, voice: String(req.query.voice || 'default'), uid: tk.uid, chargeUser: !isDaily,
-      beforeGenerate: isDaily ? null : async () => {
-        const b = await aiBudget.getBudget({ uid: tk.uid, plan: tk.plan });
-        if (b.state !== 'ok') throw Object.assign(new Error('budget'), { code: 'budget', budget: aiBudget.publicView(b) });
-      },
+      lessonId: id, seq: Number(req.params.seq), text, voice: String(req.query.voice || 'default'), uid: tk.uid, chargeUser: false,
     });
     res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, max-age=86400' });
     res.send(mp3);

@@ -19,8 +19,9 @@ Mã nguồn: `backend/lib/ai-budget.js` (dict) và `lib/ai-budget.js` (workbench
 - Tài khoản admin (`users.role='admin'` hoặc `ADMIN_EMAILS`) không bị chặn ở workbench.
 
 ## Ai ghi sổ
-- dict: Lão Sư (chat), phân tích phát âm, phiên âm dịch, biên tập "Tự Thêm", sinh giọng đọc (bài Học Thuật không phải bài trong ngày, Tự Thêm).
-  Bài **trong ngày** của Học Thuật do nền tảng chịu chi phí (không trừ ngân sách người dùng).
+- dict: Lão Sư (chat), phân tích phát âm AI, phiên âm dịch, biên tập "Tự Thêm" + giọng đọc của tài liệu cá nhân.
+  **Không trừ ngân sách người dùng:** kho nghe do nền tảng đầu tư (Báo Chí, Y Án, Bài Báo Quốc Tế) và kho Học Thuật từ CSDL
+  (giọng sinh theo yêu cầu, lưu đệm dùng chung; toàn kho ~237.000 ký tự ≈ $11 nếu sinh hết hai giọng một lần).
 - workbench: mọi lượt AI (qua `lib/ai-runs.js` → `chargeWorkbenchRun`).
 
 ## API (dict)

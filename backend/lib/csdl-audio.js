@@ -7,8 +7,8 @@ import { synthesize } from './user-docs.js';
 
 const VOICES = ['default', 'aoede']; // nam (Wavenet) + nữ (Chirp 3 HD)
 const MAX_ROWS = Number(process.env.CSDL_AUDIO_MAX_ROWS) || 12000; // ~ 24KB/câu → khoảng 300MB
-const PER_USER_PER_HOUR = Number(process.env.CSDL_TTS_PER_USER_HOUR) || 60;
-const GLOBAL_PER_HOUR = Number(process.env.CSDL_TTS_GLOBAL_HOUR) || 1500;
+const PER_USER_PER_HOUR = Number(process.env.CSDL_TTS_PER_USER_HOUR) || 200;
+const GLOBAL_PER_HOUR = Number(process.env.CSDL_TTS_GLOBAL_HOUR) || 3000;
 
 let tableReady = false;
 export async function ensureTable(pool) {
