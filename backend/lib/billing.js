@@ -122,8 +122,15 @@ export async function approveOrder(pool, code, { method, bankRef = null, paidAmo
   if (!res.affectedRows) return null;
   const order = await getOrder(pool, code);
   const months = PERIOD_MONTHS[order.plan_period] || 1;
-  const expires = await grantPlan(pool, { uid: order.firebase_uid, email: order.email, plan: order.plan, months });
-  return { order, expires };
+  try {
+    const expires = await grantPlan(pool, { uid: order.firebase_uid, email: order.email, plan: order.plan, months });
+    return { order, expires };
+  } catch (e) {
+    // Không để đơn "đã trả" mà gói chưa được cấp: trả đơn về chờ (kèm ghi chú) để webhook thử lại / quản trị viên xử lý.
+    await pool.query("UPDATE orders SET status = 'pending', method = NULL, bank_ref = NULL, paid_amount = NULL, paid_at = NULL, note = ? WHERE code = ?",
+      [`Lỗi kích hoạt gói: ${String(e.message).slice(0, 150)}`, String(code).toUpperCase()]).catch(() => {});
+    throw e;
+  }
 }
 
 export async function rejectOrder(pool, code, note = null) {

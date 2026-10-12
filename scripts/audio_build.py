@@ -192,8 +192,8 @@ def build_passage(file_path, lang="text_en", voice_key="narrator"):
         seg_files.append(out_mp3)
 
     # Không sinh full-<lang>.mp3: app phát nối tiếp từng câu, file ghép toàn bài không được dùng và tốn ~25% dung lượng.
-    if lang == "text_zh":
-        build_extra_voices(file_path)
+    # Mọi bài (tiếng Trung lẫn tiếng Anh gốc) đều phải có đủ giọng người học chọn được — build_extra_voices tự chọn bộ giọng theo ngôn ngữ nguồn.
+    build_extra_voices(file_path)
 
 
 def build_extra_voices(file_path, lang=None):
@@ -281,6 +281,27 @@ def regen_prosody(lang="text_zh"):
                 google_tts(tts_text(seg, lang), voice, settings, out_mp3, language_code=LANG_LOCALE.get(lang, "cmn-CN"))
 
 
+def check_voices():
+    """Báo các bài còn thiếu file giọng (mặc định hoặc giọng bổ sung). Trả danh sách (id, giọng, số câu thiếu)."""
+    cfg = load_audio_config()
+    root = ROOT / "backend" / "data" / "listening"
+    pub = ROOT / "backend" / "public" / "audio" / "listening"
+    missing = []
+    for f in sorted(root.glob("*/*.json")):
+        if f.name.startswith("."):
+            continue
+        data = json.loads(f.read_text(encoding="utf-8"))
+        is_en = data.get("source_lang") == "en"
+        lang = "text_en" if is_en else "text_zh"
+        base = pub / data["category"] / data["id"]
+        keys = [""] + list((cfg.get("voices_extra_en" if is_en else "voices_extra_zh") or {}).keys())
+        for k in keys:
+            n = sum(1 for s in data["segments"] if not ((base / k / f"{s['seq']:02d}-{lang}.mp3").exists() and (base / k / f"{s['seq']:02d}-{lang}.mp3").stat().st_size > 0))
+            if n:
+                missing.append((data["id"], k or "default", n))
+    return missing
+
+
 if __name__ == "__main__":
     import sys as _sys
     if len(_sys.argv) > 1 and _sys.argv[1] == "slim-audio":
@@ -289,5 +310,11 @@ if __name__ == "__main__":
         regen_prosody()
     elif len(_sys.argv) > 1 and _sys.argv[1] == "backfill-voices":
         backfill_extra_voices()
+    elif len(_sys.argv) > 1 and _sys.argv[1] == "check-voices":
+        miss = check_voices()
+        for pid, v, n in miss:
+            print(f"THIẾU {pid} · giọng {v}: {n} câu", file=_sys.stderr)
+        print("Đủ giọng cho mọi bài." if not miss else f"Còn {len(miss)} mục thiếu giọng.")
+        _sys.exit(1 if miss else 0)
     else:
         print("Dùng: python scripts/audio_build.py backfill-voices", file=_sys.stderr)

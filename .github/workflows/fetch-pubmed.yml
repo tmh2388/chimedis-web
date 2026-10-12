@@ -41,6 +41,13 @@ jobs:
           TRANSLATE_CONTACT_EMAIL: ${{ secrets.TRANSLATE_CONTACT_EMAIL }}
         run: python scripts/pubmed_fetch.py --max "${{ inputs.max || '1' }}"
 
+      - name: Đảm bảo đủ giọng đọc (lấp chỗ thiếu, kiểm tra)
+        env:
+          GOOGLE_CREDENTIALS_JSON_B64: ${{ secrets.GOOGLE_CREDENTIALS_JSON_B64 }}
+        run: |
+          python scripts/audio_build.py backfill-voices
+          python scripts/audio_build.py check-voices
+
       - name: Commit bài mới / xoá bài cũ
         run: |
           git config user.name "github-actions[bot]"

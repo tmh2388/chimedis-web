@@ -766,10 +766,20 @@ app.get('/api/listening/dialogues', (req, res) => {
   res.json({ success: true, data: listListeningDialogues(req.query.category) });
 });
 
+// Giọng thực sự CÓ SẴN cho bài (đủ file mọi câu) — app chỉ hiện các giọng này, không để người học chọn giọng "chết".
+function availableVoices(d) {
+  const lang = d.source_lang === 'en' ? 'text_en' : 'text_zh';
+  const base = path.join(PUBLIC_DIR, 'audio', 'listening', String(d.category), String(d.id));
+  const has = (sub) => (d.segments || []).every((s) => {
+    try { return fs.statSync(path.join(base, sub, `${String(s.seq).padStart(2, '0')}-${lang}.mp3`)).size > 0; } catch { return false; }
+  });
+  return ['default', 'aoede', 'zephyr', 'orus'].filter((v) => has(v === 'default' ? '' : v));
+}
+
 app.get('/api/listening/dialogues/:id', (req, res) => {
   const dialogue = findListeningDialogue(req.params.id);
   if (!dialogue) return res.status(404).json({ success: false, error: 'not_found' });
-  res.json({ success: true, data: dialogue });
+  res.json({ success: true, data: { ...dialogue, voices: availableVoices(dialogue) } });
 });
 
 // ===== Chấm điểm phát âm (luyện dịch cabin, chế độ tự do) =====

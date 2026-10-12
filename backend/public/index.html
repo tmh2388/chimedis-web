@@ -2833,7 +2833,9 @@ function listenAudioUrl(d, seq, lang){
   if(d && String(d.id).startsWith('db-')) return `/api/csdl/audio/${d.id}/${seq}?voice=${loadListenVoice()}`;
   const padded = String(seq).padStart(2, '0');
   // Giọng chọn được áp cho ngôn ngữ NGUỒN của bài: tiếng Trung (text_zh) hoặc tiếng Anh gốc của mục Học Thuật (text_en).
-  const voice = lang === listenSourceField(d) ? loadListenVoice() : 'default';
+  let voice = lang === listenSourceField(d) ? loadListenVoice() : 'default';
+  // Bài tĩnh: chỉ dùng giọng thực sự có file (server báo d.voices); thiếu thì về giọng mặc định thay vì tải file không tồn tại.
+  if(d && Array.isArray(d.voices) && !d.voices.includes(voice)) voice = 'default';
   const sub = voice !== 'default' ? `${voice}/` : '';
   return `/audio/listening/${d.category}/${d.id}/${sub}${padded}-${lang}.mp3`;
 }
@@ -3884,7 +3886,7 @@ function renderListenDialogue(){
       ${cbRow('zh','listen_cb_zh')}${cbRow('pinyin','listen_cb_pinyin')}${cbRow('vi','listen_cb_vi')}${cbRow('en','listen_cb_en')}
     </div>
     ${!feat.record ? `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>` : ''}
-    ${true ? `<div class="listen-voicerow"><label for="listenVoiceSel">${t('listen_voice_label')}:</label><select id="listenVoiceSel" onchange="setListenVoice(this.value)">${LISTEN_VOICES.map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${v.label}</option>`).join('')}</select></div>` : ''}
+    ${true ? `<div class="listen-voicerow"><label for="listenVoiceSel">${t('listen_voice_label')}:</label><select id="listenVoiceSel" onchange="setListenVoice(this.value)">${LISTEN_VOICES.filter(v => !Array.isArray(d.voices) || d.voices.includes(v.key)).map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${v.label}</option>`).join('')}</select></div>` : ''}
     <div class="listen-playbar">
       <div class="listen-speedrow">
         ${LISTEN_SPEEDS.map(v => `<button class="listen-speed-btn ${loadListenSpeed()===v?'on':''}" data-speed="${v}" onclick="setListenSpeed(${v})">${v}×</button>`).join('')}

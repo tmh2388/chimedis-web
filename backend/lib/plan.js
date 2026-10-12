@@ -94,4 +94,13 @@ export async function ensurePlanColumns(pool) {
   ]) {
     try { await pool.query(ddl); } catch (e) { if (e && e.errno !== 1060) console.error('plan: ', e.message); }
   }
+  // Bảng `users` DÙNG CHUNG với workbench (chimedis-home). Migration m4 của workbench đã tạo `plan` dạng ENUM('free','pro');
+  // dict cần thêm giá trị 'max' → nới thành VARCHAR(16). 'free'/'pro' giữ nguyên nên workbench đọc vẫn đúng.
+  try {
+    const [[c]] = await pool.query("SELECT DATA_TYPE AS dt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'plan'");
+    if (c && String(c.dt).toLowerCase() === 'enum') {
+      await pool.query("ALTER TABLE users MODIFY COLUMN plan VARCHAR(16) NOT NULL DEFAULT 'free'");
+      console.log("plan: đã nới users.plan từ ENUM sang VARCHAR(16) (dùng chung với workbench)");
+    }
+  } catch (e) { console.error('plan: nới cột plan lỗi:', e.message); }
 }
