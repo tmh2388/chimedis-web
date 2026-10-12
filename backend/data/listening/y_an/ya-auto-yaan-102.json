@@ -1,0 +1,81 @@
+{
+  "id": "ya-auto-yaan-102",
+  "category": "y_an",
+  "modality": "cham",
+  "level": "so_cap",
+  "auto": true,
+  "mt_translated": true,
+  "title_vi": "Ca châm cứu: nữ 62 tuổi bị tiêu khát chứng khỏi bệnh",
+  "title_zh": "针灸医案：六十二岁女性消渴症治愈",
+  "title_en": "Acupuncture Case: 62-Year-Old Woman with Xiaoke Syndrome Recovered",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "一名六十二岁女性患消渴症（糖尿病）。",
+      "text_vi": "Một phụ nữ 62 tuổi bị tiêu khát chứng (bệnh tiểu đường).",
+      "text_en": "A 62-year-old woman had xiaoke syndrome (diabetes mellitus).",
+      "text_pinyin": "yī míng liù shí èr suì nǚ xìng huàn xiāo kě zhèng （ táng niào bìng ）。"
+    },
+    {
+      "seq": 2,
+      "text_zh": "她空腹血糖8.1mmol/L，尿糖阳性。",
+      "text_vi": "Đường huyết lúc đói 8.1 mmol/L, nước tiểu có đường.",
+      "text_en": "Her fasting blood glucose was 8.1 mmol/L, and urine glucose was positive.",
+      "text_pinyin": "tā kōng fù xuè táng 8.1mmol/L， niào táng yáng xìng 。"
+    },
+    {
+      "seq": 3,
+      "text_zh": "她先后服用西药和中成药两月余。",
+      "text_vi": "Cô ấy đã dùng thuốc tây và thuốc bào chế Trung y hơn hai tháng.",
+      "text_en": "She took Western hypoglycemic drugs and Chinese patent medicines for over two months.",
+      "text_pinyin": "tā xiān hòu fú yòng xī yào hé zhōng chéng yào liǎng yuè yú 。"
+    },
+    {
+      "seq": 4,
+      "text_zh": "但仍口渴、乏力、易饥。",
+      "text_vi": "Nhưng vẫn khát, mệt, và dễ đói.",
+      "text_en": "But she still had thirst, fatigue, and easy hunger.",
+      "text_pinyin": "dàn réng kǒu kě 、 fá lì 、 yì jī 。"
+    },
+    {
+      "seq": 5,
+      "text_zh": "改到针灸科后，她停用一切药物。",
+      "text_vi": "Chuyển sang khoa châm cứu, cô ấy ngưng tất cả thuốc.",
+      "text_en": "After switching to the acupuncture department, she stopped all medications.",
+      "text_pinyin": "gǎi dào zhēn jiǔ kē hòu ， tā tíng yòng yī qiè yào wù 。"
+    },
+    {
+      "seq": 6,
+      "text_zh": "医生用磁锤叩打涌泉穴和太溪穴，各50次。",
+      "text_vi": "Bác sĩ dùng búa từ đập huyệt Dũng Tuyền và huyệt Thái Khê, mỗi huyệt 50 lần.",
+      "text_en": "The doctor used a magnetic hammer to percuss the Yongquan and Taixi acupoints, 50 taps each.",
+      "text_pinyin": "yī shēng yòng cí chuí kòu dǎ yǒng quán xué hé tài xī xué ， gè 50 cì 。"
+    },
+    {
+      "seq": 7,
+      "text_zh": "治疗5天后口渴和乏力减轻，7天后睡眠转佳。",
+      "text_vi": "Sau 5 ngày điều trị, khát và mệt giảm; sau 7 ngày, giấc ngủ tốt hơn.",
+      "text_en": "After 5 days of treatment her thirst and fatigue lessened; after 7 days her sleep improved.",
+      "text_pinyin": "zhì liáo 5 tiān hòu kǒu kě hé fá lì jiǎn qīng ，7 tiān hòu shuì mián zhuǎn jiā 。"
+    },
+    {
+      "seq": 8,
+      "text_zh": "13天后乏力消失，尿糖转阴，空腹血糖降至5.6mmol/L。",
+      "text_vi": "Sau 13 ngày, mệt mỏi biến mất, nước tiểu không còn đường, đường huyết lúc đói giảm còn 5.6 mmol/L.",
+      "text_en": "After 13 days fatigue disappeared, urine glucose turned negative, and fasting blood glucose dropped to 5.6 mmol/L.",
+      "text_pinyin": "13 tiān hòu fá lì xiāo shī ， niào táng zhuǎn yīn ， kōng fù xuè táng jiàng zhì 5.6mmol/L。"
+    },
+    {
+      "seq": 9,
+      "text_zh": "21天后诸症悉平，患者痊愈出院。",
+      "text_vi": "Sau 21 ngày, các triệu chứng đã hết, bệnh nhân khỏi bệnh và xuất viện.",
+      "text_en": "After 21 days all symptoms were resolved and the patient was discharged cured.",
+      "text_pinyin": "21 tiān hòu zhū zhèng xī píng ， huàn zhě quán yù chū yuàn 。"
+    }
+  ],
+  "source_note_vi": "Diễn giải tự động (AI) từ dữ kiện y án thật (Châm cứu), nguồn: 徐笛人医案，《针灸疑难奇症医案荟萃》，转引自针灸名家经典医案课件. Chưa qua rà soát thủ công.",
+  "source_note_zh": "由 AI 根据真实医案事实自动改写（针灸），来源：徐笛人医案，《针灸疑难奇症医案荟萃》，转引自针灸名家经典医案课件。尚未经人工校对。",
+  "source_note_en": "AI-generated narrative from real case facts (Acupuncture), source: 徐笛人医案，《针灸疑难奇症医案荟萃》，转引自针灸名家经典医案课件. Not yet human-reviewed.",
+  "created_at": "2026-10-12T01:31:03Z",
+  "updated_at": "2026-10-12T01:31:03Z"
+}
