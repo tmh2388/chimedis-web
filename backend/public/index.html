@@ -870,6 +870,9 @@ header{transition:padding .2s ease}
 .plan-chip{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12.5px}
 .plan-chip b{background:#efe7d8;border-radius:999px;padding:3px 11px;color:var(--thamthm,#0E3A3A)}
 .plan-chip b.pro{background:#E9B949;color:#3a2a00}
+.acct-spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:acctspin .8s linear infinite}
+.acct-spin.big{width:30px;height:30px;border-color:rgba(14,58,58,.2);border-top-color:var(--thamthm,#0E3A3A);margin:14px 0 8px}
+@keyframes acctspin{to{transform:rotate(360deg)}}
 .verify-box{margin-top:10px;background:#FBF3DC;border:1px solid #E3C26C;border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.5;text-align:left;max-width:300px}
 .verify-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .verify-actions button{background:#fff;border:1px solid #E3C26C;border-radius:999px;padding:6px 12px;font-size:12px;cursor:pointer}
@@ -1505,7 +1508,8 @@ function openFavoritesView(){
 
 function authFetch(path, opts){
   opts = opts || {};
-  return Promise.resolve(window.chimedisFirebase ? window.chimedisFirebase.getIdToken() : null).then(token => {
+  const ready = (state._hinted && !state.authReady) ? Promise.race([window.authReady, new Promise(r => setTimeout(r, 5000))]) : Promise.resolve();
+  return ready.then(() => window.chimedisFirebase ? window.chimedisFirebase.getIdToken() : null).then(token => {
     const headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
     if(token) headers['Authorization'] = 'Bearer ' + token;
     return fetch(`${API_BASE}${path}`, Object.assign({}, opts, { headers }));
@@ -1576,6 +1580,10 @@ function openAuthModal(){
   document.getElementById('authScrim').classList.add('show');
   document.getElementById('authModal').classList.add('show');
   state.authMode = 'signin';
+  if(!state.authReady && !state.user){
+    document.getElementById('authModal').innerHTML = `<div class="auth-account"><span class="acct-spin big"></span><div class="aa-email">${t('auth_checking')}</div></div>`;
+    return; // chimedisAuthStateChanged sẽ vẽ lại hộp thoại ngay khi biết trạng thái
+  }
   renderAuthModal();
 }
 function closeAuthModal(){
@@ -1694,13 +1702,19 @@ function doSignOut(){
 function updateAuthUI(){
   const acctBtn = document.getElementById('acctBtn');
   const label = document.getElementById('drawerLoginLabel');
+  const planTag = (state.plan && state.plan !== 'free') ? ` <span class="pro-tag">${t('plan_name_' + state.plan).toUpperCase()}</span>` : '';
   if(state.user){
-    if(label) label.textContent = state.user.name || state.user.email || t('dr_account');
+    const nm = (state.user.name || state.user.email || t('dr_account')).replace(/</g, '&lt;');
+    if(label) label.innerHTML = nm + planTag;
     if(acctBtn){
       acctBtn.innerHTML = state.user.picture
         ? `<img class="acct-avatar" src="${state.user.picture}" alt="">`
         : `<span class="acct-avatar-fallback">${(state.user.name || state.user.email || '?').charAt(0).toUpperCase()}</span>`;
     }
+  } else if(!state.authReady){
+    // Chưa biết đã đăng nhập hay chưa: KHÔNG hiện "Đăng nhập" (dễ làm người dùng tưởng mất phiên) — hiện vòng chờ nhỏ.
+    if(label) label.textContent = '…';
+    if(acctBtn) acctBtn.innerHTML = '<span class="acct-spin" aria-label="loading"></span>';
   } else {
     if(label) label.textContent = t('dr_login');
     if(acctBtn) acctBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>`;
@@ -1710,23 +1724,38 @@ function updateAuthUI(){
 // Gọi bởi khối <script type="module"> Firebase ở cuối file mỗi khi trạng thái đăng nhập đổi
 // (đăng nhập/đăng xuất/khôi phục session lúc tải trang lại) — xem onAuthStateChanged ở đó.
 window.chimedisAuthStateChanged = async function(user){
-  const wasLoggedIn = !!state.user;
-  state.user = user;
+  const prevPlan = state.plan;
+  state.authReady = true;
+  try{ window.__resolveAuthReady(); }catch(e){}
+  state._hinted = false;
+  if(user && state.user && state.user.uid === user.uid){
+    // Cùng người dùng với gợi ý: giữ gói/hạn đang hiển thị, chỉ cập nhật thông tin hồ sơ — không nhấp nháy.
+    state.user = Object.assign({}, state.user, user);
+  } else {
+    state.user = user;
+    if(!user){ state.plan = 'free'; state.limits = null; state.planExpires = null; state.isAdmin = false; }
+  }
   updateAuthUI();
   if(document.getElementById('authModal').classList.contains('show')) renderAuthModal();
   if(user){
-    try{
-      await authFetch('/api/auth/sync', { method: 'POST' });
-      await syncFavoritesWithServer();
-      await syncSettingsWithServer();
-      await syncProgressWithServer();
-    }catch(e){ console.warn('[Chimedis] Lỗi đồng bộ sau đăng nhập:', e.message); }
-    await loadPlan();
-    if(state.tab === 'listenhome' || state.tab === 'listendialogue') render();
-  } else { state.plan = 'free'; listenTicket = null; }
-  // Vừa đăng nhập -> tải lại /api/terms KÈM token để nhận domain gated "Thang phương".
-  // Vừa đăng xuất -> tải lại KHÔNG token để loại "Thang phương" khỏi payload/cache.
-  if(!!user !== wasLoggedIn){
+    // Gói tải NGAY (song song với đồng bộ) — trước đây xếp sau 4 lần đồng bộ nên hiện hạng rất chậm.
+    const planP = loadPlan();
+    (async () => {
+      try{
+        await authFetch('/api/auth/sync', { method: 'POST' });
+        await syncFavoritesWithServer();
+        await syncSettingsWithServer();
+        await syncProgressWithServer();
+      }catch(e){ console.warn('[Chimedis] Lỗi đồng bộ sau đăng nhập:', e.message); }
+    })();
+    await planP;
+    writeAuthHint();
+    updateAuthUI();
+    if(state.plan !== prevPlan || state.tab === 'listenhome' || state.tab === 'listendialogue') render();
+  } else { listenTicket = null; writeAuthHint(); }
+  // Cần tải lại /api/terms KÈM token (nhận domain gated "Thang phương") khi trạng thái đăng nhập khác với lần tải gần nhất;
+  // khi đã tải đúng trạng thái thì khỏi tải lại 6,5MB.
+  if(!!user !== !!state._termsAuthed){
     try{ await loadTermsFromAPI(); }catch(e){}
     render();
   }
@@ -2943,6 +2972,30 @@ function setListenSpeed(v){
 // free (đã đăng nhập): nghe audio, ghi âm, nghe lại giọng mình. Pro trở lên: phân tích AI + "Tự Thêm". Quyền được
 // server kiểm tra thật (không chỉ ẩn nút): audio cần vé ?t=, AI/tài liệu riêng cần token + gói.
 state.plan = 'free';
+// ===== Khôi phục phiên TỨC THÌ (trước khi Firebase kịp khôi phục) =====
+// Trước đây mỗi lần mở app: hiện "Đăng nhập" → vài giây sau mới thành đã đăng nhập → thêm vài giây nữa mới biết gói. Giờ lưu "gợi ý"
+// (người dùng + gói + hạn) ở lần trước và dựng giao diện ngay; Firebase/máy chủ chỉ XÁC NHẬN. Máy chủ vẫn là nơi quyết định quyền.
+const AUTH_HINT_KEY = 'chimedis_auth_hint_v1';
+function writeAuthHint(){
+  try{
+    if(!state.user){ localStorage.removeItem(AUTH_HINT_KEY); return; }
+    const u = state.user;
+    localStorage.setItem(AUTH_HINT_KEY, JSON.stringify({ ts: Date.now(),
+      user: { uid: u.uid, email: u.email, name: u.name, picture: u.picture, emailVerified: u.emailVerified },
+      plan: state.plan, planExpires: state.planExpires || null, isAdmin: !!state.isAdmin, limits: state.limits || null }));
+  }catch(e){}
+}
+state.authReady = false;
+window.authReady = new Promise((res) => { window.__resolveAuthReady = res; });
+setTimeout(() => { try{ window.__resolveAuthReady(); }catch(e){} }, 7000); // chốt an toàn: không bao giờ chờ vô hạn
+(function hydrateAuthHint(){
+  try{
+    const h = JSON.parse(localStorage.getItem(AUTH_HINT_KEY) || 'null');
+    if(!h || !h.user || !h.user.uid || Date.now() - (h.ts || 0) > 30 * 86400e3) return;
+    state.user = h.user; state.plan = h.plan || 'free'; state.planExpires = h.planExpires || null;
+    state.isAdmin = !!h.isAdmin; state.limits = h.limits || null; state._hinted = true;
+  }catch(e){}
+})();
 const PLAN_ORDER = ['free', 'pro', 'max'];
 function planAtLeast(min){ return PLAN_ORDER.indexOf(state.plan || 'free') >= PLAN_ORDER.indexOf(min); }
 async function loadPlan(){
@@ -2993,6 +3046,7 @@ Object.assign(I18N.vi, {
   admin_grant: 'Cấp gói thủ công', admin_do_grant: 'Cấp', admin_codes: 'Mã kích hoạt', admin_make_codes: 'Tạo mã', admin_months: 'tháng',
   admin_used: 'đã dùng', admin_unused: 'chưa dùng', admin_no_user: 'Không thấy người dùng này (họ cần đăng nhập ít nhất một lần).',
   plans_note: 'Thanh toán bằng chuyển khoản ngân hàng quét mã QR; gói được kích hoạt sau khi nhận tiền. Gia hạn được cộng dồn vào ngày hết hạn hiện tại.',
+  auth_checking: 'Đang kiểm tra tài khoản…',
   up_title_max: 'Tính năng dành cho gói Max',
   dr_laoshi: 'Lão Sư Trung Y', up_body_laoshi: 'Trò chuyện với Lão Sư Trung Y (thầy giáo AI dí dỏm, chủ động hỏi và đố) là tính năng của gói Max.',
   plans_r_workbench: 'Workbench nghiên cứu: AI phân tích, hạn mức cao', plans_wb_basic: 'Cơ bản', plans_r_laoshi: 'Trò chuyện cùng AI Lão Sư Trung Y',
@@ -3046,6 +3100,7 @@ Object.assign(I18N.zh, {
   admin_grant: '手动开通', admin_do_grant: '开通', admin_codes: '激活码', admin_make_codes: '生成', admin_months: '个月',
   admin_used: '已使用', admin_unused: '未使用', admin_no_user: '找不到该用户（需至少登录一次）。',
   plans_note: '通过银行转账扫码支付；收款后开通套餐。续费将累加到当前到期日之后。',
+  auth_checking: '正在检查账户…',
   up_title_max: '此功能仅限 Max 套餐',
   dr_laoshi: '中医老师', up_body_laoshi: '与「中医老师」（幽默、会主动提问和出题的 AI 老师）对话是 Max 套餐的功能。',
   plans_r_workbench: '研究工作台：AI 分析，高额度', plans_wb_basic: '基础', plans_r_laoshi: '与 AI 中医老师对话',
@@ -3099,6 +3154,7 @@ Object.assign(I18N.en, {
   admin_grant: 'Grant manually', admin_do_grant: 'Grant', admin_codes: 'Activation codes', admin_make_codes: 'Create', admin_months: 'months',
   admin_used: 'used', admin_unused: 'unused', admin_no_user: 'User not found (they must have signed in at least once).',
   plans_note: 'Pay by bank transfer with a QR code; the plan is activated once the payment is received. Renewals add on to your current expiry date.',
+  auth_checking: 'Checking your account…',
   up_title_max: 'A Max plan feature',
   dr_laoshi: 'Chinese Medicine Teacher', up_body_laoshi: 'Chatting with the Chinese Medicine Teacher (a witty AI teacher who asks and quizzes you proactively) is a Max plan feature.',
   plans_r_workbench: 'Research workbench: AI analysis, higher quota', plans_wb_basic: 'Basic', plans_r_laoshi: 'Chat with the AI Chinese Medicine Teacher',
@@ -5985,8 +6041,10 @@ async function loadTermsFromAPI(){
   try{
     // authFetch tự gắn Authorization: Bearer <token> khi đã đăng nhập — server dựa vào đó
     // để BỔ SUNG domain gated "Thang phương" vào payload (khách chưa đăng nhập không nhận).
+    const withUser = !!(window.chimedisFirebase && await window.chimedisFirebase.getIdToken());
     const res = await authFetch('/api/terms', { cache: 'no-store' });
     if(!res.ok) throw new Error('HTTP ' + res.status);
+    state._termsAuthed = withUser;
     const json = await res.json();
     if(json && json.success && Array.isArray(json.data) && json.data.length){
       TERMS = json.data;

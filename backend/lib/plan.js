@@ -22,9 +22,16 @@ export function atLeast(plan, min) { return PLANS.indexOf(normalizePlan(plan)) >
 
 const csv = (s) => String(s || '').split(',').map((x) => x.trim().toLowerCase()).filter(Boolean);
 
+/** Quản trị viên tối cao (ADMIN_EMAILS, mặc định chủ dự án): luôn ở gói cao nhất, không hết hạn. */
+export function isSupremeEmail(email) {
+  const e = String(email || '').toLowerCase();
+  return !!e && csv(process.env.ADMIN_EMAILS || 'tmh2388@gmail.com').includes(e);
+}
+
 export function planFromEnv(email) {
   const e = String(email || '').toLowerCase();
   if (!e) return null;
+  if (isSupremeEmail(e)) return 'max';
   if (csv(process.env.MAX_EMAILS).includes(e)) return 'max';
   if (csv(process.env.PRO_EMAILS || 'tmh2388@gmail.com').includes(e)) return 'pro';
   return null;
@@ -38,14 +45,17 @@ export async function resolvePlan(pool, fbUser) {
   const fromEnv = fbUser.emailVerified ? planFromEnv(fbUser.email) : null;
   if (fromEnv) return fromEnv;
   if (!pool) return 'free';
+  return (await planInfo(pool, fbUser)).plan;
+}
+
+/** Đọc plan/hạn/role; cột `role` (workbench) có thể chưa tồn tại nên thử lần lượt. */
+async function readUserPlanRow(pool, uid) {
   try {
-    const [rows] = await pool.query('SELECT plan, plan_expires_at FROM users WHERE firebase_uid = ? LIMIT 1', [fbUser.uid]);
-    const r = rows && rows[0];
-    if (!r) return 'free';
-    if (r.plan_expires_at && new Date(r.plan_expires_at).getTime() < Date.now()) return 'free';
-    return normalizePlan(r.plan);
+    const [rows] = await pool.query('SELECT plan, plan_expires_at, role FROM users WHERE firebase_uid = ? LIMIT 1', [uid]);
+    return rows && rows[0];
   } catch (_) {
-    return 'free';
+    const [rows] = await pool.query('SELECT plan, plan_expires_at FROM users WHERE firebase_uid = ? LIMIT 1', [uid]);
+    return rows && rows[0];
   }
 }
 
@@ -54,12 +64,13 @@ export async function planInfo(pool, fbUser) {
   const base = { plan: 'free', expires_at: null, source: 'none' };
   if (!fbUser) return base;
   const fromEnv = fbUser.emailVerified ? planFromEnv(fbUser.email) : null;
-  if (fromEnv) return { plan: fromEnv, expires_at: null, source: 'env' };
+  if (fromEnv) return { plan: fromEnv, expires_at: null, source: isSupremeEmail(fbUser.email) ? 'admin' : 'env' };
   if (!pool) return base;
   try {
-    const [rows] = await pool.query('SELECT plan, plan_expires_at FROM users WHERE firebase_uid = ? LIMIT 1', [fbUser.uid]);
-    const r = rows && rows[0];
+    const r = await readUserPlanRow(pool, fbUser.uid);
     if (!r) return base;
+    // Tài khoản admin (cột users.role dùng chung với workbench) luôn là gói cao nhất, không hết hạn.
+    if (String(r.role || '').toLowerCase() === 'admin') return { plan: 'max', expires_at: null, source: 'admin' };
     const exp = r.plan_expires_at ? new Date(r.plan_expires_at) : null;
     if (exp && exp.getTime() < Date.now()) return { plan: 'free', expires_at: exp.toISOString(), source: 'expired' };
     const plan = normalizePlan(r.plan);
@@ -88,19 +99,25 @@ export function requirePlan(pool, min) {
 /** Thêm cột plan vào bảng users nếu chưa có (idempotent). */
 export async function ensurePlanColumns(pool) {
   if (!pool) return;
-  for (const ddl of [
-    "ALTER TABLE users ADD COLUMN plan VARCHAR(16) NOT NULL DEFAULT 'free'",
-    'ALTER TABLE users ADD COLUMN plan_expires_at DATETIME NULL',
-  ]) {
-    try { await pool.query(ddl); } catch (e) { if (e && e.errno !== 1060) console.error('plan: ', e.message); }
-  }
-  // Bảng `users` DÙNG CHUNG với workbench (chimedis-home). Migration m4 của workbench đã tạo `plan` dạng ENUM('free','pro');
-  // dict cần thêm giá trị 'max' → nới thành VARCHAR(16). 'free'/'pro' giữ nguyên nên workbench đọc vẫn đúng.
+  // Bảng `users` DÙNG CHUNG với workbench (chimedis-home): KIỂM TRA TRƯỚC, chỉ ALTER khi thật sự thiếu/sai kiểu — lần khởi
+  // động bình thường không chạm DDL nên không tranh khoá bảng với migration của workbench (nghi vấn gây 503).
+  let cols = [];
   try {
-    const [[c]] = await pool.query("SELECT DATA_TYPE AS dt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'plan'");
-    if (c && String(c.dt).toLowerCase() === 'enum') {
-      await pool.query("ALTER TABLE users MODIFY COLUMN plan VARCHAR(16) NOT NULL DEFAULT 'free'");
-      console.log("plan: đã nới users.plan từ ENUM sang VARCHAR(16) (dùng chung với workbench)");
-    }
-  } catch (e) { console.error('plan: nới cột plan lỗi:', e.message); }
+    const [rows] = await pool.query(
+      "SELECT COLUMN_NAME AS n, DATA_TYPE AS dt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME IN ('plan', 'plan_expires_at')");
+    cols = rows || [];
+  } catch (e) { console.error('plan: đọc cấu trúc users lỗi:', e.message); return; }
+  const byName = new Map(cols.map((c) => [c.n, String(c.dt).toLowerCase()]));
+  const ddls = [];
+  if (!byName.has('plan')) ddls.push("ALTER TABLE users ADD COLUMN plan VARCHAR(16) NOT NULL DEFAULT 'free'");
+  else if (byName.get('plan') === 'enum') {
+    // Migration m4 của workbench tạo `plan` dạng ENUM('free','pro'); dict cần thêm 'max' → nới thành VARCHAR(16).
+    // 'free'/'pro' giữ nguyên nên workbench đọc vẫn đúng.
+    ddls.push("ALTER TABLE users MODIFY COLUMN plan VARCHAR(16) NOT NULL DEFAULT 'free'");
+  }
+  if (!byName.has('plan_expires_at')) ddls.push('ALTER TABLE users ADD COLUMN plan_expires_at DATETIME NULL');
+  for (const ddl of ddls) {
+    try { await pool.query(ddl); console.log('plan: đã chạy:', ddl.slice(0, 70)); }
+    catch (e) { if (e && e.errno !== 1060) console.error('plan:', e.message); }
+  }
 }
