@@ -1,0 +1,101 @@
+{
+  "id": "ha-42861526",
+  "category": "hoc_thuat",
+  "level": "trung_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Baihe Zhimu Decoction ameliorates anxious depression via PI3K/AKT/mTOR pathway-mediated neuroprotection and inhibition of hippocampal neuronal apoptosis.",
+  "title_zh": "百合知母汤通过PI3K/AKT/mTOR途径介导的神经保护和抑制海马神经元凋亡来改善焦虑性抑郁症。",
+  "title_vi": "Baihe Zhimu Decoction cải thiện trầm cảm lo âu thông qua bảo vệ thần kinh qua trung gian con đường PI3K/AKT/mTOR và ức chế sự chết tế bào thần kinh vùng đồi thị.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Anxious depression involves severe emotional dysregulation with a high risk of relapse and suicide.",
+      "text_zh": "焦虑性抑郁症涉及严重的情绪失调，复发和自杀的风险很高。",
+      "text_vi": "Trầm cảm lo lắng liên quan đến rối loạn cảm xúc nghiêm trọng với nguy cơ tái phát và tự tử cao.",
+      "text_pinyin": "jiāo lǜ xìng yì yù zhèng shè jí yán zhòng de qíng xù shī tiáo ， fù fā hé zì shā de fēng xiǎn hěn gāo 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "Although the classical Traditional Chinese Medicine formula Baihe Zhimu Decoction (BZD) is widely used for affective disorders, its underlying mechanisms remain poorly understood.",
+      "text_zh": "虽然经典中药配方百合脂母汤（ BZD ）被广泛用于治疗情感障碍，但其潜在机制仍然知之甚少。",
+      "text_vi": "Mặc dù công thức Y học cổ truyền Trung Quốc cổ điển Baihe Zhimu Decoction (BZD) được sử dụng rộng rãi cho các rối loạn cảm xúc, các cơ chế cơ bản của nó vẫn chưa được hiểu rõ.",
+      "text_pinyin": "suī rán jīng diǎn zhōng yào pèi fāng bǎi hé zhī mǔ tāng （ BZD ） bèi guǎng fàn yòng yú zhì liáo qíng gǎn zhàng ài ， dàn qí qián zài jī zhì réng rán zhī zhī shèn shǎo 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "In this study, the chemical constituents of BZD were first identified using UPLC-Q-TOF-MS/MS, followed by a maximum-dose safety evaluation.",
+      "text_zh": "在本研究中，首先使用UPLC-Q-TOF-MS/MS鉴定BZD的化学成分，然后进行最大剂量安全性评估。",
+      "text_vi": "Trong nghiên cứu này, các thành phần hóa học của BZD lần đầu tiên được xác định bằng cách sử dụng UPLC-Q-TOF-MS/MS, sau đó là đánh giá an toàn liều tối đa.",
+      "text_pinyin": "zài běn yán jiū zhōng ， shǒu xiān shǐ yòng UPLC-Q-TOF-MS/MS jiàn dìng BZD de huà xué chéng fèn ， rán hòu jìn xíng zuì dà jì liàng ān quán xìng píng gū 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "The therapeutic effects of BZD were then investigated in an anxious-depression mouse model induced by chronic restraint stress (CRS) combined with corticosterone (CORT) administration.",
+      "text_zh": "然后在慢性束缚应激（ CRS ）联合皮质酮（ CORT ）给药诱导的焦虑抑郁小鼠模型中研究BZD的治疗效果。",
+      "text_vi": "Các tác dụng điều trị của BZD sau đó được nghiên cứu trong mô hình chuột bị trầm cảm lo lắng do căng thẳng kiềm chế mãn tính (CRS) kết hợp với sử dụng corticosterone (CORT).",
+      "text_pinyin": "rán hòu zài màn xìng shù fù yīng jī （ CRS ） lián hé pí zhì tóng （ CORT ） gěi yào yòu dǎo de jiāo lǜ yì yù xiǎo shǔ mó xíng zhōng yán jiū BZD de zhì liáo xiào guǒ 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "Behavioral assessments, including the open field test (OFT), elevated plus maze (EPM), sucrose preference test (SPT), and forced swim test (FST), were performed, together with histopathological examination of hippocampal tissues.",
+      "text_zh": "进行了行为评估，包括开放场试验（ OFT ）、升高加迷宫（ EPM ）、蔗糖偏好试验（ SPT ）和强迫游泳试验（ FST ） ，以及海马组织的组织病理学检查。",
+      "text_vi": "Đánh giá hành vi, bao gồm thử nghiệm thực địa mở (OFT), thử nghiệm nâng cao cộng với mê cung (EPM), thử nghiệm ưu tiên sucroza (SPT), và thử nghiệm bơi cưỡng bức (FST), được thực hiện, cùng với kiểm tra mô bệnh học của các mô hồi hải mã.",
+      "text_pinyin": "jìn xíng le xíng wéi píng gū ， bāo kuò kāi fàng chǎng shì yàn （ OFT ）、 shēng gāo jiā mí gōng （ EPM ）、 zhè táng piān hǎo shì yàn （ SPT ） hé qiǎng pò yóu yǒng shì yàn （ FST ） ， yǐ jí hǎi mǎ zǔ zhī de zǔ zhī bìng lǐ xué jiǎn chá 。"
+    },
+    {
+      "seq": 6,
+      "text_en": "Network pharmacology was employed to analyze the relationships between active compounds and potential targets and to predict related signaling pathways.",
+      "text_zh": "网络药理学用于分析活性化合物与潜在靶点之间的关系，并预测相关的信号通路。",
+      "text_vi": "Dược lý mạng được sử dụng để phân tích mối quan hệ giữa các hợp chất có hoạt tính và các đích tiềm năng và để dự đoán các con đường truyền tín hiệu liên quan.",
+      "text_pinyin": "wǎng luò yào lǐ xué yòng yú fēn xī huó xìng huà hé wù yǔ qián zài bǎ diǎn zhī jiān de guān xì ， bìng yù cè xiāng guān de xìn hào tōng lù 。"
+    },
+    {
+      "seq": 7,
+      "text_en": "Subsequently, western blot analysis, immunofluorescence staining, Hoechst staining, and flow cytometry, combined with pathway-specific inhibitors, were used to examine the involvement of the signaling pathway in hippocampal tissues and primary hippocampal neurons.",
+      "text_zh": "随后，使用蛋白质印迹分析、免疫荧光染色、Hoechst染色和流式细胞术，结合途径特异性抑制剂，检查信号通路在海马组织和原发性海马神经元中的参与情况。",
+      "text_vi": "Sau đó, phân tích thấm tách phía tây, nhuộm miễn dịch huỳnh quang, nhuộm Hoechst, và đếm tế bào theo dòng chảy, kết hợp với các chất ức chế đặc hiệu với con đường, được sử dụng để kiểm tra sự tham gia của con đường truyền tín hiệu trong các mô hồi hải mã và tế bào thần kinh hồi hải mã sơ cấp.",
+      "text_pinyin": "suí hòu ， shǐ yòng dàn bái zhì yìn jì fēn xī 、 miǎn yì yíng guāng rǎn sè 、Hoechst rǎn sè hé liú shì xì bāo shù ， jié hé tú jìng tè yì xìng yì zhì jì ， jiǎn chá xìn hào tōng lù zài hǎi mǎ zǔ zhī hé yuán fā xìng hǎi mǎ shén jīng yuán zhōng de cān yù qíng kuàng 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "Forty-one constituents were identified in BZD.",
+      "text_zh": "在BZD中鉴定了41种成分。",
+      "text_vi": "Bốn mươi mốt thành phần đã được xác định trong BZD.",
+      "text_pinyin": "zài BZD zhōng jiàn dìng le 41 zhǒng chéng fèn 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "In vivo results showed that BZD significantly alleviated hippocampal pathological injury and improved anxiety- and depression-like behaviors in stressed mice.",
+      "text_zh": "体内结果表明， BZD显著减轻了应激小鼠的海马病理损伤，改善了焦虑和抑郁样行为。",
+      "text_vi": "Kết quả in vivo cho thấy BZD làm giảm đáng kể tổn thương bệnh lý vùng đồi thị và cải thiện các hành vi giống như lo lắng và trầm cảm ở chuột bị căng thẳng.",
+      "text_pinyin": "tǐ nèi jié guǒ biǎo míng ， BZD xiǎn zhù jiǎn qīng le yīng jī xiǎo shǔ de hǎi mǎ bìng lǐ sǔn shāng ， gǎi shàn le jiāo lǜ hé yì yù yàng xíng wéi 。"
+    },
+    {
+      "seq": 10,
+      "text_en": "Network pharmacology analysis identified 19 active compounds and 622 potential targets, highlighting the PI3K/AKT/mTOR signaling pathway.",
+      "text_zh": "网络药理学分析确定了19种活性化合物和622种潜在靶点，突出了PI3K/AKT/mTOR信号通路。",
+      "text_vi": "Phân tích dược lý mạng đã xác định 19 hợp chất có hoạt tính và 622 đích tiềm năng, nêu bật con đường truyền tín hiệu PI3K/AKT/mTOR.",
+      "text_pinyin": "wǎng luò yào lǐ xué fēn xī què dìng le 19 zhǒng huó xìng huà hé wù hé 622 zhǒng qián zài bǎ diǎn ， tū chū le PI3K/AKT/mTOR xìn hào tōng lù 。"
+    },
+    {
+      "seq": 11,
+      "text_en": "Mechanistically, BZD activated this pathway and protected against neuronal injury, while these effects were attenuated by the PI3K inhibitor LY294002.",
+      "text_zh": "机械地， BZD激活该途径并保护免受神经元损伤，而这些作用被PI3K抑制剂LY294002减弱。",
+      "text_vi": "Về mặt cơ học, BZD đã kích hoạt con đường này và bảo vệ chống lại tổn thương tế bào thần kinh, trong khi các tác dụng này được làm suy yếu bởi chất ức chế PI3K LY294002.",
+      "text_pinyin": "jī xiè dì ， BZD jī huó gāi tú jìng bìng bǎo hù miǎn shòu shén jīng yuán sǔn shāng ， ér zhè xiē zuò yòng bèi PI3K yì zhì jì LY294002 jiǎn ruò 。"
+    },
+    {
+      "seq": 12,
+      "text_en": "BZD exerts potent neuroprotective and therapeutic effects against anxious depression, primarily driven by activating the PI3K/AKT/mTOR pathway and preserving hippocampal neuronal integrity.",
+      "text_zh": "BZD对焦虑性抑郁症具有强大的神经保护和治疗作用，主要由激活PI3K/AKT/mTOR通路和保持海马神经元完整性驱动。",
+      "text_vi": "BZD có tác dụng bảo vệ thần kinh và điều trị mạnh mẽ chống lại trầm cảm lo âu, chủ yếu được điều khiển bằng cách kích hoạt con đường PI3K/AKT/mTOR và duy trì tính toàn vẹn của tế bào thần kinh vùng hồi hải mã.",
+      "text_pinyin": "BZD duì jiāo lǜ xìng yì yù zhèng jù yǒu qiáng dà de shén jīng bǎo hù hé zhì liáo zuò yòng ， zhǔ yào yóu jī huó PI3K/AKT/mTOR tōng lù hé bǎo chí hǎi mǎ shén jīng yuán wán zhěng xìng qū dòng 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42861526), Animal models and experimental medicine (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42861526/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42861526), Animal models and experimental medicine (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42861526/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42861526），Animal models and experimental medicine (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42861526/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-13T02:46:40Z",
+  "updated_at": "2026-10-13T02:46:40Z"
+}
