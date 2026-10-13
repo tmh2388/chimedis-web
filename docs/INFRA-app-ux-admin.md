@@ -36,3 +36,8 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Ngôn ngữ: văn bản hiển thị luôn theo ngôn ngữ **thực sự nói** (`dominantLang` đếm từ/chữ). Câu Anh xen vài từ Hán vẫn là Anh; không ép `language` theo nhãn whisper (`speech.js`). Chọn "Chấm theo ngôn ngữ" ≠ ngôn ngữ nói → báo `lang_mismatch`, bỏ chiều Đủ ý, không chấm chéo.
 - Phân tích sâu AI chỉ đánh giá transcript đã chốt; ngữ pháp/thanh điệu từng âm tiết cần phân tích sâu.
 - Tag ADMIN bị cắt: gốc là `.drawer-item svg{flex:0 0 20px}` rò vào SVG trong tag → `.drawer-item .role-tag svg{width:11px;flex:0 0 11px}`.
+
+## Phân tích sâu AI v3 + sửa lỗi nút Stop khi ghi (v52, 2026-10-13)
+- `/api/pronunciation-score`: đánh giá lời nói theo phát âm · ngữ pháp · mạch lạc/đủ ý · thuật ngữ (+ điểm tốt, điểm cần sửa); văn mẫu chỉ làm căn cứ khi **cùng ngôn ngữ** với lời nói. Khoá cache `v3|…`. Tổng = 40% phát âm + 30% ngữ pháp + 30% mạch lạc.
+- Nút Stop biến mất khi ghi: màn bị `render()` lại giữa lúc ghi → `renderListenDialogue` trả nút Stop ẩn. Sửa: khôi phục UI ghi sau render; `onstop` chỉ dọn state nếu vẫn là chính lần ghi đó (tránh ghi đè lần ghi mới); rời màn nghe thì dừng mic.
+- Nhãn nút "Tải / cập nhật bộ tra cứu" dùng nhầm khoá `oa_download` ("Tải về để nghe offline") → khoá riêng `sys_dl_btn`.

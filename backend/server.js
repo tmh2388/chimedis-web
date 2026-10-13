@@ -818,17 +818,23 @@ const FEEDBACK_LANG_NAME = { vi: 'tiếng Việt', zh: '中文', en: 'English' }
 
 function buildPronunciationPrompt(feedbackLang) {
   const langName = FEEDBACK_LANG_NAME[feedbackLang] || 'tiếng Việt';
-  // Bản gọn (2026-10-13): bản phiên âm đã do hệ thống cố định nên mô hình KHÔNG phiên âm nữa → ít token vào/ra hơn, tốn ít credit hơn.
-  return `Bạn là giám khảo phát âm VÀ ngữ pháp cho người luyện dịch cabin Trung Y (nghe 1 câu, rồi nói lại bằng tiếng Trung/Việt/Anh).
-Bản phiên âm đã được hệ thống CỐ ĐỊNH (ghi ở cuối). Nhiệm vụ:
+  // v3 (2026-10-13): đánh giá CHÍNH lời nói (phát âm · ngữ pháp · mạch lạc/đủ ý · thuật ngữ), không chấm theo văn mẫu.
+  // Bản phiên âm do hệ thống cố định nên mô hình KHÔNG phiên âm lại → ít token, ít credit.
+  return `Bạn là giám khảo nói cho người học Trung Y (nói tiếng Trung/Việt/Anh). Bạn đánh giá CHÍNH lời nói của người học, KHÔNG chấm theo văn mẫu hay bản dịch nào.
+Bản phiên âm đã được hệ thống CỐ ĐỊNH (ghi ở cuối). Mọi nhận xét viết BẰNG ${langName}; chữ/từ được trích giữ nguyên ngôn ngữ người nói.
+Nhiệm vụ:
 1. "transcript_marked": chép lại transcript, bọc ((...)) các từ/cụm PHÁT ÂM chưa chuẩn (sai âm, sai thanh điệu, nuốt âm); không có lỗi thì giống hệt transcript.
-2. "pronunciation_score" 0-100 (phát âm + trôi chảy) và "pronunciation_feedback": 1-2 câu, nêu CỤ THỂ từ/âm cần sửa, viết BẰNG ${langName}.
-3. "grammar_score" 0-100 và "grammar_feedback" BẰNG ${langName} (đúng ngữ pháp thì 100 và nói rõ).
-4. "corrected_text": sửa lỗi ngữ pháp/từ vựng nhưng giữ nguyên ý, cùng ngôn ngữ/chữ viết với transcript (chữ Hán nếu là tiếng Trung); đã đúng thì giống transcript.
-5. "issues": tối đa 8 điểm cụ thể so với câu mẫu (nếu có): {"text": từ/chữ liên quan, "kind": "tone|pronunciation|missing|extra|wrong|grammar", "note": gợi ý sửa ngắn BẰNG ${langName}}. Chỉ nêu điểm CÓ THẬT; nói đúng hết thì [].
-Audio không có tiếng người rõ ràng: cả 2 điểm = 0 và giải thích BẰNG ${langName}.
+2. "pronunciation_score" 0-100 (âm, thanh điệu với tiếng Trung, nhấn nhả, trôi chảy) + "pronunciation_feedback": 1-2 câu nêu CỤ THỂ từ/âm cần sửa và cách sửa.
+3. "grammar_score" 0-100 + "grammar_feedback" (đúng ngữ pháp thì 100 và nói rõ). Từ ngoại ngữ xen vào (vd 穴位 trong câu Anh) là hợp lệ, không trừ điểm.
+4. "coherence_score" 0-100 + "coherence_feedback": câu/đoạn có đủ nghĩa, rõ chủ đề, các ý nối với nhau mạch lạc, không lủng củng/cụt ý hay không.
+5. "terminology_feedback": nếu có thuật ngữ y học cổ truyền, nhận xét dùng đúng/chuẩn chưa (1 câu); không có thuật ngữ thì "".
+6. "strengths": 1 câu khen điều làm tốt nhất (cụ thể).
+7. "corrected_text": bản sửa lỗi ngữ pháp/từ vựng nhưng giữ nguyên ý, cùng ngôn ngữ/chữ viết với transcript; đã đúng thì giống transcript.
+8. "issues": tối đa 8 điểm CÓ THẬT: {"text": từ/chữ liên quan, "kind": "tone|pronunciation|extra|wrong|grammar|term", "note": gợi ý sửa ngắn}. Nói đúng hết thì [].
+Nếu có "câu mẫu cùng ngôn ngữ" ở phần ngữ cảnh, chỉ dùng để biết người học định nói gì (độ phủ ý) — KHÔNG trừ điểm vì nói khác câu mẫu nếu vẫn đúng và đủ nghĩa.
+Audio không có tiếng người rõ ràng: mọi điểm = 0 và giải thích.
 CHỈ trả một object JSON hợp lệ, không markdown:
-{"transcript": "", "transcript_marked": "...", "transcript_pinyin": "", "language": "", "pronunciation_score": 0, "pronunciation_feedback": "...", "grammar_score": 0, "grammar_feedback": "...", "corrected_text": "...", "issues": [{"text": "...", "kind": "tone", "note": "..."}]}`;
+{"transcript": "", "transcript_marked": "...", "transcript_pinyin": "", "language": "", "pronunciation_score": 0, "pronunciation_feedback": "...", "grammar_score": 0, "grammar_feedback": "...", "coherence_score": 0, "coherence_feedback": "...", "terminology_feedback": "", "strengths": "...", "corrected_text": "...", "issues": [{"text": "...", "kind": "tone", "note": "..."}]}`;
 }
 
 function extractJsonObject(text) {
@@ -865,15 +871,17 @@ app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool,
     canonLang = dominantLang(canonical, detectViEn, ['zh', 'vi', 'en'].includes(reference_lang) ? reference_lang : null) || canonLang || (['zh', 'vi', 'en'].includes(reference_lang) ? reference_lang : 'vi');
 
     // 2) Cùng âm thanh + cùng câu mẫu + cùng ngôn ngữ nhận xét → dùng lại kết quả đã có (miễn phí, và LUÔN cho cùng một kết quả).
-    const key = crypto.createHash('sha256').update(`${hash}|${canonical}|${reference_lang || ''}|${refText}|${feedbackLang}`).digest('hex');
+    // Văn mẫu chỉ làm căn cứ khi CÙNG ngôn ngữ với lời nói; khác ngôn ngữ thì bỏ (so chéo ngôn ngữ là vô nghĩa).
+    const useRef = refText && (!reference_lang || reference_lang === canonLang) ? refText : '';
+    const key = crypto.createHash('sha256').update(`v3|${hash}|${canonical}|${canonLang}|${useRef}|${feedbackLang}`).digest('hex');
     const hit = await speech.analysisCacheGet(mysqlPool, key);
     if (hit) return res.json({ success: true, data: { ...hit, cached: true, cost_credits: 0, audio_hash: hash } });
 
     if (!(await budgetGate(req, res))) return;
 
-    const userText = refText
-      ? `[NGỮ CẢNH — KHÔNG đưa vào "transcript"]\nCâu mẫu ${refLangName} người này đang luyện: ${refText}\n[HẾT NGỮ CẢNH]\nĐánh giá phát âm/thanh điệu/trôi chảy và ngữ pháp của đoạn ghi âm so với câu mẫu.`
-      : 'Đánh giá phát âm đoạn ghi âm sau.';
+    const userText = useRef
+      ? `[NGỮ CẢNH — KHÔNG đưa vào "transcript"]\nCâu mẫu cùng ngôn ngữ (chỉ để biết ý định nói): ${useRef}\n[HẾT NGỮ CẢNH]\nĐánh giá lời nói trong đoạn ghi âm.`
+      : 'Đánh giá lời nói trong đoạn ghi âm sau.';
     const fixed = `\n\nLƯU Ý QUAN TRỌNG (ghi đè bước 1): bản phiên âm ĐÃ ĐƯỢC HỆ THỐNG NHẬN DẠNG VÀ CỐ ĐỊNH, KHÔNG phiên âm lại:\n<<<${canonical}>>>\nNgôn ngữ nói: ${canonLang}. Trường "transcript" PHẢI đúng y chuỗi trên; "language" = "${canonLang}". Dùng audio CHỈ để đánh giá phát âm, thanh điệu, trôi chảy. "transcript_marked" = chính chuỗi trên, bọc ((...)) quanh chỗ phát âm chưa chuẩn.`;
 
     const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -882,7 +890,7 @@ app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool,
       body: JSON.stringify({
         model: 'gpt-audio-mini',
         modalities: ['text'],
-        max_completion_tokens: 900,
+        max_completion_tokens: 1200,
         messages: [
           { role: 'system', content: buildPronunciationPrompt(feedbackLang) + fixed },
           { role: 'user', content: [
@@ -908,6 +916,8 @@ app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool,
     if (stripMarks(parsed.transcript_marked).replace(/\s+/g, '') !== canonical.replace(/\s+/g, '')) parsed.transcript_marked = canonical;
     if (canonLang === 'zh') { try { parsed.transcript_pinyin = pinyin(canonical, { style: 'tone' }).map((a) => a[0]).join(' '); } catch (_) { /* giữ nguyên */ } }
     else parsed.transcript_pinyin = '';
+    for (const k of ['pronunciation_score', 'grammar_score', 'coherence_score']) parsed[k] = Math.max(0, Math.min(100, Math.round(Number(parsed[k]) || 0)));
+    parsed.overall = Math.round(0.4 * parsed.pronunciation_score + 0.3 * parsed.grammar_score + 0.3 * parsed.coherence_score);
     parsed.issues = Array.isArray(parsed.issues) ? parsed.issues.filter((x) => x && x.text).slice(0, 8) : [];
     parsed.cost_credits = Math.round(costUsd * 1000) / 10; // 1 credit = 0,01 USD; làm tròn 0,1
     parsed.audio_hash = hash;
