@@ -17,6 +17,7 @@ import { pinyin } from 'pinyin';
 import * as budget from './ai-budget.js';
 import { createGoogleAuth, hasGoogleCredentials } from '../google-auth.js';
 import { LIMITS } from './plan.js';
+import { styleBlock } from './tcm-style.js';
 
 const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
 const EDIT_MODEL = process.env.DOC_EDIT_MODEL || 'gpt-5-mini';
@@ -138,7 +139,7 @@ async function openaiEdit(chunk, isFirst, acc) {
   const body = {
     model: EDIT_MODEL,
     messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'system', content: SYSTEM_PROMPT + '\n\n' + styleBlock([chunk], { max: 60 }) },
       { role: 'user', content: `${isFirst ? '' : '(Đây là phần tiếp theo của cùng một tài liệu.)\n'}<document>\n${chunk}\n</document>` },
     ],
     response_format: { type: 'json_schema', json_schema: { name: 'edited_document', schema: SCHEMA, strict: true } },

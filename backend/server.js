@@ -1355,7 +1355,7 @@ app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLesso
     const ms = Array.isArray(b.messages) ? b.messages : [];
     const lastMsg = ms[ms.length - 1];
     const fl = ['vi', 'zh', 'en'].includes(b.lang) ? b.lang : 'vi';
-    if (lastMsg && lastMsg.role !== 'assistant' && !b.quiz && !laoshi.isSmallTalk(lastMsg.content)) {
+    if (lastMsg && lastMsg.role !== 'assistant' && !b.quiz && !b.talk && !laoshi.isSmallTalk(lastMsg.content)) {
       const hit = await laoshiFaq.lookup(mysqlPool, fl, lastMsg.content);
       if (hit) return res.json({ success: true, data: { text: hit.answer, refs: [], from_bank: true } });
     }
@@ -1366,6 +1366,7 @@ app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLesso
   if (!use.ok) return res.status(429).json({ success: false, error: 'daily_limit', limit: lim });
   try {
     const { messages, quiz, lang } = req.body || {};
+    const talk = !!(req.body && req.body.talk); // chế độ Trò chuyện tự do (nói)
     // Đã học: cặp nghe-nhầm → đúng (đồng âm, được ≥2 người hoặc quản trị viên xác nhận) tự sửa trong lượt người dùng cuối.
     await laoshiLearn.loadLearned(mysqlPool);
     let msgs = Array.isArray(messages) ? messages : [];
@@ -1375,9 +1376,9 @@ app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLesso
       const fx = laoshiLearn.applyLearned(String(last.content || ''));
       if (fx.applied.length) { corrections = fx.applied; msgs = [...msgs.slice(0, -1), { ...last, content: fx.text }]; }
     }
-    const out = await laoshi.reply({ messages: msgs, quiz, lang: ['vi', 'zh', 'en'].includes(lang) ? lang : 'vi', corrections });
+    const out = await laoshi.reply({ messages: msgs, quiz: talk ? null : quiz, lang: ['vi', 'zh', 'en'].includes(lang) ? lang : 'vi', corrections, talk });
     // Tự lọc câu hỏi/đáp đáng lưu vào kho (không cần người dùng bấm): quy tắc và ngưỡng nằm trong lib/laoshi-faq.js.
-    if (msgs.length && msgs[msgs.length - 1].role !== 'assistant' && !quiz && !laoshi.isSmallTalk(msgs[msgs.length - 1].content)) {
+    if (!talk && msgs.length && msgs[msgs.length - 1].role !== 'assistant' && !quiz && !laoshi.isSmallTalk(msgs[msgs.length - 1].content)) {
       laoshiFaq.observe(mysqlPool, { uid: req.firebaseUser.uid, lang: ['vi', 'zh', 'en'].includes(lang) ? lang : 'vi', question: msgs[msgs.length - 1].content, answer: out.text, refs: out.refs }).catch(() => {});
     }
     aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'laoshi', costUsd: out.costUsd });

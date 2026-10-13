@@ -184,6 +184,8 @@ export function buildIndex(terms) {
   return index;
 }
 export const hasIndex = () => !!index;
+/** Mọi mục trong chỉ mục (cho bảng thuật ngữ dùng chung khi AI dịch). */
+export const allTerms = () => (index ? [...index.byId.values()] : []);
 
 export function stats() {
   if (!index) return null;

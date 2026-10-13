@@ -13,6 +13,7 @@
  */
 import crypto from 'node:crypto';
 import { pinyin } from 'pinyin';
+import { styleBlock } from './tcm-style.js';
 import { CORE_TERMS } from './laoshi.js';
 
 const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
@@ -103,7 +104,8 @@ export const invalidateNames = () => { namesCache = { at: 0, set: null }; };
 async function askModel(items) {
   const sys = 'Bạn là biên tập viên thuật ngữ Y học cổ truyền Trung Hoa và y sinh. Với mỗi cụm, quyết định có phải THUẬT NGỮ Y KHOA có giá trị tra cứu hay không '
     + '(bệnh, chứng, huyệt, dược liệu, phương, phép chẩn trị, giải phẫu/sinh lý, lý luận Trung y, phương pháp nghiên cứu y học). Từ thông thường/động từ/từ nối → medical=false. '
-    + 'KHÔNG bịa: không chắc thì medical=false. Chữ Hán dùng GIẢN THỂ. Chỉ trả JSON.';
+    + 'KHÔNG bịa: không chắc thì medical=false. Chữ Hán dùng GIẢN THỂ. Chỉ trả JSON.\n\n'
+    + styleBlock(items.map((x) => x.term), { max: 30 });
   const user = `Cụm cần xử lý (JSON): ${JSON.stringify(items.map((x) => ({ id: x.id, term: x.term, en: x.en })))}\n`
     + 'Trả JSON dạng {"items":[{"id":<id>,"medical":true|false,"hz":"<chữ Hán giản thể, 1-12 chữ, nếu có>","py":"<pinyin có dấu thanh>",'
     + '"vi":"<tên tiếng Việt chuẩn y học (Hán-Việt nếu là thuật ngữ Trung y)>","en":"<tiếng Anh chuẩn PubMed/WHO>",'

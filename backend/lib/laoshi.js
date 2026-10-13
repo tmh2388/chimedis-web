@@ -10,6 +10,7 @@
  */
 import * as csdl from './csdl-lessons.js';
 import { costFromUsage } from './ai-budget.js';
+import { styleBlock } from './tcm-style.js';
 
 const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
 const MODEL = process.env.LAOSHI_MODEL || 'gpt-5-mini';
@@ -218,27 +219,38 @@ export function isSmallTalk(text) {
   return csdl.searchTerms(x, 1).length === 0;                // có thuật ngữ y học → coi là câu hỏi, không phải xã giao
 }
 
+// ===== Chế độ "Trò chuyện tự do": luyện khẩu ngữ bằng giọng nói giữa học trò và thầy (khác khung chat chữ có đố/trắc nghiệm) =====
+const TALK_PERSONA = `Bạn là "Lão Sư" (老师), thầy giáo Trung y đang LUYỆN KHẨU NGỮ với học trò bằng giọng nói (như hai người ngồi nói chuyện).
+- Đây là hội thoại NÓI: mỗi lượt chỉ 1–3 câu ngắn, tự nhiên, dễ nghe. KHÔNG dùng gạch đầu dòng, bảng, in đậm, biểu tượng, danh sách A/B/C, cũng KHÔNG ra câu đố trắc nghiệm.
+- Luôn đáp ĐÚNG điều học trò vừa nói trước (chào thì chào lại, hỏi thì trả lời, kể thì phản hồi), rồi mới hỏi nối MỘT câu ngắn để họ nói tiếp.
+- Chủ đề ưa thích: Trung y (huyệt vị, dược liệu, chẩn đoán, bệnh án, dưỡng sinh) nhưng cho phép xã giao, hỏi han, kể chuyện học tập.
+- Sửa lỗi bằng cách NHẮC LẠI đúng (recast), nhẹ nhàng, tối đa một lỗi mỗi lượt: lặp lại câu em nói cho đúng rồi nói tiếp; không giảng dài.
+- Nếu học trò nói lẫn ngôn ngữ hoặc bí từ, đưa ngay cách nói đúng bằng ngôn ngữ luyện tập, kèm nghĩa ngắn gọn khi cần.
+- Giữ thân thiện, đôi khi đùa nhẹ, cười thật bằng chữ ("haha", "哈哈"). Không chẩn đoán/kê đơn cho tình huống bệnh thật.
+- Lời nhận dạng giọng nói có thể sai đồng âm: hiểu theo ngữ cảnh Trung y (学位→穴位…), đừng bắt lỗi chính tả.`;
+
 /** Trả lời một lượt. quiz (tuỳ chọn) là câu đố đang mở từ opening() để thầy chấm đúng đáp án. */
-export async function reply({ messages, quiz = null, lang = 'vi', corrections = [] }) {
+export async function reply({ messages, quiz = null, lang = 'vi', corrections = [], talk = false }) {
   const msgs = sanitizeMessages(messages);
   if (!msgs.length) throw Object.assign(new Error('empty'), { code: 'empty' });
   const last = msgs[msgs.length - 1].content;
 
-  const smallTalk = isSmallTalk(last);
+  const smallTalk = !talk && isSmallTalk(last);
   const quizPending = !!(quiz && quiz.answer);
   if (smallTalk) quiz = null; // lời chào KHÔNG phải đáp án: không chấm câu đố
   const refs = smallTalk ? [] : csdl.searchTerms(last, 3);
   const homoHints = csdl.homophoneHints(last, CORE_TERMS);
   // Vừa trả lời câu đố/chọn đáp án → cho thầy sẵn một mục khác để đố tiếp (nối đất vào kho, không bịa).
   let nextSeed = '';
-  if (!smallTalk && (quiz || /^[A-D][.)、:：\s]/i.test(last))) { const t = csdl.randomTopic('', Date.now() ^ (Math.random() * 1e9)); if (t) nextSeed = csdl.factsFor(t, 3); }
+  if (!smallTalk && !talk && (quiz || /^[A-D][.)、:：\s]/i.test(last))) { const t = csdl.randomTopic('', Date.now() ^ (Math.random() * 1e9)); if (t) nextSeed = csdl.factsFor(t, 3); }
   const refText = refs.length ? refs.map((t) => csdl.factsFor(t, 5)).join('\n\n') : '';
   const sys = [
-    PERSONA,
+    talk ? TALK_PERSONA : PERSONA,
     smallTalk ? `Ý ĐỊNH LƯỢT NÀY = CHÀO HỎI / TRÒ CHUYỆN XÃ GIAO (KHÔNG phải đáp án, KHÔNG phải câu hỏi kiến thức). Hãy ĐÁP LẠI như một người thầy thật: chào lại ấm áp, nhắc đúng điều em vừa nói (tên/xưng hô/lời hỏi thăm), có thể đùa nhẹ kèm tiếng cười thật, hỏi thăm em một câu (hôm nay em thế nào/muốn học gì). Trả lời NGẮN 1–3 câu. TUYỆT ĐỐI KHÔNG chấm điểm, KHÔNG phân tích/sửa câu của em, KHÔNG liệt kê đáp án; ${quizPending ? 'chỉ nhắc nhẹ ở cuối rằng câu đố ở trên vẫn đang chờ em nếu em muốn thử.' : 'cuối câu gợi ý em chọn một chủ đề hoặc để thầy ra câu đố.'}` : '',
     nextSeed && !smallTalk ? `GỢI Ý CÂU TIẾP THEO (mục ngẫu nhiên từ kho Chimedis, dùng để ra câu đố kế tiếp):\n${nextSeed}` : '',
     corrections.length ? `ĐÃ TỰ SỬA NHẬN DẠNG GIỌNG NÓI (hệ thống đã học từ người dùng): ${corrections.map((c) => `"${c.heard}"→"${c.meant}"`).join(', ')}. Hãy hiểu câu của em theo chữ đã sửa.` : '',
     homoHints.length ? `NHẮC — NHẬN DẠNG GIỌNG NÓI CÓ THỂ NHẦM ĐỒNG ÂM: ${homoHints.map((h) => `"${h.heard}" có thể là ${h.maybe.join(' / ')}`).join('; ')}. Trong ngữ cảnh Trung y, hãy hiểu theo nghĩa Trung y.` : '',
+    smallTalk ? '' : styleBlock([last, refText], { max: 25 }), // quy ước dịch + bảng thuật ngữ bắt buộc (đồng bộ với từ điển)
     refText ? `NGỮ LIỆU THAM CHIẾU (từ cơ sở dữ liệu Chimedis):\n${refText}` : 'NGỮ LIỆU THAM CHIẾU: (không tìm thấy mục khớp — dựa vào kiến thức nền chắc chắn, và nói rõ nếu không chắc).',
     quiz && quiz.answer ? `CÂU ĐỐ ĐANG MỞ: "${String(quiz.question).slice(0, 200)}" — đáp án đúng là ${quiz.answer} (${String(quiz.answer_text).slice(0, 80)}). Nếu em vừa trả lời câu đố, chấm đúng/sai, giải thích ngắn gọn dựa trên dữ kiện: ${String(quiz.fact || '').slice(0, 500)}` : '',
     // Đặt CUỐI cùng để mô hình không bị kéo về tiếng Việt bởi phần tính cách viết bằng tiếng Việt ở trên.

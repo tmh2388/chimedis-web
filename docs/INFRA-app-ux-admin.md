@@ -60,3 +60,10 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## v56 — màn chờ dạng popup; Lão Sư nhận ra lời chào
 - Màn chờ chung (`#busyOverlay`) đổi thành **popup nhỏ** (thẻ trắng + vòng xoay, nền mờ 22%). Màn xanh toàn màn hình (`#luOverlay`) CHỈ dùng khi cập nhật phiên bản ứng dụng. Lão Sư dùng chỉ báo "đang gõ" trong khung chat, không dùng overlay.
 - Lão Sư (`backend/lib/laoshi.js`): thêm **phân loại ý định** — `isSmallTalk()` nhận ra chào hỏi/cảm ơn/tạm biệt/"thầy là ai" (vi/zh/en, ngắn, không có thuật ngữ y học, không phải đáp án A/B/C): bỏ chấm câu đố và nạp ngữ liệu, dặn mô hình ĐÁP LẠI như người thật (1–3 câu, có thể kèm tiếng cười), nhắc nhẹ câu đố đang chờ. Không đưa lời chào vào kho FAQ và không cho kho FAQ chặn lời chào.
+
+## v57 — Trò chuyện tự do, quy ước dịch dùng chung, gộp báo cáo trùng, lưu có thử lại
+- **Trò chuyện tự do** (menu riêng, Max): luyện khẩu ngữ bằng giọng nói. Màn `#talkScreen`: nút mic lớn (chạm nói / chạm gửi), chọn ngôn ngữ nói (中文/Việt/English), rảnh tay tự nghe tiếp, chữ phụ có thể ẩn. Luồng: ghi âm → `/api/laoshi/transcribe` → `/api/laoshi/chat` với `talk:true` (persona `TALK_PERSONA`: 1–3 câu nói, không đố/danh sách, nhắc lại đúng để sửa lỗi, hỏi nối) → `/api/laoshi/tts` phát tiếng. Khung chat chữ của Lão Sư giữ nguyên (đố, trắc nghiệm, chữ là chính).
+- **Quy ước dịch thuật ngữ** `backend/lib/tcm-style.js`: `STYLE_RULES` (Hán-Việt cho thuật ngữ Trung y, không "Tây y hoá", WHO/pinyin cho tiếng Anh, nhất quán) + `glossaryTerms()` lấy các mục CSDL có mặt trong văn bản nguồn làm BẢNG THUẬT NGỮ BẮT BUỘC. Đã nối vào: Lão Sư (`laoshi.reply`), bài Tự Thêm (`user-docs` prompt biên tập/dịch), thuật ngữ tự học (`term-learn.askModel`). Ví dụ gốc lỗi: 失神发作 bị dịch "Cơn vắng ý thức" thay vì "Thất thần phát tác".
+- **Gộp báo cáo trùng**: `trUnique()` — cùng nội dung → một dòng "N người báo"; chỉ khi khác nhau mới liệt kê để chọn bản đúng (chạm = điền sẵn vào trình sửa).
+- **Lưu thuật ngữ**: lỗi mạng (TLS reset) → tự thử lại tối đa 3 lần, báo "đang thử lại".
+- Còn mở: quét lại hàng loạt thuật ngữ `machine_translated` theo quy ước (cần duyệt chi phí + ra danh sách đề xuất để admin duyệt, không tự ghi).
