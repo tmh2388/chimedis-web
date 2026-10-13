@@ -326,3 +326,9 @@ MIT — See LICENSE file
 ---
 
 **Built with ❤️ for Vietnamese medical students and TCM practitioners.**
+
+## Academic research context / 学术研究定位 — 2026-10-13
+
+CHIMEDIS is developed within Hạ Vân Minh's integrated research activities as a **master's student of Acupuncture and Moxibustion at Hunan University of Chinese Medicine (湖南中医药大学)**. Its dictionary and structured Traditional Chinese Medicine knowledge resources stand alongside the master's thesis/research, HVYD ConsultApp and the CHIMEDIS Research Workbench as **mutually supporting, equally important components** of the research ecosystem. Their roles are distinct: medical terminology and source access; clinical workflow and evidence-oriented study; literature/evidence management; and independent thesis research. No tool's presence establishes a clinical benefit, scholarly novelty or a validated AI system without appropriate evaluation.
+
+This project README intentionally excludes personal identifiers, confidential clinical data and private academic records.
