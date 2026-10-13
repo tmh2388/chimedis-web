@@ -70,6 +70,7 @@ export async function ensureTables(pool) {
     const ov = await columnsOf(pool, 'term_overrides');
     if (!ov.has('hz')) await pool.query('ALTER TABLE term_overrides ADD COLUMN hz VARCHAR(64) NULL');
     if (!ov.has('py')) await pool.query('ALTER TABLE term_overrides ADD COLUMN py VARCHAR(160) NULL');
+    if (!ov.has('fields_json')) await pool.query('ALTER TABLE term_overrides ADD COLUMN fields_json MEDIUMTEXT NULL');
   } catch (e) { console.error('[term-learn] mở rộng term_overrides:', e.message); }
   try {
     const fb = await columnsOf(pool, 'term_feedback');
@@ -78,6 +79,7 @@ export async function ensureTables(pool) {
     if (!fb.has('suggested_hz')) await pool.query('ALTER TABLE term_feedback ADD COLUMN suggested_hz VARCHAR(64) NULL');
     if (!fb.has('suggested_def_zh')) await pool.query('ALTER TABLE term_feedback ADD COLUMN suggested_def_zh TEXT NULL');
     if (!fb.has('suggested_def_en')) await pool.query('ALTER TABLE term_feedback ADD COLUMN suggested_def_en TEXT NULL');
+    if (!fb.has('field_key')) await pool.query('ALTER TABLE term_feedback ADD COLUMN field_key VARCHAR(32) NULL');
   } catch (e) { console.error('[term-learn] mở rộng term_feedback:', e.message); }
 }
 
@@ -196,13 +198,13 @@ export function startPromoteJob(pool, everyMs = 30 * 60e3) {
 }
 
 // ---------- Góp ý của người dùng ----------
-export async function addFeedback(pool, { uid, email, term_id, hz, vi, en, group1, comment, suggested_vi, suggested_en, suggested_def, suggested_hz, suggested_def_zh, suggested_def_en }) {
+export async function addFeedback(pool, { uid, email, term_id, hz, vi, en, group1, comment, suggested_vi, suggested_en, suggested_def, suggested_hz, suggested_def_zh, suggested_def_en, field_key }) {
   const [[c]] = await pool.query("SELECT COUNT(*) AS n FROM term_feedback WHERE firebase_uid = ? AND created_at >= NOW() - INTERVAL 1 DAY", [uid]);
   if (Number(c.n) >= 20) return { ok: false, error: 'rate_limited' };
   const cut = (s, n) => (s == null ? null : String(s).trim().slice(0, n) || null);
   await pool.query(
-    'INSERT INTO term_feedback (term_id, hz, vi, en, group1, firebase_uid, email, comment, suggested_vi, suggested_en, suggested_def, suggested_hz, suggested_def_zh, suggested_def_en) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-    [cut(term_id, 64), cut(hz, 64), cut(vi, 190), cut(en, 190), cut(group1, 48), uid, cut(email, 255), cut(comment, 1000), cut(suggested_vi, 190), cut(suggested_en, 190), cut(suggested_def, 1000), cut(suggested_hz, 64), cut(suggested_def_zh, 1000), cut(suggested_def_en, 1000)]);
+    'INSERT INTO term_feedback (term_id, hz, vi, en, group1, firebase_uid, email, comment, suggested_vi, suggested_en, suggested_def, suggested_hz, suggested_def_zh, suggested_def_en, field_key) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    [cut(term_id, 64), cut(hz, 64), cut(vi, 190), cut(en, 190), cut(group1, 48), uid, cut(email, 255), cut(comment, 1000), cut(suggested_vi, 190), cut(suggested_en, 190), cut(suggested_def, 1000), cut(suggested_hz, 64), cut(suggested_def_zh, 1000), cut(suggested_def_en, 1000), /^[a-z_]{2,24}$/.test(String(field_key || '')) ? String(field_key) : null]);
   return { ok: true };
 }
 export async function listFeedback(pool, status = 'new') {
@@ -267,6 +269,19 @@ export async function reviewAutoTerm(pool, termId, { action, vi, en, definition 
 // Nguồn sửa: general_terms / anatomy_terms (đúng bảng gốc, verify=1, bỏ cờ máy dịch). Các bảng khác (dược liệu, huyệt, từ ghép…) → term_overrides
 // (chồng lên lúc trả /api/terms; chỉ đổi tên Việt/Anh, định nghĩa của các nhóm đó nằm ở trường khác nên KHÔNG sửa ở đây).
 const EDITABLE_TABLES = ['general_terms', 'anatomy_terms'];
+// Trường nội dung (ba ngôn ngữ) của Dược liệu / Huyệt vị / … được sửa qua bảng ghi đè — CHỈ các khoá trong danh sách này.
+export const OVERRIDE_FIELD_RE = /^(action|indication|dose_text|caution|location|anatomy|special_class)_(zh|vi|en)$|^(vitri|congnang|tcm|lamsang)(_cn|_en)?$/;
+export function cleanFields(obj) {
+  const out = {};
+  if (obj && typeof obj === 'object') {
+    for (const [k, v] of Object.entries(obj)) {
+      if (!OVERRIDE_FIELD_RE.test(k) || v == null) continue;
+      const val = String(v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, ' ').trim().slice(0, 1500);
+      if (val) out[k] = val;
+    }
+  }
+  return out;
+}
 const cleanText = (v, max) => String(v == null ? '' : v).replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
 
 export async function countReports(pool) {
@@ -276,13 +291,13 @@ export async function countReports(pool) {
 /** Báo cáo chưa xử lý, gom theo thuật ngữ (mới nhất trước). */
 export async function listReports(pool) {
   const [rows] = await pool.query(
-    "SELECT id, term_id, hz, vi, en, group1, email, comment, suggested_vi, suggested_en, suggested_def, suggested_hz, suggested_def_zh, suggested_def_en, created_at FROM term_feedback WHERE status = 'new' ORDER BY created_at DESC LIMIT 400");
+    "SELECT id, term_id, hz, vi, en, group1, email, comment, suggested_vi, suggested_en, suggested_def, suggested_hz, suggested_def_zh, suggested_def_en, field_key, created_at FROM term_feedback WHERE status = 'new' ORDER BY created_at DESC LIMIT 400");
   const by = new Map();
   for (const r of rows) {
     let g = by.get(r.term_id);
     if (!g) { g = { term_id: r.term_id, hz: r.hz, vi: r.vi, en: r.en, group1: r.group1, count: 0, last_at: r.created_at, reports: [] }; by.set(r.term_id, g); }
     g.count++;
-    g.reports.push({ id: r.id, email: r.email, comment: r.comment, suggested_vi: r.suggested_vi, suggested_en: r.suggested_en, suggested_def: r.suggested_def, suggested_hz: r.suggested_hz, suggested_def_zh: r.suggested_def_zh, suggested_def_en: r.suggested_def_en, at: r.created_at });
+    g.reports.push({ id: r.id, email: r.email, comment: r.comment, suggested_vi: r.suggested_vi, suggested_en: r.suggested_en, suggested_def: r.suggested_def, suggested_hz: r.suggested_hz, suggested_def_zh: r.suggested_def_zh, suggested_def_en: r.suggested_def_en, field_key: r.field_key, at: r.created_at });
   }
   return [...by.values()];
 }
@@ -291,14 +306,24 @@ export async function getOverrides(pool) {
   if (!pool) return new Map();
   if (Date.now() - overridesCache.at < 30e3) return overridesCache.map;
   try {
-    const [rows] = await pool.query('SELECT term_id, vi, en, hz, py FROM term_overrides');
-    overridesCache = { at: Date.now(), map: new Map(rows.map((r) => [String(r.term_id), { vi: r.vi, en: r.en, hz: r.hz, py: r.py }])) };
+    const [rows] = await pool.query('SELECT term_id, vi, en, hz, py, fields_json FROM term_overrides');
+    overridesCache = { at: Date.now(), map: new Map(rows.map((r) => {
+      let fields = {};
+      try { fields = cleanFields(JSON.parse(r.fields_json || '{}')); } catch (_) { /* bỏ qua */ }
+      return [String(r.term_id), { vi: r.vi, en: r.en, hz: r.hz, py: r.py, fields }];
+    })) };
   } catch (_) { /* chưa có bảng */ }
   return overridesCache.map;
 }
 export function applyOverrides(terms, map) {
   if (!map || !map.size) return terms;
-  for (const t of terms) { const o = map.get(String(t.id)); if (o) { if (o.vi) t.vi = o.vi; if (o.en) t.en = o.en; if (o.hz) { t.hz = o.hz; if (o.py) t.py = o.py; } } }
+  for (const t of terms) {
+    const o = map.get(String(t.id));
+    if (!o) continue;
+    if (o.vi) t.vi = o.vi; if (o.en) t.en = o.en;
+    if (o.hz) { t.hz = o.hz; if (o.py) t.py = o.py; }
+    if (o.fields) for (const [k, v] of Object.entries(o.fields)) t[k] = v;
+  }
   return terms;
 }
 /**
@@ -315,9 +340,10 @@ export async function editTerm(pool, admin, edit) {
   const defZh = edit && edit.def_zh != null ? cleanText(edit.def_zh, 600) : null;
   const defEn = edit && edit.def_en != null ? cleanText(edit.def_en, 600) : null;
   const note = cleanText(edit && edit.note, 200) || null;
+  const fieldsIn = cleanFields(edit && edit.fields);
   if (!term_id) return { ok: false, error: 'term_required' };
   if (hz && !/^[㐀-鿿]{1,40}$/.test(hz)) return { ok: false, error: 'hz_invalid' }; // chỉ chữ Hán
-  if (!hz && !vi && !en && !defVi && !defZh && !defEn) return { ok: false, error: 'nothing_to_change' };
+  if (!hz && !vi && !en && !defVi && !defZh && !defEn && !Object.keys(fieldsIn).length) return { ok: false, error: 'nothing_to_change' };
   const toPy = (h) => { try { return pinyin(h, { style: 'tone' }).map((a) => a[0]).join(' '); } catch (_) { return null; } };
   const conn = await pool.getConnection();
   try {
@@ -347,15 +373,19 @@ export async function editTerm(pool, admin, edit) {
       break;
     }
     if (!source) {
-      if (defVi || defZh || defEn) definitionIgnored = true; // nhóm khác: định nghĩa ở trường riêng, không sửa ở đây
-      if (!hz && !vi && !en) { await conn.rollback(); return { ok: false, error: 'definition_not_editable_here' }; }
-      const [ex] = await conn.query('SELECT vi, en, hz, py FROM term_overrides WHERE term_id = ? FOR UPDATE', [term_id]);
-      before = ex.length ? { hz: ex[0].hz, py: ex[0].py, vi: ex[0].vi, en: ex[0].en } : null;
+      if (defVi || defZh || defEn) definitionIgnored = true; // định nghĩa kiểu "position_*" chỉ có ở Giải phẫu/Sinh lý/Bệnh lý/Tổng hợp
+      if (!hz && !vi && !en && !Object.keys(fieldsIn).length) { await conn.rollback(); return { ok: false, error: 'definition_not_editable_here' }; }
+      const [ex] = await conn.query('SELECT vi, en, hz, py, fields_json FROM term_overrides WHERE term_id = ? FOR UPDATE', [term_id]);
+      let oldFields = {};
+      if (ex.length) { try { oldFields = cleanFields(JSON.parse(ex[0].fields_json || '{}')); } catch (_) { /* bỏ qua */ } }
+      const mergedFields = { ...oldFields, ...fieldsIn };
+      before = ex.length ? { hz: ex[0].hz, py: ex[0].py, vi: ex[0].vi, en: ex[0].en, fields: oldFields } : null;
       await conn.query(
-        `INSERT INTO term_overrides (term_id, vi, en, hz, py, updated_by) VALUES (?,?,?,?,?,?)
-         ON DUPLICATE KEY UPDATE vi = COALESCE(VALUES(vi), vi), en = COALESCE(VALUES(en), en), hz = COALESCE(VALUES(hz), hz), py = COALESCE(VALUES(py), py), updated_by = VALUES(updated_by)`,
-        [term_id, vi, en, hz, hz ? toPy(hz) : null, cleanText(admin && admin.email, 120) || null]);
-      after = { hz: hz || (before && before.hz) || null, py: hz ? toPy(hz) : (before && before.py) || null, vi: vi || (before && before.vi) || null, en: en || (before && before.en) || null };
+        `INSERT INTO term_overrides (term_id, vi, en, hz, py, fields_json, updated_by) VALUES (?,?,?,?,?,?,?)
+         ON DUPLICATE KEY UPDATE vi = COALESCE(VALUES(vi), vi), en = COALESCE(VALUES(en), en), hz = COALESCE(VALUES(hz), hz), py = COALESCE(VALUES(py), py),
+           fields_json = VALUES(fields_json), updated_by = VALUES(updated_by)`,
+        [term_id, vi, en, hz, hz ? toPy(hz) : null, JSON.stringify(mergedFields), cleanText(admin && admin.email, 120) || null]);
+      after = { hz: hz || (before && before.hz) || null, py: hz ? toPy(hz) : (before && before.py) || null, vi: vi || (before && before.vi) || null, en: en || (before && before.en) || null, fields: mergedFields };
       source = 'override';
     }
     const [fbRows] = await conn.query("SELECT id FROM term_feedback WHERE term_id = ? AND status = 'new'", [term_id]);
