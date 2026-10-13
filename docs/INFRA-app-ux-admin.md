@@ -51,3 +51,8 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - **Phân tích sâu AI tách khung riêng**: `lineDeep[seq]` + `listenDeepPut` — kết quả/loading nằm trong `.lsc-deep` bên dưới; video/âm thanh đã ghi và điểm chấm nhanh KHÔNG bị dựng lại (kiểm tra: cùng phần tử `<audio>`).
 - **Màn chờ toàn màn hình** bọc thêm (cuối script, `busyWrapAll`): kho thuật ngữ lần đầu, danh sách Học Thuật, thanh toán/đổi mã, Lão Sư mở đầu/chọn chủ đề, Tự Thêm (tải, gửi, đọc tệp), duyệt từ báo sai, góp ý, các thao tác admin.
 - **Lưu video vào Ảnh (iPhone)**: kiểu tệp chuẩn hoá `video/mp4` (bỏ `;codecs=`), đuôi `.mp4`; thông báo rõ khi thiết bị không chia sẻ được/WebM/ghi hình lỗi. Cần cắm plugin Filesystem/Media nếu share sheet vẫn không có "Lưu video".
+
+## v55 — toast bị che + trình sửa thuật ngữ báo kết quả ngay trong bảng
+- Gốc lỗi "bấm lưu mà không thấy gì": `.listen-toast` là `position:absolute; z-index:60` trong `#app`, nằm DƯỚI bảng sửa (z 2147482000) → mọi thông báo (thành công/lỗi) đều vô hình khi có bảng/popup. Nay toast `position:fixed; z-index:2147483600` gắn vào `body`.
+- Trình sửa: dòng trạng thái trong bảng (Đang lưu / ✓ Đã lưu → tự đóng sau 0,9 s / ✗ lỗi kèm mã), timeout 30 s, lỗi server trả `detail` (chỉ route admin) để chẩn đoán.
+- Quy tắc: mọi thao tác ghi dữ liệu phải có trạng thái hiển thị CÙNG tầng với nơi người dùng đang nhìn, không dựa vào toast.

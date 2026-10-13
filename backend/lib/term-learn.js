@@ -406,7 +406,7 @@ export async function editTerm(pool, admin, edit) {
   } catch (e) {
     try { await conn.rollback(); } catch (_) { /* bỏ qua */ }
     console.error('[term-learn] editTerm:', e.message);
-    return { ok: false, error: 'edit_failed' };
+    return { ok: false, error: 'edit_failed', detail: String((e && (e.code || e.message)) || '').slice(0, 80) }; // chỉ route admin gọi — hiển thị để chẩn đoán
   } finally {
     conn.release();
   }
