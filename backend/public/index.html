@@ -856,6 +856,20 @@ header{transition:padding .2s ease}
 .qs-issue b{font-size:14px}
 .qs-kind{font-size:11px;color:#7A5A12;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
 .qs-issue small{color:var(--muc-mo,#6B6156);font-size:12.5px}
+.lu-overlay-dummy{}
+#luOverlay{position:fixed;inset:0;z-index:2147483000;background:#0E3A3A;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;animation:luIn .15s ease}
+@keyframes luIn{from{opacity:0}to{opacity:1}}
+.lu-box{width:min(340px,100%);display:flex;flex-direction:column;align-items:center;gap:12px}
+.lu-logo{width:88px;height:88px;border-radius:20px;background:#F5EFE0;padding:8px;box-shadow:0 6px 22px rgba(0,0,0,.35)}
+.lu-brand{font-size:22px;font-weight:800;letter-spacing:.12em}
+.lu-title{font-size:16px;font-weight:700;margin-top:6px}
+.lu-bar{width:100%;height:10px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden}
+.lu-bar i{display:block;height:100%;width:0;background:#E9B949;border-radius:999px;transition:width .2s ease}
+.lu-bar.indet i{width:38%;animation:luInd 1.1s ease-in-out infinite}
+@keyframes luInd{0%{margin-left:-38%}100%{margin-left:100%}}
+.lu-pct{font-size:20px;font-weight:800;min-height:26px;font-variant-numeric:tabular-nums}
+.lu-sub{font-size:13px;opacity:.78;line-height:1.5}
+#offPill{position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:9000;background:#0E3A3A;color:#fff;border-radius:999px;padding:8px 14px;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
 .ls-voted{font-size:14px;margin-left:4px}
 .ls-msg.user .ls-spk{background:rgba(255,255,255,.18);color:#fff}
 .tf-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 2px}
@@ -2102,7 +2116,7 @@ Object.assign(I18N.vi, {
   listen_cat_y_an: 'Y Án', listen_cat_bao_chi: 'Báo Chí', listen_cat_tu_them: 'Tự Thêm', listen_cat_hoc_thuat: 'Bài Báo Quốc Tế', listen_cat_csdl: 'Học Thuật',
   listen_empty: 'Chưa có hội thoại nào trong mục này.',
   listen_level_all: 'Tất cả', listen_level_so_cap: 'Sơ cấp', listen_level_trung_cap: 'Trung cấp', listen_level_cao_cap: 'Cao cấp',
-  listen_play_full: 'Phát toàn bài', listen_answer_lang: 'Tôi trả lời bằng', listen_answer_repeat: 'nhắc lại tiếng Trung', qs_switched_zh: 'Đã nhận ra bạn nói tiếng Trung nên chấm theo bản tiếng Trung.', qs_unclear: 'Chưa nghe rõ giọng bạn nên chưa chấm.', qs_unclear_tip: 'Hãy nói to hơn, đưa micro gần hơn, ở nơi yên tĩnh rồi thử lại. Bạn vẫn nghe lại được bản ghi.', qs_issues: 'Điểm cần sửa', iss_tone: 'sai thanh điệu', iss_pronunciation: 'sai âm', iss_missing: 'thiếu', iss_extra: 'thừa', iss_wrong: 'dùng sai từ', iss_grammar: 'ngữ pháp', listen_answer_auto: 'Tự nhận ngôn ngữ', qs_switched_vi: 'Đã nhận ra bạn nói tiếng Việt nên chấm theo bản tiếng Việt.', qs_switched_en: 'Đã nhận ra bạn nói tiếng Anh nên chấm theo bản tiếng Anh.', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)',
+  listen_play_full: 'Phát toàn bài', listen_answer_lang: 'Tôi trả lời bằng', lu_title: 'Đang cập nhật phiên bản mới…', lu_sub: 'Vui lòng giữ ứng dụng mở, đừng thoát cho tới khi xong.', lu_applying: 'Đang áp dụng phiên bản mới…', lu_slow: 'Mạng chậm — việc cập nhật sẽ tiếp tục ở nền, bạn có thể dùng tiếp.', listen_answer_repeat: 'nhắc lại tiếng Trung', qs_switched_zh: 'Đã nhận ra bạn nói tiếng Trung nên chấm theo bản tiếng Trung.', qs_unclear: 'Chưa nghe rõ giọng bạn nên chưa chấm.', qs_unclear_tip: 'Hãy nói to hơn, đưa micro gần hơn, ở nơi yên tĩnh rồi thử lại. Bạn vẫn nghe lại được bản ghi.', qs_issues: 'Điểm cần sửa', iss_tone: 'sai thanh điệu', iss_pronunciation: 'sai âm', iss_missing: 'thiếu', iss_extra: 'thừa', iss_wrong: 'dùng sai từ', iss_grammar: 'ngữ pháp', listen_answer_auto: 'Tự nhận ngôn ngữ', qs_switched_vi: 'Đã nhận ra bạn nói tiếng Việt nên chấm theo bản tiếng Việt.', qs_switched_en: 'Đã nhận ra bạn nói tiếng Anh nên chấm theo bản tiếng Anh.', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)',
   login_to_listen: 'Đăng nhập để nghe audio', login_to_record: 'Đăng nhập để ghi âm', login_to_analyze: 'Đăng nhập để dùng phân tích AI',
   up_title: 'Tính năng dành cho gói Pro', up_body_analyze: 'Phân tích AI (chấm điểm, đối chiếu ý chính, gợi ý sửa) chỉ dành cho gói Pro.',
   up_body_upload: 'Tải tài liệu riêng, để AI tự biên tập và tạo audio, là tính năng của gói Pro.',
@@ -2147,7 +2161,7 @@ Object.assign(I18N.zh, {
   listen_cat_y_an: '医案', listen_cat_bao_chi: '新闻', listen_cat_tu_them: '自建内容', listen_cat_hoc_thuat: '国际论文', listen_cat_csdl: '学术',
   listen_empty: '此分类暂无对话。',
   listen_level_all: '全部', listen_level_so_cap: '初级', listen_level_trung_cap: '中级', listen_level_cao_cap: '高级',
-  listen_play_full: '播放全文', listen_answer_lang: '我用以下语言回答', listen_answer_repeat: '跟读中文', qs_switched_zh: '检测到你说的是中文，已按中文参考打分。', qs_unclear: '没有听清你的声音，暂不打分。', qs_unclear_tip: '请大声一点、靠近麦克风、在安静处再试一次。仍可回放录音。', qs_issues: '需要改进', iss_tone: '声调不准', iss_pronunciation: '发音不准', iss_missing: '漏说', iss_extra: '多说', iss_wrong: '用词错误', iss_grammar: '语法', listen_answer_auto: '自动识别', qs_switched_vi: '检测到你说的是越南语，已按越南语参考打分。', qs_switched_en: '检测到你说的是英语，已按英语参考打分。', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）',
+  listen_play_full: '播放全文', listen_answer_lang: '我用以下语言回答', lu_title: '正在更新新版本……', lu_sub: '请保持应用打开，更新完成前请勿退出。', lu_applying: '正在应用新版本……', lu_slow: '网络较慢——将在后台继续更新，您可以继续使用。', listen_answer_repeat: '跟读中文', qs_switched_zh: '检测到你说的是中文，已按中文参考打分。', qs_unclear: '没有听清你的声音，暂不打分。', qs_unclear_tip: '请大声一点、靠近麦克风、在安静处再试一次。仍可回放录音。', qs_issues: '需要改进', iss_tone: '声调不准', iss_pronunciation: '发音不准', iss_missing: '漏说', iss_extra: '多说', iss_wrong: '用词错误', iss_grammar: '语法', listen_answer_auto: '自动识别', qs_switched_vi: '检测到你说的是越南语，已按越南语参考打分。', qs_switched_en: '检测到你说的是英语，已按英语参考打分。', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）',
   login_to_listen: '登录后才能收听音频', login_to_record: '登录后才能录音', login_to_analyze: '登录后才能使用 AI 分析',
   up_title: '此功能仅限 Pro 套餐', up_body_analyze: 'AI 分析（评分、要点对照、修改建议）仅限 Pro 套餐。',
   up_body_upload: '上传自己的文档，由 AI 自动编辑并生成音频，是 Pro 套餐的功能。',
@@ -2192,7 +2206,7 @@ Object.assign(I18N.en, {
   listen_cat_y_an: 'Case Studies', listen_cat_bao_chi: 'News', listen_cat_tu_them: 'Custom', listen_cat_hoc_thuat: 'International Papers', listen_cat_csdl: 'Academic',
   listen_empty: 'No dialogues in this category yet.',
   listen_level_all: 'All', listen_level_so_cap: 'Beginner', listen_level_trung_cap: 'Intermediate', listen_level_cao_cap: 'Advanced',
-  listen_play_full: 'Play full dialogue', listen_answer_lang: 'I answer in', listen_answer_repeat: 'repeat in Chinese', qs_switched_zh: 'Detected Chinese, so it was scored against the Chinese reference.', qs_unclear: 'Your voice was not clear enough, so it was not scored.', qs_unclear_tip: 'Speak louder, hold the microphone closer, and try in a quiet place. You can still replay your recording.', qs_issues: 'Points to fix', iss_tone: 'wrong tone', iss_pronunciation: 'pronunciation', iss_missing: 'missing', iss_extra: 'extra', iss_wrong: 'wrong word', iss_grammar: 'grammar', listen_answer_auto: 'Auto-detect', qs_switched_vi: 'Detected Vietnamese, so it was scored against the Vietnamese reference.', qs_switched_en: 'Detected English, so it was scored against the English reference.', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)',
+  listen_play_full: 'Play full dialogue', listen_answer_lang: 'I answer in', lu_title: 'Updating to the new version…', lu_sub: 'Please keep the app open until it finishes.', lu_applying: 'Applying the new version…', lu_slow: 'Slow network — the update will continue in the background; you can keep using the app.', listen_answer_repeat: 'repeat in Chinese', qs_switched_zh: 'Detected Chinese, so it was scored against the Chinese reference.', qs_unclear: 'Your voice was not clear enough, so it was not scored.', qs_unclear_tip: 'Speak louder, hold the microphone closer, and try in a quiet place. You can still replay your recording.', qs_issues: 'Points to fix', iss_tone: 'wrong tone', iss_pronunciation: 'pronunciation', iss_missing: 'missing', iss_extra: 'extra', iss_wrong: 'wrong word', iss_grammar: 'grammar', listen_answer_auto: 'Auto-detect', qs_switched_vi: 'Detected Vietnamese, so it was scored against the Vietnamese reference.', qs_switched_en: 'Detected English, so it was scored against the English reference.', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)',
   login_to_listen: 'Sign in to listen to audio', login_to_record: 'Sign in to record', login_to_analyze: 'Sign in to use AI analysis',
   up_title: 'A Pro plan feature', up_body_analyze: 'AI analysis (scoring, key-point comparison, correction hints) is available on the Pro plan.',
   up_body_upload: 'Uploading your own documents, with AI editing and audio generation, is a Pro plan feature.',
@@ -6823,7 +6837,15 @@ document.addEventListener('error', e => {
 }, true);
 let _offBusy = false;
 function offStatusEl(){ return document.getElementById('offStatus'); }
-function offSet(msg){ const el = offStatusEl(); if(el) el.textContent = msg; }
+function offSet(msg){
+  const el = offStatusEl(); if(el) el.textContent = msg;
+  // Viên tiến độ nhỏ nổi ở góc khi đang tải (không chặn thao tác): thấy được ngay cả khi đã đóng menu.
+  let pill = document.getElementById('offPill');
+  if(_offBusy){
+    if(!pill){ pill = document.createElement('div'); pill.id = 'offPill'; document.body.appendChild(pill); }
+    pill.textContent = '⬇ ' + msg;
+  } else if(pill) pill.remove();
+}
 async function refreshOfflineStatus(){
   const m = await OFF.get('meta');
   if(!m){ offSet(t('off_none')); return; }
@@ -6864,8 +6886,13 @@ async function downloadOfflinePack(){
   }catch(err){
     console.warn('[Chimedis] Tải bộ offline lỗi:', err.message);
     offSet(t('off_err'));
-  }finally{ _offBusy = false; }
+  }finally{ _offBusy = false; document.getElementById('offPill')?.remove(); }
 }
+// Bộ offline tải dở (đóng app/khoá màn hình giữa chừng) → tự tải tiếp khi người dùng quay lại; hình đã có thì bỏ qua.
+document.addEventListener('visibilitychange', async () => {
+  if(document.hidden || _offBusy || !navigator.onLine) return;
+  try{ const m = await OFF.get('meta'); if(m && m.figsTotal && m.figs < m.figsTotal) downloadOfflinePack(); }catch(e){}
+});
 async function loadTermsFromAPI(){
   try{
     // authFetch tự gắn Authorization: Bearer <token> khi đã đăng nhập — server dựa vào đó
@@ -6965,6 +6992,28 @@ refreshOfflineStatus();
 // gửi App Store duyệt lại. Phiên bản đang chạy đọc từ bundle-version.txt nằm trong chính gói (cùng thư mục).
 // ⚠️ notifyAppReady() BẮT BUỘC gọi sau khi giao diện khởi động được, nếu không plugin coi bản mới là hỏng và tự
 // quay về bản cũ (cơ chế an toàn: bản lỗi không "brick" app).
+// Màn chặn toàn màn hình khi đang tải/áp dụng bản mới: có logo, tên bản, % tải; người dùng không dùng được bản cũ trong lúc cập nhật.
+let _luShown = false, _luHideTimer = null;
+function luShow(title, sub, pct){
+  _luShown = true;
+  let el = document.getElementById('luOverlay');
+  if(!el){
+    el = document.createElement('div'); el.id = 'luOverlay'; el.setAttribute('role', 'alert');
+    el.innerHTML = `<div class="lu-box"><img class="lu-logo" src="icons/icon-192.png" alt="Chimedis"><div class="lu-brand">CHIMEDIS</div>` +
+      `<div class="lu-title" id="luTitle"></div><div class="lu-bar"><i id="luBar"></i></div><div class="lu-pct" id="luPct"></div><div class="lu-sub" id="luSub"></div></div>`;
+    (document.body || document.documentElement).appendChild(el);
+  }
+  const set = (id, v) => { const n = document.getElementById(id); if(n) n.textContent = v; };
+  set('luTitle', title || ''); set('luSub', sub || '');
+  luProgress(pct);
+}
+function luProgress(pct){
+  const bar = document.getElementById('luBar'), pc = document.getElementById('luPct');
+  if(!bar || !pc) return;
+  if(typeof pct === 'number' && isFinite(pct)){ const v = Math.max(0, Math.min(100, Math.round(pct))); bar.style.width = v + '%'; bar.parentNode.classList.remove('indet'); pc.textContent = v + '%'; }
+  else { bar.style.width = ''; bar.parentNode.classList.add('indet'); pc.textContent = ''; }
+}
+function luHide(){ _luShown = false; clearTimeout(_luHideTimer); document.getElementById('luOverlay')?.remove(); }
 let _luLast = 0, _luBusy = false;
 function luPlugin(){ return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorUpdater) || null; }
 function luSet(msg){
@@ -6992,12 +7041,24 @@ async function checkLiveUpdate(force){
     if(own === latest.version){ luSet('đã là bản mới nhất'); return; }
     luSet('đang tải ' + latest.version);
     if(!latest.checksum){ luSet('latest.json thiếu checksum'); return; }
-    const b = await cu.download({ url: latest.url, version: latest.version, checksum: latest.checksum });
+    // Có bản mới: CHẶN màn hình bằng logo + tiến độ (không cho dùng bản cũ trong lúc cập nhật). Quá 90 giây (mạng chậm) thì nhả ra, tiếp tục ở nền.
+    luShow(t('lu_title'), t('lu_sub'), null);
+    clearTimeout(_luHideTimer);
+    _luHideTimer = setTimeout(() => { if(_luShown){ luHide(); luSet('mạng chậm — cập nhật tiếp ở nền'); try{ listenToast(t('lu_slow')); }catch(e){} } }, 90000);
+    let listener = null;
+    try{ listener = await cu.addListener('download', (ev) => { if(ev && typeof ev.percent === 'number') luProgress(ev.percent); }); }catch(e){}
+    let b;
+    try{ b = await cu.download({ url: latest.url, version: latest.version, checksum: latest.checksum }); }
+    finally{ try{ if(listener && listener.remove) listener.remove(); }catch(e){} }
+    luProgress(100);
+    luShow(t('lu_applying'), t('lu_sub'), 100);
     luSet('đã tải xong, đang áp dụng');
-    // Đang rảnh (không mở popup/không đang tìm) → áp dụng ngay (WebView tải lại 1 lần); nếu không → lần mở app sau.
-    const idle = !state.popupId && !state.searchQuery && !document.getElementById('gsOverlay') && !document.querySelector('.fv');
-    if(idle){ await cu.set({ id: b.id }); luSet('đã áp dụng'); } else { await cu.next({ id: b.id }); luSet('sẽ áp dụng ở lần mở sau'); }
+    // Đã chặn màn hình nên áp dụng NGAY (WebView tải lại một lần). Nếu sau 10 giây chưa tải lại thì nhả màn chặn.
+    setTimeout(() => { if(_luShown) luHide(); }, 10000);
+    await cu.set({ id: b.id });
+    luSet('đã áp dụng');
   }catch(err){
+    luHide();
     luSet('lỗi: ' + String((err && (err.message || err.code)) || err).slice(0, 200));
     console.warn('[Chimedis] Live update lỗi:', err && err.message);
   }
@@ -7008,13 +7069,21 @@ async function checkLiveUpdate(force){
   const cu = luPlugin();
   if(!cu){ luSet('không có plugin cập nhật'); return; }
   Promise.resolve(cu.notifyAppReady()).catch(() => {});
-  setTimeout(() => checkLiveUpdate(false), 4000);
+  setTimeout(() => checkLiveUpdate(true), 300); // ngay khi mở app: có bản mới thì hiện màn cập nhật rõ ràng
   document.addEventListener('visibilitychange', () => { if(!document.hidden) checkLiveUpdate(false); });
 })();
 
 // ===== PWA: register service worker =====
 // (Không đăng ký trong app Capacitor: giao diện đã nằm sẵn trong app, WKWebView cũng không hỗ trợ service worker.)
 if('serviceWorker' in navigator && !IN_NATIVE_APP){
+  const _hadController = !!navigator.serviceWorker.controller;
+  let _swReloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if(!_hadController || _swReloading) return; // lần cài đặt đầu tiên: không cần tải lại
+    _swReloading = true;
+    luShow(t('lu_applying'), t('lu_sub'), null);
+    setTimeout(() => location.reload(), 700);
+  });
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js').catch(err => {
       console.warn('Service worker registration failed:', err);
