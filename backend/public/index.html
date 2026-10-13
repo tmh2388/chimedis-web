@@ -851,7 +851,9 @@ header{transition:padding .2s ease}
 .ls-opt b{flex:none;min-width:18px}
 .ls-opt:active{background:var(--thamthm,#0E3A3A);color:#fff}
 .ls-mic{flex:none;width:42px;height:42px;border:1px solid var(--vien,#e5ddcc);border-radius:50%;background:#fff;font-size:18px;cursor:pointer;line-height:1}
+.ls-mic{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .ls-mic.rec{background:#c0392b;border-color:#c0392b;animation:lsPulse 1s infinite}
+.ls-mic.free{background:#8e2a1f;border-color:#8e2a1f}
 @keyframes lsPulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.45)}50%{box-shadow:0 0 0 8px rgba(192,57,43,0)}}
 .ck-sum{font-size:14px;margin:6px 0 4px}
 .ck-link{background:none;border:0;color:var(--son,#C8452F);text-decoration:underline;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;padding:6px 0;display:block}
@@ -3118,7 +3120,7 @@ Object.assign(I18N.vi, {
   laoshi_err: 'Ối, thầy bị nghẹn chữ một chút. Em thử lại sau ít phút nhé!', laoshi_limit: 'Hôm nay thầy nói nhiều quá, khản cả giọng rồi! Hẹn em ngày mai nhé.',
   laoshi_disclaimer: 'Công cụ học tập — không thay thế chẩn đoán hay điều trị. Thầy có thể nhầm; hãy đối chiếu giáo trình.',
   laoshi_chip_quiz: 'Đố thầy một câu', laoshi_chip_topic: 'Hôm nay học gì?', laoshi_chip_story: 'Kể một chuyện Trung y vui', laoshi_chip_explain: 'Giải thích dễ nhớ giúp em',
-  laoshi_autospeak: 'Tự đọc', laoshi_talk: 'Đàm thoại', laoshi_speak: 'Nghe thầy đọc', laoshi_stop: 'Dừng', laoshi_mic: 'Nói', laoshi_st_listening: 'Thầy đang nghe em…', laoshi_st_speaking: 'Thầy đang nói…', laoshi_st_transcribing: 'Đang nhận dạng giọng nói…', laoshi_mic_denied: 'Chưa cho phép micro. Hãy bật quyền micro rồi thử lại.', laoshi_noasr: 'Thầy chưa nghe rõ, em thử nói lại nhé.', laoshi_talk_idle: 'Thầy không nghe thấy gì nên tạm dừng đàm thoại. Bấm “Đàm thoại” để tiếp tục.', laoshi_voice_err: 'Chưa đọc to được lúc này, em thử lại nhé.',
+  laoshi_autospeak: 'Tự đọc', laoshi_rec_hold: 'Đang nghe… thả tay để gửi', laoshi_rec_free: 'Đang ghi… bấm mic lần nữa để gửi', laoshi_rec_cancel: 'Huỷ', laoshi_mic_hint: 'Giữ mic để nói · chạm nhanh = rảnh tay', laoshi_speak: 'Nghe thầy đọc', laoshi_stop: 'Dừng', laoshi_mic: 'Nói', laoshi_st_listening: 'Thầy đang nghe em…', laoshi_st_speaking: 'Thầy đang nói…', laoshi_st_transcribing: 'Đang nhận dạng giọng nói…', laoshi_mic_denied: 'Chưa cho phép micro. Hãy bật quyền micro rồi thử lại.', laoshi_noasr: 'Thầy chưa nghe rõ, em thử nói lại nhé.', laoshi_voice_err: 'Chưa đọc to được lúc này, em thử lại nhé.',
   verify_title: 'Email chưa được xác minh', verify_body: 'Mở thư chúng tôi vừa gửi (xem cả mục Spam) và bấm liên kết xác minh. Gói Pro theo email chỉ có hiệu lực sau khi xác minh.',
   verify_resend: 'Gửi lại thư', verify_done: 'Tôi đã xác minh', verify_sent: 'Đã gửi thư xác minh.', verify_ok: 'Đã xác minh email.', verify_not_yet: 'Chưa thấy xác minh — hãy bấm liên kết trong thư rồi thử lại.',
   my_trim_title: 'Tệp vượt giới hạn', my_trim_body: 'Tệp có {n} ký tự, gói của bạn cho tối đa {max} ký tự mỗi tài liệu. Cắt phần đuôi cho vừa (giữ phần đầu, dừng ở cuối câu gần nhất)?',
@@ -3186,7 +3188,7 @@ Object.assign(I18N.zh, {
   laoshi_err: '哎呀，老师卡壳了一下。请稍后再试！', laoshi_limit: '今天老师话说多了，嗓子哑了！明天再见。',
   laoshi_disclaimer: '学习工具——不能替代诊断或治疗。老师也会出错，请对照教材。',
   laoshi_chip_quiz: '考老师一个问题', laoshi_chip_topic: '今天学什么？', laoshi_chip_story: '讲个有趣的中医故事', laoshi_chip_explain: '帮我好记地解释一下',
-  laoshi_autospeak: '自动朗读', laoshi_talk: '语音对话', laoshi_speak: '朗读', laoshi_stop: '停止', laoshi_mic: '说话', laoshi_st_listening: '老师在听……', laoshi_st_speaking: '老师在说话……', laoshi_st_transcribing: '正在识别语音……', laoshi_mic_denied: '未允许使用麦克风，请开启权限后重试。', laoshi_noasr: '老师没听清，请再说一遍。', laoshi_talk_idle: '老师没听到声音，已暂停语音对话。点“语音对话”继续。', laoshi_voice_err: '暂时无法朗读，请稍后再试。',
+  laoshi_autospeak: '自动朗读', laoshi_rec_hold: '正在听……松手发送', laoshi_rec_free: '正在录音……再点一次麦克风发送', laoshi_rec_cancel: '取消', laoshi_mic_hint: '按住说话 · 轻点 = 免提', laoshi_speak: '朗读', laoshi_stop: '停止', laoshi_mic: '说话', laoshi_st_listening: '老师在听……', laoshi_st_speaking: '老师在说话……', laoshi_st_transcribing: '正在识别语音……', laoshi_mic_denied: '未允许使用麦克风，请开启权限后重试。', laoshi_noasr: '老师没听清，请再说一遍。', laoshi_voice_err: '暂时无法朗读，请稍后再试。',
   verify_title: '邮箱尚未验证', verify_body: '请打开我们刚发送的邮件（也请查看垃圾邮件）并点击验证链接。按邮箱开通的 Pro 套餐需验证后才生效。',
   verify_resend: '重新发送', verify_done: '我已验证', verify_sent: '验证邮件已发送。', verify_ok: '邮箱已验证。', verify_not_yet: '尚未检测到验证——请点击邮件中的链接后重试。',
   my_trim_title: '文件超出限制', my_trim_body: '文件有 {n} 个字符，您的套餐每个文档最多 {max} 个字符。是否截去末尾使其符合限制（保留开头，在最近的句末处截断）？',
@@ -3254,7 +3256,7 @@ Object.assign(I18N.en, {
   laoshi_err: 'Oops, the teacher choked on words. Please try again in a few minutes!', laoshi_limit: 'The teacher talked too much today and lost their voice! See you tomorrow.',
   laoshi_disclaimer: 'A learning tool — not a substitute for diagnosis or treatment. The teacher can be wrong; check your textbooks.',
   laoshi_chip_quiz: 'Quiz me', laoshi_chip_topic: 'What shall we learn today?', laoshi_chip_story: 'Tell me a fun TCM story', laoshi_chip_explain: 'Explain it in a memorable way',
-  laoshi_autospeak: 'Read aloud', laoshi_talk: 'Voice chat', laoshi_speak: 'Listen', laoshi_stop: 'Stop', laoshi_mic: 'Speak', laoshi_st_listening: 'Listening…', laoshi_st_speaking: 'The teacher is speaking…', laoshi_st_transcribing: 'Recognizing speech…', laoshi_mic_denied: 'Microphone permission is off. Enable it and try again.', laoshi_noasr: 'The teacher did not catch that — please try again.', laoshi_talk_idle: 'Nothing heard, so voice chat is paused. Tap “Voice chat” to continue.', laoshi_voice_err: 'Cannot read aloud right now. Please try again.',
+  laoshi_autospeak: 'Read aloud', laoshi_rec_hold: 'Listening… release to send', laoshi_rec_free: 'Recording… tap the mic again to send', laoshi_rec_cancel: 'Cancel', laoshi_mic_hint: 'Hold to talk · tap = hands-free', laoshi_speak: 'Listen', laoshi_stop: 'Stop', laoshi_mic: 'Speak', laoshi_st_listening: 'Listening…', laoshi_st_speaking: 'The teacher is speaking…', laoshi_st_transcribing: 'Recognizing speech…', laoshi_mic_denied: 'Microphone permission is off. Enable it and try again.', laoshi_noasr: 'The teacher did not catch that — please try again.', laoshi_voice_err: 'Cannot read aloud right now. Please try again.',
   verify_title: 'Email not verified yet', verify_body: 'Open the message we just sent (check Spam too) and tap the verification link. An email-based Pro plan only takes effect after verification.',
   verify_resend: 'Resend email', verify_done: 'I have verified', verify_sent: 'Verification email sent.', verify_ok: 'Email verified.', verify_not_yet: 'Not verified yet — tap the link in the email, then try again.',
   my_trim_title: 'File exceeds the limit', my_trim_body: 'The file has {n} characters; your plan allows {max} per document. Trim the end to fit (keeps the beginning, stops at the nearest sentence end)?',
@@ -3518,7 +3520,6 @@ const LS_KEY = 'chimedis_laoshi_v1';
 const LS_PREF_KEY = 'chimedis_laoshi_pref_v1';
 let laoshi = { msgs: [], quiz: null, busy: false };
 const lsPref = { autoSpeak: false };
-const lsTalk = { on: false, listening: false, rec: null, stopRec: null, denied: false, misses: 0, err: null };
 let lsAudio = null, lsSpeakToken = 0, lsSpeakingIdx = -1, lsPlayRes = null;
 const lsAudioCache = new Map();
 const LS_SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
@@ -3545,15 +3546,13 @@ function lsParseOptions(text){
   }
   return opts.length >= 2 ? opts : [];
 }
-function lsSetStatus(txt){ const el = document.getElementById('lsStatus'); if(el) el.textContent = txt || ''; }
+function lsSetStatus(txt){ const el = document.getElementById('lsStatus'); if(el) el.textContent = txt || (lsMic.active ? '' : t('laoshi_mic_hint')); }
 function lsRefreshBar(){
-  const a = document.getElementById('lsTogSpeak'), b = document.getElementById('lsTogTalk'), m = document.getElementById('lsMic');
-  if(a) a.classList.toggle('on', lsPref.autoSpeak || lsTalk.on);
-  if(b) b.classList.toggle('on', lsTalk.on);
-  if(m) m.classList.toggle('rec', lsTalk.listening);
+  const a = document.getElementById('lsTogSpeak');
+  if(a) a.classList.toggle('on', lsPref.autoSpeak);
 }
 function closeLaoshi(){
-  lsTalkStop(); lsStopSpeak();
+  lsMicCancel(); lsStopSpeak();
   lsAudioCache.forEach(u => { try{ URL.revokeObjectURL(u); }catch(e){} }); lsAudioCache.clear();
   document.getElementById('laoshiScreen')?.remove();
 }
@@ -3568,16 +3567,16 @@ function openLaoshi(){
     `<button type="button" class="mde-btn" onclick="laoshiReset()">${t('laoshi_new')}</button>` +
     `<button type="button" class="mde-btn" onclick="closeLaoshi()">${t('plans_close')}</button></div>` +
     `<div class="ls-bar"><button type="button" id="lsTogSpeak" class="ls-tog" onclick="lsToggleAutoSpeak()">🔊 ${t('laoshi_autospeak')}</button>` +
-    `<button type="button" id="lsTogTalk" class="ls-tog" onclick="lsTalkToggle()">🎧 ${t('laoshi_talk')}</button>` +
-    `<span id="lsStatus" class="ls-status"></span></div>` +
+        `<span id="lsStatus" class="ls-status"></span>` +
+    `<button type="button" id="lsMicCancel" class="ls-tog" style="display:none" onclick="lsMicCancel()">✕ ${t('laoshi_rec_cancel')}</button></div>` +
     `<div id="lsMsgs" class="ls-msgs"></div>` +
     `<div class="ls-chips">${['quiz', 'topic', 'story', 'explain'].map(k => `<button type="button" onclick="laoshiSend(t('laoshi_chip_${k}'))">${t('laoshi_chip_' + k)}</button>`).join('')}</div>` +
-    `<div class="ls-input"><button type="button" id="lsMic" class="ls-mic" aria-label="${t('laoshi_mic')}" onclick="laoshiMicOnce()">🎙</button>` +
+    `<div class="ls-input"><button type="button" id="lsMic" class="ls-mic" aria-label="${t('laoshi_mic')}" title="${t('laoshi_mic_hint')}" onpointerdown="lsMicDown(event)" onpointerup="lsMicUp(event)" onpointercancel="lsMicUp(event)" oncontextmenu="return false">🎙</button>` +
     `<textarea id="lsInput" rows="1" placeholder="${t('laoshi_ph')}" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();laoshiSend()}"></textarea>` +
     `<button type="button" class="mde-btn primary" onclick="laoshiSend()">${t('laoshi_send')}</button></div>` +
     `<p class="ls-disc">${t('laoshi_disclaimer')}</p></div>`);
   laoshiRender();
-  lsRefreshBar();
+  lsRefreshBar(); lsSetStatus('');
   if(!laoshi.msgs.length) laoshiOpening();
 }
 function laoshiRender(){
@@ -3601,7 +3600,7 @@ function laoshiRender(){
 function laoshiPick(key){
   const last = laoshi.msgs[laoshi.msgs.length - 1];
   const o = last && lsParseOptions(last.content).find(x => x.key === key);
-  if(o) laoshiSend(`${o.key}. ${o.text}`, { speak: lsPref.autoSpeak || lsTalk.on });
+  if(o) laoshiSend(`${o.key}. ${o.text}`, { speak: lsPref.autoSpeak });
 }
 async function laoshiOpening(){
   laoshi.busy = true; laoshiRender();
@@ -3613,7 +3612,7 @@ async function laoshiOpening(){
     else if(r.status === 403){ state.plan = 'free'; closeLaoshi(); openUpgradeModal('laoshi'); return; }
   }catch(e){ laoshi.msgs.push({ role: 'assistant', content: t('laoshi_err') }); }
   laoshi.busy = false; laoshiRender();
-  if(spoken && (lsPref.autoSpeak || lsTalk.on)) lsSpeakText(spoken, laoshi.msgs.length - 1);
+  if(spoken && lsPref.autoSpeak) lsSpeakText(spoken, laoshi.msgs.length - 1);
 }
 function laoshiReset(){
   if(!confirm(t('laoshi_new_confirm'))) return;
@@ -3636,13 +3635,13 @@ async function laoshiSend(text, opts){
     const r = await authFetch('/api/laoshi/chat', { method: 'POST', body: JSON.stringify({ messages: laoshi.msgs.slice(-12), quiz, lang: state.lang }) });
     const j = await r.json().catch(() => ({}));
     if(r.ok && j.success){ reply = j.data.text; laoshi.msgs.push({ role: 'assistant', content: reply }); }
-    else if(r.status === 429 && j && j.error === 'budget'){ lsTalkStop(); laoshi.msgs.push({ role: 'assistant', content: budgetText(j) }); laoshiRender(); openBudgetModal(j); }
-    else if(r.status === 429){ lsTalkStop(); laoshi.msgs.push({ role: 'assistant', content: t('laoshi_limit') }); }
-    else if(r.status === 403){ state.plan = 'free'; lsTalkStop(); closeLaoshi(); openUpgradeModal('laoshi'); return; }
+    else if(r.status === 429 && j && j.error === 'budget'){ laoshi.msgs.push({ role: 'assistant', content: budgetText(j) }); laoshiRender(); openBudgetModal(j); }
+    else if(r.status === 429){ laoshi.msgs.push({ role: 'assistant', content: t('laoshi_limit') }); }
+    else if(r.status === 403){ state.plan = 'free'; closeLaoshi(); openUpgradeModal('laoshi'); return; }
     else { laoshi.msgs.push({ role: 'assistant', content: t('laoshi_err') }); }
   }catch(e){ laoshi.msgs.push({ role: 'assistant', content: t('laoshi_err') }); }
   laoshi.busy = false; laoshiSave(); laoshiRender(); lsSetStatus('');
-  if(reply && (opts.speak || lsPref.autoSpeak || lsTalk.on)) await lsSpeakText(reply, laoshi.msgs.length - 1);
+  if(reply && (opts.speak || lsPref.autoSpeak)) await lsSpeakText(reply, laoshi.msgs.length - 1);
 }
 
 // ---- Đọc to ----
@@ -3668,8 +3667,8 @@ async function lsSpeakText(text, idx){
       const r = await authFetch('/api/laoshi/tts', { method: 'POST', body: JSON.stringify({ text, lang: state.lang, voice }) });
       if(!r.ok){
         const j = await r.json().catch(() => ({}));
-        if(r.status === 429 && j && j.error === 'budget'){ lsTalkStop(); openBudgetModal(j); }
-        else if(r.status === 403){ lsTalkStop(); }
+        if(r.status === 429 && j && j.error === 'budget'){ openBudgetModal(j); }
+        else if(r.status === 403){ /* hết quyền Max: bỏ qua */ }
         else { listenToast(t('laoshi_voice_err')); }
         return;
       }
@@ -3700,143 +3699,128 @@ function laoshiSpeak(i){
 }
 function lsToggleAutoSpeak(){
   lsUnlockAudio();
-  if(lsTalk.on){ return; } // trong chế độ đàm thoại luôn tự đọc
   lsPref.autoSpeak = !lsPref.autoSpeak; lsPrefSave(); lsRefreshBar();
   if(!lsPref.autoSpeak) lsStopSpeak();
 }
 
-// ---- Nói (nhận dạng giọng nói) ----
-// Ưu tiên nhận dạng của trình duyệt (miễn phí); thiết bị không có (app iOS) → ghi âm, tự ngắt khi im lặng, gửi máy chủ phiên âm.
-async function lsRecognize(){
+// ---- Nói (như Luyện nghe) ----
+// Giữ nút mic để nói, thả tay là gửi; hoặc chạm nhanh để rảnh tay (ghi tới khi bấm lần nữa để gửi). KHÔNG tự tắt theo thời gian.
+// Chạy song song: nhận dạng của trình duyệt (miễn phí) + ghi âm; nếu trình duyệt không nghe được chữ nào (vd. app iOS) → máy chủ phiên âm.
+const lsMic = { active: false, mode: 'hold', downAt: 0, ignoreUp: false, ready: null, stream: null, recorder: null, chunks: [], sr: null, srText: '', srInterim: '', srEnded: true, srStopped: false, denied: false, maxTimer: null, startedAt: 0 };
+function lsMicUI(){
+  const m = document.getElementById('lsMic'), c = document.getElementById('lsMicCancel');
+  if(m){ m.classList.toggle('rec', lsMic.active); m.classList.toggle('free', lsMic.active && lsMic.mode === 'free'); }
+  if(c) c.style.display = lsMic.active ? '' : 'none';
+  if(lsMic.active) lsSetStatus('🔴 ' + t(lsMic.mode === 'free' ? 'laoshi_rec_free' : 'laoshi_rec_hold'));
+  else lsSetStatus('');
+}
+function lsSrStart(){
   const R = quickAsrCtor();
-  if(!R) return lsRecordAndTranscribe();
-  return new Promise((resolve) => {
-    let finalText = '', interim = '', done = false;
-    let rec;
-    try{ rec = new R(); }catch(e){ resolve(lsRecordAndTranscribe()); return; }
-    rec.lang = lsRecLang(); rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
-    lsTalk.rec = rec;
-    const finish = (txt) => { if(done) return; done = true; lsTalk.rec = null; resolve(txt); };
+  lsMic.sr = null; lsMic.srText = ''; lsMic.srInterim = ''; lsMic.srStopped = false; lsMic.srEnded = true;
+  if(!R) return;
+  try{
+    const rec = new R();
+    rec.lang = lsRecLang(); rec.continuous = true; rec.interimResults = true;
     rec.onresult = (e) => {
-      interim = '';
+      let interim = '';
       for(let i = e.resultIndex; i < e.results.length; i++){
         const r = e.results[i];
-        if(r.isFinal) finalText += r[0].transcript; else interim += r[0].transcript;
+        if(r.isFinal) lsMic.srText += r[0].transcript; else interim += r[0].transcript;
       }
-      lsSetStatus((finalText + interim).trim() || t('laoshi_st_listening'));
+      lsMic.srInterim = interim;
+      const live = (lsMic.srText + ' ' + interim).trim();
+      if(live && lsMic.active) lsSetStatus('🔴 ' + live.slice(-80));
     };
-    rec.onerror = (e) => { if(e && (e.error === 'not-allowed' || e.error === 'service-not-allowed')) lsTalk.denied = true; };
-    rec.onend = () => finish((finalText || interim).trim());
-    try{ rec.start(); }catch(e){ finish(''); }
-  });
+    rec.onerror = () => {};
+    rec.onend = () => { lsMic.srEnded = true; if(!lsMic.srStopped && lsMic.active){ try{ rec.start(); lsMic.srEnded = false; }catch(e){} } }; // Chrome tự ngắt sau vài giây im lặng
+    rec.start(); lsMic.srEnded = false;
+    lsMic.sr = rec;
+  }catch(e){ lsMic.sr = null; }
 }
-async function lsRecordAndTranscribe(){
-  if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder)){ lsTalk.denied = true; return ''; }
-  let stream;
-  try{
-    stream = await Promise.race([
-      navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }),
-      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 8000)),
-    ]);
-  }catch(e){ lsTalk.denied = true; return ''; }
-  let ctx = null, rec = null;
-  const chunks = [];
-  let heard = false;
-  try{
-    const AC = window.AudioContext || window.webkitAudioContext;
-    ctx = new AC();
-    const an = ctx.createAnalyser(); an.fftSize = 1024;
-    ctx.createMediaStreamSource(stream).connect(an);
-    rec = new MediaRecorder(stream);
-    rec.ondataavailable = (e) => { if(e.data && e.data.size) chunks.push(e.data); };
-    rec.start();
-    const buf = new Float32Array(an.fftSize);
-    let lastLoud = Date.now(); const t0 = lastLoud;
-    await new Promise((resolve) => {
-      lsTalk.stopRec = resolve;
-      const tick = () => {
-        if(!lsTalk.listening) return resolve();
-        an.getFloatTimeDomainData(buf);
-        let sum = 0; for(let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
-        const rms = Math.sqrt(sum / buf.length), now = Date.now();
-        if(rms > 0.02){ heard = true; lastLoud = now; }
-        if(heard && now - lastLoud > 1300) return resolve();   // nói xong (im lặng 1,3 giây)
-        if(!heard && now - t0 > 9000) return resolve();         // không ai nói
-        if(now - t0 > 25000) return resolve();                  // tối đa 25 giây một lượt
-        setTimeout(tick, 80);
-      };
-      lsSetStatus(t('laoshi_st_listening'));
-      tick();
-    });
-    lsTalk.stopRec = null;
-    await new Promise((r) => { rec.onstop = r; try{ rec.stop(); }catch(e){ r(); } });
-  }finally{
-    try{ stream.getTracks().forEach(tr => tr.stop()); }catch(e){}
-    try{ if(ctx) ctx.close(); }catch(e){}
-  }
-  if(!heard || !chunks.length) return '';
-  lsSetStatus(t('laoshi_st_transcribing'));
-  try{
-    const wav = await trimSilenceToWav(new Blob(chunks, { type: (rec && rec.mimeType) || 'audio/webm' }), 3000);
-    const r = await authFetch('/api/laoshi/transcribe', { method: 'POST', body: JSON.stringify({ audio_base64: await blobToBase64(wav), lang: state.lang }) });
-    const j = await r.json().catch(() => ({}));
-    if(r.status === 429 && j && j.error === 'budget'){ lsTalkStop(); openBudgetModal(j); return ''; }
-    if(r.status === 429){ lsTalkStop(); listenToast(t('laoshi_limit')); return ''; }
-    return (j && j.success && j.data && j.data.text) || '';
-  }catch(e){ return ''; }
-}
-function lsAbortListening(){
-  lsTalk.listening = false;
-  if(lsTalk.rec){ try{ lsTalk.rec.abort(); }catch(e){} }
-  if(lsTalk.stopRec){ const f = lsTalk.stopRec; lsTalk.stopRec = null; f(); }
-}
-// Bấm mic: nói một câu → gửi luôn (không bật chế độ đàm thoại).
-async function laoshiMicOnce(){
-  lsUnlockAudio();
-  if(lsTalk.on) return;
-  if(lsTalk.listening){ lsAbortListening(); return; }
-  if(laoshi.busy) return;
+async function lsMicStart(){
+  const s = lsMic;
+  s.active = true; s.mode = 'hold'; s.denied = false; s.chunks = []; s.stream = null; s.recorder = null;
   lsStopSpeak();
-  lsTalk.denied = false; lsTalk.listening = true; lsRefreshBar(); lsSetStatus(t('laoshi_st_listening'));
-  const text = await lsRecognize();
-  lsTalk.listening = false; lsRefreshBar(); lsSetStatus('');
-  if(lsTalk.denied){ listenToast(t('laoshi_mic_denied')); return; }
+  lsMicUI();
+  s.ready = (async () => {
+    try{
+      if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder)) throw new Error('nomic');
+      s.stream = await Promise.race([
+        navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 8000)),
+      ]);
+    }catch(e){ s.denied = true; return; }
+    try{
+      s.recorder = new MediaRecorder(s.stream);
+      s.recorder.ondataavailable = (e) => { if(e.data && e.data.size) s.chunks.push(e.data); };
+      s.recorder.start();
+    }catch(e){ s.recorder = null; }
+    s.startedAt = Date.now();
+    lsSrStart();
+    s.maxTimer = setTimeout(() => lsMicFinish(true), 180000); // trần an toàn 3 phút
+  })();
+  await s.ready;
+  if(s.denied){ s.active = false; lsMicUI(); listenToast(t('laoshi_mic_denied')); }
+}
+async function lsMicFinish(send){
+  const s = lsMic;
+  if(!s.active) return;
+  s.active = false; clearTimeout(s.maxTimer);
+  lsMicUI();
+  await s.ready;
+  if(s.denied) return;
+  let text = '';
+  if(s.sr){
+    s.srStopped = true;
+    try{ s.sr.stop(); }catch(e){}
+    await new Promise((r) => { const t0 = Date.now(); (function w(){ if(s.srEnded || Date.now() - t0 > 900) r(); else setTimeout(w, 50); })(); });
+    text = (s.srText + ' ' + s.srInterim).trim();
+    s.sr = null;
+  }
+  const blob = await new Promise((resolve) => {
+    const rec = s.recorder;
+    if(!rec || rec.state === 'inactive') return resolve(s.chunks.length ? new Blob(s.chunks, { type: (rec && rec.mimeType) || 'audio/webm' }) : null);
+    rec.onstop = () => resolve(new Blob(s.chunks, { type: rec.mimeType || 'audio/webm' }));
+    try{ rec.stop(); }catch(e){ resolve(null); }
+  });
+  try{ if(s.stream) s.stream.getTracks().forEach(tr => tr.stop()); }catch(e){}
+  s.stream = null; s.recorder = null;
+  if(!send) return;
+  if(!text && blob && blob.size > 3000){
+    lsSetStatus(t('laoshi_st_transcribing'));
+    try{
+      const wav = await trimSilenceToWav(blob, 3000);
+      const r = await authFetch('/api/laoshi/transcribe', { method: 'POST', body: JSON.stringify({ audio_base64: await blobToBase64(wav), lang: state.lang }) });
+      const j = await r.json().catch(() => ({}));
+      if(r.status === 429 && j && j.error === 'budget'){ lsSetStatus(''); openBudgetModal(j); return; }
+      if(r.status === 429){ lsSetStatus(''); listenToast(t('laoshi_limit')); return; }
+      text = (j && j.success && j.data && j.data.text) || '';
+    }catch(e){ text = ''; }
+  }
+  lsSetStatus('');
   if(!text){ listenToast(t('laoshi_noasr')); return; }
   laoshiSend(text, { speak: lsPref.autoSpeak });
 }
-// ---- Đàm thoại: nghe → gửi → thầy trả lời bằng giọng → nghe tiếp ----
-function lsTalkStop(){
-  const was = lsTalk.on;
-  lsTalk.on = false;
-  lsAbortListening();
-  if(was){ lsStopSpeak(); lsSetStatus(''); }
-  lsRefreshBar();
-}
-async function lsTalkToggle(){
+function lsMicCancel(){ if(lsMic.active) lsMicFinish(false); }
+function lsMicDown(e){
+  e.preventDefault();
+  try{ e.currentTarget.setPointerCapture(e.pointerId); }catch(_){}
   lsUnlockAudio();
-  if(lsTalk.on){ lsTalkStop(); return; }
-  lsTalk.on = true; lsTalk.denied = false; lsTalk.misses = 0;
-  lsRefreshBar();
-  lsStopSpeak();
-  // Thầy nói trước nếu có câu mở đầu chưa được đọc (gặp câu đố thì em trả lời bằng giọng luôn).
-  const last = laoshi.msgs[laoshi.msgs.length - 1];
-  if(last && last.role === 'assistant' && laoshi.msgs.length === 1) await lsSpeakText(last.content, 0);
-  while(lsTalk.on && document.getElementById('laoshiScreen')){
-    if(laoshi.busy){ await lsSleep(200); continue; }
-    lsTalk.listening = true; lsRefreshBar(); lsSetStatus(t('laoshi_st_listening'));
-    const text = await lsRecognize();
-    lsTalk.listening = false; lsRefreshBar();
-    if(!lsTalk.on) break;
-    if(lsTalk.denied){ listenToast(t('laoshi_mic_denied')); lsTalkStop(); break; }
-    if(!text){
-      if(++lsTalk.misses >= 3){ listenToast(t('laoshi_talk_idle')); lsTalkStop(); break; }
-      await lsSleep(300);
-      continue;
-    }
-    lsTalk.misses = 0;
-    await laoshiSend(text, { speak: true });
+  if(lsMic.active){            // đang rảnh tay → bấm = dừng và gửi
+    lsMic.ignoreUp = true;
+    lsMicFinish(true);
+    return;
   }
-  lsSetStatus('');
+  if(laoshi.busy) return;
+  lsMic.downAt = Date.now(); lsMic.ignoreUp = false;
+  lsMicStart();
+}
+function lsMicUp(e){
+  if(e) e.preventDefault();
+  if(lsMic.ignoreUp){ lsMic.ignoreUp = false; return; }
+  if(!lsMic.active) return;
+  if(Date.now() - lsMic.downAt < 400 && lsMic.mode !== 'free'){ lsMic.mode = 'free'; lsMicUI(); return; } // chạm nhanh → rảnh tay
+  lsMicFinish(true);           // giữ rồi thả → gửi
 }
 // ===== Ngân sách AI: hạn mức tháng/ngày/giờ + credit nạp thêm (dùng chung với workbench). Máy chủ: lib/ai-budget.js =====
 function budgetText(b){

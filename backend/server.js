@@ -1293,9 +1293,24 @@ app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLesso
 
 // Đọc to câu trả lời của thầy (Google TTS; nhiều ngôn ngữ trong cùng câu → tách theo chữ Hán / còn lại, ghép MP3). Tính vào ngân sách người dùng.
 const LS_TTS_MAX = 700;
-const isHanCh = (c) => /[\u3400-\u9fff\uf900-\ufaff]/.test(c);
+const isHanCh = (c) => /[㐀-鿿豈-﫿]/.test(c);
+// Chữ cái chỉ có trong tiếng Việt (không có trong pinyin/tiếng Anh): ă â đ ê ô ơ ư và các nguyên âm có dấu hỏi/ngã/nặng/mũ+dấu…
+const VI_ONLY = /[ăâđêôơưĂÂĐÊÔƠƯảạãầấẩẫậằắẳẵặẻẹẽềếểễệỉịĩỏọõồốổỗộờớởỡợủụũừứửữựỳỷỵỹẢẠÃẦẤẨẪẬẰẮẲẴẶẺẸẼỀẾỂỄỆỈỊĨỎỌÕỒỐỔỖỘỜỚỞỠỢỦỤŨỪỨỬỮỰỲỶỴỸ]/g;
+/** Ngôn ngữ nền của câu (không phụ thuộc ngôn ngữ giao diện): có chữ Việt đặc trưng → vi; còn lại theo giao diện (zh → en cho phần Latin). */
+function lsDetectBase(text, uiLang) {
+  const vi = (String(text).match(VI_ONLY) || []).length;
+  if (vi >= 2) return 'vi';
+  return uiLang === 'vi' ? 'vi' : 'en';
+}
+// Pinyin đi kèm chữ Hán (ví dụ "麻黄 (má huáng)", "麻黄, má huáng") KHÔNG đọc: giọng Mandarin đã đọc chữ Hán rồi, còn giọng Việt/Anh đọc pinyin sẽ sai.
+const PINYIN = "[a-zA-ZüÜāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ'’·\\-]+(?:\\s+[a-zA-ZüÜāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ'’·\\-]+){0,7}";
+const RE_PY_PAREN = new RegExp('([\\u3400-\\u9fff]+)\\s*[（(]\\s*' + PINYIN + '\\s*[)）]', 'g');
+const RE_PY_COMMA = new RegExp('([\\u3400-\\u9fff]+)\\s*[,，、:：]\\s*' + PINYIN + '(?=\\s*[)）\\]。.;；,，]|\\s*$)', 'g');
+const RE_PY_IN = new RegExp('([\\u3400-\\u9fff]+)\\s*[,，、]\\s*' + PINYIN + '(?=\\s*[)）])', 'g');
 function lsSpeechText(raw) {
-  let t = String(raw || '').replace(/\*\*/g, '').replace(/[`#>_~]/g, '').replace(/\p{Extended_Pictographic}|\uFE0F/gu, '').replace(/([.!?。！？:：])\s*\n\s*/g, '$1 ').replace(/\s*\n\s*/g, '. ').replace(/\s{2,}/g, ' ').trim();
+  let t = String(raw || '').replace(/\*\*/g, '').replace(/[`#>_~]/g, '').replace(/\p{Extended_Pictographic}|️/gu, '');
+  t = t.replace(RE_PY_PAREN, '$1').replace(RE_PY_IN, '$1').replace(RE_PY_COMMA, '$1');
+  t = t.replace(/\(\s*([㐀-鿿][㐀-鿿\s,，、]*)\)/g, '（$1）').replace(/([.!?。！？:：])\s*\n\s*/g, '$1 ').replace(/\s*\n\s*/g, '. ').replace(/\s{2,}/g, ' ').trim();
   if (t.length > LS_TTS_MAX) { const cut = t.slice(0, LS_TTS_MAX); const k = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('。'), cut.lastIndexOf('? '), cut.lastIndexOf('! ')); t = (k > 200 ? cut.slice(0, k + 1) : cut); }
   return t;
 }
@@ -1304,10 +1319,9 @@ function lsSplitRuns(text, baseLang) {
   for (const ch of text) {
     const han = isHanCh(ch);
     const neutral = !han && !/[\p{L}\p{N}]/u.test(ch);
-    const lang = han ? 'zh' : baseLang === 'zh' ? 'en' : baseLang;
+    const lang = han ? 'zh' : baseLang;
     const last = runs[runs.length - 1];
     if (last && (neutral || last.lang === lang)) last.text += ch;
-    else if (neutral && !last) runs.push({ lang, text: ch });
     else runs.push({ lang, text: ch });
   }
   return runs.filter((r) => /[\p{L}\p{N}]/u.test(r.text)).slice(0, 14);
@@ -1319,7 +1333,7 @@ app.post('/api/laoshi/tts', ...maxOnly, async (req, res) => {
     const voice = userDocs.VOICE_KEYS.includes(req.body && req.body.voice) ? req.body.voice : 'default';
     const text = lsSpeechText(req.body && req.body.text);
     if (!text) return res.status(400).json({ success: false, error: 'empty' });
-    const runs = lsSplitRuns(text, lang);
+    const runs = lsSplitRuns(text, lsDetectBase(text, lang));
     const parts = await Promise.all(runs.map((r) => userDocs.synthesize(r.text, r.lang, voice, { uid: req.firebaseUser.uid })));
     res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, no-store' }).send(Buffer.concat(parts));
   } catch (e) {
