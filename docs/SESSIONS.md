@@ -24,10 +24,12 @@ Chúng KHÔNG tự thấy nhau; **git + file này là nơi chung**. Quy tắc b�
 | Workbench | Chỉ gói Max (+ Lão Sư Trung Y); Pro không dùng |
 | Số build iOS | Lấy từ `BUILD_NUMBER` của Codemagic (không sửa tay) |
 | `isAdmin` | Đồng bộ, 1 tham số `isAdmin(fbUser)` trong `lib/plan.js` |
+| Thuật ngữ mới | AI dịch 1 lần → `dict_candidates` → job dict đưa vào `general_terms` (Tổng hợp, chưa duyệt) → người dùng ⭐ góp ý → admin duyệt; lưu MySQL, KHÔNG JSON |
 
 ## Nhật ký phiên (mới nhất ở trên)
 | Ngày | Phiên | Việc / file | Ghi chú |
 |---|---|---|---|
+| 2026-10-13 | Ứng dụng luyện nghe Trung Y | Kho thuật ngữ chung: `term-learn.js`, `laoshi-faq.js`, admin duyệt, ⭐ góp ý | Xem `docs/INFRA-shared-terminology.md`; workbench KHÔNG cần đổi gì để vào kho, chỉ nên đọc `general_terms` thay vì ảnh chụp JSON |
 | 2026-10-13 | Ứng dụng luyện nghe Trung Y | Sửa 503 (tự hồi), `codemagic.yaml` số build tự động, `docs/SESSIONS.md` | Cảnh báo: `_work/chimedis-web` có sửa dở `isAdmin(mysqlPool, …)` sẽ khoá admin nếu push — cần `pull --rebase` |
 | 2026-10-12 | Ứng dụng luyện nghe Trung Y | Thanh toán/credit/Lão Sư/chấm nhanh; bộ đọc email VCB không duyệt biên lai chuyển đi | `billing.js`, `ai-budget.js`, `quick-score.js`, `laoshi.js` |
 | 2026-10-13 | Thiết lập thanh toán Sepay | (điền khi làm) | Cấu hình webhook SePay + `SEPAY_API_KEY` |

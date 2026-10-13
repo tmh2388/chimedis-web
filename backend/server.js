@@ -15,6 +15,8 @@ import { resolvePlan, requirePlan, ensurePlanColumns, LIMITS, atLeast, planInfo,
 import * as billing from './lib/billing.js';
 import * as laoshi from './lib/laoshi.js';
 import * as laoshiLearn from './lib/laoshi-learn.js';
+import * as laoshiFaq from './lib/laoshi-faq.js';
+import * as termLearn from './lib/term-learn.js';
 import * as aiBudget from './lib/ai-budget.js';
 import { scoreChinese, scoreWords, ensureUsageTable, consumeServerAsr } from './lib/quick-score.js';
 import crypto from 'node:crypto';
@@ -1271,6 +1273,8 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
 
 // ===== Lão Sư Trung Y: thầy giáo AI (gói Max) — xem lib/laoshi.js =====
 onDbUp(() => laoshi.ensureTable(mysqlPool).catch((e) => console.error('[laoshi] init:', e.message)));
+onDbUp(() => laoshiFaq.ensureTable(mysqlPool).catch((e) => console.error('[laoshi-faq] init:', e.message)));
+onDbUp(() => termLearn.ensureTables(mysqlPool).then(() => termLearn.startPromoteJob(mysqlPool)).catch((e) => console.error('[term-learn] init:', e.message)));
 onDbUp(() => laoshiLearn.ensureTables(mysqlPool).then(() => laoshiLearn.loadLearned(mysqlPool, true)).catch((e) => console.error('[laoshi-learn] init:', e.message)));
 const maxOnly = [verifyFirebaseToken, requirePlan(mysqlPool, 'max')];
 app.get('/api/laoshi/opening', ...maxOnly, withLessonIndex((req, res) => {
@@ -1278,6 +1282,17 @@ app.get('/api/laoshi/opening', ...maxOnly, withLessonIndex((req, res) => {
   res.json({ success: true, data: laoshi.opening({ lang: String(req.query.lang || 'vi'), field: csdl.FIELDS.some((f) => f.key === field) ? field : '', fresh: req.query.fresh === '1' || req.query.fresh === 'true' }) });
 }));
 app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLessonIndex(async (req, res) => {
+  // Kho câu hỏi đã duyệt: câu hỏi tự đầy đủ khớp → trả thẳng, không gọi AI, không trừ ngân sách/lượt.
+  try {
+    const b = req.body || {};
+    const ms = Array.isArray(b.messages) ? b.messages : [];
+    const lastMsg = ms[ms.length - 1];
+    const fl = ['vi', 'zh', 'en'].includes(b.lang) ? b.lang : 'vi';
+    if (lastMsg && lastMsg.role !== 'assistant' && !b.quiz) {
+      const hit = await laoshiFaq.lookup(mysqlPool, fl, lastMsg.content);
+      if (hit) return res.json({ success: true, data: { text: hit.answer, refs: [], from_bank: true } });
+    }
+  } catch (e) { console.error('faq lookup:', e.message); }
   if (!(await budgetGate(req, res, req.plan))) return;
   const lim = (LIMITS.max && LIMITS.max.laoshiPerDay) || 60;
   const use = await laoshi.consume(mysqlPool, req.firebaseUser.uid, lim);
@@ -1362,6 +1377,14 @@ app.post('/api/laoshi/tts', ...maxOnly, async (req, res) => {
     res.status(502).json({ success: false, error: 'tts_failed' });
   }
 });
+// 👍/👎 cho một câu trả lời: 👍 → vào hàng chờ duyệt của kho câu hỏi (quản trị viên duyệt mới được dùng lại).
+app.post('/api/laoshi/feedback', ...maxOnly, requireDocsDb, async (req, res) => {
+  try {
+    const b = req.body || {};
+    const ok = await laoshiFaq.vote(mysqlPool, { uid: req.firebaseUser.uid, lang: ['vi', 'zh', 'en'].includes(b.lang) ? b.lang : 'vi', question: b.question, answer: b.answer, up: b.vote === 'up' });
+    res.json({ success: ok });
+  } catch (e) { res.status(500).json({ success: false, error: 'feedback_failed' }); }
+});
 // Người dùng sửa chữ nhận dạng sai đồng âm → ghi phiếu (MySQL). Chỉ nhận cặp thật sự đồng âm; ≥2 người hoặc quản trị viên → tự áp dụng.
 app.post('/api/laoshi/asr-fix', ...maxOnly, requireDocsDb, withLessonIndex(async (req, res) => {
   try {
@@ -1398,6 +1421,16 @@ app.post('/api/laoshi/transcribe', ...maxOnly, express.json({ limit: '25mb' }), 
     console.error('laoshi transcribe:', e.message);
     res.status(502).json({ success: false, error: 'asr_failed' });
   }
+});
+
+// ===== Góp ý thuật ngữ (⭐ ở mục Tổng hợp) =====
+app.post('/api/term-feedback', verifyFirebaseToken, requireDocsDb, async (req, res) => {
+  try {
+    const b = req.body || {};
+    if (!b.term_id || !(String(b.comment || '').trim() || b.suggested_vi || b.suggested_en)) return res.status(400).json({ success: false, error: 'empty' });
+    const r = await termLearn.addFeedback(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email, term_id: b.term_id, hz: b.hz, vi: b.vi, en: b.en, comment: b.comment, suggested_vi: b.suggested_vi, suggested_en: b.suggested_en });
+    res.status(r.ok ? 200 : 429).json({ success: r.ok, error: r.error });
+  } catch (e) { console.error('term-feedback:', e.message); res.status(500).json({ success: false, error: 'feedback_failed' }); }
 });
 
 // ===== Gói & thanh toán chuyển khoản (xem lib/billing.js) — chỉ giao diện web có nút mua =====
@@ -1493,6 +1526,16 @@ app.post('/api/payments/email', requireDocsDb, async (req, res) => {
     res.status(500).json({ success: false, error: String(e.code || 'error'), detail: String(e.message || '').slice(0, 160) });
   }
 });
+
+// ---- Quản trị: góp ý thuật ngữ / thuật ngữ mới tự học / kho câu hỏi Lão Sư ----
+const adminJson = (fn) => async (req, res) => { try { res.json({ success: true, data: await fn(req) }); } catch (e) { console.error('admin:', e.message); res.status(500).json({ success: false, error: 'admin_failed' }); } };
+app.get('/api/admin/term-feedback', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.listFeedback(mysqlPool, String(req.query.status || 'new'))));
+app.post('/api/admin/term-feedback/:id', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.resolveFeedback(mysqlPool, Number(req.params.id), req.body || {})));
+app.get('/api/admin/auto-terms', ...adminOnly, requireDocsDb, adminJson(() => termLearn.listAutoTerms(mysqlPool)));
+app.post('/api/admin/auto-terms/:id', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.reviewAutoTerm(mysqlPool, String(req.params.id), req.body || {})));
+app.post('/api/admin/term-promote/run', ...adminOnly, requireDocsDb, adminJson(() => termLearn.promoteBatch(mysqlPool)));
+app.get('/api/admin/laoshi-faq', ...adminOnly, requireDocsDb, adminJson((req) => laoshiFaq.list(mysqlPool, String(req.query.status || 'pending'))));
+app.post('/api/admin/laoshi-faq/:id', ...adminOnly, requireDocsDb, adminJson(async (req) => ({ ok: await laoshiFaq.review(mysqlPool, Number(req.params.id), req.body || {}) })));
 
 app.get('/api/admin/orders', ...adminOnly, requireDocsDb, async (req, res) => {
   try { res.json({ success: true, data: (await billing.listAdmin(mysqlPool, String(req.query.status || 'pending'))).map((o) => ({ ...orderView(o), email: o.email, uid: o.firebase_uid, bank_ref: o.bank_ref })) }); }

@@ -851,7 +851,11 @@ header{transition:padding .2s ease}
 .ls-opt b{flex:none;min-width:18px}
 .ls-opt:active{background:var(--thamthm,#0E3A3A);color:#fff}
 .ls-mic{flex:none;width:42px;height:42px;border:1px solid var(--vien,#e5ddcc);border-radius:50%;background:#fff;font-size:18px;cursor:pointer;line-height:1}
+.ls-voted{font-size:14px;margin-left:4px}
 .ls-msg.user .ls-spk{background:rgba(255,255,255,.18);color:#fff}
+.tf-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 2px}
+.tf-badge{font-size:11.5px;background:#FBF3DC;border:1px solid #E3C26C;border-radius:999px;padding:3px 9px;color:#7A5A12}
+.tf-btn{border:1px solid var(--vien,#e5ddcc);background:#fff;border-radius:999px;padding:5px 11px;font-size:12px;cursor:pointer}
 .ls-mic{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .ls-mic.rec{background:#c0392b;border-color:#c0392b;animation:lsPulse 1s infinite}
 .ls-mic.free{background:#8e2a1f;border-color:#8e2a1f}
@@ -3121,7 +3125,7 @@ Object.assign(I18N.vi, {
   laoshi_err: 'Ối, thầy bị nghẹn chữ một chút. Em thử lại sau ít phút nhé!', laoshi_limit: 'Hôm nay thầy nói nhiều quá, khản cả giọng rồi! Hẹn em ngày mai nhé.',
   laoshi_disclaimer: 'Công cụ học tập — không thay thế chẩn đoán hay điều trị. Thầy có thể nhầm; hãy đối chiếu giáo trình.',
   laoshi_chip_quiz: 'Đố thầy một câu', laoshi_chip_topic: 'Hôm nay học gì?', laoshi_chip_story: 'Kể một chuyện Trung y vui', laoshi_chip_explain: 'Giải thích dễ nhớ giúp em',
-  laoshi_autospeak: 'Tự đọc', laoshi_fix: 'Sửa', laoshi_fix_prompt: 'Sửa lại câu em đã nói (thầy sẽ nhớ để lần sau nghe đúng hơn):', laoshi_fix_saved: 'Đã ghi nhớ cách sửa này. Cảm ơn em!', laoshi_fix_resend: 'Gửi lại câu đã sửa để thầy trả lời?', laoshi_pick_topic: 'Chọn chủ đề', laoshi_pick_prompt: 'Em muốn học về lĩnh vực nào? Thầy chọn bài trong kho Chimedis cho em.', laoshi_pick_random: 'Ngẫu nhiên — thầy chọn giúp', laoshi_rec_hold: 'Đang nghe… thả tay để gửi', laoshi_rec_free: 'Đang ghi… bấm mic lần nữa để gửi', laoshi_rec_cancel: 'Huỷ', laoshi_mic_hint: 'Giữ mic để nói · chạm nhanh = rảnh tay', laoshi_speak: 'Nghe thầy đọc', laoshi_stop: 'Dừng', laoshi_mic: 'Nói', laoshi_st_listening: 'Thầy đang nghe em…', laoshi_st_speaking: 'Thầy đang nói…', laoshi_st_transcribing: 'Đang nhận dạng giọng nói…', laoshi_mic_denied: 'Chưa cho phép micro. Hãy bật quyền micro rồi thử lại.', laoshi_noasr: 'Thầy chưa nghe rõ, em thử nói lại nhé.', laoshi_voice_err: 'Chưa đọc to được lúc này, em thử lại nhé.',
+  laoshi_autospeak: 'Tự đọc', laoshi_vote_thanks: 'Cảm ơn em! Thầy ghi nhận.', tf_auto: 'AI dịch tự động · chưa duyệt', tf_flag: 'Báo dịch chưa đúng / góp ý', tf_vi: 'Bản dịch tiếng Việt đề xuất (nếu có)', tf_en: 'Bản tiếng Anh đề xuất (nếu có)', tf_comment: 'Góp ý của bạn…', tf_send: 'Gửi góp ý', tf_empty: 'Hãy nhập góp ý hoặc bản dịch đề xuất.', tf_thanks: 'Cảm ơn bạn! Góp ý đã được chuyển cho quản trị viên.', adm_tf: 'Góp ý thuật ngữ', adm_auto: 'Thuật ngữ mới tự học', adm_faq: 'Kho câu hỏi Lão Sư (chờ duyệt)', adm_edit: 'Sửa', adm_hide: 'Ẩn', adm_run: 'Chạy ngay', laoshi_fix: 'Sửa', laoshi_fix_prompt: 'Sửa lại câu em đã nói (thầy sẽ nhớ để lần sau nghe đúng hơn):', laoshi_fix_saved: 'Đã ghi nhớ cách sửa này. Cảm ơn em!', laoshi_fix_resend: 'Gửi lại câu đã sửa để thầy trả lời?', laoshi_pick_topic: 'Chọn chủ đề', laoshi_pick_prompt: 'Em muốn học về lĩnh vực nào? Thầy chọn bài trong kho Chimedis cho em.', laoshi_pick_random: 'Ngẫu nhiên — thầy chọn giúp', laoshi_rec_hold: 'Đang nghe… thả tay để gửi', laoshi_rec_free: 'Đang ghi… bấm mic lần nữa để gửi', laoshi_rec_cancel: 'Huỷ', laoshi_mic_hint: 'Giữ mic để nói · chạm nhanh = rảnh tay', laoshi_speak: 'Nghe thầy đọc', laoshi_stop: 'Dừng', laoshi_mic: 'Nói', laoshi_st_listening: 'Thầy đang nghe em…', laoshi_st_speaking: 'Thầy đang nói…', laoshi_st_transcribing: 'Đang nhận dạng giọng nói…', laoshi_mic_denied: 'Chưa cho phép micro. Hãy bật quyền micro rồi thử lại.', laoshi_noasr: 'Thầy chưa nghe rõ, em thử nói lại nhé.', laoshi_voice_err: 'Chưa đọc to được lúc này, em thử lại nhé.',
   verify_title: 'Email chưa được xác minh', verify_body: 'Mở thư chúng tôi vừa gửi (xem cả mục Spam) và bấm liên kết xác minh. Gói Pro theo email chỉ có hiệu lực sau khi xác minh.',
   verify_resend: 'Gửi lại thư', verify_done: 'Tôi đã xác minh', verify_sent: 'Đã gửi thư xác minh.', verify_ok: 'Đã xác minh email.', verify_not_yet: 'Chưa thấy xác minh — hãy bấm liên kết trong thư rồi thử lại.',
   my_trim_title: 'Tệp vượt giới hạn', my_trim_body: 'Tệp có {n} ký tự, gói của bạn cho tối đa {max} ký tự mỗi tài liệu. Cắt phần đuôi cho vừa (giữ phần đầu, dừng ở cuối câu gần nhất)?',
@@ -3189,7 +3193,7 @@ Object.assign(I18N.zh, {
   laoshi_err: '哎呀，老师卡壳了一下。请稍后再试！', laoshi_limit: '今天老师话说多了，嗓子哑了！明天再见。',
   laoshi_disclaimer: '学习工具——不能替代诊断或治疗。老师也会出错，请对照教材。',
   laoshi_chip_quiz: '考老师一个问题', laoshi_chip_topic: '今天学什么？', laoshi_chip_story: '讲个有趣的中医故事', laoshi_chip_explain: '帮我好记地解释一下',
-  laoshi_autospeak: '自动朗读', laoshi_fix: '修改', laoshi_fix_prompt: '修改你说的话（老师会记住，下次听得更准）：', laoshi_fix_saved: '已记住这次修改，谢谢！', laoshi_fix_resend: '用修改后的话重新发给老师？', laoshi_pick_topic: '选择主题', laoshi_pick_prompt: '你想学哪个领域？老师从 Chimedis 词库里挑一课。', laoshi_pick_random: '随机——老师来选', laoshi_rec_hold: '正在听……松手发送', laoshi_rec_free: '正在录音……再点一次麦克风发送', laoshi_rec_cancel: '取消', laoshi_mic_hint: '按住说话 · 轻点 = 免提', laoshi_speak: '朗读', laoshi_stop: '停止', laoshi_mic: '说话', laoshi_st_listening: '老师在听……', laoshi_st_speaking: '老师在说话……', laoshi_st_transcribing: '正在识别语音……', laoshi_mic_denied: '未允许使用麦克风，请开启权限后重试。', laoshi_noasr: '老师没听清，请再说一遍。', laoshi_voice_err: '暂时无法朗读，请稍后再试。',
+  laoshi_autospeak: '自动朗读', laoshi_vote_thanks: '谢谢！老师记下了。', tf_auto: 'AI 自动翻译 · 未审核', tf_flag: '报告翻译错误 / 反馈', tf_vi: '建议的越南语译文（可选）', tf_en: '建议的英文译文（可选）', tf_comment: '您的意见……', tf_send: '提交', tf_empty: '请输入意见或建议译文。', tf_thanks: '谢谢！已转交管理员。', laoshi_fix: '修改', laoshi_fix_prompt: '修改你说的话（老师会记住，下次听得更准）：', laoshi_fix_saved: '已记住这次修改，谢谢！', laoshi_fix_resend: '用修改后的话重新发给老师？', laoshi_pick_topic: '选择主题', laoshi_pick_prompt: '你想学哪个领域？老师从 Chimedis 词库里挑一课。', laoshi_pick_random: '随机——老师来选', laoshi_rec_hold: '正在听……松手发送', laoshi_rec_free: '正在录音……再点一次麦克风发送', laoshi_rec_cancel: '取消', laoshi_mic_hint: '按住说话 · 轻点 = 免提', laoshi_speak: '朗读', laoshi_stop: '停止', laoshi_mic: '说话', laoshi_st_listening: '老师在听……', laoshi_st_speaking: '老师在说话……', laoshi_st_transcribing: '正在识别语音……', laoshi_mic_denied: '未允许使用麦克风，请开启权限后重试。', laoshi_noasr: '老师没听清，请再说一遍。', laoshi_voice_err: '暂时无法朗读，请稍后再试。',
   verify_title: '邮箱尚未验证', verify_body: '请打开我们刚发送的邮件（也请查看垃圾邮件）并点击验证链接。按邮箱开通的 Pro 套餐需验证后才生效。',
   verify_resend: '重新发送', verify_done: '我已验证', verify_sent: '验证邮件已发送。', verify_ok: '邮箱已验证。', verify_not_yet: '尚未检测到验证——请点击邮件中的链接后重试。',
   my_trim_title: '文件超出限制', my_trim_body: '文件有 {n} 个字符，您的套餐每个文档最多 {max} 个字符。是否截去末尾使其符合限制（保留开头，在最近的句末处截断）？',
@@ -3257,7 +3261,7 @@ Object.assign(I18N.en, {
   laoshi_err: 'Oops, the teacher choked on words. Please try again in a few minutes!', laoshi_limit: 'The teacher talked too much today and lost their voice! See you tomorrow.',
   laoshi_disclaimer: 'A learning tool — not a substitute for diagnosis or treatment. The teacher can be wrong; check your textbooks.',
   laoshi_chip_quiz: 'Quiz me', laoshi_chip_topic: 'What shall we learn today?', laoshi_chip_story: 'Tell me a fun TCM story', laoshi_chip_explain: 'Explain it in a memorable way',
-  laoshi_autospeak: 'Read aloud', laoshi_fix: 'Edit', laoshi_fix_prompt: 'Correct what you said (the teacher will remember it for next time):', laoshi_fix_saved: 'Correction saved. Thank you!', laoshi_fix_resend: 'Send the corrected sentence to the teacher?', laoshi_pick_topic: 'Pick a topic', laoshi_pick_prompt: 'Which field would you like to study? I will pick a lesson from the Chimedis database.', laoshi_pick_random: 'Random — teacher\'s choice', laoshi_rec_hold: 'Listening… release to send', laoshi_rec_free: 'Recording… tap the mic again to send', laoshi_rec_cancel: 'Cancel', laoshi_mic_hint: 'Hold to talk · tap = hands-free', laoshi_speak: 'Listen', laoshi_stop: 'Stop', laoshi_mic: 'Speak', laoshi_st_listening: 'Listening…', laoshi_st_speaking: 'The teacher is speaking…', laoshi_st_transcribing: 'Recognizing speech…', laoshi_mic_denied: 'Microphone permission is off. Enable it and try again.', laoshi_noasr: 'The teacher did not catch that — please try again.', laoshi_voice_err: 'Cannot read aloud right now. Please try again.',
+  laoshi_autospeak: 'Read aloud', laoshi_vote_thanks: 'Thank you! Noted.', tf_auto: 'Auto-translated by AI · not reviewed', tf_flag: 'Report a wrong translation / feedback', tf_vi: 'Suggested Vietnamese (optional)', tf_en: 'Suggested English (optional)', tf_comment: 'Your comment…', tf_send: 'Send', tf_empty: 'Please enter a comment or a suggested translation.', tf_thanks: 'Thank you! Sent to the administrators.', laoshi_fix: 'Edit', laoshi_fix_prompt: 'Correct what you said (the teacher will remember it for next time):', laoshi_fix_saved: 'Correction saved. Thank you!', laoshi_fix_resend: 'Send the corrected sentence to the teacher?', laoshi_pick_topic: 'Pick a topic', laoshi_pick_prompt: 'Which field would you like to study? I will pick a lesson from the Chimedis database.', laoshi_pick_random: 'Random — teacher\'s choice', laoshi_rec_hold: 'Listening… release to send', laoshi_rec_free: 'Recording… tap the mic again to send', laoshi_rec_cancel: 'Cancel', laoshi_mic_hint: 'Hold to talk · tap = hands-free', laoshi_speak: 'Listen', laoshi_stop: 'Stop', laoshi_mic: 'Speak', laoshi_st_listening: 'Listening…', laoshi_st_speaking: 'The teacher is speaking…', laoshi_st_transcribing: 'Recognizing speech…', laoshi_mic_denied: 'Microphone permission is off. Enable it and try again.', laoshi_noasr: 'The teacher did not catch that — please try again.', laoshi_voice_err: 'Cannot read aloud right now. Please try again.',
   verify_title: 'Email not verified yet', verify_body: 'Open the message we just sent (check Spam too) and tap the verification link. An email-based Pro plan only takes effect after verification.',
   verify_resend: 'Resend email', verify_done: 'I have verified', verify_sent: 'Verification email sent.', verify_ok: 'Email verified.', verify_not_yet: 'Not verified yet — tap the link in the email, then try again.',
   my_trim_title: 'File exceeds the limit', my_trim_body: 'The file has {n} characters; your plan allows {max} per document. Trim the end to fit (keeps the beginning, stops at the nearest sentence end)?',
@@ -3479,15 +3483,60 @@ async function adminRefresh(){
   const box = document.getElementById('adminBody'); if(!box) return;
   const esc = myDocEsc;
   try{
-    const [po, co] = await Promise.all([authFetch('/api/admin/orders?status=pending').then(r => r.json()), authFetch('/api/admin/codes').then(r => r.json())]);
+    const jget = (u) => authFetch(u).then(r => r.json()).catch(() => ({ data: [] }));
+    const [po, co, tfb, atm, faq] = await Promise.all([jget('/api/admin/orders?status=pending'), jget('/api/admin/codes'), jget('/api/admin/term-feedback?status=new'), jget('/api/admin/auto-terms'), jget('/api/admin/laoshi-faq?status=pending')]);
+    window.__admTf = tfb.data || []; window.__admAt = atm.data || []; window.__admFaq = faq.data || [];
     const orders = (po.data || []).map(o => `<div class="adm-row"><div><b>${esc(o.code)}</b> — ${esc(o.email || o.uid)}<br><small>${t('plan_name_' + o.plan)} · ${t('ck_period_' + o.period)} · ${ckMoney(o.amount)} · ${new Date(o.created_at).toLocaleString('vi-VN')}${o.note ? ' · ' + esc(o.note) : ''}</small></div>` +
       `<div><button type="button" class="mde-btn primary" onclick="adminOrder('${o.code}','approve')">${t('admin_approve')}</button> <button type="button" class="mde-btn" onclick="adminOrder('${o.code}','reject')">${t('admin_reject')}</button></div></div>`).join('') || `<p class="csdl-hint">${t('admin_no_orders')}</p>`;
     const codes = (co.data || []).slice(0, 30).map(c => `<div class="adm-row"><div><b>${esc(c.code)}</b> — ${t('plan_name_' + c.plan)} · ${c.months} ${t('admin_months')}</div><small>${c.used_by_uid ? t('admin_used') : t('admin_unused')}</small></div>`).join('');
     box.innerHTML = `<h3 class="csdl-sec">${t('admin_pending')}</h3>${orders}` +
       `<h3 class="csdl-sec">${t('admin_grant')}</h3><div class="adm-form"><input id="admEmail" placeholder="email"><select id="admPlan"><option value="pro">Pro</option><option value="max">Max</option></select><input id="admMonths" type="number" min="1" value="1" style="width:70px"><button type="button" class="mde-btn primary" onclick="adminGrant()">${t('admin_do_grant')}</button></div>` +
       `<h3 class="csdl-sec">${t('admin_credits')}</h3><div class="adm-form"><input id="crEmail" placeholder="email"><input id="crN" type="number" value="100" style="width:90px"><button type="button" class="mde-btn primary" onclick="adminCredits()">${t('admin_do_credits')}</button></div>` +
+      `<h3 class="csdl-sec">${t('adm_tf')} (${(tfb.data || []).length})</h3>` +
+      ((tfb.data || []).map((f, i) => `<div class="adm-row" style="align-items:flex-start"><div><b>${esc(f.hz || '')}</b> · ${esc(f.vi || '')} · ${esc(f.en || '')}<br><small>${esc(f.comment || '')}${f.suggested_vi ? ' → VI: ' + esc(f.suggested_vi) : ''}${f.suggested_en ? ' → EN: ' + esc(f.suggested_en) : ''} · ${esc(f.email || '')}</small></div>` +
+        `<div style="display:flex;gap:4px;flex-direction:column"><button type="button" class="mde-btn primary" onclick="adminTf(${i},'apply')">${t('admin_approve')}</button><button type="button" class="mde-btn" onclick="adminTf(${i},'dismiss')">${t('admin_reject')}</button></div></div>`).join('') || `<p class="csdl-hint">—</p>`) +
+      `<h3 class="csdl-sec">${t('adm_auto')} (${(atm.data || []).length}) <button type="button" class="mde-btn" onclick="adminPromoteRun()">${t('adm_run')}</button></h3>` +
+      ((atm.data || []).map((x, i) => `<div class="adm-row" style="align-items:flex-start"><div><b>${esc(x.hz)}</b> ${esc(x.py || '')} · ${esc(x.vi || '')} · ${esc(x.en || '')}<br><small>${esc(x.definition || '')}</small></div>` +
+        `<div style="display:flex;gap:4px;flex-direction:column"><button type="button" class="mde-btn primary" onclick="adminAuto(${i},'approve')">${t('admin_approve')}</button><button type="button" class="mde-btn" onclick="adminAuto(${i},'edit')">${t('adm_edit')}</button><button type="button" class="mde-btn" onclick="adminAuto(${i},'hide')">${t('adm_hide')}</button></div></div>`).join('') || `<p class="csdl-hint">—</p>`) +
+      `<h3 class="csdl-sec">${t('adm_faq')} (${(faq.data || []).length})</h3>` +
+      ((faq.data || []).map((f, i) => `<div class="adm-row" style="align-items:flex-start"><div><b>${esc(f.question)}</b> <small>(${esc(f.lang)} · 👍${f.ups} 👎${f.downs})</small><br><small>${esc(String(f.answer).slice(0, 300))}</small></div>` +
+        `<div style="display:flex;gap:4px;flex-direction:column"><button type="button" class="mde-btn primary" onclick="adminFaq(${i},'approve')">${t('admin_approve')}</button><button type="button" class="mde-btn" onclick="adminFaq(${i},'edit')">${t('adm_edit')}</button><button type="button" class="mde-btn" onclick="adminFaq(${i},'reject')">${t('admin_reject')}</button></div></div>`).join('') || `<p class="csdl-hint">—</p>`) +
       `<h3 class="csdl-sec">${t('admin_codes')}</h3><div class="adm-form"><select id="codePlan"><option value="pro">Pro</option><option value="max">Max</option></select><input id="codeMonths" type="number" min="1" value="12" style="width:70px"><input id="codeCount" type="number" min="1" max="50" value="5" style="width:70px"><button type="button" class="mde-btn primary" onclick="adminMakeCodes()">${t('admin_make_codes')}</button></div><div id="adminNewCodes"></div>${codes}`;
   }catch(e){ box.textContent = t('auth_err_generic'); }
+}
+async function adminPost(url, body){
+  const r = await authFetch(url, { method: 'POST', body: JSON.stringify(body || {}) });
+  const j = await r.json().catch(() => ({}));
+  listenToast(r.ok ? 'OK' : t('auth_err_generic'));
+  adminRefresh();
+  return j;
+}
+function adminTf(i, action){
+  const f = (window.__admTf || [])[i]; if(!f) return;
+  if(action === 'dismiss') return adminPost(`/api/admin/term-feedback/${f.id}`, { action });
+  const vi = prompt('VI', f.suggested_vi || f.vi || ''); if(vi === null) return;
+  const en = prompt('EN', f.suggested_en || f.en || ''); if(en === null) return;
+  adminPost(`/api/admin/term-feedback/${f.id}`, { action: 'apply', vi, en });
+}
+function adminAuto(i, action){
+  const x = (window.__admAt || [])[i]; if(!x) return;
+  const url = `/api/admin/auto-terms/${encodeURIComponent(x.term_id)}`;
+  if(action === 'hide'){ if(confirm(`${t('adm_hide')} ${x.hz}?`)) adminPost(url, { action }); return; }
+  if(action === 'approve') return adminPost(url, { action: 'approve' });
+  const vi = prompt('VI', x.vi || ''); if(vi === null) return;
+  const en = prompt('EN', x.en || ''); if(en === null) return;
+  const definition = prompt('Định nghĩa / Definition', x.definition || ''); if(definition === null) return;
+  adminPost(url, { action: 'approve', vi, en, definition });
+}
+function adminPromoteRun(){ adminPost('/api/admin/term-promote/run', {}); }
+function adminFaq(i, action){
+  const f = (window.__admFaq || [])[i]; if(!f) return;
+  const url = `/api/admin/laoshi-faq/${f.id}`;
+  if(action === 'edit'){
+    const answer = prompt(f.question, f.answer); if(answer === null) return;
+    return adminPost(url, { action: 'approve', answer });
+  }
+  adminPost(url, { action });
 }
 async function adminOrder(code, action){
   if(!confirm(`${action === 'approve' ? t('admin_approve') : t('admin_reject')} ${code}?`)) return;
@@ -3515,6 +3564,35 @@ async function adminMakeCodes(){
   else listenToast(t('auth_err_generic'));
 }
 function closeUpgradeModal(){ document.getElementById('upgradeModal')?.remove(); }
+// ===== Góp ý thuật ngữ (⭐): sai/thiếu → admin xem, sửa, ghi ngược vào kho chung dict ⇄ workbench =====
+function closeTermFeedback(){ document.getElementById('tfModal')?.remove(); }
+function openTermFeedback(id){
+  const term = TERMS.find(x => x.id === id);
+  if(!term) return;
+  if(!state.user){ openAuthModal(); return; }
+  closeTermFeedback();
+  const e = myDocEsc;
+  document.getElementById('app').insertAdjacentHTML('beforeend',
+    `<div id="tfModal" class="up-scrim" onclick="if(event.target===this)closeTermFeedback()"><div class="up-box" role="dialog">` +
+    `<h3>⭐ ${t('tf_flag')}</h3><p><b>${e(term.hz || '')}</b> · ${e(term.vi || '')} · ${e(term.en || '')}</p>` +
+    `<div class="adm-form" style="flex-direction:column">` +
+    `<input id="tfVi" placeholder="${e(t('tf_vi'))}"><input id="tfEn" placeholder="${e(t('tf_en'))}">` +
+    `<textarea id="tfCm" rows="3" placeholder="${e(t('tf_comment'))}" style="border:1px solid var(--vien,#e5ddcc);border-radius:10px;padding:8px 10px;font:inherit"></textarea></div>` +
+    `<div class="up-actions"><button type="button" class="up-cta" style="border:0;cursor:pointer" onclick="sendTermFeedback('${String(id).replace(/'/g, '')}')">${t('tf_send')}</button>` +
+    `<button type="button" onclick="closeTermFeedback()">${t('plans_close')}</button></div></div></div>`);
+}
+async function sendTermFeedback(id){
+  const term = TERMS.find(x => x.id === id);
+  const v = (k) => (document.getElementById(k) || {}).value || '';
+  const body = { term_id: id, hz: term && term.hz, vi: term && term.vi, en: term && term.en, comment: v('tfCm'), suggested_vi: v('tfVi'), suggested_en: v('tfEn') };
+  if(!body.comment.trim() && !body.suggested_vi.trim() && !body.suggested_en.trim()){ listenToast(t('tf_empty')); return; }
+  try{
+    const r = await authFetch('/api/term-feedback', { method: 'POST', body: JSON.stringify(body) });
+    closeTermFeedback();
+    listenToast(r.ok ? t('tf_thanks') : t('auth_err_generic'));
+  }catch(e){ listenToast(t('auth_err_generic')); }
+}
+
 // ===== Lão Sư Trung Y — thầy giáo AI dí dỏm, chủ động hỏi/đố (gói Max). Máy chủ: lib/laoshi.js =====
 // Tương tác: chọn đáp án trắc nghiệm bằng nút, đọc to câu trả lời (Google TTS), nói bằng micro, và chế độ "Đàm thoại" (nói – nghe liên tục).
 const LS_KEY = 'chimedis_laoshi_v1';
@@ -3585,8 +3663,11 @@ function laoshiRender(){
   if(!box) return;
   const lastIdx = laoshi.msgs.length - 1;
   let html = laoshi.msgs.map((m, i) => {
+    const canVote = m.role === 'assistant' && i > 0 && laoshi.msgs[i - 1] && laoshi.msgs[i - 1].role === 'user';
+    const vote = canVote ? (m.voted ? `<span class="ls-voted">${m.voted === 'up' ? '👍' : '👎'}</span>`
+      : `<button type="button" class="ls-spk" onclick="laoshiVote(${i},'up')">👍</button><button type="button" class="ls-spk" onclick="laoshiVote(${i},'down')">👎</button>`) : '';
     const tools = m.role === 'assistant'
-      ? `<div class="ls-tools"><button type="button" class="ls-spk${lsSpeakingIdx === i ? ' on' : ''}" onclick="laoshiSpeak(${i})">${lsSpeakingIdx === i ? '⏹ ' + t('laoshi_stop') : '🔊 ' + t('laoshi_speak')}</button></div>` : '';
+      ? `<div class="ls-tools"><button type="button" class="ls-spk${lsSpeakingIdx === i ? ' on' : ''}" onclick="laoshiSpeak(${i})">${lsSpeakingIdx === i ? '⏹ ' + t('laoshi_stop') : '🔊 ' + t('laoshi_speak')}</button> ${vote}</div>` : '';
     const fix = (m.role === 'user' && m.voice) ? `<div class="ls-tools"><button type="button" class="ls-spk" onclick="laoshiFixVoice(${i})">✎ ${t('laoshi_fix')}</button></div>` : '';
     return `<div class="ls-msg ${m.role}">${lsFmt(m.content)}${tools}${fix}</div>`;
   }).join('');
@@ -3604,6 +3685,13 @@ function laoshiRender(){
   if(laoshi.busy) html += `<div class="ls-msg assistant ls-typing">${t('laoshi_typing')}</div>`;
   box.innerHTML = html;
   box.scrollTop = box.scrollHeight;
+}
+async function laoshiVote(i, v){
+  const m = laoshi.msgs[i], q = laoshi.msgs[i - 1];
+  if(!m || !q || q.role !== 'user' || m.voted) return;
+  m.voted = v; laoshiSave(); laoshiRender();
+  try{ await authFetch('/api/laoshi/feedback', { method: 'POST', body: JSON.stringify({ lang: state.lang, vote: v, question: q.content, answer: m.content }) }); }catch(e){}
+  if(v === 'up') listenToast(t('laoshi_vote_thanks'));
 }
 function laoshiPick(key){
   const last = laoshi.msgs[laoshi.msgs.length - 1];
@@ -6132,6 +6220,11 @@ function openPopup(id){
     }
   }
   html += `<div class="src">${t('f_source')}: ${term.nguon||'(chưa xác định)'}</div>`;
+  if(term.group1 === 'Tổng hợp' || term.group1 === 'Thuật ngữ bổ sung'){
+    const auto = /^Tự học/.test(term.nguon || '') && !term.verify;
+    html += `<div class="tf-box">${auto ? `<span class="tf-badge">🤖 ${t('tf_auto')}</span>` : ''}` +
+      `<button type="button" class="tf-btn" onclick="openTermFeedback('${String(term.id).replace(/'/g, '')}')">⭐ ${t('tf_flag')}</button></div>`;
+  }
   // GỘP "Lưu" = "Học": nút ❤ ở góc trên đã đảm nhiệm việc đưa từ vào danh sách ôn luyện,
   // nên bỏ nút "Thêm vào ôn tập" cũ (gây nhầm với "trả lời sai"). Chỉ giữ 1 nút tự chấm
   // "Đã thuộc" + 1 nút lưu&học (đổi trạng thái ❤) để thao tác nhanh ngay trong popup.
