@@ -1470,8 +1470,8 @@ app.post('/api/laoshi/transcribe', ...maxOnly, express.json({ limit: '25mb' }), 
 app.post('/api/term-feedback', verifyFirebaseToken, requireDocsDb, async (req, res) => {
   try {
     const b = req.body || {};
-    if (!b.term_id || !(String(b.comment || '').trim() || b.suggested_vi || b.suggested_en)) return res.status(400).json({ success: false, error: 'empty' });
-    const r = await termLearn.addFeedback(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email, term_id: b.term_id, hz: b.hz, vi: b.vi, en: b.en, comment: b.comment, suggested_vi: b.suggested_vi, suggested_en: b.suggested_en });
+    if (!b.term_id || !(String(b.comment || '').trim() || b.suggested_vi || b.suggested_en || b.suggested_def)) return res.status(400).json({ success: false, error: 'empty' });
+    const r = await termLearn.addFeedback(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email, term_id: b.term_id, hz: b.hz, vi: b.vi, en: b.en, group1: b.group1, comment: b.comment, suggested_vi: b.suggested_vi, suggested_en: b.suggested_en, suggested_def: b.suggested_def });
     res.status(r.ok ? 200 : 429).json({ success: r.ok, error: r.error });
   } catch (e) { console.error('term-feedback:', e.message); res.status(500).json({ success: false, error: 'feedback_failed' }); }
 });
@@ -1574,6 +1574,14 @@ app.post('/api/payments/email', requireDocsDb, async (req, res) => {
 const adminJson = (fn) => async (req, res) => { try { res.json({ success: true, data: await fn(req) }); } catch (e) { console.error('admin:', e.message); res.status(500).json({ success: false, error: 'admin_failed' }); } };
 app.get('/api/admin/term-feedback', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.listFeedback(mysqlPool, String(req.query.status || 'new'))));
 app.post('/api/admin/term-feedback/:id', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.resolveFeedback(mysqlPool, Number(req.params.id), req.body || {})));
+// ---- Màn duyệt "từ vựng người dùng báo sai" ngay trong app (chỉ quản trị viên) ----
+app.get('/api/admin/term-reports', ...adminOnly, requireDocsDb, adminJson(() => termLearn.listReports(mysqlPool)));
+app.get('/api/admin/term-reports/count', ...adminOnly, requireDocsDb, adminJson(async () => ({ count: await termLearn.countReports(mysqlPool) })));
+app.post('/api/admin/term-edit', ...adminOnly, requireDocsDb, async (req, res) => {
+  const r = await termLearn.editTerm(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, req.body || {});
+  res.status(r.ok ? 200 : (r.error === 'edit_failed' ? 500 : 400)).json({ success: r.ok, ...r });
+});
+app.post('/api/admin/term-reports/dismiss', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.dismissReports(mysqlPool, String((req.body || {}).term_id || ''), (req.body || {}).note)));
 app.get('/api/admin/auto-terms', ...adminOnly, requireDocsDb, adminJson(() => termLearn.listAutoTerms(mysqlPool)));
 app.post('/api/admin/auto-terms/:id', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.reviewAutoTerm(mysqlPool, String(req.params.id), req.body || {})));
 app.post('/api/admin/term-promote/run', ...adminOnly, requireDocsDb, adminJson(() => termLearn.promoteBatch(mysqlPool)));
@@ -1684,7 +1692,7 @@ app.get('/api/terms', async (req, res) => {
 
     const baseTerms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms, ...formulaTerms];
     const generalTerms = dedupeGeneralTerms(await getGeneralTerms(), baseTerms);
-    const terms = [...baseTerms, ...generalTerms];
+    const terms = termLearn.applyOverrides([...baseTerms, ...generalTerms], await termLearn.getOverrides(mysqlPool));
 
     if (terms.length === 0) {
       return res.status(404).json({
