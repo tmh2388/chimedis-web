@@ -12,6 +12,7 @@
  */
 import crypto from 'node:crypto';
 import { normalize as normalizeInterp } from './interpret-check.js';
+import { scriptStats, dominantLang, isMixed } from './quick-eval.js';
 
 const LANG_BY_NAME = { chinese: 'zh', mandarin: 'zh', cantonese: 'zh', english: 'en', vietnamese: 'vi', zh: 'zh', en: 'en', vi: 'vi' };
 const HAN = /[㐀-鿿]/g;
@@ -19,10 +20,7 @@ const HAN = /[㐀-鿿]/g;
 /** Từ văn bản đoán ngôn ngữ: 'zh' | 'vi' | 'en' | null. */
 export function guessLangFromText(t, detectViEn) {
   const s = String(t || '');
-  const han = (s.match(HAN) || []).length;
-  const letters = (s.match(/[A-Za-zÀ-ỹ]/g) || []).length;
-  if (han >= 2 && han >= letters * 0.5) return 'zh';
-  return typeof detectViEn === 'function' ? detectViEn(s) : null;
+  return dominantLang(s, detectViEn, null);
 }
 
 async function callTranscribe(buf, { model, language, prompt, verbose }) {
@@ -82,28 +80,35 @@ export async function recognize(buf, { vocab = '', expect = null } = {}) {
       return { text: '', language, confidence: conf, unclear: true, reason: 'silence', model: 'whisper-1' };
     }
   }
-  const lang2 = language || expect || null;
-  // Bước 2: phiên âm lại bằng mô hình mạnh hơn, ngôn ngữ đã nhận.
-  const prompt2 = lang2 === 'zh' ? `中医学习。请用简体中文转写。术语：${vocab || '穴位、经络、中药、方剂'}`
+  // Bước 2: phiên âm lại bằng mô hình mạnh hơn. CHỈ ép ngôn ngữ khi bản bước 1 đơn ngữ rõ ràng (≥90% chữ Hán hoặc gần như không có chữ Hán);
+  // câu PHA TRỘN (ví dụ câu tiếng Anh có thuật ngữ tiếng Trung) KHÔNG ép — ép sẽ dịch/phiên âm cả câu sang một ngôn ngữ (lỗi đã gặp).
+  const st1 = scriptStats(text1);
+  const tot1 = st1.han + st1.words.length;
+  const hanShare = tot1 ? st1.han / tot1 : 0;
+  let lang2 = null;
+  if (tot1 && hanShare >= 0.9) lang2 = 'zh';
+  else if (tot1 && hanShare <= 0.03) lang2 = (language === 'vi' || language === 'en') ? language : ((expect === 'vi' || expect === 'en') ? expect : null);
+  const prompt2 = lang2 === 'zh' ? `中医学习。请用简体中文如实转写。术语：${vocab || '穴位、经络、中药、方剂'}`
     : lang2 === 'vi' ? `Thảo luận y học cổ truyền bằng tiếng Việt. Thuật ngữ: ${vocab}`
-      : lang2 === 'en' ? `Traditional Chinese Medicine. Terms: ${vocab}` : basePrompt;
+      : lang2 === 'en' ? `Traditional Chinese Medicine. Terms: ${vocab}`
+        : `Transcribe EXACTLY as spoken, keeping every word in the language it was spoken in (English, Vietnamese, Chinese). Do NOT translate or transliterate. Terms: ${vocab}`;
   for (const model of ['gpt-4o-transcribe', 'gpt-4o-mini-transcribe']) {
     try {
       const j = await callTranscribe(buf, { model, language: lang2 || undefined, prompt: prompt2, verbose: false });
       const text = String(j.text || '').trim();
-      if (text && !looksHallucinated(text, prompt2)) return { text, language: language || guessLangFromText(text), confidence: conf, unclear: false, model };
+      if (text && !looksHallucinated(text, prompt2)) return { text, language: dominantLang(text, null, expect || language) || language || null, mixed: isMixed(text), confidence: conf, unclear: false, model };
     } catch (e) {
       if (e.status && ![400, 404, 429, 500, 502, 503].includes(e.status)) throw e;
     }
   }
-  if (text1 && !looksHallucinated(text1, basePrompt)) return { text: text1, language: language || guessLangFromText(text1), confidence: conf, unclear: false, model: 'whisper-1' };
+  if (text1 && !looksHallucinated(text1, basePrompt)) return { text: text1, language: dominantLang(text1, null, expect || language) || language || null, mixed: isMixed(text1), confidence: conf, unclear: false, model: 'whisper-1' };
   return { text: '', language, confidence: conf, unclear: true, reason: 'empty', model: 'none' };
 }
 
 // ===== BẢN PHIÊN ÂM CHUẨN DUY NHẤT cho mỗi bản ghi âm (MySQL) =====
 // Cùng một đoạn âm thanh (cùng mã băm) → LUÔN cùng một bản chữ, dù là chấm nhanh, phân tích AI hay chấm theo đơn vị ý. AI chỉ ĐÁNH GIÁ
 // bản chữ này, không phiên âm lại → không còn "mỗi nơi một bản dịch khác nhau" và không tốn thêm credit phiên âm.
-export const audioHash = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
+export const audioHash = (buf) => crypto.createHash('sha256').update('v2|').update(buf).digest('hex'); // 'v2|': bỏ các bản phiên âm cũ bị ép sai ngôn ngữ
 export async function ensureTables(pool) {
   if (!pool) return;
   await pool.query(`CREATE TABLE IF NOT EXISTS speech_transcripts (

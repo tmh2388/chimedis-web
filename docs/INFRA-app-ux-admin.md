@@ -30,3 +30,9 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Định nghĩa của nhóm Dược liệu/Huyệt vị/Từ ghép (trường riêng) — chưa có trình sửa.
 - Tải nền thật khi tắt app (cần plugin Background Transfer gốc).
 - Workbench nên đọc `general_terms` thay vì ảnh chụp JSON (xem INFRA-shared-terminology.md).
+
+## Chấm nhanh nhiều chiều (v50, 2026-10-13)
+- Mục tiêu: chấm **chính lời nói**, không chấm theo văn mẫu. Ba chiều: **Rõ ràng/phát âm** (độ tin cậy nhận dạng, tốc độ, ngắt nghỉ) · **Đủ ý** (chỉ khi có căn cứ cùng ngôn ngữ nói) · **Mạch lạc & trôi chảy** (lặp, từ đệm, độ dài). Code: `backend/lib/quick-eval.js`, route `/api/quick-check`.
+- Ngôn ngữ: văn bản hiển thị luôn theo ngôn ngữ **thực sự nói** (`dominantLang` đếm từ/chữ). Câu Anh xen vài từ Hán vẫn là Anh; không ép `language` theo nhãn whisper (`speech.js`). Chọn "Chấm theo ngôn ngữ" ≠ ngôn ngữ nói → báo `lang_mismatch`, bỏ chiều Đủ ý, không chấm chéo.
+- Phân tích sâu AI chỉ đánh giá transcript đã chốt; ngữ pháp/thanh điệu từng âm tiết cần phân tích sâu.
+- Tag ADMIN bị cắt: gốc là `.drawer-item svg{flex:0 0 20px}` rò vào SVG trong tag → `.drawer-item .role-tag svg{width:11px;flex:0 0 11px}`.

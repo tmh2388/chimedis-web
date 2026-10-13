@@ -16,6 +16,7 @@ import * as billing from './lib/billing.js';
 import * as laoshi from './lib/laoshi.js';
 import * as laoshiLearn from './lib/laoshi-learn.js';
 import * as speech from './lib/speech.js';
+import { quickEval, dominantLang, isMixed as isMixedText } from './lib/quick-eval.js';
 import { pinyin } from 'pinyin';
 import * as laoshiFaq from './lib/laoshi-faq.js';
 import * as termLearn from './lib/term-learn.js';
@@ -860,7 +861,8 @@ app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool,
       if (r.unclear || !r.text.trim()) return res.json({ success: true, data: { unclear: true, reason: r.reason || 'unclear', audio_hash: r.hash, cost_credits: 0 } });
       canonical = r.text.trim(); canonLang = r.language || canonLang;
     }
-    if (!canonLang) canonLang = speech.guessLangFromText(canonical, detectViEn) || (['zh', 'vi', 'en'].includes(reference_lang) ? reference_lang : 'vi');
+    // Ngôn ngữ chủ đạo theo NỘI DUNG (câu Anh xen thuật ngữ Hán vẫn là Anh); nhãn của nơi gọi chỉ dùng khi không đếm được.
+    canonLang = dominantLang(canonical, detectViEn, ['zh', 'vi', 'en'].includes(reference_lang) ? reference_lang : null) || canonLang || (['zh', 'vi', 'en'].includes(reference_lang) ? reference_lang : 'vi');
 
     // 2) Cùng âm thanh + cùng câu mẫu + cùng ngôn ngữ nhận xét → dùng lại kết quả đã có (miễn phí, và LUÔN cho cùng một kết quả).
     const key = crypto.createHash('sha256').update(`${hash}|${canonical}|${reference_lang || ''}|${refText}|${feedbackLang}`).digest('hex');
@@ -1256,22 +1258,22 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
   try {
     const b = req.body || {};
     const { dialogue_id, seq, transcript: tIn, audio_base64 } = b;
-    // alt_references: { zh, vi, en } — bản tham chiếu ở CẢ ba ngôn ngữ; ta chấm theo ngôn ngữ người học THỰC SỰ nói.
+    // alt_references: { zh, vi, en } — các bản căn cứ ở ba ngôn ngữ. Chúng chỉ là CĂN CỨ để đo "đủ ý" khi người học nói đúng ngôn ngữ đó;
+    // chấm nhanh KHÔNG bắt buộc có văn mẫu (vẫn chấm rõ ràng + mạch lạc).
     const refs = {};
     for (const k of ['zh', 'vi', 'en']) {
       const v = b.alt_references && typeof b.alt_references[k] === 'string' ? b.alt_references[k].slice(0, 1500) : '';
       if (v.trim()) refs[k] = v;
     }
-    const expect = ['zh', 'vi', 'en'].includes(b.lang) ? b.lang : null;      // ngôn ngữ giao diện/lựa chọn mong đợi
+    const expect = ['zh', 'vi', 'en'].includes(b.lang) ? b.lang : null;                 // ngôn ngữ giao diện (gợi ý khi không nhận ra)
     if (expect && !refs[expect] && typeof b.reference === 'string' && b.reference.trim()) refs[expect] = b.reference.slice(0, 1500);
-    if (!Object.keys(refs).length) return res.status(400).json({ success: false, error: 'missing_reference' });
-    const explicitLang = b.lang_pref === 'vi' || b.lang_pref === 'en' || b.lang_pref === 'zh' ? b.lang_pref : null;
+    const explicitLang = ['zh', 'vi', 'en'].includes(b.lang_pref) ? b.lang_pref : null; // người học CHỌN ngôn ngữ muốn chấm
 
     const dlg = dialogue_id ? findListeningDialogue(dialogue_id) : null;
     const seg = dlg && (dlg.segments || []).find((x) => x.seq === Number(seq));
 
     let transcript = typeof tIn === 'string' ? tIn.slice(0, 1500) : null;
-    let source = 'browser', said = null, confidence = null, model = null, audioHashOut = null;
+    let source = 'browser', confidence = null, model = null, audioHashOut = null;
     if (transcript === null) {
       if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
       if (!process.env.OPENAI_API_KEY) return res.status(503).json({ success: false, error: 'asr_unavailable' });
@@ -1282,30 +1284,43 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
       }
       const buf = Buffer.from(audio_base64, 'base64');
       if (buf.length < 3000) return res.json({ success: true, data: { unclear: true, reason: 'too_short', source: 'server', heard: '' } });
-      // Gợi ý THUẬT NGỮ (không phải nguyên câu): đơn vị ý của câu + thuật ngữ cốt lõi.
       const unitsHint = seg && Array.isArray(seg.key_units) ? buildVocabHint(seg.key_units, 'vi') + ' ' + buildVocabHint(seg.key_units, 'en') : '';
       const r = await speech.canonicalRecognize(mysqlPool, buf, { vocab: `${unitsHint} ${laoshi.ASR_BIAS}`.trim().slice(0, 700), expect: explicitLang || expect });
-      source = 'server'; model = r.model; confidence = r.confidence; said = r.language; audioHashOut = r.hash;
+      source = 'server'; model = r.model; confidence = r.confidence; audioHashOut = r.hash;
       if (r.unclear) return res.json({ success: true, data: { unclear: true, reason: r.reason || 'unclear', source, heard: '', model, confidence, audio_hash: r.hash } });
       transcript = r.text;
     }
     if (!String(transcript).trim()) return res.json({ success: true, data: { unclear: true, reason: 'empty', source, heard: '' } });
 
-    // Ngôn ngữ được CHẤM: người dùng chọn rõ → theo lựa chọn; còn lại → theo nội dung họ thực sự nói.
-    if (!said) said = speech.guessLangFromText(transcript, detectViEn);
-    let lang = explicitLang || said || expect || (refs.zh ? 'zh' : refs.vi ? 'vi' : 'en');
-    if (!refs[lang]) lang = expect && refs[expect] ? expect : Object.keys(refs)[0];
-    const switched = !!(expect && lang !== expect);
-    const ref = refs[lang];
+    // NGÔN NGỮ ĐƯỢC CHẤM = ngôn ngữ chủ đạo của chính lời nói (đếm từ/chữ), không theo giao diện, không theo nhãn của bộ nhận dạng.
+    // Câu tiếng Anh có vài từ tiếng Trung vẫn là tiếng Anh (chữ hiển thị đúng như đã nói).
+    const spoken = dominantLang(transcript, detectViEn, expect) || expect || 'en';
+    const mixed = isMixedText(transcript);
+    // Người học chọn một ngôn ngữ nhưng nói ngôn ngữ khác → KHÔNG chấm chéo (vô nghĩa); chấm theo ngôn ngữ đã nói, bỏ chiều "đủ ý" và báo rõ.
+    const mismatch = (explicitLang && explicitLang !== spoken) ? { expected: explicitLang, spoken } : null;
+    const ref = !mismatch ? refs[spoken] : undefined;
+    const base = { source, model, confidence, audio_hash: audioHashOut, transcript_used: transcript, lang_used: spoken, lang_spoken: spoken, mixed, lang_mismatch: mismatch, switched: !!(expect && spoken !== expect), reference_used: ref || '' };
 
-    if (lang === 'zh') {
-      return res.json({ success: true, data: { mode: 'zh', source, model, confidence, audio_hash: audioHashOut, transcript_used: transcript, lang_used: lang, switched, reference_used: ref, ...scoreChinese(ref, transcript) } });
+    // Chiều "đủ ý": chỉ khi có căn cứ cùng ngôn ngữ nói
+    let core = { mode: 'free' }, contentScore = null;
+    if (ref) {
+      if (spoken === 'zh') {
+        core = { mode: 'zh', ...scoreChinese(ref, transcript) };
+        contentScore = core.score;
+      } else if (seg && Array.isArray(seg.key_units) && seg.key_units.length) {
+        const data = analyzeInterpretation({ units: seg.key_units, transcript, lang: spoken, fluencyStats: null });
+        core = { mode: 'units', ...data };
+        contentScore = data.total ? Math.round(100 * (data.counts.ok + 0.5 * data.counts.partial) / data.total) : null;
+      } else {
+        core = { mode: 'words', ...scoreWords(ref, transcript) };
+        contentScore = core.score;
+      }
     }
-    if (seg && Array.isArray(seg.key_units) && seg.key_units.length) {
-      const data = analyzeInterpretation({ units: seg.key_units, transcript, lang, fluencyStats: null });
-      return res.json({ success: true, data: { mode: 'units', source, model, confidence, audio_hash: audioHashOut, transcript_used: transcript, lang_used: lang, switched, reference_used: ref, ...data } });
-    }
-    return res.json({ success: true, data: { mode: 'words', source, model, confidence, audio_hash: audioHashOut, transcript_used: transcript, lang_used: lang, switched, reference_used: ref, ...scoreWords(ref, transcript) } });
+    const fl = b.fluency && typeof b.fluency === 'object' ? {
+      speech_ms: Number(b.fluency.speech_ms) || 0, pause_count: Number(b.fluency.pause_count) || 0, longest_pause_ms: Number(b.fluency.longest_pause_ms) || 0 } : null;
+    const ev = quickEval({ transcript, lang: spoken, confidence, fluency: fl, contentScore });
+    // `score`/`level` tổng thể = điểm tổng hợp nhiều chiều (giữ tên cũ để giao diện cũ vẫn chạy)
+    return res.json({ success: true, data: { ...core, ...base, eval: ev, score: ev.overall, level: ev.level, heard: core.heard || transcript.trim() } });
   } catch (err) {
     console.error('quick-check lỗi:', err.message);
     res.status(500).json({ success: false, error: 'quick_check_failed' });
