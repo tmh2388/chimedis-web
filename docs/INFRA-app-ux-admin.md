@@ -41,3 +41,8 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - `/api/pronunciation-score`: đánh giá lời nói theo phát âm · ngữ pháp · mạch lạc/đủ ý · thuật ngữ (+ điểm tốt, điểm cần sửa); văn mẫu chỉ làm căn cứ khi **cùng ngôn ngữ** với lời nói. Khoá cache `v3|…`. Tổng = 40% phát âm + 30% ngữ pháp + 30% mạch lạc.
 - Nút Stop biến mất khi ghi: màn bị `render()` lại giữa lúc ghi → `renderListenDialogue` trả nút Stop ẩn. Sửa: khôi phục UI ghi sau render; `onstop` chỉ dọn state nếu vẫn là chính lần ghi đó (tránh ghi đè lần ghi mới); rời màn nghe thì dừng mic.
 - Nhãn nút "Tải / cập nhật bộ tra cứu" dùng nhầm khoá `oa_download` ("Tải về để nghe offline") → khoá riêng `sys_dl_btn`.
+
+## Màn chờ toàn màn hình (v53)
+- Quy tắc: tải nội dung nào cũng phải có màn chờ rõ (logo + thanh chạy), không để màn trống. Hàm dùng chung `busyShow/busyHide/withBusy` (`#busyOverlay`, z-index dưới màn cập nhật bản mới, tự gỡ sau 30 s).
+- Đã áp dụng: lần đầu vào Nghe/đổi tab danh mục (chỉ khi chưa có cache), Học Thuật lần đầu, mở một bài nghe (gồm tải trước âm thanh). Lỗi mạng không lưu danh sách rỗng → lần vào sau tải lại.
+- Việc nên rà tiếp: các tải khác (Học tập, Từ điển lần đầu…) cần dùng cùng hàm này.
