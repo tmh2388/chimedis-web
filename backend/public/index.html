@@ -918,7 +918,7 @@ header{transition:padding .2s ease}
 .plans-tbl .cur{background:#FBF3DC}
 .plans-tbl .price{font-weight:800;color:var(--son,#C8452F)}
 .plans-tbl .no{color:#b9ad98}
-.pl-buy{background:var(--son,#C8452F);color:#fff;border:0;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.pl-buy{display:block;width:100%;background:var(--son,#C8452F);color:#fff;border:0;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
 .plans-cur{display:inline-block;background:#E3F2E3;color:#2F7D2F;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;margin-top:2px}
 .plan-chip{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12.5px}
 .plan-chip b{background:#efe7d8;border-radius:999px;padding:3px 11px;color:var(--thamthm,#0E3A3A)}
@@ -1811,6 +1811,13 @@ function updateAuthUI(){
 
 // Gọi bởi khối <script type="module"> Firebase ở cuối file mỗi khi trạng thái đăng nhập đổi
 // (đăng nhập/đăng xuất/khôi phục session lúc tải trang lại) — xem onAuthStateChanged ở đó.
+// Liên kết sâu từ workbench (chimedis.vn → "Nâng cấp / gia hạn"): dict.chimedis.vn/#nang-cap mở thẳng khung mua gói sau khi đăng nhập.
+function maybeOpenUpgradeFromHash(){
+  if(location.hash !== '#nang-cap' || NO_PURCHASE_UI) return;
+  if(!state.user){ if(window.__nangCapAsked) return; window.__nangCapAsked = true; openAuthModal(); return; }
+  try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
+  openCheckout();
+}
 window.chimedisAuthStateChanged = async function(user){
   const prevPlan = state.plan;
   state.authReady = true;
@@ -1847,6 +1854,7 @@ window.chimedisAuthStateChanged = async function(user){
     try{ await loadTermsFromAPI(); }catch(e){}
     render();
   }
+  maybeOpenUpgradeFromHash();
 };
 function toggleContentLang(key){
   const next = Object.assign({}, state.contentLangs, { [key]: !state.contentLangs[key] });
@@ -3380,7 +3388,7 @@ function openPlansModal(){
     row(t('plans_r_docs'), p => p === 'free' ? no : n(PLAN_LIMITS[p].docs)) +
     row(t('plans_r_perday'), p => p === 'free' ? no : n(PLAN_LIMITS[p].docsPerDay)) +
     row(t('plans_r_chars'), p => p === 'free' ? no : n(PLAN_LIMITS[p].chars)) +
-    `<tr><td></td>${cols.map(p => `<td class="${cur === p ? 'cur' : ''}">${p === 'free' ? '' : `<button type="button" class="pl-buy" onclick="closePlansModal();openCheckout('${p}')">${cur === p ? t('plans_renew') : t('plans_choose')}</button>`}</td>`).join('')}</tr>` +
+    `<tr><td></td>${cols.map(p => `<td class="${cur === p ? 'cur' : ''}">${p === 'free' ? '' : `<button type="button" class="pl-buy" onclick="closePlansModal();openCheckout('${p}','month')">${cur === p ? t('plans_renew') : t('plans_choose')} · ${t('ck_period_month')}<br><small>${PLAN_PRICE[p].toLocaleString('vi-VN')}₫</small></button><button type="button" class="pl-buy" style="margin-top:6px" onclick="closePlansModal();openCheckout('${p}','year')">${cur === p ? t('plans_renew') : t('plans_choose')} · ${t('ck_period_year')}<br><small>${planYearPrice(p).toLocaleString('vi-VN')}₫</small></button>`}</td>`).join('')}</tr>` +
     `</tbody></table>`;
   document.getElementById('app').insertAdjacentHTML('beforeend',
     `<div id="plansModal" class="up-scrim" onclick="if(event.target===this)closePlansModal()"><div class="up-box plans-box" role="dialog" style="max-height:90%;overflow:auto">` +
@@ -3443,7 +3451,10 @@ function renderCheckout(){
     const bank = ckState.showBank
       ? row(t('ck_bank'), cfg.bank_name || '', '') + row(t('ck_account'), cfg.account || '', cfg.account) + row(t('ck_owner'), cfg.account_name || '', '')
       : '';
-    body = `<div class="ck-sum">${o.kind === 'topup' ? `<b>${myNum(o.credits)} ${t('bud_unit')}</b>` : `<b>${t('plan_name_' + o.plan)}</b> · ${t('ck_period_' + o.period)}`} · ${ckMoney(o.amount)}</div>` +
+    const switcher = (o.kind === 'topup' || o.status !== 'pending') ? '' :
+      `<div class="ck-seg">${['pro', 'max'].map(p => `<button type="button" class="${o.plan === p ? 'on' : ''}" onclick="ckSwitch('plan','${p}')">${t('plan_name_' + p)}</button>`).join('')}</div>` +
+      `<div class="ck-seg">${['month', 'year'].map(pd => `<button type="button" class="${o.period === pd ? 'on' : ''}" onclick="ckSwitch('period','${pd}')">${t('ck_period_' + pd)}${pd === 'year' ? ` <small>−${save}%</small>` : ''}</button>`).join('')}</div>`;
+    body = switcher + `<div class="ck-sum">${o.kind === 'topup' ? `<b>${myNum(o.credits)} ${t('bud_unit')}</b>` : `<b>${t('plan_name_' + o.plan)}</b> · ${t('ck_period_' + o.period)}`} · ${ckMoney(o.amount)}</div>` +
       `<p class="ck-scan">${t('ck_scan_short')}</p>` +
       (o.qr_url ? `<img class="ck-qr" src="${o.qr_url}" alt="VietQR">` : '') +
       row(t('ck_content'), o.code, o.code) +
@@ -3459,6 +3470,18 @@ function renderCheckout(){
     `<div class="up-actions"><button type="button" onclick="closeCheckout()">${t('plans_close')}</button></div></div></div>`);
 }
 function ckSet(k, v){ ckState[k] = v; renderCheckout(); }
+// Đổi gói/kỳ hạn ngay trên màn đơn chờ: huỷ đơn cũ rồi tạo đơn mới với lựa chọn mới (mã mới, QR mới).
+async function ckSwitch(k, v){
+  const o = ckState.order;
+  if(!o || o[k === 'plan' ? 'plan' : 'period'] === v) return;
+  clearInterval(ckState.timer);
+  if(o.code){ try{ await authFetch(`/api/orders/${o.code}/cancel`, { method: 'POST' }); }catch(e){} }
+  ckState.order = null;
+  ckState.plan = k === 'plan' ? v : o.plan;
+  ckState.period = k === 'period' ? v : o.period;
+  ckState.kind = 'plan';
+  await ckCreate();
+}
 function ckToggleBank(){ ckState.showBank = !ckState.showBank; renderCheckout(); }
 // Đổi ý: huỷ đơn chờ rồi quay về bước chọn gói/kỳ hạn. Nếu lỡ đã chuyển tiền, tiền vẫn được ghi nhận theo mã đơn.
 async function ckCancel(){
