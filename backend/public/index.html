@@ -969,6 +969,23 @@ header{transition:padding .2s ease}
 .ed-l small{font-weight:500;font-size:11.5px}
 .ed-note{font-size:12.5px;background:#FBF3DC;border-radius:10px;padding:8px 10px;margin:8px 2px;color:#7A5A12}
 .ui-sheet-msg{white-space:pre-line}
+.ed-sheet .ui-sheet-actions{position:sticky;bottom:0;background:#fff;padding:10px 0 2px;margin-top:6px}
+/* popup thuật ngữ luôn nổi trên màn duyệt / cài đặt (trước đây nằm dưới nên bấm "Xem từ điển" không thấy gì) */
+.pp-overlay.show{z-index:5600}
+.gs-overlay{z-index:5700}
+.up-scrim{z-index:5800} /* hộp thoại/biểu mẫu luôn nổi trên popup thuật ngữ và màn duyệt */
+#drawerLoginLabel{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+.acct-name{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acct-tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.acct-tags .pro-tag,.acct-tags .role-tag{margin-left:0}
+.rev-rep{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.rev-card .sys-actions .ui-btn{min-height:40px;padding:8px 10px;font-size:13px}
+.tag-link{border:0;font:inherit;font-size:10.5px;cursor:pointer;background:rgba(217,233,228,.15);color:var(--ngua);padding:4px 10px;border-radius:7px;-webkit-tap-highlight-color:transparent;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+.tag-link::after{content:" ›";opacity:.7}
+#swipeFwdHint{position:fixed;right:0;top:50%;width:44px;height:44px;border-radius:50%;background:rgba(14,58,58,.92);color:#fff;display:flex;align-items:center;justify-content:center;z-index:2147482500;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.3);opacity:0}
+#swipeFwdHint svg{width:22px;height:22px}#swipeFwdHint.ready{background:#C8452F}
+.tf-def{margin:6px 2px}.tf-def summary{font-size:12px;font-weight:700;color:var(--muc-mo,#6B6156);cursor:pointer;padding:4px 0}
+.tf-def textarea{width:100%;box-sizing:border-box}
 #offPill{position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:9000;background:#0E3A3A;color:#fff;border-radius:999px;padding:8px 14px;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
 .ls-voted{font-size:14px;margin-left:4px}
 .ls-msg.user .ls-spk{background:rgba(255,255,255,.18);color:#fff}
@@ -1919,7 +1936,7 @@ function updateAuthUI(){
   const planTag = ((state.plan && state.plan !== 'free') ? ` <span class="pro-tag">${t('plan_name_' + state.plan).toUpperCase()}</span>` : '') + roleTagHtml();
   if(state.user){
     const nm = (state.user.name || state.user.email || t('dr_account')).replace(/</g, '&lt;');
-    if(label) label.innerHTML = nm + planTag;
+    if(label) label.innerHTML = `<span class="acct-name">${nm}</span>${planTag ? `<span class="acct-tags">${planTag}</span>` : ''}`;
     if(acctBtn){
       acctBtn.innerHTML = state.user.picture
         ? `<img class="acct-avatar" src="${state.user.picture}" alt="">`
@@ -2223,7 +2240,7 @@ Object.assign(I18N.vi, {
   listen_cat_y_an: 'Y Án', listen_cat_bao_chi: 'Báo Chí', listen_cat_tu_them: 'Tự Thêm', listen_cat_hoc_thuat: 'Bài Báo Quốc Tế', listen_cat_csdl: 'Học Thuật',
   listen_empty: 'Chưa có hội thoại nào trong mục này.',
   listen_level_all: 'Tất cả', listen_level_so_cap: 'Sơ cấp', listen_level_trung_cap: 'Trung cấp', listen_level_cao_cap: 'Cao cấp',
-  listen_play_full: 'Phát toàn bài', listen_answer_lang: 'Tôi trả lời bằng', role_admin_title: "Quản trị viên", dr_reports: "Từ vựng báo sai", rev_title: "Từ vựng người dùng báo sai", rev_empty: "Không còn từ nào chờ duyệt.", rev_count: "{n} thuật ngữ đang chờ bạn duyệt", rev_edit: "Sửa & lưu", rev_view: "Xem từ điển", rev_skip: "Bỏ qua", rev_skip_title: "Bỏ qua báo cáo này?", rev_skip_msg: "{n} báo cáo của thuật ngữ này sẽ được đóng mà không sửa gì.", ed_hint: "Sửa sẽ ghi thẳng vào cơ sở dữ liệu và áp dụng cho mọi người dùng.", ed_vi: "Tên tiếng Việt", ed_en: "Tên tiếng Anh", ed_def: "Định nghĩa", ed_now: "Hiện tại", ed_def_na: "Định nghĩa của nhóm này nằm ở trường khác nên chưa sửa được ở đây (chỉ sửa tên Việt/Anh).", ed_note: "Ghi chú (tuỳ chọn)", ed_note_ph: "Vì sao sửa…", ed_save: "Lưu vào CSDL", ed_nochange: "Chưa có thay đổi nào.", ed_confirm_title: "Xác nhận sửa thuật ngữ", ed_confirm_msg: "Thay đổi được lưu vào CSDL kèm nhật ký (trước/sau) và đóng các báo cáo của thuật ngữ này.", ed_saved: "Đã lưu vào CSDL", ed_admin_btn: "Sửa (admin)", ui_ok: "Đồng ý", ui_cancel: "Huỷ", oa_delete_title: "Xoá bản đã tải?", oa_delete_msg: "Bài này sẽ bị xoá khỏi máy ({size}). Bạn vẫn tải lại được khi có mạng.", oa_manage: "Quản lý", sys_title: "Cài đặt hệ thống", sys_clips: "câu", sys_storage: "Bộ nhớ trên máy", sys_allowed: "được phép", sys_l_audio: "Âm thanh bài nghe", sys_l_figs: "Hình huyệt", sys_l_terms: "Bộ tra cứu thuật ngữ", sys_l_other: "Khác (bộ nhớ đệm…)", sys_free_btn: "Giải phóng bộ nhớ", sys_audio: "Bài nghe đã tải về", sys_audio_empty: "Chưa có bài nào. Bấm biểu tượng tải ⬇ ở bài nghe để lưu về nghe offline.", sys_select_all: "Chọn tất cả", sys_select_none: "Bỏ chọn", sys_delete_sel: "Xoá mục đã chọn", sys_offline_pack: "Bộ tra cứu offline", sys_terms: "Thuật ngữ", sys_figs: "Hình huyệt vị", sys_not_downloaded: "Chưa tải", sys_dl_pack: "Tải / cập nhật bộ tra cứu", sys_dl_pack_sub: "Toàn bộ thuật ngữ và hình để tra cứu khi không có mạng", sys_autoresume: "Tự tải tiếp khi quay lại app", sys_autoresume_sub: "Nếu bộ tra cứu tải dở thì tiếp tục khi có mạng", sys_prefs: "Tuỳ chọn nghe", sys_cap: "Dung lượng tối đa cho âm thanh offline", sys_cap_sub: "Vượt mức này sẽ không tải thêm bài", sys_about: "Thông tin & cập nhật", sys_version: "Phiên bản giao diện", sys_check_update: "Kiểm tra cập nhật", sys_checking: "Đang kiểm tra…", sys_up_to_date: "Đã kiểm tra — bạn đang dùng bản mới nhất", sys_confirm_del_audio: "Xoá {n} bài đã tải?", sys_will_free: "Sẽ giải phóng {size} trên máy. Bạn vẫn tải lại được khi có mạng.", sys_freed: "Đã giải phóng {size}", sys_deleted: "Đã xoá", sys_confirm_terms: "Xoá bộ tra cứu offline?", sys_confirm_terms_msg: "Không còn tra cứu được toàn bộ thuật ngữ khi mất mạng cho tới khi tải lại.", sys_confirm_figs: "Xoá hình huyệt offline?", sys_confirm_figs_msg: "Hình sẽ không hiện khi mất mạng cho tới khi tải lại.", sys_free_title: "Giải phóng bộ nhớ", sys_free_msg: "Chọn loại muốn dọn. Đăng nhập và bài làm của bạn không bị ảnh hưởng.", sys_free_go: "Giải phóng", sys_o_cache: "Bộ nhớ đệm ứng dụng", sys_o_cache_sub: "An toàn — tự tạo lại khi cần", sys_o_audio: "Âm thanh bài nghe đã tải", sys_o_audio_sub: "Mất khả năng nghe offline các bài này", sys_o_figs: "Hình huyệt offline", sys_o_figs_sub: "Cần mạng để xem lại hình", sys_o_terms: "Bộ tra cứu thuật ngữ offline", sys_o_terms_sub: "Cần mạng để tra cứu đầy đủ", ai_cost_used: 'Lượt phân tích này tốn ~{c} credit (cùng bản ghi, phiên âm không tính lại).', ai_cost_cached: 'Dùng lại kết quả phân tích đã có — không tốn credit.', oa_download: 'Tải về để nghe offline', oa_downloading: 'Đang tải', oa_have: 'Đã tải về để nghe offline', oa_delete: 'Xoá', oa_done: 'Đã tải xong — nghe được cả khi không có mạng.', oa_err: 'Tải chưa xong, bạn thử lại nhé (phần đã tải được giữ lại).', oa_quota: 'Bộ nhớ offline đã đầy (300 MB). Hãy xoá bớt bài đã tải.', oa_need_net: 'Cần có mạng để tải về.', oa_section: 'Đã tải về (nghe offline)', oa_clear_all: 'Xoá tất cả', oa_delete_confirm: 'Xoá bản đã tải của bài này khỏi máy?', oa_delete_all_confirm: 'Xoá tất cả bài đã tải về khỏi máy?', lu_title: 'Đang cập nhật phiên bản mới…', lu_sub: 'Vui lòng giữ ứng dụng mở, đừng thoát cho tới khi xong.', lu_applying: 'Đang áp dụng phiên bản mới…', lu_slow: 'Mạng chậm — việc cập nhật sẽ tiếp tục ở nền, bạn có thể dùng tiếp.', listen_answer_repeat: 'nhắc lại tiếng Trung', qs_switched_zh: 'Đã nhận ra bạn nói tiếng Trung nên chấm theo bản tiếng Trung.', qs_unclear: 'Chưa nghe rõ giọng bạn nên chưa chấm.', qs_unclear_tip: 'Hãy nói to hơn, đưa micro gần hơn, ở nơi yên tĩnh rồi thử lại. Bạn vẫn nghe lại được bản ghi.', qs_issues: 'Điểm cần sửa', iss_tone: 'sai thanh điệu', iss_pronunciation: 'sai âm', iss_missing: 'thiếu', iss_extra: 'thừa', iss_wrong: 'dùng sai từ', iss_grammar: 'ngữ pháp', listen_answer_auto: 'Tự nhận ngôn ngữ', qs_switched_vi: 'Đã nhận ra bạn nói tiếng Việt nên chấm theo bản tiếng Việt.', qs_switched_en: 'Đã nhận ra bạn nói tiếng Anh nên chấm theo bản tiếng Anh.', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)',
+  listen_play_full: 'Phát toàn bài', listen_answer_lang: 'Tôi trả lời bằng', tf_hz: "Chữ Hán", tf_intro: "Sửa thẳng vào ô bị sai, các ô đúng cứ để nguyên.", tf_comment_ph: "Ghi chú thêm (không bắt buộc)…", tf_hz_bad: "Chữ Hán chỉ gồm chữ Hán.", ed_hz_exists: "Chữ Hán này đã thuộc một mục khác trong cùng kho.", grp_view_main: "Xem trong danh sách chính", grp_items: "mục", grp_more: "… và {n} mục nữa (xem trong danh sách chính).", role_admin_title: "Quản trị viên", dr_reports: "Từ vựng báo sai", rev_title: "Từ báo sai", rev_empty: "Không còn từ nào chờ duyệt.", rev_count: "{n} thuật ngữ đang chờ bạn duyệt", rev_edit: "Sửa & lưu", rev_view: "Xem từ", rev_skip: "Bỏ qua", rev_skip_title: "Bỏ qua báo cáo này?", rev_skip_msg: "{n} báo cáo của thuật ngữ này sẽ được đóng mà không sửa gì.", ed_hint: "Sửa sẽ ghi thẳng vào cơ sở dữ liệu và áp dụng cho mọi người dùng.", ed_vi: "Tên tiếng Việt", ed_en: "Tên tiếng Anh", ed_def: "Định nghĩa", ed_now: "Hiện tại", ed_def_na: "Định nghĩa của nhóm này nằm ở trường khác nên chưa sửa được ở đây (chỉ sửa tên Việt/Anh).", ed_note: "Ghi chú (tuỳ chọn)", ed_note_ph: "Vì sao sửa…", ed_save: "Lưu vào CSDL", ed_nochange: "Chưa có thay đổi nào.", ed_confirm_title: "Xác nhận sửa thuật ngữ", ed_confirm_msg: "Thay đổi được lưu vào CSDL kèm nhật ký (trước/sau) và đóng các báo cáo của thuật ngữ này.", ed_saved: "Đã lưu vào CSDL", ed_admin_btn: "Sửa (admin)", ui_ok: "Đồng ý", ui_cancel: "Huỷ", oa_delete_title: "Xoá bản đã tải?", oa_delete_msg: "Bài này sẽ bị xoá khỏi máy ({size}). Bạn vẫn tải lại được khi có mạng.", oa_manage: "Quản lý", sys_title: "Cài đặt hệ thống", sys_clips: "câu", sys_storage: "Bộ nhớ trên máy", sys_allowed: "được phép", sys_l_audio: "Âm thanh bài nghe", sys_l_figs: "Hình huyệt", sys_l_terms: "Bộ tra cứu thuật ngữ", sys_l_other: "Khác (bộ nhớ đệm…)", sys_free_btn: "Giải phóng bộ nhớ", sys_audio: "Bài nghe đã tải về", sys_audio_empty: "Chưa có bài nào. Bấm biểu tượng tải ⬇ ở bài nghe để lưu về nghe offline.", sys_select_all: "Chọn tất cả", sys_select_none: "Bỏ chọn", sys_delete_sel: "Xoá mục đã chọn", sys_offline_pack: "Bộ tra cứu offline", sys_terms: "Thuật ngữ", sys_figs: "Hình huyệt vị", sys_not_downloaded: "Chưa tải", sys_dl_pack: "Tải / cập nhật bộ tra cứu", sys_dl_pack_sub: "Toàn bộ thuật ngữ và hình để tra cứu khi không có mạng", sys_autoresume: "Tự tải tiếp khi quay lại app", sys_autoresume_sub: "Nếu bộ tra cứu tải dở thì tiếp tục khi có mạng", sys_prefs: "Tuỳ chọn nghe", sys_cap: "Dung lượng tối đa cho âm thanh offline", sys_cap_sub: "Vượt mức này sẽ không tải thêm bài", sys_about: "Thông tin & cập nhật", sys_version: "Phiên bản giao diện", sys_check_update: "Kiểm tra cập nhật", sys_checking: "Đang kiểm tra…", sys_up_to_date: "Đã kiểm tra — bạn đang dùng bản mới nhất", sys_confirm_del_audio: "Xoá {n} bài đã tải?", sys_will_free: "Sẽ giải phóng {size} trên máy. Bạn vẫn tải lại được khi có mạng.", sys_freed: "Đã giải phóng {size}", sys_deleted: "Đã xoá", sys_confirm_terms: "Xoá bộ tra cứu offline?", sys_confirm_terms_msg: "Không còn tra cứu được toàn bộ thuật ngữ khi mất mạng cho tới khi tải lại.", sys_confirm_figs: "Xoá hình huyệt offline?", sys_confirm_figs_msg: "Hình sẽ không hiện khi mất mạng cho tới khi tải lại.", sys_free_title: "Giải phóng bộ nhớ", sys_free_msg: "Chọn loại muốn dọn. Đăng nhập và bài làm của bạn không bị ảnh hưởng.", sys_free_go: "Giải phóng", sys_o_cache: "Bộ nhớ đệm ứng dụng", sys_o_cache_sub: "An toàn — tự tạo lại khi cần", sys_o_audio: "Âm thanh bài nghe đã tải", sys_o_audio_sub: "Mất khả năng nghe offline các bài này", sys_o_figs: "Hình huyệt offline", sys_o_figs_sub: "Cần mạng để xem lại hình", sys_o_terms: "Bộ tra cứu thuật ngữ offline", sys_o_terms_sub: "Cần mạng để tra cứu đầy đủ", ai_cost_used: 'Lượt phân tích này tốn ~{c} credit (cùng bản ghi, phiên âm không tính lại).', ai_cost_cached: 'Dùng lại kết quả phân tích đã có — không tốn credit.', oa_download: 'Tải về để nghe offline', oa_downloading: 'Đang tải', oa_have: 'Đã tải về để nghe offline', oa_delete: 'Xoá', oa_done: 'Đã tải xong — nghe được cả khi không có mạng.', oa_err: 'Tải chưa xong, bạn thử lại nhé (phần đã tải được giữ lại).', oa_quota: 'Bộ nhớ offline đã đầy (300 MB). Hãy xoá bớt bài đã tải.', oa_need_net: 'Cần có mạng để tải về.', oa_section: 'Đã tải về (nghe offline)', oa_clear_all: 'Xoá tất cả', oa_delete_confirm: 'Xoá bản đã tải của bài này khỏi máy?', oa_delete_all_confirm: 'Xoá tất cả bài đã tải về khỏi máy?', lu_title: 'Đang cập nhật phiên bản mới…', lu_sub: 'Vui lòng giữ ứng dụng mở, đừng thoát cho tới khi xong.', lu_applying: 'Đang áp dụng phiên bản mới…', lu_slow: 'Mạng chậm — việc cập nhật sẽ tiếp tục ở nền, bạn có thể dùng tiếp.', listen_answer_repeat: 'nhắc lại tiếng Trung', qs_switched_zh: 'Đã nhận ra bạn nói tiếng Trung nên chấm theo bản tiếng Trung.', qs_unclear: 'Chưa nghe rõ giọng bạn nên chưa chấm.', qs_unclear_tip: 'Hãy nói to hơn, đưa micro gần hơn, ở nơi yên tĩnh rồi thử lại. Bạn vẫn nghe lại được bản ghi.', qs_issues: 'Điểm cần sửa', iss_tone: 'sai thanh điệu', iss_pronunciation: 'sai âm', iss_missing: 'thiếu', iss_extra: 'thừa', iss_wrong: 'dùng sai từ', iss_grammar: 'ngữ pháp', listen_answer_auto: 'Tự nhận ngôn ngữ', qs_switched_vi: 'Đã nhận ra bạn nói tiếng Việt nên chấm theo bản tiếng Việt.', qs_switched_en: 'Đã nhận ra bạn nói tiếng Anh nên chấm theo bản tiếng Anh.', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)',
   login_to_listen: 'Đăng nhập để nghe audio', login_to_record: 'Đăng nhập để ghi âm', login_to_analyze: 'Đăng nhập để dùng phân tích AI',
   up_title: 'Tính năng dành cho gói Pro', up_body_analyze: 'Phân tích AI (chấm điểm, đối chiếu ý chính, gợi ý sửa) chỉ dành cho gói Pro.',
   up_body_upload: 'Tải tài liệu riêng, để AI tự biên tập và tạo audio, là tính năng của gói Pro.',
@@ -2268,7 +2285,7 @@ Object.assign(I18N.zh, {
   listen_cat_y_an: '医案', listen_cat_bao_chi: '新闻', listen_cat_tu_them: '自建内容', listen_cat_hoc_thuat: '国际论文', listen_cat_csdl: '学术',
   listen_empty: '此分类暂无对话。',
   listen_level_all: '全部', listen_level_so_cap: '初级', listen_level_trung_cap: '中级', listen_level_cao_cap: '高级',
-  listen_play_full: '播放全文', listen_answer_lang: '我用以下语言回答', role_admin_title: "管理员", dr_reports: "报错术语", rev_title: "用户报错的术语", rev_empty: "没有待审核的术语了。", rev_count: "{n} 个术语等待您审核", rev_edit: "修改并保存", rev_view: "查看词条", rev_skip: "忽略", rev_skip_title: "忽略这些反馈？", rev_skip_msg: "该术语的 {n} 条反馈将被关闭，不做修改。", ed_hint: "修改将直接写入数据库，并对所有用户生效。", ed_vi: "越南语名称", ed_en: "英文名称", ed_def: "释义", ed_now: "当前", ed_def_na: "该类别的释义在其他字段，暂不能在此修改（仅可改越/英文名称）。", ed_note: "备注（可选）", ed_note_ph: "修改原因……", ed_save: "保存到数据库", ed_nochange: "没有任何改动。", ed_confirm_title: "确认修改术语", ed_confirm_msg: "修改将连同日志（前/后）写入数据库，并关闭该术语的反馈。", ed_saved: "已保存到数据库", ed_admin_btn: "修改（管理员）", ui_ok: "确定", ui_cancel: "取消", oa_delete_title: "删除已下载内容？", oa_delete_msg: "将从本机删除这篇内容（{size}）。联网后仍可重新下载。", oa_manage: "管理", sys_title: "系统设置", sys_clips: "句", sys_storage: "本机存储", sys_allowed: "可用", sys_l_audio: "听力音频", sys_l_figs: "穴位图片", sys_l_terms: "术语查询库", sys_l_other: "其他（缓存等）", sys_free_btn: "释放存储空间", sys_audio: "已下载的听力", sys_audio_empty: "还没有下载。点听力里的下载图标 ⬇ 即可离线收听。", sys_select_all: "全选", sys_select_none: "取消全选", sys_delete_sel: "删除所选", sys_offline_pack: "离线查询库", sys_terms: "术语", sys_figs: "穴位图片", sys_not_downloaded: "未下载", sys_dl_pack: "下载 / 更新查询库", sys_dl_pack_sub: "全部术语与图片，无网络时也可查询", sys_autoresume: "回到应用时自动续传", sys_autoresume_sub: "查询库下载到一半时，联网后继续", sys_prefs: "收听选项", sys_cap: "离线音频最大容量", sys_cap_sub: "超过后不再下载新内容", sys_about: "信息与更新", sys_version: "界面版本", sys_check_update: "检查更新", sys_checking: "检查中……", sys_up_to_date: "已检查——当前是最新版本", sys_confirm_del_audio: "删除已下载的 {n} 篇？", sys_will_free: "将释放 {size}。联网后仍可重新下载。", sys_freed: "已释放 {size}", sys_deleted: "已删除", sys_confirm_terms: "删除离线查询库？", sys_confirm_terms_msg: "重新下载前，无网络时将无法查询全部术语。", sys_confirm_figs: "删除离线穴位图片？", sys_confirm_figs_msg: "重新下载前，无网络时不显示图片。", sys_free_title: "释放存储空间", sys_free_msg: "选择要清理的内容。登录状态和学习记录不受影响。", sys_free_go: "释放", sys_o_cache: "应用缓存", sys_o_cache_sub: "安全——需要时会自动重建", sys_o_audio: "已下载的听力音频", sys_o_audio_sub: "这些内容将无法离线收听", sys_o_figs: "离线穴位图片", sys_o_figs_sub: "需要联网才能再次查看图片", sys_o_terms: "离线术语查询库", sys_o_terms_sub: "需要联网才能完整查询", ai_cost_used: '本次分析约消耗 {c} 点（同一录音，不重复转写）。', ai_cost_cached: '复用已有的分析结果——不消耗点数。', oa_download: '下载以离线收听', oa_downloading: '下载中', oa_have: '已下载，可离线收听', oa_delete: '删除', oa_done: '下载完成——没有网络也能听。', oa_err: '下载未完成，请重试（已下载的部分会保留）。', oa_quota: '离线存储已满（300 MB），请先删除一些已下载内容。', oa_need_net: '需要联网才能下载。', oa_section: '已下载（离线收听）', oa_clear_all: '全部删除', oa_delete_confirm: '从本机删除这篇已下载内容？', oa_delete_all_confirm: '从本机删除所有已下载内容？', lu_title: '正在更新新版本……', lu_sub: '请保持应用打开，更新完成前请勿退出。', lu_applying: '正在应用新版本……', lu_slow: '网络较慢——将在后台继续更新，您可以继续使用。', listen_answer_repeat: '跟读中文', qs_switched_zh: '检测到你说的是中文，已按中文参考打分。', qs_unclear: '没有听清你的声音，暂不打分。', qs_unclear_tip: '请大声一点、靠近麦克风、在安静处再试一次。仍可回放录音。', qs_issues: '需要改进', iss_tone: '声调不准', iss_pronunciation: '发音不准', iss_missing: '漏说', iss_extra: '多说', iss_wrong: '用词错误', iss_grammar: '语法', listen_answer_auto: '自动识别', qs_switched_vi: '检测到你说的是越南语，已按越南语参考打分。', qs_switched_en: '检测到你说的是英语，已按英语参考打分。', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）',
+  listen_play_full: '播放全文', listen_answer_lang: '我用以下语言回答', tf_hz: "汉字", tf_intro: "直接修改有误的栏位，正确的保持不变即可。", tf_comment_ph: "补充说明（可选）……", tf_hz_bad: "汉字栏只能填汉字。", ed_hz_exists: "该汉字已属于库中的另一条目。", grp_view_main: "在主列表中查看", grp_items: "项", grp_more: "……另有 {n} 项（请在主列表中查看）。", role_admin_title: "管理员", dr_reports: "报错术语", rev_title: "报错术语", rev_empty: "没有待审核的术语了。", rev_count: "{n} 个术语等待您审核", rev_edit: "修改并保存", rev_view: "查看词条", rev_skip: "忽略", rev_skip_title: "忽略这些反馈？", rev_skip_msg: "该术语的 {n} 条反馈将被关闭，不做修改。", ed_hint: "修改将直接写入数据库，并对所有用户生效。", ed_vi: "越南语名称", ed_en: "英文名称", ed_def: "释义", ed_now: "当前", ed_def_na: "该类别的释义在其他字段，暂不能在此修改（仅可改越/英文名称）。", ed_note: "备注（可选）", ed_note_ph: "修改原因……", ed_save: "保存到数据库", ed_nochange: "没有任何改动。", ed_confirm_title: "确认修改术语", ed_confirm_msg: "修改将连同日志（前/后）写入数据库，并关闭该术语的反馈。", ed_saved: "已保存到数据库", ed_admin_btn: "修改（管理员）", ui_ok: "确定", ui_cancel: "取消", oa_delete_title: "删除已下载内容？", oa_delete_msg: "将从本机删除这篇内容（{size}）。联网后仍可重新下载。", oa_manage: "管理", sys_title: "系统设置", sys_clips: "句", sys_storage: "本机存储", sys_allowed: "可用", sys_l_audio: "听力音频", sys_l_figs: "穴位图片", sys_l_terms: "术语查询库", sys_l_other: "其他（缓存等）", sys_free_btn: "释放存储空间", sys_audio: "已下载的听力", sys_audio_empty: "还没有下载。点听力里的下载图标 ⬇ 即可离线收听。", sys_select_all: "全选", sys_select_none: "取消全选", sys_delete_sel: "删除所选", sys_offline_pack: "离线查询库", sys_terms: "术语", sys_figs: "穴位图片", sys_not_downloaded: "未下载", sys_dl_pack: "下载 / 更新查询库", sys_dl_pack_sub: "全部术语与图片，无网络时也可查询", sys_autoresume: "回到应用时自动续传", sys_autoresume_sub: "查询库下载到一半时，联网后继续", sys_prefs: "收听选项", sys_cap: "离线音频最大容量", sys_cap_sub: "超过后不再下载新内容", sys_about: "信息与更新", sys_version: "界面版本", sys_check_update: "检查更新", sys_checking: "检查中……", sys_up_to_date: "已检查——当前是最新版本", sys_confirm_del_audio: "删除已下载的 {n} 篇？", sys_will_free: "将释放 {size}。联网后仍可重新下载。", sys_freed: "已释放 {size}", sys_deleted: "已删除", sys_confirm_terms: "删除离线查询库？", sys_confirm_terms_msg: "重新下载前，无网络时将无法查询全部术语。", sys_confirm_figs: "删除离线穴位图片？", sys_confirm_figs_msg: "重新下载前，无网络时不显示图片。", sys_free_title: "释放存储空间", sys_free_msg: "选择要清理的内容。登录状态和学习记录不受影响。", sys_free_go: "释放", sys_o_cache: "应用缓存", sys_o_cache_sub: "安全——需要时会自动重建", sys_o_audio: "已下载的听力音频", sys_o_audio_sub: "这些内容将无法离线收听", sys_o_figs: "离线穴位图片", sys_o_figs_sub: "需要联网才能再次查看图片", sys_o_terms: "离线术语查询库", sys_o_terms_sub: "需要联网才能完整查询", ai_cost_used: '本次分析约消耗 {c} 点（同一录音，不重复转写）。', ai_cost_cached: '复用已有的分析结果——不消耗点数。', oa_download: '下载以离线收听', oa_downloading: '下载中', oa_have: '已下载，可离线收听', oa_delete: '删除', oa_done: '下载完成——没有网络也能听。', oa_err: '下载未完成，请重试（已下载的部分会保留）。', oa_quota: '离线存储已满（300 MB），请先删除一些已下载内容。', oa_need_net: '需要联网才能下载。', oa_section: '已下载（离线收听）', oa_clear_all: '全部删除', oa_delete_confirm: '从本机删除这篇已下载内容？', oa_delete_all_confirm: '从本机删除所有已下载内容？', lu_title: '正在更新新版本……', lu_sub: '请保持应用打开，更新完成前请勿退出。', lu_applying: '正在应用新版本……', lu_slow: '网络较慢——将在后台继续更新，您可以继续使用。', listen_answer_repeat: '跟读中文', qs_switched_zh: '检测到你说的是中文，已按中文参考打分。', qs_unclear: '没有听清你的声音，暂不打分。', qs_unclear_tip: '请大声一点、靠近麦克风、在安静处再试一次。仍可回放录音。', qs_issues: '需要改进', iss_tone: '声调不准', iss_pronunciation: '发音不准', iss_missing: '漏说', iss_extra: '多说', iss_wrong: '用词错误', iss_grammar: '语法', listen_answer_auto: '自动识别', qs_switched_vi: '检测到你说的是越南语，已按越南语参考打分。', qs_switched_en: '检测到你说的是英语，已按英语参考打分。', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）',
   login_to_listen: '登录后才能收听音频', login_to_record: '登录后才能录音', login_to_analyze: '登录后才能使用 AI 分析',
   up_title: '此功能仅限 Pro 套餐', up_body_analyze: 'AI 分析（评分、要点对照、修改建议）仅限 Pro 套餐。',
   up_body_upload: '上传自己的文档，由 AI 自动编辑并生成音频，是 Pro 套餐的功能。',
@@ -2313,7 +2330,7 @@ Object.assign(I18N.en, {
   listen_cat_y_an: 'Case Studies', listen_cat_bao_chi: 'News', listen_cat_tu_them: 'Custom', listen_cat_hoc_thuat: 'International Papers', listen_cat_csdl: 'Academic',
   listen_empty: 'No dialogues in this category yet.',
   listen_level_all: 'All', listen_level_so_cap: 'Beginner', listen_level_trung_cap: 'Intermediate', listen_level_cao_cap: 'Advanced',
-  listen_play_full: 'Play full dialogue', listen_answer_lang: 'I answer in', role_admin_title: "Administrator", dr_reports: "Reported terms", rev_title: "Terms reported by users", rev_empty: "No terms waiting for review.", rev_count: "{n} terms waiting for your review", rev_edit: "Edit & save", rev_view: "View entry", rev_skip: "Dismiss", rev_skip_title: "Dismiss these reports?", rev_skip_msg: "{n} reports for this term will be closed without changes.", ed_hint: "Edits are written directly to the database and apply to all users.", ed_vi: "Vietnamese name", ed_en: "English name", ed_def: "Definition", ed_now: "Current", ed_def_na: "This group keeps its definition in another field, so it cannot be edited here (only the Vietnamese/English names).", ed_note: "Note (optional)", ed_note_ph: "Why this change…", ed_save: "Save to database", ed_nochange: "No changes yet.", ed_confirm_title: "Confirm term edit", ed_confirm_msg: "The change is saved to the database with an audit log (before/after) and closes the reports of this term.", ed_saved: "Saved to the database", ed_admin_btn: "Edit (admin)", ui_ok: "OK", ui_cancel: "Cancel", oa_delete_title: "Delete the download?", oa_delete_msg: "This lesson will be removed from the device ({size}). You can download it again when online.", oa_manage: "Manage", sys_title: "System settings", sys_clips: "clips", sys_storage: "Storage on this device", sys_allowed: "allowed", sys_l_audio: "Listening audio", sys_l_figs: "Acupoint figures", sys_l_terms: "Term lookup data", sys_l_other: "Other (cache…)", sys_free_btn: "Free up space", sys_audio: "Downloaded lessons", sys_audio_empty: "Nothing yet. Tap the download icon ⬇ on a lesson to listen offline.", sys_select_all: "Select all", sys_select_none: "Deselect", sys_delete_sel: "Delete selected", sys_offline_pack: "Offline lookup pack", sys_terms: "Terms", sys_figs: "Acupoint figures", sys_not_downloaded: "Not downloaded", sys_dl_pack: "Download / update lookup pack", sys_dl_pack_sub: "All terms and figures, available without a connection", sys_autoresume: "Resume when returning to the app", sys_autoresume_sub: "If the lookup pack was interrupted, continue when online", sys_prefs: "Listening options", sys_cap: "Maximum size for offline audio", sys_cap_sub: "No more lessons are downloaded beyond this", sys_about: "About & updates", sys_version: "Interface version", sys_check_update: "Check for updates", sys_checking: "Checking…", sys_up_to_date: "Checked — you are on the latest version", sys_confirm_del_audio: "Delete {n} downloaded lessons?", sys_will_free: "This frees {size}. You can download them again when online.", sys_freed: "Freed {size}", sys_deleted: "Deleted", sys_confirm_terms: "Delete the offline lookup pack?", sys_confirm_terms_msg: "Full term lookup will not work offline until you download it again.", sys_confirm_figs: "Delete offline acupoint figures?", sys_confirm_figs_msg: "Figures will not show offline until downloaded again.", sys_free_title: "Free up space", sys_free_msg: "Choose what to clean. Your sign-in and progress are not affected.", sys_free_go: "Free up", sys_o_cache: "App cache", sys_o_cache_sub: "Safe — rebuilt when needed", sys_o_audio: "Downloaded listening audio", sys_o_audio_sub: "These lessons will no longer play offline", sys_o_figs: "Offline acupoint figures", sys_o_figs_sub: "Needs a connection to view figures again", sys_o_terms: "Offline term lookup pack", sys_o_terms_sub: "Needs a connection for full lookup", ai_cost_used: 'This analysis cost ~{c} credit (same recording, no re-transcription).', ai_cost_cached: 'Reused the existing analysis — no credit used.', oa_download: 'Download for offline listening', oa_downloading: 'Downloading', oa_have: 'Downloaded for offline listening', oa_delete: 'Delete', oa_done: 'Downloaded — you can listen without a connection.', oa_err: 'Download did not finish; try again (what was downloaded is kept).', oa_quota: 'Offline storage is full (300 MB). Delete some downloads first.', oa_need_net: 'A connection is needed to download.', oa_section: 'Downloaded (offline)', oa_clear_all: 'Delete all', oa_delete_confirm: 'Delete this downloaded lesson from the device?', oa_delete_all_confirm: 'Delete all downloaded lessons from the device?', lu_title: 'Updating to the new version…', lu_sub: 'Please keep the app open until it finishes.', lu_applying: 'Applying the new version…', lu_slow: 'Slow network — the update will continue in the background; you can keep using the app.', listen_answer_repeat: 'repeat in Chinese', qs_switched_zh: 'Detected Chinese, so it was scored against the Chinese reference.', qs_unclear: 'Your voice was not clear enough, so it was not scored.', qs_unclear_tip: 'Speak louder, hold the microphone closer, and try in a quiet place. You can still replay your recording.', qs_issues: 'Points to fix', iss_tone: 'wrong tone', iss_pronunciation: 'pronunciation', iss_missing: 'missing', iss_extra: 'extra', iss_wrong: 'wrong word', iss_grammar: 'grammar', listen_answer_auto: 'Auto-detect', qs_switched_vi: 'Detected Vietnamese, so it was scored against the Vietnamese reference.', qs_switched_en: 'Detected English, so it was scored against the English reference.', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)',
+  listen_play_full: 'Play full dialogue', listen_answer_lang: 'I answer in', tf_hz: "Chinese characters", tf_intro: "Edit the wrong field directly and leave the correct ones as they are.", tf_comment_ph: "Extra note (optional)…", tf_hz_bad: "The Chinese field accepts Chinese characters only.", ed_hz_exists: "These characters already belong to another entry.", grp_view_main: "View in the main list", grp_items: "items", grp_more: "… and {n} more (see the main list).", role_admin_title: "Administrator", dr_reports: "Reported terms", rev_title: "Reported terms", rev_empty: "No terms waiting for review.", rev_count: "{n} terms waiting for your review", rev_edit: "Edit & save", rev_view: "View entry", rev_skip: "Dismiss", rev_skip_title: "Dismiss these reports?", rev_skip_msg: "{n} reports for this term will be closed without changes.", ed_hint: "Edits are written directly to the database and apply to all users.", ed_vi: "Vietnamese name", ed_en: "English name", ed_def: "Definition", ed_now: "Current", ed_def_na: "This group keeps its definition in another field, so it cannot be edited here (only the Vietnamese/English names).", ed_note: "Note (optional)", ed_note_ph: "Why this change…", ed_save: "Save to database", ed_nochange: "No changes yet.", ed_confirm_title: "Confirm term edit", ed_confirm_msg: "The change is saved to the database with an audit log (before/after) and closes the reports of this term.", ed_saved: "Saved to the database", ed_admin_btn: "Edit (admin)", ui_ok: "OK", ui_cancel: "Cancel", oa_delete_title: "Delete the download?", oa_delete_msg: "This lesson will be removed from the device ({size}). You can download it again when online.", oa_manage: "Manage", sys_title: "System settings", sys_clips: "clips", sys_storage: "Storage on this device", sys_allowed: "allowed", sys_l_audio: "Listening audio", sys_l_figs: "Acupoint figures", sys_l_terms: "Term lookup data", sys_l_other: "Other (cache…)", sys_free_btn: "Free up space", sys_audio: "Downloaded lessons", sys_audio_empty: "Nothing yet. Tap the download icon ⬇ on a lesson to listen offline.", sys_select_all: "Select all", sys_select_none: "Deselect", sys_delete_sel: "Delete selected", sys_offline_pack: "Offline lookup pack", sys_terms: "Terms", sys_figs: "Acupoint figures", sys_not_downloaded: "Not downloaded", sys_dl_pack: "Download / update lookup pack", sys_dl_pack_sub: "All terms and figures, available without a connection", sys_autoresume: "Resume when returning to the app", sys_autoresume_sub: "If the lookup pack was interrupted, continue when online", sys_prefs: "Listening options", sys_cap: "Maximum size for offline audio", sys_cap_sub: "No more lessons are downloaded beyond this", sys_about: "About & updates", sys_version: "Interface version", sys_check_update: "Check for updates", sys_checking: "Checking…", sys_up_to_date: "Checked — you are on the latest version", sys_confirm_del_audio: "Delete {n} downloaded lessons?", sys_will_free: "This frees {size}. You can download them again when online.", sys_freed: "Freed {size}", sys_deleted: "Deleted", sys_confirm_terms: "Delete the offline lookup pack?", sys_confirm_terms_msg: "Full term lookup will not work offline until you download it again.", sys_confirm_figs: "Delete offline acupoint figures?", sys_confirm_figs_msg: "Figures will not show offline until downloaded again.", sys_free_title: "Free up space", sys_free_msg: "Choose what to clean. Your sign-in and progress are not affected.", sys_free_go: "Free up", sys_o_cache: "App cache", sys_o_cache_sub: "Safe — rebuilt when needed", sys_o_audio: "Downloaded listening audio", sys_o_audio_sub: "These lessons will no longer play offline", sys_o_figs: "Offline acupoint figures", sys_o_figs_sub: "Needs a connection to view figures again", sys_o_terms: "Offline term lookup pack", sys_o_terms_sub: "Needs a connection for full lookup", ai_cost_used: 'This analysis cost ~{c} credit (same recording, no re-transcription).', ai_cost_cached: 'Reused the existing analysis — no credit used.', oa_download: 'Download for offline listening', oa_downloading: 'Downloading', oa_have: 'Downloaded for offline listening', oa_delete: 'Delete', oa_done: 'Downloaded — you can listen without a connection.', oa_err: 'Download did not finish; try again (what was downloaded is kept).', oa_quota: 'Offline storage is full (300 MB). Delete some downloads first.', oa_need_net: 'A connection is needed to download.', oa_section: 'Downloaded (offline)', oa_clear_all: 'Delete all', oa_delete_confirm: 'Delete this downloaded lesson from the device?', oa_delete_all_confirm: 'Delete all downloaded lessons from the device?', lu_title: 'Updating to the new version…', lu_sub: 'Please keep the app open until it finishes.', lu_applying: 'Applying the new version…', lu_slow: 'Slow network — the update will continue in the background; you can keep using the app.', listen_answer_repeat: 'repeat in Chinese', qs_switched_zh: 'Detected Chinese, so it was scored against the Chinese reference.', qs_unclear: 'Your voice was not clear enough, so it was not scored.', qs_unclear_tip: 'Speak louder, hold the microphone closer, and try in a quiet place. You can still replay your recording.', qs_issues: 'Points to fix', iss_tone: 'wrong tone', iss_pronunciation: 'pronunciation', iss_missing: 'missing', iss_extra: 'extra', iss_wrong: 'wrong word', iss_grammar: 'grammar', listen_answer_auto: 'Auto-detect', qs_switched_vi: 'Detected Vietnamese, so it was scored against the Vietnamese reference.', qs_switched_en: 'Detected English, so it was scored against the English reference.', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)',
   login_to_listen: 'Sign in to listen to audio', login_to_record: 'Sign in to record', login_to_analyze: 'Sign in to use AI analysis',
   up_title: 'A Pro plan feature', up_body_analyze: 'AI analysis (scoring, key-point comparison, correction hints) is available on the Pro plan.',
   up_body_upload: 'Uploading your own documents, with AI editing and audio generation, is a Pro plan feature.',
@@ -3538,14 +3555,23 @@ function updateAdminItem(){
   const rp = document.getElementById('drawerReportsItem'); if(rp) rp.style.display = state.isAdmin ? '' : 'none'; // công cụ duyệt từ: có cả trong app (không liên quan thanh toán)
   if(state.isAdmin) refreshReportBadge();
 }
+function paintReportBadge(n){
+  const b = document.getElementById('repBadge'); if(!b) return;
+  b.textContent = n > 99 ? '99+' : String(n); b.style.display = n ? '' : 'none';
+}
 async function refreshReportBadge(){
-  const b = document.getElementById('repBadge'); if(!b || !state.isAdmin) return;
+  if(!state.isAdmin) return;
+  try{ paintReportBadge(Number(localStorage.getItem('chimedis_rep_count')) || 0); }catch(e){} // hiện NGAY số lần trước, rồi cập nhật
   try{
     const r = await authFetch('/api/admin/term-reports/count'); const j = await r.json();
     const n = (j && j.success && j.data && j.data.count) || 0;
-    b.textContent = n > 99 ? '99+' : String(n); b.style.display = n ? '' : 'none';
+    try{ localStorage.setItem('chimedis_rep_count', String(n)); }catch(e){}
+    paintReportBadge(n);
   }catch(e){}
 }
+// Admin: làm mới huy hiệu mỗi 40 giây khi đang mở app, và ngay khi quay lại app.
+setInterval(() => { if(state.isAdmin && !document.hidden) refreshReportBadge(); }, 40000);
+document.addEventListener('visibilitychange', () => { if(!document.hidden && state.isAdmin) refreshReportBadge(); });
 function closeCheckout(){ clearInterval(ckState.timer); ckState.timer = null; document.getElementById('checkoutModal')?.remove(); }
 async function openCheckout(plan, period, kind){
   if(NO_PURCHASE_UI) return;
@@ -3795,22 +3821,33 @@ function openTermFeedback(id){
   if(!term) return;
   if(!state.user){ openAuthModal(); return; }
   closeTermFeedback();
-  const e = myDocEsc;
+  const e = (x) => String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+  const def = (term.vitri || ''), defZh = (term.vitri_cn || ''), defEn = (term.vitri_en || '');
+  const hasDef = !!(def || defZh || defEn);
   document.getElementById('app').insertAdjacentHTML('beforeend',
-    `<div id="tfModal" class="up-scrim" onclick="if(event.target===this)closeTermFeedback()"><div class="up-box" role="dialog">` +
-    `<h3>⭐ ${t('tf_flag')}</h3><p><b>${e(term.hz || '')}</b> · ${e(term.vi || '')} · ${e(term.en || '')}</p>` +
-    `<div class="adm-form" style="flex-direction:column">` +
-    `<input id="tfVi" placeholder="${e(t('tf_vi'))}"><input id="tfEn" placeholder="${e(t('tf_en'))}">` +
-    `<textarea id="tfDef" rows="2" placeholder="${e(t('tf_def'))}" style="border:1px solid var(--vien,#e5ddcc);border-radius:10px;padding:8px 10px;font:inherit"></textarea>` +
-    `<textarea id="tfCm" rows="3" placeholder="${e(t('tf_comment'))}" style="border:1px solid var(--vien,#e5ddcc);border-radius:10px;padding:8px 10px;font:inherit"></textarea></div>` +
+    `<div id="tfModal" class="up-scrim" onclick="if(event.target===this)closeTermFeedback()"><div class="up-box" role="dialog" style="max-height:92%;overflow:auto;text-align:left">` +
+    `<h3>⭐ ${t('tf_flag')}</h3><p style="margin:0 0 6px;font-size:13px;color:var(--muc-mo,#6B6156)">${t('tf_intro')}</p>` +
+    `<label class="ed-l">${t('tf_hz')}<input id="tfHz" value="${e(term.hz)}" data-orig="${e(term.hz)}" autocapitalize="off"></label>` +
+    `<label class="ed-l">${t('ed_vi')}<input id="tfVi" value="${e(term.vi)}" data-orig="${e(term.vi)}"></label>` +
+    `<label class="ed-l">${t('ed_en')}<input id="tfEn" value="${e(term.en)}" data-orig="${e(term.en)}"></label>` +
+    (hasDef ? `<details class="tf-def" ${def ? 'open' : ''}><summary>${t('ed_def')}</summary>` +
+      `<label class="ed-l">Tiếng Việt<textarea id="tfDef" rows="2" data-orig="${e(def)}">${e(def)}</textarea></label>` +
+      `<label class="ed-l">中文<textarea id="tfDefZh" rows="2" data-orig="${e(defZh)}">${e(defZh)}</textarea></label>` +
+      `<label class="ed-l">English<textarea id="tfDefEn" rows="2" data-orig="${e(defEn)}">${e(defEn)}</textarea></label></details>` : '') +
+    `<label class="ed-l">${t('tf_comment')}<textarea id="tfCm" rows="2" placeholder="${e(t('tf_comment_ph'))}"></textarea></label>` +
     `<div class="up-actions"><button type="button" class="up-cta" style="border:0;cursor:pointer" onclick="sendTermFeedback('${String(id).replace(/'/g, '')}')">${t('tf_send')}</button>` +
     `<button type="button" onclick="closeTermFeedback()">${t('plans_close')}</button></div></div></div>`);
 }
 async function sendTermFeedback(id){
   const term = TERMS.find(x => x.id === id);
-  const v = (k) => (document.getElementById(k) || {}).value || '';
-  const body = { term_id: id, hz: term && term.hz, vi: term && term.vi, en: term && term.en, group1: term && term.group1, comment: v('tfCm'), suggested_vi: v('tfVi'), suggested_en: v('tfEn'), suggested_def: v('tfDef') };
-  if(!body.comment.trim() && !body.suggested_vi.trim() && !body.suggested_en.trim() && !body.suggested_def.trim()){ listenToast(t('tf_empty')); return; }
+  const el = (k) => document.getElementById(k);
+  // Chỉ gửi những ô NGƯỜI DÙNG ĐÃ SỬA so với bản hiện tại (điền sẵn bản hiện tại để sửa thẳng vào chỗ sai).
+  const changed = (k) => { const n = el(k); if(!n) return ''; const v = n.value.trim(); return (v && v !== (n.dataset.orig || '').trim()) ? v : ''; };
+  const body = { term_id: id, hz: term && term.hz, vi: term && term.vi, en: term && term.en, group1: term && term.group1,
+    comment: (el('tfCm') || {}).value || '', suggested_hz: changed('tfHz'), suggested_vi: changed('tfVi'), suggested_en: changed('tfEn'),
+    suggested_def: changed('tfDef'), suggested_def_zh: changed('tfDefZh'), suggested_def_en: changed('tfDefEn') };
+  if(body.suggested_hz && !/^[㐀-鿿\s]+$/.test(body.suggested_hz)){ listenToast(t('tf_hz_bad')); return; }
+  if(!body.comment.trim() && !body.suggested_hz && !body.suggested_vi && !body.suggested_en && !body.suggested_def && !body.suggested_def_zh && !body.suggested_def_en){ listenToast(t('tf_empty')); return; }
   try{
     const r = await authFetch('/api/term-feedback', { method: 'POST', body: JSON.stringify(body) });
     closeTermFeedback();
@@ -6352,6 +6389,34 @@ function closeGroup(){
   document.removeEventListener('keydown', gsKey);
 }
 function gsOpenPoint(id){ closeGroup(); openPopup(id); }
+// Bấm nhóm (group1) hoặc hệ/chương (group2) của MỌI thuật ngữ → mở danh sách các mục cùng nhóm (giống danh sách kinh mạch của huyệt vị).
+// group2 rỗng → chuyển thẳng danh sách chính sang nhóm đó; có group2 → bảng liệt kê gọn + nút xem trong danh sách chính.
+function openTermGroup(g1, g2, fromId){
+  if(!g2){ closeGroup(); closePopup(); selectGroup1(g1); return; }
+  closeGroup();
+  const members = TERMS.filter(x => x.group1 === g1 && x.group2 === g2).sort((a, b) => currentCollator().compare(String(a.vi || a.hz || ''), String(b.vi || b.hz || '')));
+  const from = TERMS.find(x => String(x.id) === String(fromId));
+  const title = (from && from.group2 === g2) ? termGroup2Label(from) : group2Label(g1, g2);
+  const CAP = 300;
+  const rows = members.slice(0, CAP).map(x => {
+    const name = pickLang3(x.vi, x.hz, x.en).text;
+    const han = state.lang === 'zh' ? '' : `<span class="han">${escAttr(hzOf(x))}</span>`;
+    const l2 = [x.py, state.lang === 'en' ? '' : x.en].filter(Boolean).join(' · ');
+    return `<button type="button" class="gs-row${String(x.id) === String(fromId) ? ' cur' : ''}" onclick="gsOpenPoint('${escAttr(x.id)}')"><span class="gs-l1"><span class="gs-n">${escAttr(name)}</span>${han}</span>${l2 ? `<span class="gs-l2">${escAttr(l2)}</span>` : ''}</button>`;
+  }).join('');
+  const more = members.length > CAP ? `<div class="gs-meta">${t('grp_more').replace('{n}', members.length - CAP)}</div>` : '';
+  const body = `<button type="button" class="gs-act" onclick="openTermGroupMain('${escAttr(g1)}','${escAttr(g2)}')">${t('grp_view_main')} ›</button><div class="gs-list">${rows}</div>${more}`;
+  const d = document.createElement('div'); d.className = 'gs-overlay'; d.id = 'gsOverlay';
+  d.onclick = e => { if(e.target === d) closeGroup(); };
+  d.innerHTML = `<div class="gs"><div class="gs-top"><h3>${escAttr(title)}<small>${members.length} ${t('grp_items')}</small></h3><button type="button" class="gs-x" aria-label="${t('gs_close')}" onclick="closeGroup()">×</button></div>${body}</div>`;
+  document.body.appendChild(d);
+  document.addEventListener('keydown', gsKey);
+}
+function openTermGroupMain(g1, g2){
+  closeGroup(); closePopup();
+  selectGroup1(g1);
+  state.group2 = g2; state.vocabVisible = VOCAB_PAGE_SIZE; render(); scrollToTop();
+}
 function gsViewList(merKey){
   closeGroup(); closePopup();
   selectGroup1('Huyệt vị');
@@ -6392,7 +6457,7 @@ function openPopup(id){
       <div class="vi">${term.vi}${speakLineBtn(term.vi,'vi')}</div>
       <div class="en">${term.en||''}${speakLineBtn(term.en,'en')}</div>
       `}
-      <div class="tags"><span class="tag">${group1Label(term.group1)}</span>${term.group2?(term.category==='acupoint'?`<button type="button" class="tag" onclick="openGroup('meridian','${escAttr(term.group2)}','${escAttr(term.id)}')">${termGroup2Label(term)}</button>`:`<span class="tag">${termGroup2Label(term)}</span>`):''}${specialClassTags(term)}</div>
+      <div class="tags"><button type="button" class="tag-link" onclick="openTermGroup('${escAttr(term.group1)}','',${JSON.stringify(String(term.id)).replace(/"/g, '&quot;')})">${group1Label(term.group1)}</button>${term.group2?(term.category==='acupoint'?`<button type="button" class="tag" onclick="openGroup('meridian','${escAttr(term.group2)}','${escAttr(term.id)}')">${termGroup2Label(term)}</button>`:`<button type="button" class="tag-link" onclick="openTermGroup('${escAttr(term.group1)}','${escAttr(term.group2)}',${JSON.stringify(String(term.id)).replace(/"/g, '&quot;')})">${termGroup2Label(term)}</button>`):''}${specialClassTags(term)}</div>
     </div>
     <div class="pp-body">`;
   if(term.category === 'word_element'){
@@ -6626,6 +6691,7 @@ function setupPopupSwipe(){
   pp.addEventListener('touchstart', e=>{
     // Vuốt ngang trên dải hình minh hoạ là để cuộn dải hình, KHÔNG được tính là chuyển từ/đóng popup.
     if(e.target.closest && e.target.closest('.fig-row')){ _ppTouch.active = false; return; }
+    if(e.touches[0].clientX <= 30 || e.touches[0].clientX >= window.innerWidth - 30){ _ppTouch.active = false; return; } // mép trái/phải = lùi/tiến toàn app
     _ppTouch.x = e.touches[0].clientX;
     _ppTouch.y = e.touches[0].clientY;
     _ppTouch.active = true;
@@ -6662,6 +6728,7 @@ function setupPopupSwipe(){
 
 // ===== DRAWER (MENU DỌC) =====
 function openDrawer(){
+  if(state.isAdmin) refreshReportBadge();
   const luEl = document.getElementById('luStatus'); if(luEl) luEl.textContent = authTraceLine();
   document.getElementById('drawer').classList.add('show');
   document.getElementById('drawerScrim').classList.add('show');
@@ -7504,10 +7571,10 @@ async function trRefresh(){
     const cur = term || { hz: g.hz, vi: g.vi, en: g.en };
     const reps = g.reports.slice(0, 3).map(rp =>
       `<div class="rev-rep"><small>${esc(rp.email || '')} · ${fmt(rp.at)}</small>${rp.comment ? `<div>${esc(rp.comment)}</div>` : ''}` +
-      `${rp.suggested_vi ? `<div class="rev-sg">VI → <b>${esc(rp.suggested_vi)}</b></div>` : ''}${rp.suggested_en ? `<div class="rev-sg">EN → <b>${esc(rp.suggested_en)}</b></div>` : ''}${rp.suggested_def ? `<div class="rev-sg">ĐN → ${esc(rp.suggested_def)}</div>` : ''}</div>`).join('');
+      `${rp.suggested_hz ? `<div class="rev-sg">中 → <b>${esc(rp.suggested_hz)}</b></div>` : ''}${rp.suggested_vi ? `<div class="rev-sg">VI → <b>${esc(rp.suggested_vi)}</b></div>` : ''}${rp.suggested_en ? `<div class="rev-sg">EN → <b>${esc(rp.suggested_en)}</b></div>` : ''}${rp.suggested_def ? `<div class="rev-sg">ĐN → ${esc(rp.suggested_def)}</div>` : ''}${rp.suggested_def_zh ? `<div class="rev-sg">定义 → ${esc(rp.suggested_def_zh)}</div>` : ''}${rp.suggested_def_en ? `<div class="rev-sg">Def → ${esc(rp.suggested_def_en)}</div>` : ''}</div>`).join('');
     return `<section class="sys-card rev-card" id="revCard${i}"><div class="rev-top"><div class="rev-hz">${esc(cur.hz || '')}</div>` +
       `<div class="rev-names"><b>${esc(cur.vi || '—')}</b><span>${esc(cur.en || '—')}</span></div>` +
-      `<span class="rev-n">${g.count}</span></div><div class="rev-meta">${esc(g.group1 || (term && term.group1) || '')}${term && term.nguon ? ' · ' + esc(String(term.nguon).slice(0, 70)) : ''}</div>` +
+      `<span class="rev-n">${g.count}</span></div><div class="rev-meta">${esc(g.group1 || (term && term.group1) || '')}</div>` +
       reps +
       `<div class="sys-actions"><button type="button" class="ui-btn primary" onclick="trEdit(${i})">${t('rev_edit')}</button>` +
       `<button type="button" class="ui-btn ghost" ${term ? '' : 'disabled'} onclick="openPopup('${String(g.term_id).replace(/'/g, '')}')">${t('rev_view')}</button>` +
@@ -7516,8 +7583,10 @@ async function trRefresh(){
 }
 function trEdit(i){
   const g = trList[i]; if(!g) return;
-  const last = g.reports[0] || {};
-  openTermEditor(g.term_id, { vi: last.suggested_vi, en: last.suggested_en, definition: last.suggested_def, reports: g.reports, group1: g.group1, snapshot: g });
+  // Gộp đề xuất: với mỗi trường lấy đề xuất MỚI NHẤT có nội dung (báo cáo đã sắp mới → cũ).
+  const pick = (k) => { const r = g.reports.find(x => x[k] && String(x[k]).trim()); return r ? r[k] : ''; };
+  openTermEditor(g.term_id, { hz: pick('suggested_hz'), vi: pick('suggested_vi'), en: pick('suggested_en'), definition: pick('suggested_def'),
+    def_zh: pick('suggested_def_zh'), def_en: pick('suggested_def_en'), reports: g.reports, group1: g.group1, snapshot: g });
 }
 async function trDismiss(i){
   const g = trList[i]; if(!g) return;
@@ -7535,44 +7604,65 @@ function openTermEditor(termId, pre){
   pre = pre || {};
   const term = TERMS.find(x => String(x.id) === String(termId));
   const snap = pre.snapshot || {};
-  const cur = { hz: (term && term.hz) || snap.hz || '', vi: (term && term.vi) || snap.vi || '', en: (term && term.en) || snap.en || '', def: (term && (term.vitri || '')) || '' };
+  const cur = { hz: (term && term.hz) || snap.hz || '', vi: (term && term.vi) || snap.vi || '', en: (term && term.en) || snap.en || '',
+    def: (term && term.vitri) || '', defZh: (term && term.vitri_cn) || '', defEn: (term && term.vitri_en) || '' };
   const defEditable = term ? ['Giải phẫu', 'Sinh lý', 'Bệnh lý', 'Tổng hợp', 'Thuật ngữ bổ sung'].includes(term.group1) : true;
   document.getElementById('uiEditor')?.remove();
   const esc = (x) => String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
   const el = document.createElement('div'); el.id = 'uiEditor'; el.className = 'ui-sheet-scrim';
+  const now = (v) => `<small>${t('ed_now')}: ${esc(v || '—')}</small>`;
   el.innerHTML = `<div class="ui-sheet ed-sheet" role="dialog" aria-modal="true"><div class="ui-sheet-grab"></div>` +
     `<div class="ui-sheet-title">${esc(cur.hz)}</div><div class="ui-sheet-msg">${t('ed_hint')}</div>` +
-    `<label class="ed-l">${t('ed_vi')}<input id="edVi" value="${esc(pre.vi || cur.vi)}"><small>${t('ed_now')}: ${esc(cur.vi || '—')}</small></label>` +
-    `<label class="ed-l">${t('ed_en')}<input id="edEn" value="${esc(pre.en || cur.en)}"><small>${t('ed_now')}: ${esc(cur.en || '—')}</small></label>` +
-    (defEditable ? `<label class="ed-l">${t('ed_def')}<textarea id="edDef" rows="3">${esc(pre.definition || cur.def)}</textarea></label>` : `<div class="ed-note">${t('ed_def_na')}</div>`) +
+    `<label class="ed-l">${t('tf_hz')}<input id="edHz" value="${esc(pre.hz || cur.hz)}" autocapitalize="off">${now(cur.hz)}</label>` +
+    `<label class="ed-l">${t('ed_vi')}<input id="edVi" value="${esc(pre.vi || cur.vi)}">${now(cur.vi)}</label>` +
+    `<label class="ed-l">${t('ed_en')}<input id="edEn" value="${esc(pre.en || cur.en)}">${now(cur.en)}</label>` +
+    (defEditable ? `<label class="ed-l">${t('ed_def')} · Tiếng Việt<textarea id="edDef" rows="2">${esc(pre.definition || cur.def)}</textarea></label>` +
+      `<label class="ed-l">${t('ed_def')} · 中文<textarea id="edDefZh" rows="2">${esc(pre.def_zh || cur.defZh)}</textarea></label>` +
+      `<label class="ed-l">${t('ed_def')} · English<textarea id="edDefEn" rows="2">${esc(pre.def_en || cur.defEn)}</textarea></label>` : `<div class="ed-note">${t('ed_def_na')}</div>`) +
     `<label class="ed-l">${t('ed_note')}<input id="edNote" placeholder="${esc(t('ed_note_ph'))}"></label>` +
     `<div class="ui-sheet-actions"><button type="button" class="ui-btn primary" data-save>${t('ed_save')}</button><button type="button" class="ui-btn ghost" data-no>${t('ui_cancel')}</button></div></div>`;
   const close = () => { el.classList.remove('show'); setTimeout(() => el.remove(), 200); };
   el.addEventListener('click', (e) => { if(e.target === el) close(); });
   el.querySelector('[data-no]').onclick = close;
   el.querySelector('[data-save]').onclick = async () => {
-    const vi = el.querySelector('#edVi').value.trim(), en = el.querySelector('#edEn').value.trim();
-    const defEl = el.querySelector('#edDef'); const definition = defEl ? defEl.value.trim() : '';
-    const note = el.querySelector('#edNote').value.trim();
-    const body = { term_id: String(termId), note };
-    if(vi && vi !== cur.vi) body.vi = vi;
-    if(en && en !== cur.en) body.en = en;
-    if(definition && definition !== cur.def) body.definition = definition;
-    if(!body.vi && !body.en && !body.definition){ listenToast(t('ed_nochange')); return; }
+    const val = (id) => { const n = el.querySelector('#' + id); return n ? n.value.trim() : ''; };
+    const hz = val('edHz').replace(/\s+/g, '');
+    if(hz && !/^[㐀-鿿]+$/.test(hz)){ listenToast(t('tf_hz_bad')); return; }
+    const body = { term_id: String(termId), note: val('edNote') };
+    if(hz && hz !== cur.hz) body.hz = hz;
+    if(val('edVi') && val('edVi') !== cur.vi) body.vi = val('edVi');
+    if(val('edEn') && val('edEn') !== cur.en) body.en = val('edEn');
+    if(val('edDef') && val('edDef') !== cur.def) body.definition = val('edDef');
+    if(val('edDefZh') && val('edDefZh') !== cur.defZh) body.def_zh = val('edDefZh');
+    if(val('edDefEn') && val('edDefEn') !== cur.defEn) body.def_en = val('edDefEn');
+    if(!body.hz && !body.vi && !body.en && !body.definition && !body.def_zh && !body.def_en){ listenToast(t('ed_nochange')); return; }
     // Xem trước TRƯỚC → SAU và xác nhận lần cuối (ghi thẳng CSDL, ảnh hưởng mọi người dùng)
+    const cut = (v, n) => String(v || '—').slice(0, n);
     const lines = [];
+    if(body.hz) lines.push(`中: ${cur.hz || '—'} → ${body.hz}`);
     if(body.vi) lines.push(`VI: ${cur.vi || '—'} → ${body.vi}`);
     if(body.en) lines.push(`EN: ${cur.en || '—'} → ${body.en}`);
-    if(body.definition) lines.push(`${t('ed_def')}: ${String(cur.def || '—').slice(0, 60)} → ${body.definition.slice(0, 80)}`);
+    if(body.definition) lines.push(`${t('ed_def')} VI: ${cut(cur.def, 40)} → ${cut(body.definition, 60)}`);
+    if(body.def_zh) lines.push(`${t('ed_def')} 中: ${cut(cur.defZh, 40)} → ${cut(body.def_zh, 60)}`);
+    if(body.def_en) lines.push(`${t('ed_def')} EN: ${cut(cur.defEn, 40)} → ${cut(body.def_en, 60)}`);
     const ok = await uiConfirm({ title: t('ed_confirm_title'), message: lines.join('\n') + '\n\n' + t('ed_confirm_msg'), confirm: t('ed_save'), danger: false });
     if(!ok) return;
     const btn = el.querySelector('[data-save]'); btn.disabled = true; btn.textContent = '…';
     try{
       const r = await authFetch('/api/admin/term-edit', { method: 'POST', body: JSON.stringify(body) });
       const j = await r.json().catch(() => ({}));
-      if(!r.ok || !j.success){ btn.disabled = false; btn.textContent = t('ed_save'); listenToast(j && j.error === 'definition_not_editable_here' ? t('ed_def_na') : t('auth_err_generic')); return; }
+      if(!r.ok || !j.success){
+        btn.disabled = false; btn.textContent = t('ed_save');
+        listenToast(j && j.error === 'definition_not_editable_here' ? t('ed_def_na') : j && j.error === 'hz_exists' ? t('ed_hz_exists') : j && j.error === 'hz_invalid' ? t('tf_hz_bad') : t('auth_err_generic'));
+        return;
+      }
       // Cập nhật ngay trong bộ nhớ app để thấy kết quả tức thì
-      if(term){ if(body.vi) term.vi = body.vi; if(body.en) term.en = body.en; if(body.definition && j.source !== 'override') term.vitri = body.definition; term.verify = true; }
+      if(term){
+        if(body.hz){ term.hz = body.hz; if(j.after && j.after.py) term.py = j.after.py; }
+        if(body.vi) term.vi = body.vi; if(body.en) term.en = body.en;
+        if(j.source !== 'override'){ if(body.definition) term.vitri = body.definition; if(body.def_zh) term.vitri_cn = body.def_zh; if(body.def_en) term.vitri_en = body.def_en; }
+        term.verify = true;
+      }
       close();
       listenToast(t('ed_saved') + (j.definition_ignored ? ' · ' + t('ed_def_na') : ''));
       if(document.getElementById('termReview')) trRefresh();
@@ -7585,11 +7675,16 @@ function openTermEditor(termId, pre){
 }
 
 // ===== Cử chỉ vuốt từ mép trái → quay lại bước trước (như iOS) =====
+// Lùi/tiến theo chuẩn app di động: vuốt từ MÉP TRÁI = lùi một bước; vuốt từ MÉP PHẢI = tiến lại bước vừa lùi (như Safari).
+// Trong màn tuần tự (thẻ ôn tập, popup thuật ngữ) vuốt ngang ở GIỮA màn hình = thẻ/từ kế tiếp hoặc trước đó.
 function appBack(){
   if(document.getElementById('uiConfirm')){ document.querySelector('#uiConfirm [data-no]')?.click(); return true; }
   if(document.getElementById('uiFree')){ document.querySelector('#uiFree [data-no]')?.click(); return true; }
   if(document.getElementById('luOverlay')) return true; // đang cập nhật: không quay lại
   if(document.getElementById('uiEditor')){ document.querySelector('#uiEditor [data-no]')?.click(); return true; }
+  if(document.getElementById('gsOverlay')){ closeGroup(); return true; }
+  const pp0 = document.getElementById('ppOverlay');
+  if(pp0 && pp0.classList.contains('show')){ const id = state.popupId; closePopup(); navForwardSet(() => openPopup(id)); return true; }
   if(document.getElementById('termReview')){ closeTermReview(); return true; }
   if(document.getElementById('sysSettings')){ closeSysSettings(); return true; }
   if(document.getElementById('checkoutModal')){ closeCheckout(); return true; }
@@ -7601,52 +7696,80 @@ function appBack(){
   if(document.getElementById('adminModal')){ closeAdmin(); return true; }
   const am = document.getElementById('authModal'); if(am && am.classList.contains('show')){ closeAuthModal(); return true; }
   const dr = document.getElementById('drawer'); if(dr && dr.classList.contains('show')){ closeDrawer(); return true; }
-  const pp = document.getElementById('ppOverlay'); if(pp && pp.classList.contains('show')){ closePopup(); return true; }
   // Điều hướng theo khu vực: Luyện nghe / Ôn luyện / Yêu thích đều đặt state.group1 = "sentinel" — rời khu vực phải trả group1 về 'all'
-  // (selectGroup1('all') làm đủ: group1/group2/tab/cuộn/dừng phát), nếu không sẽ rơi vào màn "0 từ".
-  const g = state.group1;
-  if(state.tab === 'listendialogue'){ listenHome(); return true; }
-  if(g === LISTEN_SENTINEL){ listenStopPlayback(); selectGroup1('all'); return true; }
+  const g = state.group1, g2 = state.group2;
+  if(state.tab === 'listendialogue'){ const id = listenCurrentDialogue && listenCurrentDialogue.id; listenHome(); navForwardSet(() => openListenDialogue(id)); return true; }
+  if(g === LISTEN_SENTINEL){ listenStopPlayback(); selectGroup1('all'); navForwardSet(() => openListenView()); return true; }
   if(g === STUDY_SENTINEL){
-    if(state.tab !== 'studyhome'){ studyHome(); return true; }
-    selectGroup1('all'); return true;
+    if(state.tab !== 'studyhome'){ const tab = state.tab; studyHome(); navForwardSet(() => { state.tab = tab; render(); }); return true; }
+    selectGroup1('all'); navForwardSet(() => openStudyView()); return true;
   }
-  if(g === FAVORITES_SENTINEL){ selectGroup1('all'); return true; }
-  if(state.searchQuery){ clearSearch(); return true; }               // đang tìm: thoát tìm kiếm trước
-  if(g && g !== 'all'){ selectGroup1('all'); return true; }          // đang lọc theo nhóm: bỏ lọc
+  if(g === FAVORITES_SENTINEL){ selectGroup1('all'); navForwardSet(() => openFavoritesView()); return true; }
+  if(state.searchQuery){ const q = state.searchQuery; clearSearch(); navForwardSet(() => { searchInput.value = q; state.searchQuery = q; document.getElementById('searchBox').classList.add('hasval'); state.tab = 'vocab'; render(); }); return true; }
+  if(g2 && g && g !== 'all'){ state.group2 = null; state.vocabVisible = VOCAB_PAGE_SIZE; render(); scrollToTop(); navForwardSet(() => { state.group2 = g2; render(); }); return true; } // bỏ lọc cấp 2 trước
+  if(g && g !== 'all'){ selectGroup1('all'); navForwardSet(() => selectGroup1(g)); return true; }
   if(state.tab && state.tab !== 'vocab'){ selectGroup1('all'); return true; }
-  return false;                                                      // đã ở trang chủ: không làm gì
+  return false;
+}
+// "Tiến": chỉ hợp lệ ngay sau một lần lùi, khi màn hình chưa bị người dùng đổi sang chỗ khác (so khớp chữ ký trạng thái).
+let _navFwd = null;
+function navSig(){
+  return [state.tab, state.group1, state.group2, state.searchQuery || '', state.popupId || '',
+    ['ppOverlay', 'gsOverlay', 'termReview', 'sysSettings', 'laoshiScreen', 'drawer'].map(id => { const e = document.getElementById(id); return e && (e.classList.contains('show') || id === 'gsOverlay' || id === 'termReview' || id === 'sysSettings' || id === 'laoshiScreen') ? 1 : 0; }).join('')].join('|');
+}
+function navForwardSet(fn){ _navFwd = { fn, sig: null }; setTimeout(() => { if(_navFwd && _navFwd.fn === fn) _navFwd.sig = navSig(); }, 80); }
+function appForward(){
+  if(!_navFwd || !_navFwd.sig || _navFwd.sig !== navSig()) return false;
+  const f = _navFwd.fn; _navFwd = null;
+  try{ f(); }catch(e){ return false; }
+  return true;
 }
 let _lastBackAt = 0;
 function appBackOnce(){ const now = Date.now(); if(now - _lastBackAt < 350) return false; _lastBackAt = now; return appBack(); }
-(function initSwipeBack(){
-  const EDGE = 28, NEED = 80;
-  let sx = 0, sy = 0, t0 = 0, on = false, hint = null;
-  const show = (p) => {
-    if(!hint){ hint = document.createElement('div'); hint.id = 'swipeBackHint'; hint.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>'; document.body.appendChild(hint); }
+function appForwardOnce(){ const now = Date.now(); if(now - _lastBackAt < 350) return false; _lastBackAt = now; return appForward(); }
+(function initSwipeNav(){
+  const EDGE = 28, NEED = 80, SIDE = 70;
+  let mode = null, sx = 0, sy = 0, t0 = 0, hint = null, target = null;
+  const mk = (id, left) => {
+    let el = document.getElementById(id);
+    if(!el){ el = document.createElement('div'); el.id = id; el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="${left ? 'M15 18l-6-6 6-6' : 'M9 18l6-6-6-6'}"/></svg>`; document.body.appendChild(el); }
+    return el;
+  };
+  const show = (kind, p) => {
+    const id = kind === 'back' ? 'swipeBackHint' : 'swipeFwdHint';
+    hint = mk(id, kind === 'back');
     hint.style.opacity = String(Math.min(1, p * 1.2));
-    hint.style.transform = `translate(${Math.round(-30 + 46 * p)}px, -50%) scale(${(0.7 + 0.3 * p).toFixed(2)})`;
+    const off = Math.round(-30 + 46 * p);
+    hint.style.transform = kind === 'back' ? `translate(${off}px, -50%) scale(${(0.7 + 0.3 * p).toFixed(2)})` : `translate(${-off}px, -50%) scale(${(0.7 + 0.3 * p).toFixed(2)})`;
     hint.classList.toggle('ready', p >= 1);
   };
-  const hide = () => { if(hint){ hint.remove(); hint = null; } };
+  const hide = () => { document.getElementById('swipeBackHint')?.remove(); document.getElementById('swipeFwdHint')?.remove(); hint = null; };
   document.addEventListener('touchstart', (e) => {
-    const p = e.touches[0];
-    const tag = (e.target && e.target.tagName) || '';
-    on = e.touches.length === 1 && p.clientX <= EDGE && !/INPUT|TEXTAREA|SELECT/.test(tag);
-    if(on){ sx = p.clientX; sy = p.clientY; t0 = Date.now(); }
+    mode = null;
+    if(e.touches.length !== 1) return;
+    const p = e.touches[0], tag = (e.target && e.target.tagName) || '';
+    if(/INPUT|TEXTAREA|SELECT/.test(tag)) return;
+    sx = p.clientX; sy = p.clientY; t0 = Date.now(); target = e.target;
+    if(p.clientX <= EDGE) mode = 'back';
+    else if(p.clientX >= window.innerWidth - EDGE) mode = 'fwd';
+    else if(state.tab === 'flashcard' && target && target.closest && target.closest('.fc-cardwrap')) mode = 'card';
   }, { passive: true });
   document.addEventListener('touchmove', (e) => {
-    if(!on) return;
-    const p = e.touches[0], dx = p.clientX - sx, dy = Math.abs(p.clientY - sy);
-    if(dy > Math.max(24, Math.abs(dx) * 1.3)){ on = false; hide(); return; }
-    if(dx > 6) show(Math.max(0, Math.min(1, dx / NEED)));
+    if(!mode || mode === 'card') return;
+    const p = e.touches[0], dx = (mode === 'back') ? p.clientX - sx : sx - p.clientX, dy = Math.abs(p.clientY - sy);
+    if(dy > Math.max(24, Math.abs(dx) * 1.3)){ mode = null; hide(); return; }
+    if(dx > 6) show(mode, Math.max(0, Math.min(1, dx / NEED)));
   }, { passive: true });
   document.addEventListener('touchend', (e) => {
-    if(!on) return; on = false; hide();
-    const p = e.changedTouches[0], dx = p.clientX - sx, dy = Math.abs(p.clientY - sy);
-    if(dx >= NEED && dy < 70 && Date.now() - t0 < 800) appBackOnce();
+    const m = mode; mode = null; hide();
+    if(!m) return;
+    const p = e.changedTouches[0], dxRaw = p.clientX - sx, dy = Math.abs(p.clientY - sy), dt = Date.now() - t0;
+    if(dy > 70 || dt > 800) return;
+    if(m === 'back' && dxRaw >= NEED) appBackOnce();
+    else if(m === 'fwd' && -dxRaw >= NEED) appForwardOnce();
+    else if(m === 'card' && Math.abs(dxRaw) >= SIDE && Math.abs(dxRaw) > dy * 1.5){ if(dxRaw < 0) fcNext(); else fcPrev(); } // trái = thẻ kế, phải = thẻ trước
   }, { passive: true });
-  document.addEventListener('touchcancel', () => { on = false; hide(); }, { passive: true });
+  document.addEventListener('touchcancel', () => { mode = null; hide(); }, { passive: true });
 })();
 
 let _luShown = false, _luHideTimer = null;

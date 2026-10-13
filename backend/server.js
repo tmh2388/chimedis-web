@@ -1470,8 +1470,8 @@ app.post('/api/laoshi/transcribe', ...maxOnly, express.json({ limit: '25mb' }), 
 app.post('/api/term-feedback', verifyFirebaseToken, requireDocsDb, async (req, res) => {
   try {
     const b = req.body || {};
-    if (!b.term_id || !(String(b.comment || '').trim() || b.suggested_vi || b.suggested_en || b.suggested_def)) return res.status(400).json({ success: false, error: 'empty' });
-    const r = await termLearn.addFeedback(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email, term_id: b.term_id, hz: b.hz, vi: b.vi, en: b.en, group1: b.group1, comment: b.comment, suggested_vi: b.suggested_vi, suggested_en: b.suggested_en, suggested_def: b.suggested_def });
+    if (!b.term_id || !(String(b.comment || '').trim() || b.suggested_vi || b.suggested_en || b.suggested_def || b.suggested_hz || b.suggested_def_zh || b.suggested_def_en)) return res.status(400).json({ success: false, error: 'empty' });
+    const r = await termLearn.addFeedback(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email, term_id: b.term_id, hz: b.hz, vi: b.vi, en: b.en, group1: b.group1, comment: b.comment, suggested_vi: b.suggested_vi, suggested_en: b.suggested_en, suggested_def: b.suggested_def, suggested_hz: b.suggested_hz, suggested_def_zh: b.suggested_def_zh, suggested_def_en: b.suggested_def_en });
     res.status(r.ok ? 200 : 429).json({ success: r.ok, error: r.error });
   } catch (e) { console.error('term-feedback:', e.message); res.status(500).json({ success: false, error: 'feedback_failed' }); }
 });

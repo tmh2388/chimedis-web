@@ -12,6 +12,7 @@
  *      (workbench tìm kiếm bằng bản đã sửa).
  */
 import crypto from 'node:crypto';
+import { pinyin } from 'pinyin';
 import { CORE_TERMS } from './laoshi.js';
 
 const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
@@ -66,9 +67,17 @@ export async function ensureTables(pool) {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, KEY idx_term (term_id, created_at)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`);
   try {
+    const ov = await columnsOf(pool, 'term_overrides');
+    if (!ov.has('hz')) await pool.query('ALTER TABLE term_overrides ADD COLUMN hz VARCHAR(64) NULL');
+    if (!ov.has('py')) await pool.query('ALTER TABLE term_overrides ADD COLUMN py VARCHAR(160) NULL');
+  } catch (e) { console.error('[term-learn] mở rộng term_overrides:', e.message); }
+  try {
     const fb = await columnsOf(pool, 'term_feedback');
     if (!fb.has('group1')) await pool.query('ALTER TABLE term_feedback ADD COLUMN group1 VARCHAR(48) NULL');
     if (!fb.has('suggested_def')) await pool.query('ALTER TABLE term_feedback ADD COLUMN suggested_def TEXT NULL');
+    if (!fb.has('suggested_hz')) await pool.query('ALTER TABLE term_feedback ADD COLUMN suggested_hz VARCHAR(64) NULL');
+    if (!fb.has('suggested_def_zh')) await pool.query('ALTER TABLE term_feedback ADD COLUMN suggested_def_zh TEXT NULL');
+    if (!fb.has('suggested_def_en')) await pool.query('ALTER TABLE term_feedback ADD COLUMN suggested_def_en TEXT NULL');
   } catch (e) { console.error('[term-learn] mở rộng term_feedback:', e.message); }
 }
 
@@ -187,13 +196,13 @@ export function startPromoteJob(pool, everyMs = 30 * 60e3) {
 }
 
 // ---------- Góp ý của người dùng ----------
-export async function addFeedback(pool, { uid, email, term_id, hz, vi, en, group1, comment, suggested_vi, suggested_en, suggested_def }) {
+export async function addFeedback(pool, { uid, email, term_id, hz, vi, en, group1, comment, suggested_vi, suggested_en, suggested_def, suggested_hz, suggested_def_zh, suggested_def_en }) {
   const [[c]] = await pool.query("SELECT COUNT(*) AS n FROM term_feedback WHERE firebase_uid = ? AND created_at >= NOW() - INTERVAL 1 DAY", [uid]);
   if (Number(c.n) >= 20) return { ok: false, error: 'rate_limited' };
   const cut = (s, n) => (s == null ? null : String(s).trim().slice(0, n) || null);
   await pool.query(
-    'INSERT INTO term_feedback (term_id, hz, vi, en, group1, firebase_uid, email, comment, suggested_vi, suggested_en, suggested_def) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-    [cut(term_id, 64), cut(hz, 64), cut(vi, 190), cut(en, 190), cut(group1, 48), uid, cut(email, 255), cut(comment, 1000), cut(suggested_vi, 190), cut(suggested_en, 190), cut(suggested_def, 1000)]);
+    'INSERT INTO term_feedback (term_id, hz, vi, en, group1, firebase_uid, email, comment, suggested_vi, suggested_en, suggested_def, suggested_hz, suggested_def_zh, suggested_def_en) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    [cut(term_id, 64), cut(hz, 64), cut(vi, 190), cut(en, 190), cut(group1, 48), uid, cut(email, 255), cut(comment, 1000), cut(suggested_vi, 190), cut(suggested_en, 190), cut(suggested_def, 1000), cut(suggested_hz, 64), cut(suggested_def_zh, 1000), cut(suggested_def_en, 1000)]);
   return { ok: true };
 }
 export async function listFeedback(pool, status = 'new') {
@@ -267,13 +276,13 @@ export async function countReports(pool) {
 /** Báo cáo chưa xử lý, gom theo thuật ngữ (mới nhất trước). */
 export async function listReports(pool) {
   const [rows] = await pool.query(
-    "SELECT id, term_id, hz, vi, en, group1, email, comment, suggested_vi, suggested_en, suggested_def, created_at FROM term_feedback WHERE status = 'new' ORDER BY created_at DESC LIMIT 400");
+    "SELECT id, term_id, hz, vi, en, group1, email, comment, suggested_vi, suggested_en, suggested_def, suggested_hz, suggested_def_zh, suggested_def_en, created_at FROM term_feedback WHERE status = 'new' ORDER BY created_at DESC LIMIT 400");
   const by = new Map();
   for (const r of rows) {
     let g = by.get(r.term_id);
     if (!g) { g = { term_id: r.term_id, hz: r.hz, vi: r.vi, en: r.en, group1: r.group1, count: 0, last_at: r.created_at, reports: [] }; by.set(r.term_id, g); }
     g.count++;
-    g.reports.push({ id: r.id, email: r.email, comment: r.comment, suggested_vi: r.suggested_vi, suggested_en: r.suggested_en, suggested_def: r.suggested_def, at: r.created_at });
+    g.reports.push({ id: r.id, email: r.email, comment: r.comment, suggested_vi: r.suggested_vi, suggested_en: r.suggested_en, suggested_def: r.suggested_def, suggested_hz: r.suggested_hz, suggested_def_zh: r.suggested_def_zh, suggested_def_en: r.suggested_def_en, at: r.created_at });
   }
   return [...by.values()];
 }
@@ -282,14 +291,14 @@ export async function getOverrides(pool) {
   if (!pool) return new Map();
   if (Date.now() - overridesCache.at < 30e3) return overridesCache.map;
   try {
-    const [rows] = await pool.query('SELECT term_id, vi, en FROM term_overrides');
-    overridesCache = { at: Date.now(), map: new Map(rows.map((r) => [String(r.term_id), { vi: r.vi, en: r.en }])) };
+    const [rows] = await pool.query('SELECT term_id, vi, en, hz, py FROM term_overrides');
+    overridesCache = { at: Date.now(), map: new Map(rows.map((r) => [String(r.term_id), { vi: r.vi, en: r.en, hz: r.hz, py: r.py }])) };
   } catch (_) { /* chưa có bảng */ }
   return overridesCache.map;
 }
 export function applyOverrides(terms, map) {
   if (!map || !map.size) return terms;
-  for (const t of terms) { const o = map.get(String(t.id)); if (o) { if (o.vi) t.vi = o.vi; if (o.en) t.en = o.en; } }
+  for (const t of terms) { const o = map.get(String(t.id)); if (o) { if (o.vi) t.vi = o.vi; if (o.en) t.en = o.en; if (o.hz) { t.hz = o.hz; if (o.py) t.py = o.py; } } }
   return terms;
 }
 /**
@@ -299,40 +308,54 @@ export function applyOverrides(terms, map) {
  */
 export async function editTerm(pool, admin, edit) {
   const term_id = cleanText(edit && edit.term_id, 64);
+  const hz = edit && edit.hz != null ? String(edit.hz).replace(/[\u0000-\u001F\s]/g, '').slice(0, 40) : null; // chữ Hán: bỏ khoảng trắng
   const vi = edit && edit.vi != null ? cleanText(edit.vi, 160) : null;
   const en = edit && edit.en != null ? cleanText(edit.en, 160) : null;
-  let definition = edit && edit.definition != null ? cleanText(edit.definition, 600) : null;
+  const defVi = edit && edit.definition != null ? cleanText(edit.definition, 600) : null;
+  const defZh = edit && edit.def_zh != null ? cleanText(edit.def_zh, 600) : null;
+  const defEn = edit && edit.def_en != null ? cleanText(edit.def_en, 600) : null;
   const note = cleanText(edit && edit.note, 200) || null;
   if (!term_id) return { ok: false, error: 'term_required' };
-  if (!vi && !en && !definition) return { ok: false, error: 'nothing_to_change' };
+  if (hz && !/^[㐀-鿿]{1,40}$/.test(hz)) return { ok: false, error: 'hz_invalid' }; // chỉ chữ Hán
+  if (!hz && !vi && !en && !defVi && !defZh && !defEn) return { ok: false, error: 'nothing_to_change' };
+  const toPy = (h) => { try { return pinyin(h, { style: 'tone' }).map((a) => a[0]).join(' '); } catch (_) { return null; } };
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
     let source = null, before = null, after = null, definitionIgnored = false;
     for (const table of EDITABLE_TABLES) {
       let rows;
-      try { [rows] = await conn.query(`SELECT term_id, hz, vi, en, position_vi FROM ${table} WHERE term_id = ? FOR UPDATE`, [term_id]); }
+      try { [rows] = await conn.query(`SELECT term_id, hz, py, vi, en, position_vi, position_zh, position_en FROM ${table} WHERE term_id = ? FOR UPDATE`, [term_id]); }
       catch (_) { continue; } // bảng không có / khác cột
       if (!rows.length) continue;
       const cur = rows[0];
-      before = { vi: cur.vi, en: cur.en, definition: cur.position_vi }; // chụp TRƯỚC khi ghi (nhật ký chính xác)
-      const nv = vi || before.vi, ne = en || before.en, nd = definition || before.definition;
-      await conn.query(
-        `UPDATE ${table} SET vi = ?, en = ?, position_vi = ?, verify = 1, machine_translated = 0,
-           verify_note = CONCAT(COALESCE(verify_note, ''), ' | Admin sửa ', CURDATE(), ' (', ?, ')') WHERE term_id = ?`,
-        [nv, ne, nd, cleanText(admin && admin.email, 60) || 'admin', term_id]);
-      source = table; after = { vi: nv, en: ne, definition: nd };
+      before = { hz: cur.hz, py: cur.py, vi: cur.vi, en: cur.en, def_vi: cur.position_vi, def_zh: cur.position_zh, def_en: cur.position_en }; // chụp TRƯỚC khi ghi
+      const nh = hz || before.hz;
+      after = { hz: nh, py: hz ? (toPy(hz) || before.py) : before.py, vi: vi || before.vi, en: en || before.en,
+        def_vi: defVi || before.def_vi, def_zh: defZh || before.def_zh, def_en: defEn || before.def_en };
+      try {
+        await conn.query(
+          `UPDATE ${table} SET hz = ?, py = ?, vi = ?, en = ?, position_vi = ?, position_zh = ?, position_en = ?, verify = 1, machine_translated = 0,
+             verify_note = CONCAT(COALESCE(verify_note, ''), ' | Admin sửa ', CURDATE(), ' (', ?, ')') WHERE term_id = ?`,
+          [after.hz, after.py, after.vi, after.en, after.def_vi, after.def_zh, after.def_en, cleanText(admin && admin.email, 60) || 'admin', term_id]);
+      } catch (e) {
+        await conn.rollback();
+        if (e && e.errno === 1062) return { ok: false, error: 'hz_exists' }; // trùng chữ Hán với mục khác
+        throw e;
+      }
+      source = table;
       break;
     }
     if (!source) {
-      if (definition) { definitionIgnored = true; definition = null; }
-      if (!vi && !en) { await conn.rollback(); return { ok: false, error: 'definition_not_editable_here' }; }
-      const [ex] = await conn.query('SELECT vi, en FROM term_overrides WHERE term_id = ? FOR UPDATE', [term_id]);
-      before = ex.length ? { vi: ex[0].vi, en: ex[0].en } : null;
+      if (defVi || defZh || defEn) definitionIgnored = true; // nhóm khác: định nghĩa ở trường riêng, không sửa ở đây
+      if (!hz && !vi && !en) { await conn.rollback(); return { ok: false, error: 'definition_not_editable_here' }; }
+      const [ex] = await conn.query('SELECT vi, en, hz, py FROM term_overrides WHERE term_id = ? FOR UPDATE', [term_id]);
+      before = ex.length ? { hz: ex[0].hz, py: ex[0].py, vi: ex[0].vi, en: ex[0].en } : null;
       await conn.query(
-        'INSERT INTO term_overrides (term_id, vi, en, updated_by) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE vi = COALESCE(VALUES(vi), vi), en = COALESCE(VALUES(en), en), updated_by = VALUES(updated_by)',
-        [term_id, vi, en, cleanText(admin && admin.email, 120) || null]);
-      after = { vi: vi || (before && before.vi) || null, en: en || (before && before.en) || null };
+        `INSERT INTO term_overrides (term_id, vi, en, hz, py, updated_by) VALUES (?,?,?,?,?,?)
+         ON DUPLICATE KEY UPDATE vi = COALESCE(VALUES(vi), vi), en = COALESCE(VALUES(en), en), hz = COALESCE(VALUES(hz), hz), py = COALESCE(VALUES(py), py), updated_by = VALUES(updated_by)`,
+        [term_id, vi, en, hz, hz ? toPy(hz) : null, cleanText(admin && admin.email, 120) || null]);
+      after = { hz: hz || (before && before.hz) || null, py: hz ? toPy(hz) : (before && before.py) || null, vi: vi || (before && before.vi) || null, en: en || (before && before.en) || null };
       source = 'override';
     }
     const [fbRows] = await conn.query("SELECT id FROM term_feedback WHERE term_id = ? AND status = 'new'", [term_id]);
@@ -347,7 +370,7 @@ export async function editTerm(pool, admin, edit) {
     await conn.commit();
     overridesCache.at = 0; invalidateNames();
     if (after && after.en) {
-      pool.query("UPDATE dict_candidates SET en = ?, status = 'approved', reviewed_at = NOW() WHERE promoted_term_id = ?", [after.en.slice(0, 200), term_id]).catch(() => {});
+      pool.query("UPDATE dict_candidates SET en = ?, status = 'approved', reviewed_at = NOW() WHERE promoted_term_id = ?", [String(after.en).slice(0, 200), term_id]).catch(() => {});
     }
     return { ok: true, source, before, after, definition_ignored: definitionIgnored, closed_reports: ids.length };
   } catch (e) {
