@@ -869,6 +869,15 @@ header{transition:padding .2s ease}
 @keyframes luInd{0%{margin-left:-38%}100%{margin-left:100%}}
 .lu-pct{font-size:20px;font-weight:800;min-height:26px;font-variant-numeric:tabular-nums}
 .lu-sub{font-size:13px;opacity:.78;line-height:1.5}
+.oa-row{gap:10px;flex-wrap:wrap}
+.oa-btn{border:1px solid var(--vien,#E4DCCC);background:#fff;border-radius:999px;padding:7px 13px;font-size:12.5px;cursor:pointer;color:var(--muc,#2a2118)}
+.oa-btn.on{background:var(--thamthm,#0E3A3A);color:#fff;border-color:var(--thamthm,#0E3A3A)}
+.oa-st{font-size:12.5px;color:var(--muc-mo,#6B6156)}
+.oa-home{margin:10px 0 14px;padding:10px 12px;background:#fff;border:1px solid var(--vien,#E4DCCC);border-radius:14px}
+.oa-head{display:flex;align-items:center;gap:8px;font-size:13px}.oa-head small{color:var(--muc-mo,#6B6156);flex:1}
+.oa-cards{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.oa-card{display:flex;justify-content:space-between;gap:8px;padding:9px 10px;background:#F1EBDE;border-radius:10px;font-size:13px;cursor:pointer}
+.oa-card small{color:var(--muc-mo,#6B6156);white-space:nowrap}
 #offPill{position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:9000;background:#0E3A3A;color:#fff;border-radius:999px;padding:8px 14px;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
 .ls-voted{font-size:14px;margin-left:4px}
 .ls-msg.user .ls-spk{background:rgba(255,255,255,.18);color:#fff}
@@ -2116,7 +2125,7 @@ Object.assign(I18N.vi, {
   listen_cat_y_an: 'Y Án', listen_cat_bao_chi: 'Báo Chí', listen_cat_tu_them: 'Tự Thêm', listen_cat_hoc_thuat: 'Bài Báo Quốc Tế', listen_cat_csdl: 'Học Thuật',
   listen_empty: 'Chưa có hội thoại nào trong mục này.',
   listen_level_all: 'Tất cả', listen_level_so_cap: 'Sơ cấp', listen_level_trung_cap: 'Trung cấp', listen_level_cao_cap: 'Cao cấp',
-  listen_play_full: 'Phát toàn bài', listen_answer_lang: 'Tôi trả lời bằng', lu_title: 'Đang cập nhật phiên bản mới…', lu_sub: 'Vui lòng giữ ứng dụng mở, đừng thoát cho tới khi xong.', lu_applying: 'Đang áp dụng phiên bản mới…', lu_slow: 'Mạng chậm — việc cập nhật sẽ tiếp tục ở nền, bạn có thể dùng tiếp.', listen_answer_repeat: 'nhắc lại tiếng Trung', qs_switched_zh: 'Đã nhận ra bạn nói tiếng Trung nên chấm theo bản tiếng Trung.', qs_unclear: 'Chưa nghe rõ giọng bạn nên chưa chấm.', qs_unclear_tip: 'Hãy nói to hơn, đưa micro gần hơn, ở nơi yên tĩnh rồi thử lại. Bạn vẫn nghe lại được bản ghi.', qs_issues: 'Điểm cần sửa', iss_tone: 'sai thanh điệu', iss_pronunciation: 'sai âm', iss_missing: 'thiếu', iss_extra: 'thừa', iss_wrong: 'dùng sai từ', iss_grammar: 'ngữ pháp', listen_answer_auto: 'Tự nhận ngôn ngữ', qs_switched_vi: 'Đã nhận ra bạn nói tiếng Việt nên chấm theo bản tiếng Việt.', qs_switched_en: 'Đã nhận ra bạn nói tiếng Anh nên chấm theo bản tiếng Anh.', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)',
+  listen_play_full: 'Phát toàn bài', listen_answer_lang: 'Tôi trả lời bằng', ai_cost_used: 'Lượt phân tích này tốn ~{c} credit (cùng bản ghi, phiên âm không tính lại).', ai_cost_cached: 'Dùng lại kết quả phân tích đã có — không tốn credit.', oa_download: 'Tải về để nghe offline', oa_downloading: 'Đang tải', oa_have: 'Đã tải về để nghe offline', oa_delete: 'Xoá', oa_done: 'Đã tải xong — nghe được cả khi không có mạng.', oa_err: 'Tải chưa xong, bạn thử lại nhé (phần đã tải được giữ lại).', oa_quota: 'Bộ nhớ offline đã đầy (300 MB). Hãy xoá bớt bài đã tải.', oa_need_net: 'Cần có mạng để tải về.', oa_section: 'Đã tải về (nghe offline)', oa_clear_all: 'Xoá tất cả', oa_delete_confirm: 'Xoá bản đã tải của bài này khỏi máy?', oa_delete_all_confirm: 'Xoá tất cả bài đã tải về khỏi máy?', lu_title: 'Đang cập nhật phiên bản mới…', lu_sub: 'Vui lòng giữ ứng dụng mở, đừng thoát cho tới khi xong.', lu_applying: 'Đang áp dụng phiên bản mới…', lu_slow: 'Mạng chậm — việc cập nhật sẽ tiếp tục ở nền, bạn có thể dùng tiếp.', listen_answer_repeat: 'nhắc lại tiếng Trung', qs_switched_zh: 'Đã nhận ra bạn nói tiếng Trung nên chấm theo bản tiếng Trung.', qs_unclear: 'Chưa nghe rõ giọng bạn nên chưa chấm.', qs_unclear_tip: 'Hãy nói to hơn, đưa micro gần hơn, ở nơi yên tĩnh rồi thử lại. Bạn vẫn nghe lại được bản ghi.', qs_issues: 'Điểm cần sửa', iss_tone: 'sai thanh điệu', iss_pronunciation: 'sai âm', iss_missing: 'thiếu', iss_extra: 'thừa', iss_wrong: 'dùng sai từ', iss_grammar: 'ngữ pháp', listen_answer_auto: 'Tự nhận ngôn ngữ', qs_switched_vi: 'Đã nhận ra bạn nói tiếng Việt nên chấm theo bản tiếng Việt.', qs_switched_en: 'Đã nhận ra bạn nói tiếng Anh nên chấm theo bản tiếng Anh.', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)',
   login_to_listen: 'Đăng nhập để nghe audio', login_to_record: 'Đăng nhập để ghi âm', login_to_analyze: 'Đăng nhập để dùng phân tích AI',
   up_title: 'Tính năng dành cho gói Pro', up_body_analyze: 'Phân tích AI (chấm điểm, đối chiếu ý chính, gợi ý sửa) chỉ dành cho gói Pro.',
   up_body_upload: 'Tải tài liệu riêng, để AI tự biên tập và tạo audio, là tính năng của gói Pro.',
@@ -2161,7 +2170,7 @@ Object.assign(I18N.zh, {
   listen_cat_y_an: '医案', listen_cat_bao_chi: '新闻', listen_cat_tu_them: '自建内容', listen_cat_hoc_thuat: '国际论文', listen_cat_csdl: '学术',
   listen_empty: '此分类暂无对话。',
   listen_level_all: '全部', listen_level_so_cap: '初级', listen_level_trung_cap: '中级', listen_level_cao_cap: '高级',
-  listen_play_full: '播放全文', listen_answer_lang: '我用以下语言回答', lu_title: '正在更新新版本……', lu_sub: '请保持应用打开，更新完成前请勿退出。', lu_applying: '正在应用新版本……', lu_slow: '网络较慢——将在后台继续更新，您可以继续使用。', listen_answer_repeat: '跟读中文', qs_switched_zh: '检测到你说的是中文，已按中文参考打分。', qs_unclear: '没有听清你的声音，暂不打分。', qs_unclear_tip: '请大声一点、靠近麦克风、在安静处再试一次。仍可回放录音。', qs_issues: '需要改进', iss_tone: '声调不准', iss_pronunciation: '发音不准', iss_missing: '漏说', iss_extra: '多说', iss_wrong: '用词错误', iss_grammar: '语法', listen_answer_auto: '自动识别', qs_switched_vi: '检测到你说的是越南语，已按越南语参考打分。', qs_switched_en: '检测到你说的是英语，已按英语参考打分。', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）',
+  listen_play_full: '播放全文', listen_answer_lang: '我用以下语言回答', ai_cost_used: '本次分析约消耗 {c} 点（同一录音，不重复转写）。', ai_cost_cached: '复用已有的分析结果——不消耗点数。', oa_download: '下载以离线收听', oa_downloading: '下载中', oa_have: '已下载，可离线收听', oa_delete: '删除', oa_done: '下载完成——没有网络也能听。', oa_err: '下载未完成，请重试（已下载的部分会保留）。', oa_quota: '离线存储已满（300 MB），请先删除一些已下载内容。', oa_need_net: '需要联网才能下载。', oa_section: '已下载（离线收听）', oa_clear_all: '全部删除', oa_delete_confirm: '从本机删除这篇已下载内容？', oa_delete_all_confirm: '从本机删除所有已下载内容？', lu_title: '正在更新新版本……', lu_sub: '请保持应用打开，更新完成前请勿退出。', lu_applying: '正在应用新版本……', lu_slow: '网络较慢——将在后台继续更新，您可以继续使用。', listen_answer_repeat: '跟读中文', qs_switched_zh: '检测到你说的是中文，已按中文参考打分。', qs_unclear: '没有听清你的声音，暂不打分。', qs_unclear_tip: '请大声一点、靠近麦克风、在安静处再试一次。仍可回放录音。', qs_issues: '需要改进', iss_tone: '声调不准', iss_pronunciation: '发音不准', iss_missing: '漏说', iss_extra: '多说', iss_wrong: '用词错误', iss_grammar: '语法', listen_answer_auto: '自动识别', qs_switched_vi: '检测到你说的是越南语，已按越南语参考打分。', qs_switched_en: '检测到你说的是英语，已按英语参考打分。', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）',
   login_to_listen: '登录后才能收听音频', login_to_record: '登录后才能录音', login_to_analyze: '登录后才能使用 AI 分析',
   up_title: '此功能仅限 Pro 套餐', up_body_analyze: 'AI 分析（评分、要点对照、修改建议）仅限 Pro 套餐。',
   up_body_upload: '上传自己的文档，由 AI 自动编辑并生成音频，是 Pro 套餐的功能。',
@@ -2206,7 +2215,7 @@ Object.assign(I18N.en, {
   listen_cat_y_an: 'Case Studies', listen_cat_bao_chi: 'News', listen_cat_tu_them: 'Custom', listen_cat_hoc_thuat: 'International Papers', listen_cat_csdl: 'Academic',
   listen_empty: 'No dialogues in this category yet.',
   listen_level_all: 'All', listen_level_so_cap: 'Beginner', listen_level_trung_cap: 'Intermediate', listen_level_cao_cap: 'Advanced',
-  listen_play_full: 'Play full dialogue', listen_answer_lang: 'I answer in', lu_title: 'Updating to the new version…', lu_sub: 'Please keep the app open until it finishes.', lu_applying: 'Applying the new version…', lu_slow: 'Slow network — the update will continue in the background; you can keep using the app.', listen_answer_repeat: 'repeat in Chinese', qs_switched_zh: 'Detected Chinese, so it was scored against the Chinese reference.', qs_unclear: 'Your voice was not clear enough, so it was not scored.', qs_unclear_tip: 'Speak louder, hold the microphone closer, and try in a quiet place. You can still replay your recording.', qs_issues: 'Points to fix', iss_tone: 'wrong tone', iss_pronunciation: 'pronunciation', iss_missing: 'missing', iss_extra: 'extra', iss_wrong: 'wrong word', iss_grammar: 'grammar', listen_answer_auto: 'Auto-detect', qs_switched_vi: 'Detected Vietnamese, so it was scored against the Vietnamese reference.', qs_switched_en: 'Detected English, so it was scored against the English reference.', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)',
+  listen_play_full: 'Play full dialogue', listen_answer_lang: 'I answer in', ai_cost_used: 'This analysis cost ~{c} credit (same recording, no re-transcription).', ai_cost_cached: 'Reused the existing analysis — no credit used.', oa_download: 'Download for offline listening', oa_downloading: 'Downloading', oa_have: 'Downloaded for offline listening', oa_delete: 'Delete', oa_done: 'Downloaded — you can listen without a connection.', oa_err: 'Download did not finish; try again (what was downloaded is kept).', oa_quota: 'Offline storage is full (300 MB). Delete some downloads first.', oa_need_net: 'A connection is needed to download.', oa_section: 'Downloaded (offline)', oa_clear_all: 'Delete all', oa_delete_confirm: 'Delete this downloaded lesson from the device?', oa_delete_all_confirm: 'Delete all downloaded lessons from the device?', lu_title: 'Updating to the new version…', lu_sub: 'Please keep the app open until it finishes.', lu_applying: 'Applying the new version…', lu_slow: 'Slow network — the update will continue in the background; you can keep using the app.', listen_answer_repeat: 'repeat in Chinese', qs_switched_zh: 'Detected Chinese, so it was scored against the Chinese reference.', qs_unclear: 'Your voice was not clear enough, so it was not scored.', qs_unclear_tip: 'Speak louder, hold the microphone closer, and try in a quiet place. You can still replay your recording.', qs_issues: 'Points to fix', iss_tone: 'wrong tone', iss_pronunciation: 'pronunciation', iss_missing: 'missing', iss_extra: 'extra', iss_wrong: 'wrong word', iss_grammar: 'grammar', listen_answer_auto: 'Auto-detect', qs_switched_vi: 'Detected Vietnamese, so it was scored against the Vietnamese reference.', qs_switched_en: 'Detected English, so it was scored against the English reference.', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)',
   login_to_listen: 'Sign in to listen to audio', login_to_record: 'Sign in to record', login_to_analyze: 'Sign in to use AI analysis',
   up_title: 'A Pro plan feature', up_body_analyze: 'AI analysis (scoring, key-point comparison, correction hints) is available on the Pro plan.',
   up_body_upload: 'Uploading your own documents, with AI editing and audio generation, is a Pro plan feature.',
@@ -2825,7 +2834,12 @@ async function openListenDialogue(id){
     if(isDb && res.status === 403){ state.plan = 'free'; openUpgradeModal('csdl'); return; }
     const json = await res.json();
     listenCurrentDialogue = (json.data && json.data.segments) ? json.data : null;
+    if(listenCurrentDialogue && offAudioIndex.some(x => String(x.id) === String(id))) OFF.set('dlg:' + id, listenCurrentDialogue); // giữ bản văn bản offline luôn mới
   }catch(e){ listenCurrentDialogue = null; }
+  if(!listenCurrentDialogue){ // mất mạng/lỗi: dùng bản đã tải về (nếu có)
+    try{ const cached = await OFF.get('dlg:' + id); if(cached && cached.segments) listenCurrentDialogue = cached; }catch(e){}
+  }
+  if(listenCurrentDialogue) await offAudioPreload(listenCurrentDialogue).catch(() => {});
   state.tab = 'listendialogue';
   render(); scrollToTop();
 }
@@ -2970,6 +2984,7 @@ function renderListenHome(){
     <div class="listen-sticky"><div class="study-top"><h2>${t('listen_home')}</h2></div>
     <div class="tabs">${tabsHtml}</div>
     ${levelFilterHtml}</div>
+    ${offAudioHomeHtml()}
     <div class="listen-grid">${listHtml}</div>
   </div>`;
 }
@@ -4137,6 +4152,7 @@ function openUpgradeModal(reason){
     `<button type="button" onclick="closeUpgradeModal()">${t('up_later')}</button></div></div></div>`);
 }
 const lineLastBlobs = {};
+const lineTranscript = {}; // { [seq]: { text, lang, hash } } — bản phiên âm CHUẨN duy nhất của lần ghi âm hiện tại (chấm nhanh nhận dạng, phân tích AI chỉ đánh giá)
 const lineQuickLang = {}; // { [seq]: { lang, reference } } — ngôn ngữ chấm nhanh đã dùng (để phân tích AI đối chiếu đúng bản mẫu)
 function listenAnalyzeBtnHtml(seq, again){
   return `<button type="button" class="lsc-btn analyze" onclick="listenAnalyzeClick(${seq})">✨ ${again ? t('an_again') : t('an_deep')}` +
@@ -4195,7 +4211,7 @@ function renderMyDocList(){
 let myDocMode = 'paste', myDocFileName = '', myDocFileTotal = 0, myDocBusy = false;
 const myDocDraft = { paste: '', file: '' };
 const myDocMax = () => (state.limits && state.limits.charsPerDoc) || 6000;
-const myNum = (n) => Number(n).toLocaleString(state.lang === 'zh' ? 'zh-CN' : state.lang === 'en' ? 'en-US' : 'vi-VN');
+const myNum = (n) => Number(n).toLocaleString(state.lang === 'zh' ? 'zh-CN' : state.lang === 'en' ? 'en-US' : 'vi-VN', { maximumFractionDigits: 1 });
 const myDocEsc = (x) => String(x || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
 function myDocCountHtml(n){
   const max = myDocMax();
@@ -4361,7 +4377,8 @@ async function deleteMyDoc(id){
 function openMyDoc(id){ openListenDialogue('my-' + id); }
 
 function listenNewAudio(url){
-  const a = new Audio(absUrl(withTicket(url)));
+  const offUrl = offAudioUrls.get(url);
+  const a = new Audio(offUrl || absUrl(withTicket(url)));
   a.playbackRate = loadListenSpeed();
   const m = url.match(/^(.*\/)(aoede)\/(\d+-text_(?:zh|en)\.mp3)$/);
   let triedTicket = false, triedVoice = false;
@@ -4399,7 +4416,8 @@ function listenPlayStep(token){
 // Bấm play/pause chung (nút lớn trên cùng = phát cả bài, hoặc truyền seqs riêng cho 1 câu).
 async function listenTogglePlay(seqs){
   if(!state.user){ listenNeedLogin('listen'); return; }
-  await listenEnsureTicket();
+  await offAudioPreload(listenCurrentDialogue).catch(() => {});
+  if(navigator.onLine) await listenEnsureTicket().catch(() => {});
   _listenTogglePlayCore(seqs);
 }
 function _listenTogglePlayCore(seqs){
@@ -4426,7 +4444,8 @@ async function listenCardToggle(id){
     listenStopPlayback();
     listenCurrentDialogue = { id: d.id, category: d.category, source_lang: d.source_lang, segments: d.seqs.map(seq => ({ seq })) };
   }
-  await listenEnsureTicket();
+  await offAudioPreload(listenCurrentDialogue).catch(() => {});
+  if(navigator.onLine) await listenEnsureTicket().catch(() => {});
   _listenTogglePlayCore();
 }
 
@@ -4576,6 +4595,7 @@ function listenLineRecordStop(seq){
       if(lineRecordingUrls[finishedSeq]) URL.revokeObjectURL(lineRecordingUrls[finishedSeq]);
       lineRecordingUrls[finishedSeq] = URL.createObjectURL(trimmedBlob);
       lineLastBlobs[finishedSeq] = trimmedBlob;
+      delete lineTranscript[finishedSeq]; // bản ghi mới → bản phiên âm chuẩn cũ không còn hợp lệ
       // Chấm nhanh (thuật toán, miễn phí) cho mọi tài khoản đăng nhập; "Phân tích sâu bằng AI" chỉ chạy khi người dùng bấm nút.
       await listenQuickScore(finishedSeq, trimmedBlob, asrText || null);
     }catch(err){
@@ -4738,6 +4758,7 @@ async function listenQuickScore(seq, blob, asrText){
   }catch(e){ listenSetBadge(seq, 'bad', `${t('practice_error')}: ${e.message}`); return; }
   const r = json.data;
   if(r.lang_used) lineQuickLang[seq] = { lang: r.lang_used, reference: r.reference_used || '' };
+  { const tx = r.transcript_used || r.heard || r.transcript; if(tx && !r.unclear) lineTranscript[seq] = { text: String(tx), lang: r.lang_used || null, hash: r.audio_hash || null }; }
   if(r.unclear){
     const rec0 = lineRecordingUrls[seq];
     const pb = lineVideoUrls[seq] ? listenVideoHtml(seq) : rec0 ? `<div class="practice-playback"><audio controls src="${rec0}"></audio><span>${t('practice_your_recording')}</span></div>` : '';
@@ -4808,7 +4829,8 @@ async function listenLineScore(seq, trimmedBlob){
   try{
     const res = await authFetch('/api/pronunciation-score', {
       method: 'POST',
-      body: JSON.stringify({ audio_base64: base64, format: 'wav', reference, reference_lang: usedLang, reference_zh: seg ? seg.text_zh : '', ui_lang: state.lang }),
+      body: JSON.stringify({ audio_base64: base64, format: 'wav', reference, reference_lang: usedLang, reference_zh: seg ? seg.text_zh : '', ui_lang: state.lang,
+        transcript: lineTranscript[seq] ? lineTranscript[seq].text : undefined, language: lineTranscript[seq] ? lineTranscript[seq].lang : undefined }),
     });
     json = await res.json();
     if(res.status === 429 && json && json.error === 'budget'){ listenShowRecordedOnly(seq); openBudgetModal(json); return; }
@@ -4823,10 +4845,16 @@ async function listenLineScore(seq, trimmedBlob){
   const playbackHtml = lineVideoUrls[seq] ? listenVideoHtml(seq) : recordingUrl
     ? `<div class="practice-playback"><audio controls src="${recordingUrl}"></audio><span>${t('practice_your_recording')}</span></div>`
     : '';
+  if(json.success && json.data && json.data.unclear){
+    listenSetBadge(seq, 'bad', playbackHtml + `<div class="qs-note" style="font-size:13.5px">${esc(t('qs_unclear'))}</div><div class="qs-note">${esc(t('qs_unclear_tip'))}</div>`);
+    return;
+  }
   if(!json.success || !json.data || !json.data.transcript){
     listenSetBadge(seq, 'bad', playbackHtml + esc((json.data && json.data.pronunciation_feedback) ? json.data.pronunciation_feedback : t('practice_no_speech_detected')));
     return;
   }
+  lineTranscript[seq] = { text: json.data.transcript, lang: json.data.language || null, hash: json.data.audio_hash || null };
+  const costNote = json.data.cached ? t('ai_cost_cached') : (typeof json.data.cost_credits === 'number' ? t('ai_cost_used').replace('{c}', String(json.data.cost_credits).replace('.', state.lang === 'en' || state.lang === 'zh' ? '.' : ',')) : '');
   const highlighted = listenHighlightMarked(json.data.transcript_marked || json.data.transcript);
   const correctedText = json.data.corrected_text || '';
   const showCorrection = correctedText && correctedText.trim() !== json.data.transcript.trim();
@@ -4856,6 +4884,7 @@ async function listenLineScore(seq, trimmedBlob){
         <p class="practice-score-fb">${esc(json.data.grammar_feedback)}</p>
       </div>
       ${issuesHtml}
+      ${costNote ? `<div class="qs-note">${esc(costNote)}</div>` : ''}
       ${showCorrection ? `<div class="lsc-row"><span class="lsc-lab">${t('practice_corrected')}</span><span class="lsc-txt ref">${esc(correctedText)}</span></div>` : ''}
       ${listenAnalyzeBtnHtml(seq, true)}
     </div>`;
@@ -4895,6 +4924,7 @@ function renderListenDialogue(){
     </div>
     ${!feat.record ? `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>` : ''}
     ${true ? `<div class="listen-voicerow"><label for="listenVoiceSel">${t('listen_voice_label')}:</label><select id="listenVoiceSel" onchange="setListenVoice(this.value)">${LISTEN_VOICES.filter(v => !Array.isArray(d.voices) || d.voices.includes(v.key)).map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${t(v.lk)}</option>`).join('')}</select></div>` : ''}
+    ${offAudioRowHtml(d)}
     ${(!d.source_lang || d.source_lang !== 'en') ? `<div class="listen-voicerow"><label for="listenAnsLang">${t('listen_answer_lang')}:</label><select id="listenAnsLang" onchange="setAnswerLang(this.value)"><option value="auto" ${loadAnswerLang()==='auto'?'selected':''}>${t('listen_answer_auto')}</option><option value="zh" ${loadAnswerLang()==='zh'?'selected':''}>中文 (${t('listen_answer_repeat')})</option><option value="vi" ${loadAnswerLang()==='vi'?'selected':''}>Tiếng Việt</option><option value="en" ${loadAnswerLang()==='en'?'selected':''}>English</option></select></div>` : ''}
     <div class="listen-playbar">
       <div class="listen-speedrow">
@@ -6805,6 +6835,13 @@ const OFF = {
       setTimeout(() => res(undefined), 8000);
     });
   },
+  async del(k){
+    const db = await this.open(); if(!db) return false;
+    return new Promise(res => {
+      try{ const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').delete(k); tx.oncomplete = () => res(true); tx.onerror = tx.onabort = () => res(false); }catch(e){ res(false); }
+      setTimeout(() => res(false), 8000);
+    });
+  },
   async set(k, v){
     const db = await this.open(); if(!db) return false;
     return new Promise(res => {
@@ -6835,6 +6872,110 @@ document.addEventListener('error', e => {
   el.dataset.offTried = '1';
   offFigUrl(src).then(u => { if(u) el.src = u; });
 }, true);
+// ===== ÂM THANH BÀI NGHE OFFLINE (IndexedDB) =====
+// Tải toàn bộ câu của MỘT bài (đúng giọng đang chọn) về máy; phát từ máy khi có (kể cả mất mạng). Chỉ bài người dùng bấm tải;
+// có hạn mức dung lượng và nút xoá. Chỉ mục: 'offaud:index' = [{ id, voice, title, n, bytes, at, urls[] }].
+const OFFA_MAX_BYTES = 300 * 1024 * 1024;
+let offAudioIndex = [];            // đã nạp từ IndexedDB
+const offAudioUrls = new Map();    // url (như listenAudioUrl trả) → blobURL
+const offAudioBusy = {};           // { [id]: { done, total } }
+async function offAudioLoadIndex(){
+  const idx = await OFF.get('offaud:index');
+  offAudioIndex = Array.isArray(idx) ? idx : [];
+  return offAudioIndex;
+}
+function offAudioTotalBytes(){ return offAudioIndex.reduce((a, x) => a + (x.bytes || 0), 0); }
+const offMB = (b) => (b / 1048576).toFixed(b >= 10485760 ? 0 : 1) + ' MB';
+function offAudioEntry(d){ return offAudioIndex.find(x => String(x.id) === String(d.id) && x.voice === loadListenVoice()); }
+function offAudioSegUrls(d){ return (d.segments || []).map(sg => listenAudioUrl(d, sg.seq, listenSourceField(d))); }
+// Nạp các câu đã tải của bài vào bộ nhớ (blob URL) để listenNewAudio dùng ngay, không cần mạng/vé.
+async function offAudioPreload(d){
+  if(!d || !d.segments) return;
+  for(const u of offAudioSegUrls(d)){
+    if(offAudioUrls.has(u)) continue;
+    const rec = await OFF.get('aud:' + u);
+    if(rec && rec.buf) offAudioUrls.set(u, URL.createObjectURL(new Blob([rec.buf], { type: rec.type || 'audio/mpeg' })));
+  }
+}
+function offAudioRowHtml(d){
+  if(!d || !d.segments || !d.segments.length || String(d.id).startsWith('my-') && false) return '';
+  const busy = offAudioBusy[d.id], ent = offAudioEntry(d);
+  let inner;
+  if(busy) inner = `<span class="oa-st">⬇ ${t('oa_downloading')} ${busy.done}/${busy.total}</span>`;
+  else if(ent) inner = `<span class="oa-st">✓ ${t('oa_have')} · ${offMB(ent.bytes)}</span><button type="button" class="oa-btn" onclick="offAudioDelete('${String(d.id).replace(/'/g, '')}')">${t('oa_delete')}</button>`;
+  else inner = `<button type="button" class="oa-btn on" onclick="offAudioDownload()">⬇ ${t('oa_download')}</button>`;
+  return `<div class="listen-voicerow oa-row" id="offAudioRow">${inner}</div>`;
+}
+function offAudioRefreshRow(){ const el = document.getElementById('offAudioRow'); if(el && listenCurrentDialogue){ const tmp = document.createElement('div'); tmp.innerHTML = offAudioRowHtml(listenCurrentDialogue); if(tmp.firstChild) el.replaceWith(tmp.firstChild); } }
+async function offAudioDownload(){
+  const d = listenCurrentDialogue;
+  if(!d || !d.segments || !d.segments.length || offAudioBusy[d.id]) return;
+  if(!state.user){ listenNeedLogin('listen'); return; }
+  if(!navigator.onLine){ listenToast(t('oa_need_net')); return; }
+  const urls = offAudioSegUrls(d), voice = loadListenVoice();
+  offAudioBusy[d.id] = { done: 0, total: urls.length };
+  offAudioRefreshRow();
+  let bytes = 0, ok = true;
+  try{
+    await listenEnsureTicket(true);
+    for(const u of urls){
+      if(offAudioTotalBytes() + bytes > OFFA_MAX_BYTES){ listenToast(t('oa_quota')); ok = false; break; }
+      let rec = await OFF.get('aud:' + u);
+      if(!(rec && rec.buf)){
+        let r = await fetch(absUrl(withTicket(u)));
+        if(!r.ok){ await listenEnsureTicket(true); r = await fetch(absUrl(withTicket(u))); }
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        rec = { buf: await r.arrayBuffer(), type: r.headers.get('content-type') || 'audio/mpeg' };
+        if(!(await OFF.set('aud:' + u, rec))) throw new Error('store');
+      }
+      bytes += rec.buf.byteLength;
+      offAudioBusy[d.id].done++;
+      offAudioRefreshRow();
+    }
+    if(ok){
+      try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+      await OFF.set('dlg:' + d.id, d); // văn bản bài để mở được khi mất mạng
+      const title = (typeof listenTitle === 'function') ? String(listenTitle(d)).replace(/<[^>]*>/g, '') : String(d.id);
+      offAudioIndex = (await offAudioLoadIndex()).filter(x => !(String(x.id) === String(d.id) && x.voice === voice));
+      offAudioIndex.push({ id: d.id, voice, title, n: urls.length, bytes, at: Date.now(), urls, category: d.category || '', source_lang: d.source_lang || '' });
+      await OFF.set('offaud:index', offAudioIndex);
+      await offAudioPreload(d);
+      listenToast(t('oa_done'));
+    }
+  }catch(e){
+    console.warn('[Chimedis] Tải âm thanh offline lỗi:', e.message);
+    listenToast(t('oa_err'));
+  }finally{
+    delete offAudioBusy[d.id];
+    offAudioRefreshRow();
+  }
+}
+async function offAudioDelete(id){
+  const ent = offAudioIndex.find(x => String(x.id) === String(id) && x.voice === loadListenVoice()) || offAudioIndex.find(x => String(x.id) === String(id));
+  if(!ent || !confirm(t('oa_delete_confirm'))) return;
+  for(const u of ent.urls || []){ await OFF.del('aud:' + u); const bu = offAudioUrls.get(u); if(bu){ try{ URL.revokeObjectURL(bu); }catch(e){} offAudioUrls.delete(u); } }
+  offAudioIndex = offAudioIndex.filter(x => x !== ent);
+  await OFF.set('offaud:index', offAudioIndex);
+  if(!offAudioIndex.some(x => String(x.id) === String(id))) await OFF.del('dlg:' + id);
+  offAudioRefreshRow();
+  if(state.tab === 'listenhome') render();
+}
+async function offAudioClearAll(){
+  if(!offAudioIndex.length || !confirm(t('oa_delete_all_confirm'))) return;
+  for(const ent of offAudioIndex) for(const u of ent.urls || []) await OFF.del('aud:' + u);
+  for(const ent of offAudioIndex) await OFF.del('dlg:' + ent.id);
+  offAudioUrls.forEach(bu => { try{ URL.revokeObjectURL(bu); }catch(e){} }); offAudioUrls.clear();
+  offAudioIndex = []; await OFF.set('offaud:index', []);
+  render();
+}
+// Phần "Đã tải về" ở đầu trang Luyện nghe (thấy và mở được cả khi mất mạng).
+function offAudioHomeHtml(){
+  if(!offAudioIndex.length) return '';
+  const seen = new Set();
+  const cards = offAudioIndex.filter(x => { const k = String(x.id); if(seen.has(k)) return false; seen.add(k); return true; })
+    .map(x => `<div class="oa-card" onclick="openListenDialogue('${String(x.id).replace(/'/g, '')}')"><b>${myDocEsc(x.title || x.id)}</b><small>${x.n} · ${offMB(x.bytes)}</small></div>`).join('');
+  return `<div class="oa-home"><div class="oa-head"><b>⬇ ${t('oa_section')}</b><small>${offMB(offAudioTotalBytes())}</small><button type="button" class="oa-btn" onclick="offAudioClearAll()">${t('oa_clear_all')}</button></div><div class="oa-cards">${cards}</div></div>`;
+}
 let _offBusy = false;
 function offStatusEl(){ return document.getElementById('offStatus'); }
 function offSet(msg){
@@ -6914,6 +7055,7 @@ async function loadTermsFromAPI(){
     const before = TERMS.length;
     primeTermsFromCache();
     await primeTermsFromIDB();
+offAudioLoadIndex().then(() => { if(state.tab === 'listenhome') render(); }).catch(() => {});
     if(TERMS.length !== before) render(); // đã prime sẵn lúc khởi động rồi thì khỏi render lại vô ích
   }
 }

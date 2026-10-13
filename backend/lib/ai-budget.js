@@ -144,7 +144,7 @@ export async function addCredits({ uid, credits, reason = 'topup', ref = null, p
 
 /** Dạng gọn gửi cho giao diện (credit làm tròn, USD 2 chữ số). */
 export function publicView(b) {
-  const toCr = (u) => Math.round(u * 100); // USD → credit
+  const toCr = (u) => Math.round(u * 1000) / 10; // USD → credit, làm tròn 0,1 (tránh hiển thị 0 rồi nhảy 1)
   return {
     state: b.state, plan: b.plan, usingCredits: b.usingCredits, retryAfterS: b.retryAfterS,
     month: { used: toCr(b.usedMonth), limit: toCr(b.monthLimit) },

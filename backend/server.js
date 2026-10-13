@@ -16,6 +16,7 @@ import * as billing from './lib/billing.js';
 import * as laoshi from './lib/laoshi.js';
 import * as laoshiLearn from './lib/laoshi-learn.js';
 import * as speech from './lib/speech.js';
+import { pinyin } from 'pinyin';
 import * as laoshiFaq from './lib/laoshi-faq.js';
 import * as termLearn from './lib/term-learn.js';
 import * as aiBudget from './lib/ai-budget.js';
@@ -816,49 +817,17 @@ const FEEDBACK_LANG_NAME = { vi: 'tiếng Việt', zh: '中文', en: 'English' }
 
 function buildPronunciationPrompt(feedbackLang) {
   const langName = FEEDBACK_LANG_NAME[feedbackLang] || 'tiếng Việt';
-  return `Bạn là giám khảo chấm phát âm VÀ ngữ pháp cho người luyện dịch cabin Trung Y, \
-đang luyện dịch TỪNG CÂU NGẮN (nghe 1 câu tiếng Trung, nói lại bản dịch bằng tiếng Việt \
-hoặc tiếng Anh, hoặc ngược lại). Nhiệm vụ, PHẢI làm đúng thứ tự:
-1. Phiên âm CHÍNH XÁC TUYỆT ĐỐI những gì nghe được trong file audio — đây là phần quan \
-trọng nhất, phải phản ánh ĐÚNG THẬT những gì người này nói, không được bịa, không được \
-đoán theo ngữ cảnh nếu nghe không rõ (ghi "..." ở chỗ không nghe rõ thay vì đoán). NẾU \
-NGÔN NGỮ NÓI LÀ TIẾNG TRUNG: PHẢI phiên âm bằng CHỮ HÁN (汉字), TUYỆT ĐỐI KHÔNG được \
-chuyển thành pinyin/romanization trong trường "transcript" — đây là lỗi hay gặp, phải \
-tránh.
-2. Xác định ngôn ngữ chính được nói (vi / zh / en — dùng đúng 1 trong 3 mã này cho \
-trường "language").
-3. NẾU ngôn ngữ nói là tiếng Trung (zh): tạo thêm "transcript_pinyin" — phiên âm pinyin \
-có dấu thanh của transcript (ví dụ "nǐ hǎo"). NẾU không phải tiếng Trung, để \
-"transcript_pinyin" là chuỗi rỗng.
-4. Tạo "transcript_marked": CHÉP LẠI y nguyên transcript ở bước 1 (chữ Hán nếu là tiếng \
-Trung, KHÔNG phải pinyin), nhưng bọc các từ/cụm từ PHÁT ÂM chưa chuẩn (sai âm, nuốt âm, \
-ngữ điệu sai — KHÔNG phải lỗi ngữ pháp) trong cặp ((...)), ví dụ: "The ((breath)) was \
-short" nếu từ "breath" phát âm chưa chuẩn. Nếu không có lỗi phát âm rõ ràng, \
-transcript_marked giống hệt transcript (không bọc gì).
-5. Chấm điểm PHÁT ÂM + độ trôi chảy từ 0-100 ("pronunciation_score"), kèm nhận xét ngắn \
-gọn (1-2 câu, nêu CỤ THỂ từ/âm nào cần sửa) trong "pronunciation_feedback" — BẰNG ${langName}.
-6. Chấm điểm NGỮ PHÁP + cách dùng từ từ 0-100 ("grammar_score") — đánh giá câu nói (dựa \
-trên transcript, không liên quan phát âm) có đúng ngữ pháp của ngôn ngữ đó không, kèm \
-nhận xét ngắn gọn trong "grammar_feedback" — BẰNG ${langName}. Nếu câu đã đúng ngữ pháp, \
-grammar_score = 100 và ghi rõ trong feedback (bằng ${langName}) rằng ngữ pháp đã đúng.
-7. Viết lại câu đó cho ĐÚNG NGỮ PHÁP hoàn toàn (giữ nguyên Ý người nói muốn diễn đạt, chỉ \
-sửa lỗi ngữ pháp/từ vựng dùng sai, KHÔNG đổi sang cách diễn đạt khác) vào "corrected_text" \
-— cùng ngôn ngữ/chữ viết với transcript (chữ Hán nếu transcript là tiếng Trung). Nếu câu \
-đã đúng, corrected_text giống hệt transcript.
-QUAN TRỌNG: "pronunciation_feedback" và "grammar_feedback" LUÔN viết bằng ${langName}, bất \
-kể transcript là ngôn ngữ gì — đây là 2 trường DUY NHẤT bắt buộc theo ngôn ngữ này.
-Nếu audio không có tiếng nói rõ ràng (toàn im lặng/tạp âm/không phải giọng người), trả \
-về transcript/transcript_marked/transcript_pinyin/corrected_text rỗng, cả 2 score = 0, \
-feedback (bằng ${langName}) giải thích không nghe được.
-8. NẾU có "câu mẫu" trong ngữ cảnh: so sánh điều người này NÓI với câu mẫu (cùng ngôn ngữ nếu có thể) và liệt kê \
-tối đa 8 điểm cụ thể trong "issues" — mỗi điểm: {"text": <từ/chữ/cụm liên quan, đúng như trong transcript hoặc câu mẫu>, \
-"kind": "tone" (sai thanh điệu) | "pronunciation" (sai âm) | "missing" (thiếu so với mẫu) | "extra" (thừa) | "wrong" (dùng sai từ) | \
-"grammar", "note": <gợi ý sửa ngắn, BẰNG ${langName}>}. Chỉ nêu điểm CÓ THẬT; nếu nói đúng hết thì "issues": [].
-CHỈ trả về một object JSON hợp lệ duy nhất, không kèm markdown/giải thích, đúng dạng:
-{"transcript": "...", "transcript_marked": "...", "transcript_pinyin": "...", "language": "vi|zh|en", \
-"pronunciation_score": 0-100, "pronunciation_feedback": "...", \
-"grammar_score": 0-100, "grammar_feedback": "...", "corrected_text": "...", \
-"issues": [{"text": "...", "kind": "tone|pronunciation|missing|extra|wrong|grammar", "note": "..."}]}`;
+  // Bản gọn (2026-10-13): bản phiên âm đã do hệ thống cố định nên mô hình KHÔNG phiên âm nữa → ít token vào/ra hơn, tốn ít credit hơn.
+  return `Bạn là giám khảo phát âm VÀ ngữ pháp cho người luyện dịch cabin Trung Y (nghe 1 câu, rồi nói lại bằng tiếng Trung/Việt/Anh).
+Bản phiên âm đã được hệ thống CỐ ĐỊNH (ghi ở cuối). Nhiệm vụ:
+1. "transcript_marked": chép lại transcript, bọc ((...)) các từ/cụm PHÁT ÂM chưa chuẩn (sai âm, sai thanh điệu, nuốt âm); không có lỗi thì giống hệt transcript.
+2. "pronunciation_score" 0-100 (phát âm + trôi chảy) và "pronunciation_feedback": 1-2 câu, nêu CỤ THỂ từ/âm cần sửa, viết BẰNG ${langName}.
+3. "grammar_score" 0-100 và "grammar_feedback" BẰNG ${langName} (đúng ngữ pháp thì 100 và nói rõ).
+4. "corrected_text": sửa lỗi ngữ pháp/từ vựng nhưng giữ nguyên ý, cùng ngôn ngữ/chữ viết với transcript (chữ Hán nếu là tiếng Trung); đã đúng thì giống transcript.
+5. "issues": tối đa 8 điểm cụ thể so với câu mẫu (nếu có): {"text": từ/chữ liên quan, "kind": "tone|pronunciation|missing|extra|wrong|grammar", "note": gợi ý sửa ngắn BẰNG ${langName}}. Chỉ nêu điểm CÓ THẬT; nói đúng hết thì [].
+Audio không có tiếng người rõ ràng: cả 2 điểm = 0 và giải thích BẰNG ${langName}.
+CHỈ trả một object JSON hợp lệ, không markdown:
+{"transcript": "", "transcript_marked": "...", "transcript_pinyin": "", "language": "", "pronunciation_score": 0, "pronunciation_feedback": "...", "grammar_score": 0, "grammar_feedback": "...", "corrected_text": "...", "issues": [{"text": "...", "kind": "tone", "note": "..."}]}`;
 }
 
 function extractJsonObject(text) {
@@ -875,47 +844,72 @@ function extractJsonObject(text) {
 
 app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool, 'pro'), express.json({ limit: '25mb' }), requireOpenAI, async (req, res) => {
   try {
-    const { audio_base64, format, reference_zh, reference, reference_lang, ui_lang } = req.body || {};
+    const { audio_base64, format, reference_zh, reference, reference_lang, ui_lang, transcript: tIn, language: langIn } = req.body || {};
+    if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
+    const feedbackLang = FEEDBACK_LANG_NAME[ui_lang] ? ui_lang : 'vi';
     const refText = String(reference || reference_zh || '').slice(0, 1500);
     const refLangName = ({ zh: 'tiếng Trung', vi: 'tiếng Việt', en: 'tiếng Anh' })[reference_lang] || (reference ? '' : 'tiếng Trung');
-    if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
+    const buf = Buffer.from(audio_base64, 'base64');
+
+    // 1) BẢN PHIÊN ÂM CHUẨN DUY NHẤT: do chấm nhanh đã nhận dạng (gửi lên), hoặc lấy từ kho theo mã băm âm thanh (nhận dạng một lần).
+    let canonical = typeof tIn === 'string' ? tIn.trim().slice(0, 1500) : '';
+    let canonLang = ['zh', 'vi', 'en'].includes(langIn) ? langIn : null;
+    const hash = speech.audioHash(buf);
+    if (!canonical) {
+      const r = await speech.canonicalRecognize(mysqlPool, buf, { expect: ['zh', 'vi', 'en'].includes(reference_lang) ? reference_lang : null });
+      if (r.unclear || !r.text.trim()) return res.json({ success: true, data: { unclear: true, reason: r.reason || 'unclear', audio_hash: r.hash, cost_credits: 0 } });
+      canonical = r.text.trim(); canonLang = r.language || canonLang;
+    }
+    if (!canonLang) canonLang = speech.guessLangFromText(canonical, detectViEn) || (['zh', 'vi', 'en'].includes(reference_lang) ? reference_lang : 'vi');
+
+    // 2) Cùng âm thanh + cùng câu mẫu + cùng ngôn ngữ nhận xét → dùng lại kết quả đã có (miễn phí, và LUÔN cho cùng một kết quả).
+    const key = crypto.createHash('sha256').update(`${hash}|${canonical}|${reference_lang || ''}|${refText}|${feedbackLang}`).digest('hex');
+    const hit = await speech.analysisCacheGet(mysqlPool, key);
+    if (hit) return res.json({ success: true, data: { ...hit, cached: true, cost_credits: 0, audio_hash: hash } });
+
     if (!(await budgetGate(req, res))) return;
-    const feedbackLang = FEEDBACK_LANG_NAME[ui_lang] ? ui_lang : 'vi';
 
     const userText = refText
-      ? `[CHỈ ĐỂ BẠN HIỂU NGỮ CẢNH — KHÔNG được đưa câu này vào trường "transcript"]\nCâu mẫu ${refLangName} người này đang luyện: ${refText}\n[HẾT NGỮ CẢNH]\nChấm điểm phát âm + ngữ pháp đoạn ghi âm sau, phiên âm đúng những gì NGHE ĐƯỢC (không chép lại câu mẫu), rồi liệt kê "issues" so với câu mẫu.`
-      : 'Chấm điểm phát âm đoạn ghi âm sau.';
+      ? `[NGỮ CẢNH — KHÔNG đưa vào "transcript"]\nCâu mẫu ${refLangName} người này đang luyện: ${refText}\n[HẾT NGỮ CẢNH]\nĐánh giá phát âm/thanh điệu/trôi chảy và ngữ pháp của đoạn ghi âm so với câu mẫu.`
+      : 'Đánh giá phát âm đoạn ghi âm sau.';
+    const fixed = `\n\nLƯU Ý QUAN TRỌNG (ghi đè bước 1): bản phiên âm ĐÃ ĐƯỢC HỆ THỐNG NHẬN DẠNG VÀ CỐ ĐỊNH, KHÔNG phiên âm lại:\n<<<${canonical}>>>\nNgôn ngữ nói: ${canonLang}. Trường "transcript" PHẢI đúng y chuỗi trên; "language" = "${canonLang}". Dùng audio CHỈ để đánh giá phát âm, thanh điệu, trôi chảy. "transcript_marked" = chính chuỗi trên, bọc ((...)) quanh chỗ phát âm chưa chuẩn.`;
 
     const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
+      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'gpt-audio-mini',
         modalities: ['text'],
+        max_completion_tokens: 900,
         messages: [
-          { role: 'system', content: buildPronunciationPrompt(feedbackLang) },
-          {
-            role: 'user',
-            content: [
-              { type: 'text', text: userText },
-              { type: 'input_audio', input_audio: { data: audio_base64, format: format === 'wav' ? 'wav' : 'mp3' } },
-            ],
-          },
+          { role: 'system', content: buildPronunciationPrompt(feedbackLang) + fixed },
+          { role: 'user', content: [
+            { type: 'text', text: userText },
+            { type: 'input_audio', input_audio: { data: audio_base64, format: format === 'wav' ? 'wav' : 'mp3' } },
+          ] },
         ],
       }),
     });
-
     if (!openaiRes.ok) {
       const errText = await openaiRes.text();
       console.error('OpenAI pronunciation-score lỗi:', openaiRes.status, errText.slice(0, 500));
       return res.status(502).json({ success: false, error: 'openai_error' });
     }
     const data = await openaiRes.json();
-    aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'phan_tich_phat_am', costUsd: aiBudget.costFromUsage('gpt-audio-mini', data.usage) });
-    const parsed = extractJsonObject(data.choices[0].message.content);
+    const costUsd = aiBudget.costFromUsage('gpt-audio-mini', data.usage);
+    aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'phan_tich_phat_am', costUsd });
+    const parsed = extractJsonObject(data.choices[0].message.content) || {};
+    // Cưỡng bức: bản chữ CHUẨN không bị mô hình đổi; pinyin tính bằng thư viện (chắc hơn mô hình).
+    parsed.transcript = canonical;
+    parsed.language = canonLang;
+    const stripMarks = (x) => String(x || '').replace(/\(\(|\)\)/g, '');
+    if (stripMarks(parsed.transcript_marked).replace(/\s+/g, '') !== canonical.replace(/\s+/g, '')) parsed.transcript_marked = canonical;
+    if (canonLang === 'zh') { try { parsed.transcript_pinyin = pinyin(canonical, { style: 'tone' }).map((a) => a[0]).join(' '); } catch (_) { /* giữ nguyên */ } }
+    else parsed.transcript_pinyin = '';
+    parsed.issues = Array.isArray(parsed.issues) ? parsed.issues.filter((x) => x && x.text).slice(0, 8) : [];
+    parsed.cost_credits = Math.round(costUsd * 1000) / 10; // 1 credit = 0,01 USD; làm tròn 0,1
+    parsed.audio_hash = hash;
+    speech.analysisCachePut(mysqlPool, key, { ...parsed, cost_credits: 0 });
     res.json({ success: true, data: parsed });
   } catch (err) {
     console.error('Lỗi chấm phát âm:', err);
@@ -995,9 +989,10 @@ app.post('/api/interpret-check', verifyFirebaseToken, requirePlan(mysqlPool, 'pr
     const buf = Buffer.from(audio_base64, 'base64');
     if (!(await budgetGate(req, res))) return;
     if (buf.length < 2000) return res.json({ success: true, data: { transcript: '', lang_ok: false, lang_reason: 'empty', units: [], counts: { ok: 0, partial: 0, missed: 0 }, total: seg.key_units.length, fluency: null } });
-    const { text, model } = await transcribeWithOpenAI(buf, lang, buildVocabHint(seg.key_units, lang));
-    // Phiên âm tính theo phút ($0,003/phút); ước lượng thời lượng từ kích thước (WAV 16-bit mono 16 kHz ≈ 32 KB/giây).
-    aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'dich_phien_am', costUsd: Math.max(5, buf.length / 32000) / 60 * 0.003 });
+    const cr = await speech.canonicalRecognize(mysqlPool, buf, { vocab: `${buildVocabHint(seg.key_units, 'vi')} ${buildVocabHint(seg.key_units, 'en')}`.slice(0, 700), expect: lang });
+    const text = cr.unclear ? '' : cr.text, model = cr.model;
+    // Chỉ tính phí khi thật sự nhận dạng mới (dùng lại bản chuẩn đã có thì miễn phí). ~ $0,003/phút, ước lượng thời lượng từ kích thước.
+    if (!cr.cached) aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'dich_phien_am', costUsd: Math.max(5, buf.length / 32000) / 60 * 0.006 });
     const stats = fluency && typeof fluency === 'object' ? {
       speech_ms: Number(fluency.speech_ms) || 0,
       pause_count: Number(fluency.pause_count) || 0,
@@ -1276,7 +1271,7 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
     const seg = dlg && (dlg.segments || []).find((x) => x.seq === Number(seq));
 
     let transcript = typeof tIn === 'string' ? tIn.slice(0, 1500) : null;
-    let source = 'browser', said = null, confidence = null, model = null;
+    let source = 'browser', said = null, confidence = null, model = null, audioHashOut = null;
     if (transcript === null) {
       if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
       if (!process.env.OPENAI_API_KEY) return res.status(503).json({ success: false, error: 'asr_unavailable' });
@@ -1289,9 +1284,9 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
       if (buf.length < 3000) return res.json({ success: true, data: { unclear: true, reason: 'too_short', source: 'server', heard: '' } });
       // Gợi ý THUẬT NGỮ (không phải nguyên câu): đơn vị ý của câu + thuật ngữ cốt lõi.
       const unitsHint = seg && Array.isArray(seg.key_units) ? buildVocabHint(seg.key_units, 'vi') + ' ' + buildVocabHint(seg.key_units, 'en') : '';
-      const r = await speech.recognize(buf, { vocab: `${unitsHint} ${laoshi.ASR_BIAS}`.trim().slice(0, 700), expect: explicitLang || expect });
-      source = 'server'; model = r.model; confidence = r.confidence; said = r.language;
-      if (r.unclear) return res.json({ success: true, data: { unclear: true, reason: r.reason || 'unclear', source, heard: '', model, confidence } });
+      const r = await speech.canonicalRecognize(mysqlPool, buf, { vocab: `${unitsHint} ${laoshi.ASR_BIAS}`.trim().slice(0, 700), expect: explicitLang || expect });
+      source = 'server'; model = r.model; confidence = r.confidence; said = r.language; audioHashOut = r.hash;
+      if (r.unclear) return res.json({ success: true, data: { unclear: true, reason: r.reason || 'unclear', source, heard: '', model, confidence, audio_hash: r.hash } });
       transcript = r.text;
     }
     if (!String(transcript).trim()) return res.json({ success: true, data: { unclear: true, reason: 'empty', source, heard: '' } });
@@ -1304,13 +1299,13 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
     const ref = refs[lang];
 
     if (lang === 'zh') {
-      return res.json({ success: true, data: { mode: 'zh', source, model, confidence, lang_used: lang, switched, reference_used: ref, ...scoreChinese(ref, transcript) } });
+      return res.json({ success: true, data: { mode: 'zh', source, model, confidence, audio_hash: audioHashOut, transcript_used: transcript, lang_used: lang, switched, reference_used: ref, ...scoreChinese(ref, transcript) } });
     }
     if (seg && Array.isArray(seg.key_units) && seg.key_units.length) {
       const data = analyzeInterpretation({ units: seg.key_units, transcript, lang, fluencyStats: null });
-      return res.json({ success: true, data: { mode: 'units', source, model, confidence, lang_used: lang, switched, reference_used: ref, ...data } });
+      return res.json({ success: true, data: { mode: 'units', source, model, confidence, audio_hash: audioHashOut, transcript_used: transcript, lang_used: lang, switched, reference_used: ref, ...data } });
     }
-    return res.json({ success: true, data: { mode: 'words', source, model, confidence, lang_used: lang, switched, reference_used: ref, ...scoreWords(ref, transcript) } });
+    return res.json({ success: true, data: { mode: 'words', source, model, confidence, audio_hash: audioHashOut, transcript_used: transcript, lang_used: lang, switched, reference_used: ref, ...scoreWords(ref, transcript) } });
   } catch (err) {
     console.error('quick-check lỗi:', err.message);
     res.status(500).json({ success: false, error: 'quick_check_failed' });
@@ -1321,6 +1316,7 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
 onDbUp(() => laoshi.ensureTable(mysqlPool).catch((e) => console.error('[laoshi] init:', e.message)));
 onDbUp(() => laoshiFaq.ensureTable(mysqlPool).catch((e) => console.error('[laoshi-faq] init:', e.message)));
 onDbUp(() => termLearn.ensureTables(mysqlPool).then(() => termLearn.startPromoteJob(mysqlPool)).catch((e) => console.error('[term-learn] init:', e.message)));
+onDbUp(() => speech.ensureTables(mysqlPool).catch((e) => console.error('[speech] init:', e.message)));
 onDbUp(() => laoshiLearn.ensureTables(mysqlPool).then(() => laoshiLearn.loadLearned(mysqlPool, true)).catch((e) => console.error('[laoshi-learn] init:', e.message)));
 const maxOnly = [verifyFirebaseToken, requirePlan(mysqlPool, 'max')];
 app.get('/api/laoshi/opening', ...maxOnly, withLessonIndex((req, res) => {

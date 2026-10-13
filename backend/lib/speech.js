@@ -10,6 +10,7 @@
  *   3. Có tiếng nói → phiên âm lại bằng mô hình mạnh hơn (gpt-4o-transcribe → mini → chính whisper) với ngôn ngữ ĐÃ NHẬN + gợi ý từ vựng.
  *      Không đưa NGUYÊN CÂU mẫu vào prompt (tránh mô hình "tự sửa" che lỗi); chỉ đưa thuật ngữ.
  */
+import crypto from 'node:crypto';
 import { normalize as normalizeInterp } from './interpret-check.js';
 
 const LANG_BY_NAME = { chinese: 'zh', mandarin: 'zh', cantonese: 'zh', english: 'en', vietnamese: 'vi', zh: 'zh', en: 'en', vi: 'vi' };
@@ -98,3 +99,45 @@ export async function recognize(buf, { vocab = '', expect = null } = {}) {
   if (text1 && !looksHallucinated(text1, basePrompt)) return { text: text1, language: language || guessLangFromText(text1), confidence: conf, unclear: false, model: 'whisper-1' };
   return { text: '', language, confidence: conf, unclear: true, reason: 'empty', model: 'none' };
 }
+
+// ===== BẢN PHIÊN ÂM CHUẨN DUY NHẤT cho mỗi bản ghi âm (MySQL) =====
+// Cùng một đoạn âm thanh (cùng mã băm) → LUÔN cùng một bản chữ, dù là chấm nhanh, phân tích AI hay chấm theo đơn vị ý. AI chỉ ĐÁNH GIÁ
+// bản chữ này, không phiên âm lại → không còn "mỗi nơi một bản dịch khác nhau" và không tốn thêm credit phiên âm.
+export const audioHash = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
+export async function ensureTables(pool) {
+  if (!pool) return;
+  await pool.query(`CREATE TABLE IF NOT EXISTS speech_transcripts (
+    hash CHAR(64) NOT NULL PRIMARY KEY, text TEXT NOT NULL, language CHAR(2) NULL, confidence FLOAT NULL, model VARCHAR(40) NULL,
+    unclear TINYINT NOT NULL DEFAULT 0, reason VARCHAR(16) NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`);
+  await pool.query(`CREATE TABLE IF NOT EXISTS speech_analysis_cache (
+    k CHAR(64) NOT NULL PRIMARY KEY, result MEDIUMTEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`);
+  await pool.query('DELETE FROM speech_transcripts WHERE created_at < NOW() - INTERVAL 60 DAY').catch(() => {});
+  await pool.query('DELETE FROM speech_analysis_cache WHERE created_at < NOW() - INTERVAL 30 DAY').catch(() => {});
+}
+/** Bản phiên âm chuẩn của một bản ghi: có trong DB thì dùng lại (cached=true), không thì nhận dạng một lần rồi lưu. */
+export async function canonicalRecognize(pool, buf, opts = {}) {
+  const hash = audioHash(buf);
+  if (pool) {
+    try {
+      const [[row]] = await pool.query('SELECT text, language, confidence, model, unclear, reason FROM speech_transcripts WHERE hash = ?', [hash]);
+      if (row) return { hash, cached: true, text: row.text || '', language: row.language || null, confidence: row.confidence == null ? null : Number(row.confidence), model: row.model, unclear: !!row.unclear, reason: row.reason || undefined };
+    } catch (_) { /* chưa có bảng: nhận dạng bình thường */ }
+  }
+  const r = await recognize(buf, opts);
+  if (pool) {
+    pool.query('INSERT IGNORE INTO speech_transcripts (hash, text, language, confidence, model, unclear, reason) VALUES (?,?,?,?,?,?,?)',
+      [hash, r.text || '', r.language || null, r.confidence == null ? null : r.confidence, r.model || null, r.unclear ? 1 : 0, r.reason || null]).catch(() => {});
+  }
+  return { hash, cached: false, ...r };
+}
+export async function analysisCacheGet(pool, key) {
+  if (!pool) return null;
+  try { const [[row]] = await pool.query('SELECT result FROM speech_analysis_cache WHERE k = ?', [key]); return row ? JSON.parse(row.result) : null; } catch (_) { return null; }
+}
+export async function analysisCachePut(pool, key, obj) {
+  if (!pool) return;
+  try { await pool.query('INSERT IGNORE INTO speech_analysis_cache (k, result) VALUES (?, ?)', [key, JSON.stringify(obj)]); } catch (_) { /* bỏ qua */ }
+}
+
