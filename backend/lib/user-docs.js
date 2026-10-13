@@ -31,7 +31,9 @@ export const VOICE_KEYS = ['default', 'aoede'];
 const GOOGLE_VOICES = {
   zh: { default: 'cmn-CN-Wavenet-C', aoede: 'cmn-CN-Chirp3-HD-Aoede' },
   en: { default: 'en-US-Wavenet-D', aoede: 'en-US-Chirp3-HD-Aoede' },
+  vi: { default: 'vi-VN-Wavenet-D', aoede: 'vi-VN-Chirp3-HD-Aoede' }, // nam / nữ (chỉ dùng cho Lão Sư; nữ Chirp lỗi → rơi về Wavenet-A)
 };
+const GOOGLE_LANG_CODE = { zh: 'cmn-CN', en: 'en-US', vi: 'vi-VN' };
 const OPENAI_VOICES = { default: 'onyx', aoede: 'nova' };
 
 const SYSTEM_PROMPT = `Bạn là biên tập viên tài liệu luyện nghe–dịch (dịch cabin) cho sinh viên/bác sĩ Trung y.
@@ -218,16 +220,21 @@ function googleTts() {
 /** opts.uid: nếu có thì ghi chi phí TTS vào ngân sách người dùng (chỉ gọi khi KHÔNG trúng đệm). */
 export async function synthesize(text, lang, voiceKey, opts = {}) {
   const key = VOICE_KEYS.includes(voiceKey) ? voiceKey : 'default';
-  const l = lang === 'en' ? 'en' : 'zh';
+  const l = lang === 'en' ? 'en' : lang === 'vi' ? 'vi' : 'zh';
   if (googleTtsConfigured()) {
-    const name = GOOGLE_VOICES[l][key];
-    const r = await googleTts().text.synthesize({
+    const call = (name) => googleTts().text.synthesize({
       requestBody: {
         input: { text },
-        voice: { languageCode: l === 'zh' ? 'cmn-CN' : 'en-US', name },
+        voice: { languageCode: GOOGLE_LANG_CODE[l], name },
         audioConfig: { audioEncoding: 'MP3', speakingRate: 1.0 },
       },
     });
+    let r;
+    try { r = await call(GOOGLE_VOICES[l][key]); }
+    catch (e) {
+      if (l !== 'vi' || key === 'default') throw e;
+      r = await call('vi-VN-Wavenet-A'); // giọng nữ Chirp tiếng Việt chưa có → Wavenet nữ
+    }
     if (opts.uid) budget.charge({ uid: opts.uid, app: 'dict', feature: 'tts', costUsd: budget.costForTts(text.length, key === 'default' ? 'wavenet' : 'chirp') });
     return Buffer.from(r.data.audioContent, 'base64');
   }
@@ -238,7 +245,9 @@ export async function synthesize(text, lang, voiceKey, opts = {}) {
       model: TTS_MODEL, voice: OPENAI_VOICES[key], input: text, response_format: 'mp3',
       instructions: l === 'zh'
         ? 'Đọc tiếng Trung phổ thông (Mandarin) chuẩn, rõ, tốc độ vừa phải cho người học; đúng thanh điệu, ngắt nghỉ theo dấu câu.'
-        : 'Read in clear, natural English at a steady pace for language learners, pausing at punctuation.',
+        : l === 'vi'
+          ? 'Đọc tiếng Việt tự nhiên, ấm áp, rõ ràng, tốc độ vừa phải, ngắt nghỉ theo dấu câu.'
+          : 'Read in clear, natural English at a steady pace for language learners, pausing at punctuation.',
     }),
   });
   if (!r.ok) throw new Error(`tts_failed: ${r.status} ${(await r.text()).slice(0, 120)}`);

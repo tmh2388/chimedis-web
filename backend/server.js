@@ -78,7 +78,7 @@ app.all(/^\/__fb\/(idtk|stk)(\/.*)$/, express.raw({ type: '*/*', limit: '256kb' 
 });
 // Mọi đường dẫn /__fb/ còn lại (ngoài idtk/stk) → 404 JSON, không rơi về trang chủ (SPA fallback).
 app.all(/^\/__fb(\/|$)/, (req, res) => res.status(404).json({ error: { message: 'NOT_FOUND' } }));
-app.use((req, res, next) => (['/api/pronunciation-score', '/api/interpret-check', '/api/quick-check'].includes(req.path) ? next() : defaultJson(req, res, next)));
+app.use((req, res, next) => (['/api/pronunciation-score', '/api/interpret-check', '/api/quick-check', '/api/laoshi/transcribe'].includes(req.path) ? next() : defaultJson(req, res, next)));
 const PORT = process.env.PORT || 3000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
 
@@ -1290,6 +1290,65 @@ app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLesso
     res.status(502).json({ success: false, error: 'upstream' });
   }
 }));
+
+// Đọc to câu trả lời của thầy (Google TTS; nhiều ngôn ngữ trong cùng câu → tách theo chữ Hán / còn lại, ghép MP3). Tính vào ngân sách người dùng.
+const LS_TTS_MAX = 700;
+const isHanCh = (c) => /[\u3400-\u9fff\uf900-\ufaff]/.test(c);
+function lsSpeechText(raw) {
+  let t = String(raw || '').replace(/\*\*/g, '').replace(/[`#>_~]/g, '').replace(/\p{Extended_Pictographic}|\uFE0F/gu, '').replace(/([.!?。！？:：])\s*\n\s*/g, '$1 ').replace(/\s*\n\s*/g, '. ').replace(/\s{2,}/g, ' ').trim();
+  if (t.length > LS_TTS_MAX) { const cut = t.slice(0, LS_TTS_MAX); const k = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('。'), cut.lastIndexOf('? '), cut.lastIndexOf('! ')); t = (k > 200 ? cut.slice(0, k + 1) : cut); }
+  return t;
+}
+function lsSplitRuns(text, baseLang) {
+  const runs = [];
+  for (const ch of text) {
+    const han = isHanCh(ch);
+    const neutral = !han && !/[\p{L}\p{N}]/u.test(ch);
+    const lang = han ? 'zh' : baseLang === 'zh' ? 'en' : baseLang;
+    const last = runs[runs.length - 1];
+    if (last && (neutral || last.lang === lang)) last.text += ch;
+    else if (neutral && !last) runs.push({ lang, text: ch });
+    else runs.push({ lang, text: ch });
+  }
+  return runs.filter((r) => /[\p{L}\p{N}]/u.test(r.text)).slice(0, 14);
+}
+app.post('/api/laoshi/tts', ...maxOnly, async (req, res) => {
+  try {
+    if (!(await budgetGate(req, res, req.plan))) return;
+    const lang = ['vi', 'zh', 'en'].includes(req.body && req.body.lang) ? req.body.lang : 'vi';
+    const voice = userDocs.VOICE_KEYS.includes(req.body && req.body.voice) ? req.body.voice : 'default';
+    const text = lsSpeechText(req.body && req.body.text);
+    if (!text) return res.status(400).json({ success: false, error: 'empty' });
+    const runs = lsSplitRuns(text, lang);
+    const parts = await Promise.all(runs.map((r) => userDocs.synthesize(r.text, r.lang, voice, { uid: req.firebaseUser.uid })));
+    res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, no-store' }).send(Buffer.concat(parts));
+  } catch (e) {
+    console.error('laoshi tts:', e.message);
+    res.status(502).json({ success: false, error: 'tts_failed' });
+  }
+});
+// Nhận dạng giọng nói phía máy chủ (thiết bị không có Web Speech, vd. app iOS): WAV → văn bản. Giới hạn dùng chung với Chấm nhanh.
+app.post('/api/laoshi/transcribe', ...maxOnly, express.json({ limit: '25mb' }), async (req, res) => {
+  try {
+    if (!process.env.OPENAI_API_KEY) return res.status(503).json({ success: false, error: 'asr_unavailable' });
+    if (!(await budgetGate(req, res, req.plan))) return;
+    const lang = ['vi', 'zh', 'en'].includes(req.body && req.body.lang) ? req.body.lang : 'vi';
+    const buf = Buffer.from(String((req.body && req.body.audio_base64) || ''), 'base64');
+    if (buf.length < 2000) return res.json({ success: true, data: { text: '' } });
+    if (buf.length > 12 * 1024 * 1024) return res.status(413).json({ success: false, error: 'too_large' });
+    if (mysqlPool) {
+      const cap = Number(process.env.LAOSHI_ASR_DAILY) || 200;
+      const u = await consumeServerAsr(mysqlPool, req.firebaseUser.uid, cap);
+      if (!u.ok) return res.status(429).json({ success: false, error: 'quick_daily_limit', limit: cap });
+    }
+    const out = await transcribeWithOpenAI(buf, lang, '');
+    aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'laoshi_asr', costUsd: 0.002 });
+    res.json({ success: true, data: { text: String(out.text || '').slice(0, 800) } });
+  } catch (e) {
+    console.error('laoshi transcribe:', e.message);
+    res.status(502).json({ success: false, error: 'asr_failed' });
+  }
+});
 
 // ===== Gói & thanh toán chuyển khoản (xem lib/billing.js) — chỉ giao diện web có nút mua =====
 onDbUp(() => billing.ensureTables(mysqlPool).catch((e) => console.error('[billing] init:', e.message)));
