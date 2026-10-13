@@ -311,3 +311,58 @@ export function randomOf(group1, n, excludeId, seed = Date.now()) {
   for (let i = 0; i < n && arr.length; i++) { h = (h * 1664525 + 1013904223) >>> 0; out.push(arr.splice(h % arr.length, 1)[0]); }
   return out;
 }
+
+/** Mục ngẫu nhiên (ưu tiên mục giàu dữ liệu) của một lĩnh vực; field rỗng/không hợp lệ → chọn ngẫu nhiên giữa các lĩnh vực. */
+export function randomTopic(field, seed = Date.now()) {
+  if (!index) return null;
+  let h = (seed >>> 0) || 1;
+  const next = () => (h = (h * 1664525 + 1013904223) >>> 0);
+  next(); next();
+  const keys = field && index.byField.has(field) ? [field] : FIELDS.map((f) => f.key).filter((k) => (index.byField.get(k) || []).length);
+  if (!keys.length) return null;
+  const all = index.byField.get(keys[next() % keys.length]) || [];
+  const rich = all.filter((t) => (index.segCount.get(t.id) || 0) >= 3);
+  const items = rich.length >= 30 ? rich : all;
+  return items.length ? items[next() % items.length] : null;
+}
+
+// ===== Đồng âm (nhận dạng giọng nói hay nhầm: 穴位 ↔ 学位…) =====
+const HAN_ONLY = /^[㐀-鿿]+$/;
+let homoMap = null, homoTerms = null, homoBuiltFrom = null;
+const pyKey = (s) => { try { return pinyin(s, { style: 'tone2' }).map((a) => a[0]).join('|'); } catch (_) { return ''; } };
+function buildHomo(extra) {
+  if (homoMap && homoBuiltFrom === index) return;
+  homoMap = new Map(); homoTerms = new Set(); homoBuiltFrom = index;
+  const add = (hz, vi) => {
+    if (!hz || hz.length < 2 || hz.length > 4 || !HAN_ONLY.test(hz)) return;
+    homoTerms.add(hz);
+    const k = pyKey(hz); if (!k) return;
+    const arr = homoMap.get(k) || [];
+    if (arr.length < 3 && !arr.some((x) => x.hz === hz)) arr.push({ hz, vi: vi || '' });
+    homoMap.set(k, arr);
+  };
+  for (const [hz, vi] of extra || []) add(hz, vi);
+  if (index) for (const t of index.byId.values()) add(t.hz, t.vi);
+}
+/** Với mỗi cụm 2–4 chữ Hán trong câu mà KHÔNG phải thuật ngữ trong kho nhưng cùng pinyin+thanh với một thuật ngữ → gợi ý (tối đa 4). */
+export function homophoneHints(text, extra = []) {
+  const han = String(text || '').match(/[㐀-鿿]+/g) || [];
+  if (!han.length) return [];
+  buildHomo(extra);
+  const out = [];
+  for (const run of han) {
+    const used = new Array(run.length).fill(false);
+    for (let n = 4; n >= 2; n--) {
+      for (let i = 0; i + n <= run.length; i++) {
+        if (used.slice(i, i + n).some(Boolean)) continue;
+        const g = run.slice(i, i + n);
+        if (homoTerms.has(g)) { for (let k = i; k < i + n; k++) used[k] = true; continue; }
+        const cands = (homoMap.get(pyKey(g)) || []).filter((c) => c.hz !== g);
+        if (cands.length) { out.push({ heard: g, maybe: cands.map((c) => (c.vi ? `${c.hz} (${c.vi})` : c.hz)) }); for (let k = i; k < i + n; k++) used[k] = true; }
+      }
+    }
+  }
+  const seen = new Set();
+  return out.filter((h) => (seen.has(h.heard) ? false : (seen.add(h.heard), true))).slice(0, 4);
+}
+

@@ -916,10 +916,10 @@ app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool,
 // AI CHỈ dùng để phiên âm giọng nói (model phiên âm rẻ, ngôn ngữ đích cố định, gợi ý từ vựng từ chính
 // bài học). Việc quyết định đúng/sót là đối chiếu xác định trong lib/interpret-check.js. Kết quả chỉ
 // gồm mã trạng thái; giao diện tự lấy câu chữ từ bảng I18N nên ngôn ngữ nhận xét luôn đúng.
-async function transcribeWithOpenAI(buf, lang, hint) {
+async function transcribeWithOpenAI(buf, lang, hint, bias = '') {
   // zh: KHÔNG đưa câu mẫu vào prompt — làm vậy mô hình sẽ "tự sửa" theo câu mẫu và che mất lỗi phát âm của người học.
   const prompt = lang === 'zh'
-    ? '中医学习，请用简体中文逐字转写，不要纠正发音。'
+    ? (bias ? `中医学习对话，请用简体中文转写。可能出现的中医术语：${bias}` : '中医学习，请用简体中文逐字转写，不要纠正发音。')
     : lang === 'en'
       ? `Traditional Chinese Medicine case discussion. Terms: ${hint}`
       : `Thảo luận ca bệnh y học cổ truyền bằng tiếng Việt. Thuật ngữ: ${hint}`;
@@ -1272,7 +1272,8 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
 onDbUp(() => laoshi.ensureTable(mysqlPool).catch((e) => console.error('[laoshi] init:', e.message)));
 const maxOnly = [verifyFirebaseToken, requirePlan(mysqlPool, 'max')];
 app.get('/api/laoshi/opening', ...maxOnly, withLessonIndex((req, res) => {
-  res.json({ success: true, data: laoshi.opening({ lang: String(req.query.lang || 'vi') }) });
+  const field = String(req.query.field || '');
+  res.json({ success: true, data: laoshi.opening({ lang: String(req.query.lang || 'vi'), field: csdl.FIELDS.some((f) => f.key === field) ? field : '', fresh: req.query.fresh === '1' || req.query.fresh === 'true' }) });
 }));
 app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLessonIndex(async (req, res) => {
   if (!(await budgetGate(req, res, req.plan))) return;
@@ -1355,7 +1356,7 @@ app.post('/api/laoshi/transcribe', ...maxOnly, express.json({ limit: '25mb' }), 
       const u = await consumeServerAsr(mysqlPool, req.firebaseUser.uid, cap);
       if (!u.ok) return res.status(429).json({ success: false, error: 'quick_daily_limit', limit: cap });
     }
-    const out = await transcribeWithOpenAI(buf, lang, '');
+    const out = await transcribeWithOpenAI(buf, lang, lang === 'zh' ? '' : laoshi.ASR_BIAS, lang === 'zh' ? laoshi.ASR_BIAS : '');
     aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'laoshi_asr', costUsd: 0.002 });
     res.json({ success: true, data: { text: String(out.text || '').slice(0, 800) } });
   } catch (e) {

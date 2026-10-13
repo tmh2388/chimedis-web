@@ -18,6 +18,18 @@ const MAX_MSG_CHARS = 1200;      // độ dài tối đa mỗi tin của ngườ
 
 function pickIndex(n, seed) { return Math.abs(seed | 0) % n; }
 
+/** Thuật ngữ cốt lõi: (1) gợi ý đồng âm cho mô hình, (2) làm "từ khoá thiên vị" cho nhận dạng giọng nói phía máy chủ. */
+export const CORE_TERMS = [['穴位', 'huyệt vị'], ['经络', 'kinh lạc'], ['辨证', 'biện chứng'], ['论治', 'luận trị'], ['阴阳', 'âm dương'], ['气血', 'khí huyết'],
+  ['脏腑', 'tạng phủ'], ['针灸', 'châm cứu'], ['中药', 'Đông dược'], ['方剂', 'phương tễ'], ['舌诊', 'thiệt chẩn'], ['脉象', 'mạch tượng'],
+  ['望闻问切', 'vọng văn vấn thiết'], ['寒热', 'hàn nhiệt'], ['虚实', 'hư thực'], ['表里', 'biểu lý'], ['五行', 'ngũ hành'], ['经脉', 'kinh mạch'],
+  ['任脉', 'nhâm mạch'], ['督脉', 'đốc mạch'], ['归经', 'quy kinh'], ['君臣佐使', 'quân thần tá sứ'], ['汤剂', 'thang tễ'], ['中医', 'Đông y'],
+  ['中医学', 'Trung y học'], ['拔罐', 'giác hơi'], ['艾灸', 'ngải cứu'], ['推拿', 'xoa bóp bấm huyệt'], ['针刺', 'châm thích'], ['得气', 'đắc khí'],
+  ['腧穴', 'du huyệt'], ['痰湿', 'đàm thấp'], ['血瘀', 'huyết ứ'], ['肝郁', 'can uất'], ['脾虚', 'tỳ hư'], ['肾虚', 'thận hư'], ['心火', 'tâm hỏa'],
+  ['气虚', 'khí hư'], ['阳虚', 'dương hư'], ['阴虚', 'âm hư'], ['舌苔', 'rêu lưỡi'], ['滑脉', 'mạch hoạt'], ['弦脉', 'mạch huyền'], ['麻黄', 'ma hoàng'],
+  ['桂枝', 'quế chi'], ['人参', 'nhân sâm'], ['黄芪', 'hoàng kỳ'], ['当归', 'đương quy'], ['甘草', 'cam thảo'], ['足三里', 'túc tam lý'], ['合谷', 'hợp cốc'],
+  ['太冲', 'thái xung'], ['内关', 'nội quan'], ['百会', 'bách hội'], ['关元', 'quan nguyên']];
+export const ASR_BIAS = CORE_TERMS.map((c) => c[0]).join('、');
+
 const LANG_RULE = {
   vi: 'NGÔN NGỮ: trả lời hoàn toàn bằng tiếng Việt (xưng "thầy", gọi "em"); thuật ngữ kèm chữ Hán và pinyin.',
   zh: 'LANGUAGE / 语言：必须全程使用简体中文回答（自称“老师”，称对方“你”），即使对方用其他语言提问；术语可在括号内附越南语名称。Reply ONLY in Simplified Chinese.',
@@ -39,6 +51,7 @@ CÁCH DẠY
 - Nếu em viết tiếng Trung, sửa lỗi nhẹ nhàng và khen điều làm đúng.
 - TRẮC NGHIỆM: khi ra câu hỏi chọn đáp án, luôn liệt kê mỗi đáp án trên MỘT dòng riêng, đúng dạng "A. …", "B. …", "C. …" (tối đa 4 đáp án), rồi kết bằng một câu hỏi ngắn. Không nhét đáp án vào cùng một dòng.
 - Văn bản của em có thể là lời nói được nhận dạng nên có thể sai chính tả/đồng âm; hiểu theo ngữ cảnh, đừng bắt lỗi chính tả.
+- BỐI CẢNH MẶC ĐỊNH là Trung y/y học: gặp từ đồng âm, ưu tiên nghĩa Trung y (ví dụ 学位 thường là 穴位 huyệt vị, 经落→经络, 血位→穴位, 中一→中医). Khi đã sửa theo nghĩa Trung y, nói một câu ngắn xác nhận ("Thầy hiểu em hỏi về 穴位 (huyệt vị) nhé") rồi trả lời — đừng trả lời theo nghĩa lạc đề.
 
 ĐỘ TIN CẬY & AN TOÀN
 - Mục "NGỮ LIỆU THAM CHIẾU" (nếu có) là dữ liệu từ cơ sở dữ liệu Chimedis: ưu tiên dùng, và nói rõ khi dựa vào đó. KHÔNG bịa liều lượng, quy kinh, huyệt vị. Không chắc thì nói thẳng "thầy không chắc, em kiểm tra lại giáo trình nhé".
@@ -72,11 +85,13 @@ const OPENERS = {
 const L = (lang) => (['vi', 'zh', 'en'].includes(lang) ? lang : 'vi');
 
 /** Lời mở đầu CHỦ ĐỘNG, tất định (không gọi AI): đề tài hôm nay + một câu đố rút từ kho, theo ngôn ngữ giao diện. */
-export function opening({ lang = 'vi', now = Date.now() } = {}) {
+export function opening({ lang = 'vi', now = Date.now(), field = '', fresh = false } = {}) {
   lang = L(lang);
   const day = csdl.dayNumber(now);
-  const picks = csdl.dailyPicks(now);
-  const topic = picks.find((t) => t.group1 === 'Dược liệu') || picks[0];
+  // Mặc định: đề tài của ngày (mọi người cùng thấy). Chọn lĩnh vực / "buổi mới" → một mục ngẫu nhiên khác mỗi lần.
+  const custom = !!(field || fresh);
+  const picks = custom ? [] : csdl.dailyPicks(now);
+  const topic = custom ? csdl.randomTopic(field, now ^ Math.floor(Math.random() * 1e9)) : (picks.find((t) => t.group1 === 'Dược liệu') || picks[0]);
   let quiz = null;
   const openers = OPENERS[lang];
   let text = openers[pickIndex(openers.length, day)];
@@ -109,6 +124,28 @@ export function opening({ lang = 'vi', now = Date.now() } = {}) {
     }
   }
   if (!quiz && topic) {
+    // Mục không phải dược liệu có quy kinh: đố "thuộc lĩnh vực nào?" bằng chính các lĩnh vực của kho (tất định, không dùng AI).
+    const fl = (f) => (lang === 'vi' ? f.vi : lang === 'zh' ? f.zh : f.en);
+    const own = csdl.FIELDS.find((f) => f.key === topic.group1);
+    const others = csdl.FIELDS.filter((f) => f.key !== topic.group1);
+    if (own && others.length >= 2) {
+      const h0 = Math.abs((topic.id + '').split('').reduce((a, c) => a * 31 + c.charCodeAt(0), 7)) | 0;
+      const pick = [others[h0 % others.length], others[(h0 + 2) % others.length]].filter((f, i, arr) => arr.indexOf(f) === i);
+      while (pick.length < 2) pick.push(others.find((f) => !pick.includes(f)));
+      const opts = [own, ...pick];
+      const order = [0, 1, 2].sort((a, b) => ((a * 5 + h0) % 7) - ((b * 5 + h0) % 7));
+      const labeled = order.map((i, k) => ({ key: 'ABC'[k], text: fl(opts[i]), correct: i === 0 }));
+      const question = lang === 'vi' ? `Mục ${topic.vi} (${topic.hz}, ${topic.py}) thuộc lĩnh vực nào của Trung y?`
+        : lang === 'zh' ? `「${topic.hz}」（${topic.py}）属于中医的哪个领域？`
+          : `Which TCM field does ${name(topic)} (${topic.hz}, ${topic.py}) belong to?`;
+      quiz = { question, options: labeled.map((o) => ({ key: o.key, text: o.text })), answer: labeled.find((o) => o.correct).key, answer_text: fl(own), fact: csdl.factsFor(topic, 3) };
+      const optLines = quiz.options.map((o) => `${o.key}. ${o.text}`).join('\n');
+      text += lang === 'vi' ? `\n\nĐề tài: **${topic.vi}** (${topic.hz}).\nĐố em nhé: ${question}\n${optLines}\n\nEm chọn A, B hay C?`
+        : lang === 'zh' ? `\n\n主题：**${topic.hz}**（${topic.py}）。\n考考你：${question}\n${optLines}\n\n选 A、B 还是 C？`
+          : `\n\nTopic: **${name(topic)}** (${topic.hz}).\nQuiz time: ${question}\n${optLines}\n\nA, B or C?`;
+    }
+  }
+  if (!quiz && topic) {
     text += lang === 'vi' ? `\n\nĐề tài hôm nay: **${topic.vi}** (${topic.hz}). Em đoán xem nó thuộc lĩnh vực nào trong Trung y? Cứ trả lời bừa, thầy quen rồi!`
       : lang === 'zh' ? `\n\n今天的主题：**${topic.hz}**（${topic.py}）。猜猜它属于中医的哪个领域？随便答，老师习惯了！`
         : `\n\nToday's topic: **${name(topic)}** (${topic.hz}). Can you guess which area of TCM it belongs to? Guess freely — I'm used to it!`;
@@ -135,9 +172,11 @@ export async function reply({ messages, quiz = null, lang = 'vi' }) {
   const last = msgs[msgs.length - 1].content;
 
   const refs = csdl.searchTerms(last, 3);
+  const homoHints = csdl.homophoneHints(last, CORE_TERMS);
   const refText = refs.length ? refs.map((t) => csdl.factsFor(t, 5)).join('\n\n') : '';
   const sys = [
     PERSONA,
+    homoHints.length ? `NHẮC — NHẬN DẠNG GIỌNG NÓI CÓ THỂ NHẦM ĐỒNG ÂM: ${homoHints.map((h) => `"${h.heard}" có thể là ${h.maybe.join(' / ')}`).join('; ')}. Trong ngữ cảnh Trung y, hãy hiểu theo nghĩa Trung y.` : '',
     refText ? `NGỮ LIỆU THAM CHIẾU (từ cơ sở dữ liệu Chimedis):\n${refText}` : 'NGỮ LIỆU THAM CHIẾU: (không tìm thấy mục khớp — dựa vào kiến thức nền chắc chắn, và nói rõ nếu không chắc).',
     quiz && quiz.answer ? `CÂU ĐỐ ĐANG MỞ: "${String(quiz.question).slice(0, 200)}" — đáp án đúng là ${quiz.answer} (${String(quiz.answer_text).slice(0, 80)}). Nếu em vừa trả lời câu đố, chấm đúng/sai, giải thích ngắn gọn dựa trên dữ kiện: ${String(quiz.fact || '').slice(0, 500)}` : '',
     // Đặt CUỐI cùng để mô hình không bị kéo về tiếng Việt bởi phần tính cách viết bằng tiếng Việt ở trên.
