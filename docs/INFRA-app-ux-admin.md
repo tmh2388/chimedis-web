@@ -46,3 +46,8 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Quy tắc: tải nội dung nào cũng phải có màn chờ rõ (logo + thanh chạy), không để màn trống. Hàm dùng chung `busyShow/busyHide/withBusy` (`#busyOverlay`, z-index dưới màn cập nhật bản mới, tự gỡ sau 30 s).
 - Đã áp dụng: lần đầu vào Nghe/đổi tab danh mục (chỉ khi chưa có cache), Học Thuật lần đầu, mở một bài nghe (gồm tải trước âm thanh). Lỗi mạng không lưu danh sách rỗng → lần vào sau tải lại.
 - Việc nên rà tiếp: các tải khác (Học tập, Từ điển lần đầu…) cần dùng cùng hàm này.
+
+## v54 (2026-10-13)
+- **Phân tích sâu AI tách khung riêng**: `lineDeep[seq]` + `listenDeepPut` — kết quả/loading nằm trong `.lsc-deep` bên dưới; video/âm thanh đã ghi và điểm chấm nhanh KHÔNG bị dựng lại (kiểm tra: cùng phần tử `<audio>`).
+- **Màn chờ toàn màn hình** bọc thêm (cuối script, `busyWrapAll`): kho thuật ngữ lần đầu, danh sách Học Thuật, thanh toán/đổi mã, Lão Sư mở đầu/chọn chủ đề, Tự Thêm (tải, gửi, đọc tệp), duyệt từ báo sai, góp ý, các thao tác admin.
+- **Lưu video vào Ảnh (iPhone)**: kiểu tệp chuẩn hoá `video/mp4` (bỏ `;codecs=`), đuôi `.mp4`; thông báo rõ khi thiết bị không chia sẻ được/WebM/ghi hình lỗi. Cần cắm plugin Filesystem/Media nếu share sheet vẫn không có "Lưu video".
