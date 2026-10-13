@@ -851,6 +851,11 @@ header{transition:padding .2s ease}
 .ls-opt b{flex:none;min-width:18px}
 .ls-opt:active{background:var(--thamthm,#0E3A3A);color:#fff}
 .ls-mic{flex:none;width:42px;height:42px;border:1px solid var(--vien,#e5ddcc);border-radius:50%;background:#fff;font-size:18px;cursor:pointer;line-height:1}
+.qs-issues{margin:8px 0}
+.qs-issue{display:flex;flex-direction:column;gap:2px;padding:7px 10px;margin-top:6px;background:#FBF3DC;border:1px solid #E3C26C;border-radius:10px;font-size:13px}
+.qs-issue b{font-size:14px}
+.qs-kind{font-size:11px;color:#7A5A12;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.qs-issue small{color:var(--muc-mo,#6B6156);font-size:12.5px}
 .ls-voted{font-size:14px;margin-left:4px}
 .ls-msg.user .ls-spk{background:rgba(255,255,255,.18);color:#fff}
 .tf-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 2px}
@@ -2097,7 +2102,7 @@ Object.assign(I18N.vi, {
   listen_cat_y_an: 'Y Án', listen_cat_bao_chi: 'Báo Chí', listen_cat_tu_them: 'Tự Thêm', listen_cat_hoc_thuat: 'Bài Báo Quốc Tế', listen_cat_csdl: 'Học Thuật',
   listen_empty: 'Chưa có hội thoại nào trong mục này.',
   listen_level_all: 'Tất cả', listen_level_so_cap: 'Sơ cấp', listen_level_trung_cap: 'Trung cấp', listen_level_cao_cap: 'Cao cấp',
-  listen_play_full: 'Phát toàn bài', listen_answer_lang: 'Tôi trả lời bằng', listen_answer_auto: 'Tự nhận ngôn ngữ', qs_switched_vi: 'Đã nhận ra bạn nói tiếng Việt nên chấm theo bản tiếng Việt.', qs_switched_en: 'Đã nhận ra bạn nói tiếng Anh nên chấm theo bản tiếng Anh.', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)',
+  listen_play_full: 'Phát toàn bài', listen_answer_lang: 'Tôi trả lời bằng', listen_answer_repeat: 'nhắc lại tiếng Trung', qs_switched_zh: 'Đã nhận ra bạn nói tiếng Trung nên chấm theo bản tiếng Trung.', qs_unclear: 'Chưa nghe rõ giọng bạn nên chưa chấm.', qs_unclear_tip: 'Hãy nói to hơn, đưa micro gần hơn, ở nơi yên tĩnh rồi thử lại. Bạn vẫn nghe lại được bản ghi.', qs_issues: 'Điểm cần sửa', iss_tone: 'sai thanh điệu', iss_pronunciation: 'sai âm', iss_missing: 'thiếu', iss_extra: 'thừa', iss_wrong: 'dùng sai từ', iss_grammar: 'ngữ pháp', listen_answer_auto: 'Tự nhận ngôn ngữ', qs_switched_vi: 'Đã nhận ra bạn nói tiếng Việt nên chấm theo bản tiếng Việt.', qs_switched_en: 'Đã nhận ra bạn nói tiếng Anh nên chấm theo bản tiếng Anh.', listen_play_line: 'Nghe câu này', listen_shadow: 'Nghe và nhắc lại', listen_translate: 'Nghe & luyện dịch', listen_you_said: 'Bạn vừa nói:', listen_reference: 'Bản dịch tham chiếu:', listen_self_good: 'Đạt', listen_self_retry: 'Cần luyện thêm', listen_source_label: 'Nguồn:', listen_cb_zh: '中文', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Tiếng Việt', listen_cb_en: 'Tiếng Anh', listen_speed_label: 'Tốc độ:', listen_voice_label: 'Giọng đọc', listen_updated: 'Cập nhật', cam_on_hint: 'Camera đã bật. Ghi âm một câu để quay hình kèm tiếng, lưu được sau khi xong.', cam_denied: 'Không mở được camera — hãy cấp quyền camera cho ứng dụng.', cam_off: 'Tắt camera', cam_save: 'Lưu video (hình + tiếng)',
   login_to_listen: 'Đăng nhập để nghe audio', login_to_record: 'Đăng nhập để ghi âm', login_to_analyze: 'Đăng nhập để dùng phân tích AI',
   up_title: 'Tính năng dành cho gói Pro', up_body_analyze: 'Phân tích AI (chấm điểm, đối chiếu ý chính, gợi ý sửa) chỉ dành cho gói Pro.',
   up_body_upload: 'Tải tài liệu riêng, để AI tự biên tập và tạo audio, là tính năng của gói Pro.',
@@ -2142,7 +2147,7 @@ Object.assign(I18N.zh, {
   listen_cat_y_an: '医案', listen_cat_bao_chi: '新闻', listen_cat_tu_them: '自建内容', listen_cat_hoc_thuat: '国际论文', listen_cat_csdl: '学术',
   listen_empty: '此分类暂无对话。',
   listen_level_all: '全部', listen_level_so_cap: '初级', listen_level_trung_cap: '中级', listen_level_cao_cap: '高级',
-  listen_play_full: '播放全文', listen_answer_lang: '我用以下语言回答', listen_answer_auto: '自动识别', qs_switched_vi: '检测到你说的是越南语，已按越南语参考打分。', qs_switched_en: '检测到你说的是英语，已按英语参考打分。', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）',
+  listen_play_full: '播放全文', listen_answer_lang: '我用以下语言回答', listen_answer_repeat: '跟读中文', qs_switched_zh: '检测到你说的是中文，已按中文参考打分。', qs_unclear: '没有听清你的声音，暂不打分。', qs_unclear_tip: '请大声一点、靠近麦克风、在安静处再试一次。仍可回放录音。', qs_issues: '需要改进', iss_tone: '声调不准', iss_pronunciation: '发音不准', iss_missing: '漏说', iss_extra: '多说', iss_wrong: '用词错误', iss_grammar: '语法', listen_answer_auto: '自动识别', qs_switched_vi: '检测到你说的是越南语，已按越南语参考打分。', qs_switched_en: '检测到你说的是英语，已按英语参考打分。', listen_play_line: '听这句', listen_shadow: '跟读打分', listen_translate: '听后口译', listen_you_said: '你刚才说的：', listen_reference: '参考译文：', listen_self_good: '已掌握', listen_self_retry: '需要再练', listen_source_label: '来源：', listen_cb_zh: '中文', listen_cb_pinyin: '拼音', listen_cb_vi: '越南语', listen_cb_en: '英语', listen_speed_label: '速度：', listen_voice_label: '朗读声音', listen_updated: '更新于', cam_on_hint: '摄像头已开启。录一句话即可同时录下画面和声音，完成后可保存。', cam_denied: '无法打开摄像头——请为应用授予摄像头权限。', cam_off: '关闭摄像头', cam_save: '保存视频（画面+声音）',
   login_to_listen: '登录后才能收听音频', login_to_record: '登录后才能录音', login_to_analyze: '登录后才能使用 AI 分析',
   up_title: '此功能仅限 Pro 套餐', up_body_analyze: 'AI 分析（评分、要点对照、修改建议）仅限 Pro 套餐。',
   up_body_upload: '上传自己的文档，由 AI 自动编辑并生成音频，是 Pro 套餐的功能。',
@@ -2187,7 +2192,7 @@ Object.assign(I18N.en, {
   listen_cat_y_an: 'Case Studies', listen_cat_bao_chi: 'News', listen_cat_tu_them: 'Custom', listen_cat_hoc_thuat: 'International Papers', listen_cat_csdl: 'Academic',
   listen_empty: 'No dialogues in this category yet.',
   listen_level_all: 'All', listen_level_so_cap: 'Beginner', listen_level_trung_cap: 'Intermediate', listen_level_cao_cap: 'Advanced',
-  listen_play_full: 'Play full dialogue', listen_answer_lang: 'I answer in', listen_answer_auto: 'Auto-detect', qs_switched_vi: 'Detected Vietnamese, so it was scored against the Vietnamese reference.', qs_switched_en: 'Detected English, so it was scored against the English reference.', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)',
+  listen_play_full: 'Play full dialogue', listen_answer_lang: 'I answer in', listen_answer_repeat: 'repeat in Chinese', qs_switched_zh: 'Detected Chinese, so it was scored against the Chinese reference.', qs_unclear: 'Your voice was not clear enough, so it was not scored.', qs_unclear_tip: 'Speak louder, hold the microphone closer, and try in a quiet place. You can still replay your recording.', qs_issues: 'Points to fix', iss_tone: 'wrong tone', iss_pronunciation: 'pronunciation', iss_missing: 'missing', iss_extra: 'extra', iss_wrong: 'wrong word', iss_grammar: 'grammar', listen_answer_auto: 'Auto-detect', qs_switched_vi: 'Detected Vietnamese, so it was scored against the Vietnamese reference.', qs_switched_en: 'Detected English, so it was scored against the English reference.', listen_play_line: 'Play this line', listen_shadow: 'Listen & repeat', listen_translate: 'Listen & interpret', listen_you_said: 'You said:', listen_reference: 'Reference translation:', listen_self_good: 'Got it', listen_self_retry: 'Needs practice', listen_source_label: 'Source:', listen_cb_zh: 'Chinese', listen_cb_pinyin: 'Pinyin', listen_cb_vi: 'Vietnamese', listen_cb_en: 'English', listen_speed_label: 'Speed:', listen_voice_label: 'Voice', listen_updated: 'Updated', cam_on_hint: 'Camera is on. Record a sentence to capture picture and sound together; you can save it afterwards.', cam_denied: 'Could not open the camera — please grant camera permission to the app.', cam_off: 'Turn camera off', cam_save: 'Save video (picture + sound)',
   login_to_listen: 'Sign in to listen to audio', login_to_record: 'Sign in to record', login_to_analyze: 'Sign in to use AI analysis',
   up_title: 'A Pro plan feature', up_body_analyze: 'AI analysis (scoring, key-point comparison, correction hints) is available on the Pro plan.',
   up_body_upload: 'Uploading your own documents, with AI editing and audio generation, is a Pro plan feature.',
@@ -4118,6 +4123,7 @@ function openUpgradeModal(reason){
     `<button type="button" onclick="closeUpgradeModal()">${t('up_later')}</button></div></div></div>`);
 }
 const lineLastBlobs = {};
+const lineQuickLang = {}; // { [seq]: { lang, reference } } — ngôn ngữ chấm nhanh đã dùng (để phân tích AI đối chiếu đúng bản mẫu)
 function listenAnalyzeBtnHtml(seq, again){
   return `<button type="button" class="lsc-btn analyze" onclick="listenAnalyzeClick(${seq})">✨ ${again ? t('an_again') : t('an_deep')}` +
     `${planAtLeast('pro') ? '' : '<span class="pro-tag">PRO</span>'}</button>`;
@@ -4441,11 +4447,12 @@ function toggleListenSubLang(key){
 // Anh gốc) luôn luyện dịch SANG tiếng Trung, bất kể ngôn ngữ giao diện đang chọn.
 // Ngôn ngữ người học TRẢ LỜI (bản dịch/diễn giải): 'auto' = theo ngôn ngữ giao diện, nhưng máy chủ tự nhận ra nếu bạn nói tiếng khác (vi↔en).
 const ANSWER_LANG_KEY = 'chimedis_answer_lang';
-function loadAnswerLang(){ try{ const v = localStorage.getItem(ANSWER_LANG_KEY); return ['auto', 'vi', 'en'].includes(v) ? v : 'auto'; }catch(e){ return 'auto'; } }
+function loadAnswerLang(){ try{ const v = localStorage.getItem(ANSWER_LANG_KEY); return ['auto', 'zh', 'vi', 'en'].includes(v) ? v : 'auto'; }catch(e){ return 'auto'; } }
 function setAnswerLang(v){ try{ localStorage.setItem(ANSWER_LANG_KEY, v); }catch(e){} }
 function listenRecognitionLang(d){
   if(d && d.source_lang === 'en') return 'text_zh';
   const pref = loadAnswerLang();
+  if(pref === 'zh') return 'text_zh';
   if(pref === 'vi') return 'text_vi';
   if(pref === 'en') return 'text_en';
   return state.lang === 'en' ? 'text_en' : 'text_vi';
@@ -4639,9 +4646,11 @@ function quickAsrStart(d){
   const R = quickAsrCtor();
   lineAsr = null;
   if(!R) return;
+  if(loadAnswerLang() === 'auto') return; // tự nhận: máy chủ nghe cả zh/vi/en; Web Speech bị ép một ngôn ngữ nên bỏ qua
   try{
     const rec = new R();
     rec.lang = ({ zh: 'zh-CN', en: 'en-US', vi: 'vi-VN' })[quickTargetLang(d)];
+    if(loadAnswerLang() === 'zh') rec.lang = 'zh-CN';
     rec.continuous = true; rec.interimResults = true;
     const st = { rec, final: '', interim: '', ended: false, stopped: false };
     rec.onresult = (e) => {
@@ -4668,6 +4677,31 @@ async function quickAsrStop(){
   return (st.final + ' ' + st.interim).trim();
 }
 
+// Đối chiếu từng chữ/từ của một bản phiên âm có sẵn với câu mẫu (thuật toán, máy chủ /api/quick-check chế độ transcript — không gọi AI).
+async function qsAlignHtml(transcript, seq, langHint){
+  const d = listenCurrentDialogue; if(!d || !transcript) return '';
+  const seg = d.segments.find(x => x.seq === seq); if(!seg) return '';
+  const esc = (v) => String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  try{
+    const lp = ['zh', 'vi', 'en'].includes(langHint) ? langHint : undefined;
+    const res = await authFetch('/api/quick-check', { method: 'POST', body: JSON.stringify({ transcript, dialogue_id: d.id, seq, ui_lang: state.lang, lang_pref: lp,
+      alt_references: { zh: seg.text_zh || '', vi: seg.text_vi || '', en: seg.text_en || '' } }) });
+    const j = await res.json();
+    if(!res.ok || !j.success || !j.data || j.data.unclear) return '';
+    const r = j.data;
+    if(r.mode === 'zh' && Array.isArray(r.chars)){
+      return `<div class="lsc-row"><span class="lsc-lab">${t('qs_title')} · ${r.score}</span><div class="qs-chars">${r.chars.map(c => `<span class="qs-ch ${c.status}"${c.heard ? ` title="${esc(t('qs_heard'))}: ${esc(c.heard)}"` : ''}>${esc(c.c)}</span>`).join('')}</div></div>`;
+    }
+    if(r.mode === 'words' && Array.isArray(r.words)){
+      return `<div class="lsc-row"><span class="lsc-lab">${t('qs_title')} · ${r.score}</span><div class="qs-chars">${r.words.map(w => `<span class="qs-ch ${w.status === 'ok' ? 'ok' : 'missed'}">${esc(w.w)}</span>`).join(' ')}</div></div>`;
+    }
+    if(r.mode === 'units' && Array.isArray(r.units)){
+      const icon = { ok: '✓', partial: '◐', missed: '✗' };
+      return `<div class="lsc-row"><span class="lsc-lab">${t('qs_title')}</span><div class="interp-chips">${r.units.map(u => `<span class="interp-chip ${u.status}"><span class="hz">${icon[u.status] || ''} ${esc(u.zh)}</span>${u.status === 'ok' ? '' : `<span class="hint">${esc(t('interp_expected'))} ${esc(u.pref || '')}</span>`}</span>`).join('')}</div></div>`;
+    }
+  }catch(e){}
+  return '';
+}
 function quickLevelLabel(level){ return t(level === 'good' ? 'qs_good' : level === 'fair' ? 'qs_fair' : 'qs_poor'); }
 async function listenQuickScore(seq, blob, asrText){
   const d = listenCurrentDialogue; if(!d) return;
@@ -4677,8 +4711,8 @@ async function listenQuickScore(seq, blob, asrText){
   const reference = seg ? seg[targetLang] : '';
   const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   listenSetBadge(seq, 'checking', t('practice_scoring'));
-  const body = { lang, reference, dialogue_id: d.id, seq, ui_lang: state.lang };
-  if((lang === 'vi' || lang === 'en') && seg){ body.alt_references = { vi: seg.text_vi || '', en: seg.text_en || '' }; if(loadAnswerLang() === 'auto') body.auto_lang = true; }
+  const body = { lang, reference, dialogue_id: d.id, seq, ui_lang: state.lang, lang_pref: loadAnswerLang() === 'auto' ? undefined : loadAnswerLang() };
+  if(seg) body.alt_references = { zh: seg.text_zh || '', vi: seg.text_vi || '', en: seg.text_en || '' };
   if(asrText) body.transcript = asrText; else body.audio_base64 = await blobToBase64(blob);
   let json;
   try{
@@ -4689,7 +4723,14 @@ async function listenQuickScore(seq, blob, asrText){
     if(!res.ok || !json.success){ listenShowRecordedOnly(seq); listenToast(t('qs_unavailable')); return; }
   }catch(e){ listenSetBadge(seq, 'bad', `${t('practice_error')}: ${e.message}`); return; }
   const r = json.data;
-  const switchedNote = r.switched ? `<div class="qs-note">${esc(t(r.lang_used === 'en' ? 'qs_switched_en' : 'qs_switched_vi'))}</div>` : '';
+  if(r.lang_used) lineQuickLang[seq] = { lang: r.lang_used, reference: r.reference_used || '' };
+  if(r.unclear){
+    const rec0 = lineRecordingUrls[seq];
+    const pb = lineVideoUrls[seq] ? listenVideoHtml(seq) : rec0 ? `<div class="practice-playback"><audio controls src="${rec0}"></audio><span>${t('practice_your_recording')}</span></div>` : '';
+    listenSetBadge(seq, 'bad', pb + `<div class="qs-note" style="font-size:13.5px">${esc(t('qs_unclear'))}</div><div class="qs-note">${esc(t('qs_unclear_tip'))}</div>` + listenAnalyzeBtnHtml(seq, false));
+    return;
+  }
+  const switchedNote = r.switched ? `<div class="qs-note">${esc(t('qs_switched_' + r.lang_used))}</div>` : '';
   const recordingUrl = lineRecordingUrls[seq];
   const playbackHtml = lineVideoUrls[seq] ? listenVideoHtml(seq) : recordingUrl
     ? `<div class="practice-playback"><audio controls src="${recordingUrl}"></audio><span>${t('practice_your_recording')}</span></div>` : '';
@@ -4739,8 +4780,11 @@ async function listenQuickScore(seq, blob, asrText){
 async function listenLineScore(seq, trimmedBlob){
   const d = listenCurrentDialogue; if(!d) return;
   const seg = d.segments.find(s => s.seq === seq);
-  const targetLang = listenRecognitionLang(d);
-  const reference = seg ? seg[targetLang] : '';
+  // Ngôn ngữ đối chiếu: theo lần chấm nhanh gần nhất (ngôn ngữ người học THỰC SỰ nói), không thì theo lựa chọn/giao diện.
+  const qPrev = lineQuickLang[seq];
+  const usedLang = (qPrev && qPrev.lang) ? qPrev.lang : ({ text_zh: 'zh', text_en: 'en', text_vi: 'vi' })[listenRecognitionLang(d)];
+  const targetLang = 'text_' + usedLang;
+  const reference = seg ? (seg[targetLang] || '') : '';
   if(seg && Array.isArray(seg.key_units) && seg.key_units.length && (targetLang === 'text_vi' || targetLang === 'text_en')){
     return listenLineInterpret(seq, trimmedBlob, d, seg, targetLang, reference);
   }
@@ -4750,7 +4794,7 @@ async function listenLineScore(seq, trimmedBlob){
   try{
     const res = await authFetch('/api/pronunciation-score', {
       method: 'POST',
-      body: JSON.stringify({ audio_base64: base64, format: 'wav', reference_zh: seg ? seg.text_zh : '', ui_lang: state.lang }),
+      body: JSON.stringify({ audio_base64: base64, format: 'wav', reference, reference_lang: usedLang, reference_zh: seg ? seg.text_zh : '', ui_lang: state.lang }),
     });
     json = await res.json();
     if(res.status === 429 && json && json.error === 'budget'){ listenShowRecordedOnly(seq); openBudgetModal(json); return; }
@@ -4777,10 +4821,15 @@ async function listenLineScore(seq, trimmedBlob){
   // làm dòng phụ bên dưới, không thay thế chữ Hán (cần giữ chữ Hán để tô màu lỗi đúng).
   const pinyinLine = json.data.transcript_pinyin
     ? `<p class="practice-pinyin">${esc(json.data.transcript_pinyin)}</p>` : '';
+  // Cùng một lớp "đối chiếu từng chữ" như chấm nhanh nhưng dùng bản phiên âm TỐT HƠN của AI (không tốn thêm AI: chấm thuần thuật toán).
+  const alignHtml = await qsAlignHtml(json.data.transcript, seq, json.data.language || usedLang);
+  const issuesArr = Array.isArray(json.data.issues) ? json.data.issues.filter(x => x && x.text).slice(0, 8) : [];
+  const issuesHtml = issuesArr.length ? `<div class="qs-issues"><div class="lsc-lab">${t('qs_issues')}</div>${issuesArr.map(x => `<div class="qs-issue"><b>${esc(x.text)}</b> <span class="qs-kind">${esc(t('iss_' + x.kind) === 'iss_' + x.kind ? x.kind : t('iss_' + x.kind))}</span>${x.note ? `<small>${esc(x.note)}</small>` : ''}</div>`).join('')}</div>` : '';
   const html = `
     <div class="listen-selfcheck">
       ${playbackHtml}
       <div class="lsc-row"><span class="lsc-lab">${t('listen_you_said')}</span><span class="lsc-txt">${highlighted}</span>${pinyinLine}</div>
+      ${alignHtml}
       <div class="lsc-row"><span class="lsc-lab">${t('listen_reference')}</span><span class="lsc-txt ref">${esc(reference)}</span></div>
       <div class="practice-score-row">
         <span class="practice-score-lang">${t('practice_pronunciation')}</span>
@@ -4792,6 +4841,7 @@ async function listenLineScore(seq, trimmedBlob){
         <span class="practice-score-num">${esc(json.data.grammar_score)}/100</span>
         <p class="practice-score-fb">${esc(json.data.grammar_feedback)}</p>
       </div>
+      ${issuesHtml}
       ${showCorrection ? `<div class="lsc-row"><span class="lsc-lab">${t('practice_corrected')}</span><span class="lsc-txt ref">${esc(correctedText)}</span></div>` : ''}
       ${listenAnalyzeBtnHtml(seq, true)}
     </div>`;
@@ -4831,7 +4881,7 @@ function renderListenDialogue(){
     </div>
     ${!feat.record ? `<p class="listen-hint">${t('listen_shadow_unsupported')}</p>` : ''}
     ${true ? `<div class="listen-voicerow"><label for="listenVoiceSel">${t('listen_voice_label')}:</label><select id="listenVoiceSel" onchange="setListenVoice(this.value)">${LISTEN_VOICES.filter(v => !Array.isArray(d.voices) || d.voices.includes(v.key)).map(v => `<option value="${v.key}" ${loadListenVoice()===v.key?'selected':''}>${t(v.lk)}</option>`).join('')}</select></div>` : ''}
-    ${(!d.source_lang || d.source_lang !== 'en') ? `<div class="listen-voicerow"><label for="listenAnsLang">${t('listen_answer_lang')}:</label><select id="listenAnsLang" onchange="setAnswerLang(this.value)"><option value="auto" ${loadAnswerLang()==='auto'?'selected':''}>${t('listen_answer_auto')}</option><option value="vi" ${loadAnswerLang()==='vi'?'selected':''}>Tiếng Việt</option><option value="en" ${loadAnswerLang()==='en'?'selected':''}>English</option></select></div>` : ''}
+    ${(!d.source_lang || d.source_lang !== 'en') ? `<div class="listen-voicerow"><label for="listenAnsLang">${t('listen_answer_lang')}:</label><select id="listenAnsLang" onchange="setAnswerLang(this.value)"><option value="auto" ${loadAnswerLang()==='auto'?'selected':''}>${t('listen_answer_auto')}</option><option value="zh" ${loadAnswerLang()==='zh'?'selected':''}>中文 (${t('listen_answer_repeat')})</option><option value="vi" ${loadAnswerLang()==='vi'?'selected':''}>Tiếng Việt</option><option value="en" ${loadAnswerLang()==='en'?'selected':''}>English</option></select></div>` : ''}
     <div class="listen-playbar">
       <div class="listen-speedrow">
         ${LISTEN_SPEEDS.map(v => `<button class="listen-speed-btn ${loadListenSpeed()===v?'on':''}" data-speed="${v}" onclick="setListenSpeed(${v})">${v}×</button>`).join('')}
@@ -5032,9 +5082,37 @@ async function trimSilenceToWav(blob, minSilenceMs){
     let pos = 0;
     for(const [a, b] of keepRanges){ dst.set(src.subarray(a, b), pos); pos += (b - a); }
   }
-  const wavBlob = audioBufferToWavBlob(trimmed);
+  let outBuf = trimmed;
+  try{ outBuf = prepareSpeechBuffer(trimmed, audioCtx); }catch(e){ outBuf = trimmed; }
+  const wavBlob = audioBufferToWavBlob(outBuf);
   wavBlob.fluency = fluencyStats;
   return wavBlob;
+}
+// Mono + 16 kHz (đủ cho giọng nói, nhẹ ~1/6 khi tải lên) + nâng âm lượng nếu thu quá nhỏ (đỉnh < 0,30 → nâng tới ~0,85, tối đa ×8).
+function prepareSpeechBuffer(buf, ctx){
+  const sr = buf.sampleRate, ch = buf.numberOfChannels, n = buf.length;
+  const mono = new Float32Array(n);
+  for(let c = 0; c < ch; c++){ const d = buf.getChannelData(c); for(let i = 0; i < n; i++) mono[i] += d[i] / ch; }
+  const target = 16000;
+  let out = mono, outSr = sr;
+  if(sr > target){
+    const ratio = sr / target, m = Math.floor(n / ratio);
+    out = new Float32Array(m);
+    for(let i = 0; i < m; i++){            // trung bình theo cửa sổ = lọc thông thấp đơn giản, tránh nhiễu răng cưa
+      const a = Math.floor(i * ratio), b = Math.min(n, Math.floor((i + 1) * ratio));
+      let sum = 0; for(let k = a; k < b; k++) sum += mono[k];
+      out[i] = sum / Math.max(1, b - a);
+    }
+    outSr = target;
+  }
+  let peak = 0; for(let i = 0; i < out.length; i++){ const v = Math.abs(out[i]); if(v > peak) peak = v; }
+  if(peak > 0.0005 && peak < 0.30){
+    const g = Math.min(8, 0.85 / peak);
+    for(let i = 0; i < out.length; i++) out[i] = Math.max(-1, Math.min(1, out[i] * g));
+  }
+  const nb = ctx.createBuffer(1, out.length, outSr);
+  nb.getChannelData(0).set(out);
+  return nb;
 }
 
 function audioBufferToWavBlob(buffer){

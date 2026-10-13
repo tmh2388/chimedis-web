@@ -15,6 +15,7 @@ import { resolvePlan, requirePlan, ensurePlanColumns, LIMITS, atLeast, planInfo,
 import * as billing from './lib/billing.js';
 import * as laoshi from './lib/laoshi.js';
 import * as laoshiLearn from './lib/laoshi-learn.js';
+import * as speech from './lib/speech.js';
 import * as laoshiFaq from './lib/laoshi-faq.js';
 import * as termLearn from './lib/term-learn.js';
 import * as aiBudget from './lib/ai-budget.js';
@@ -849,10 +850,15 @@ kể transcript là ngôn ngữ gì — đây là 2 trường DUY NHẤT bắt b
 Nếu audio không có tiếng nói rõ ràng (toàn im lặng/tạp âm/không phải giọng người), trả \
 về transcript/transcript_marked/transcript_pinyin/corrected_text rỗng, cả 2 score = 0, \
 feedback (bằng ${langName}) giải thích không nghe được.
+8. NẾU có "câu mẫu" trong ngữ cảnh: so sánh điều người này NÓI với câu mẫu (cùng ngôn ngữ nếu có thể) và liệt kê \
+tối đa 8 điểm cụ thể trong "issues" — mỗi điểm: {"text": <từ/chữ/cụm liên quan, đúng như trong transcript hoặc câu mẫu>, \
+"kind": "tone" (sai thanh điệu) | "pronunciation" (sai âm) | "missing" (thiếu so với mẫu) | "extra" (thừa) | "wrong" (dùng sai từ) | \
+"grammar", "note": <gợi ý sửa ngắn, BẰNG ${langName}>}. Chỉ nêu điểm CÓ THẬT; nếu nói đúng hết thì "issues": [].
 CHỈ trả về một object JSON hợp lệ duy nhất, không kèm markdown/giải thích, đúng dạng:
 {"transcript": "...", "transcript_marked": "...", "transcript_pinyin": "...", "language": "vi|zh|en", \
 "pronunciation_score": 0-100, "pronunciation_feedback": "...", \
-"grammar_score": 0-100, "grammar_feedback": "...", "corrected_text": "..."}`;
+"grammar_score": 0-100, "grammar_feedback": "...", "corrected_text": "...", \
+"issues": [{"text": "...", "kind": "tone|pronunciation|missing|extra|wrong|grammar", "note": "..."}]}`;
 }
 
 function extractJsonObject(text) {
@@ -869,13 +875,15 @@ function extractJsonObject(text) {
 
 app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool, 'pro'), express.json({ limit: '25mb' }), requireOpenAI, async (req, res) => {
   try {
-    const { audio_base64, format, reference_zh, ui_lang } = req.body || {};
+    const { audio_base64, format, reference_zh, reference, reference_lang, ui_lang } = req.body || {};
+    const refText = String(reference || reference_zh || '').slice(0, 1500);
+    const refLangName = ({ zh: 'tiếng Trung', vi: 'tiếng Việt', en: 'tiếng Anh' })[reference_lang] || (reference ? '' : 'tiếng Trung');
     if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
     if (!(await budgetGate(req, res))) return;
     const feedbackLang = FEEDBACK_LANG_NAME[ui_lang] ? ui_lang : 'vi';
 
-    const userText = reference_zh
-      ? `[CHỈ ĐỂ BẠN HIỂU NGỮ CẢNH — KHÔNG được đưa câu này vào trường "transcript"]\nĐoạn gốc tiếng Trung người này đang luyện dịch: ${reference_zh}\n[HẾT NGỮ CẢNH]\nChấm điểm phát âm đoạn ghi âm đính kèm — "transcript" CHỈ chứa đúng những gì nghe được trong audio, không chứa đoạn gốc tiếng Trung ở trên.`
+    const userText = refText
+      ? `[CHỈ ĐỂ BẠN HIỂU NGỮ CẢNH — KHÔNG được đưa câu này vào trường "transcript"]\nCâu mẫu ${refLangName} người này đang luyện: ${refText}\n[HẾT NGỮ CẢNH]\nChấm điểm phát âm + ngữ pháp đoạn ghi âm sau, phiên âm đúng những gì NGHE ĐƯỢC (không chép lại câu mẫu), rồi liệt kê "issues" so với câu mẫu.`
       : 'Chấm điểm phát âm đoạn ghi âm sau.';
 
     const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -1251,13 +1259,24 @@ app.get('/api/budget', verifyFirebaseToken, async (req, res) => {
 onDbUp(() => ensureUsageTable(mysqlPool).catch((e) => console.error('[quick-check] init:', e.message)));
 app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }), async (req, res) => {
   try {
-    const { lang: rawLang, reference, dialogue_id, seq, transcript: tIn, audio_base64, alt_references, auto_lang } = req.body || {};
-    let lang = ['zh', 'vi', 'en'].includes(rawLang) ? rawLang : 'zh';
-    let ref = String(reference || '').slice(0, 1500);
-    const autoLang = auto_lang === true && (lang === 'vi' || lang === 'en'); // người dùng nói vi hay en đều được: nhận từ nội dung
-    if (!ref.trim()) return res.status(400).json({ success: false, error: 'missing_reference' });
+    const b = req.body || {};
+    const { dialogue_id, seq, transcript: tIn, audio_base64 } = b;
+    // alt_references: { zh, vi, en } — bản tham chiếu ở CẢ ba ngôn ngữ; ta chấm theo ngôn ngữ người học THỰC SỰ nói.
+    const refs = {};
+    for (const k of ['zh', 'vi', 'en']) {
+      const v = b.alt_references && typeof b.alt_references[k] === 'string' ? b.alt_references[k].slice(0, 1500) : '';
+      if (v.trim()) refs[k] = v;
+    }
+    const expect = ['zh', 'vi', 'en'].includes(b.lang) ? b.lang : null;      // ngôn ngữ giao diện/lựa chọn mong đợi
+    if (expect && !refs[expect] && typeof b.reference === 'string' && b.reference.trim()) refs[expect] = b.reference.slice(0, 1500);
+    if (!Object.keys(refs).length) return res.status(400).json({ success: false, error: 'missing_reference' });
+    const explicitLang = b.lang_pref === 'vi' || b.lang_pref === 'en' || b.lang_pref === 'zh' ? b.lang_pref : null;
+
+    const dlg = dialogue_id ? findListeningDialogue(dialogue_id) : null;
+    const seg = dlg && (dlg.segments || []).find((x) => x.seq === Number(seq));
+
     let transcript = typeof tIn === 'string' ? tIn.slice(0, 1500) : null;
-    let source = 'browser';
+    let source = 'browser', said = null, confidence = null, model = null;
     if (transcript === null) {
       if (!audio_base64) return res.status(400).json({ success: false, error: 'missing_audio' });
       if (!process.env.OPENAI_API_KEY) return res.status(503).json({ success: false, error: 'asr_unavailable' });
@@ -1267,33 +1286,31 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
         if (!u.ok) return res.status(429).json({ success: false, error: 'quick_daily_limit', limit: cap });
       }
       const buf = Buffer.from(audio_base64, 'base64');
-      if (buf.length < 2000) return res.json({ success: true, data: { mode: lang === 'zh' ? 'zh' : 'words', empty: true, score: 0, level: 'poor', source: 'server', heard: '' } });
-      const dlg = dialogue_id ? findListeningDialogue(dialogue_id) : null;
-      const segHint = dlg && (dlg.segments || []).find((x) => x.seq === Number(seq));
-      const hint = segHint && Array.isArray(segHint.key_units) ? buildVocabHint(segHint.key_units, lang === 'en' ? 'en' : 'vi') : '';
-      transcript = (await transcribeWithOpenAI(buf, autoLang ? 'auto' : lang, hint)).text;
-      source = 'server';
+      if (buf.length < 3000) return res.json({ success: true, data: { unclear: true, reason: 'too_short', source: 'server', heard: '' } });
+      // Gợi ý THUẬT NGỮ (không phải nguyên câu): đơn vị ý của câu + thuật ngữ cốt lõi.
+      const unitsHint = seg && Array.isArray(seg.key_units) ? buildVocabHint(seg.key_units, 'vi') + ' ' + buildVocabHint(seg.key_units, 'en') : '';
+      const r = await speech.recognize(buf, { vocab: `${unitsHint} ${laoshi.ASR_BIAS}`.trim().slice(0, 700), expect: explicitLang || expect });
+      source = 'server'; model = r.model; confidence = r.confidence; said = r.language;
+      if (r.unclear) return res.json({ success: true, data: { unclear: true, reason: r.reason || 'unclear', source, heard: '', model, confidence } });
+      transcript = r.text;
     }
-    if (!transcript.trim()) return res.json({ success: true, data: { mode: lang === 'zh' ? 'zh' : 'words', empty: true, score: 0, level: 'poor', source, heard: '' } });
-    // Người nói tiếng Anh nhưng tham chiếu đang là tiếng Việt (hoặc ngược lại): chuyển sang bản tham chiếu đúng ngôn ngữ nếu có.
-    let switched = false;
-    if (lang === 'vi' || lang === 'en') {
-      const said = detectViEn(transcript);
-      if (said && said !== lang) {
-        const alt = alt_references && typeof alt_references[said] === 'string' ? alt_references[said].slice(0, 1500) : '';
-        if (alt.trim()) { lang = said; ref = alt; switched = true; }
-      }
-    }
+    if (!String(transcript).trim()) return res.json({ success: true, data: { unclear: true, reason: 'empty', source, heard: '' } });
+
+    // Ngôn ngữ được CHẤM: người dùng chọn rõ → theo lựa chọn; còn lại → theo nội dung họ thực sự nói.
+    if (!said) said = speech.guessLangFromText(transcript, detectViEn);
+    let lang = explicitLang || said || expect || (refs.zh ? 'zh' : refs.vi ? 'vi' : 'en');
+    if (!refs[lang]) lang = expect && refs[expect] ? expect : Object.keys(refs)[0];
+    const switched = !!(expect && lang !== expect);
+    const ref = refs[lang];
+
     if (lang === 'zh') {
-      return res.json({ success: true, data: { mode: 'zh', source, ...scoreChinese(ref, transcript) } });
+      return res.json({ success: true, data: { mode: 'zh', source, model, confidence, lang_used: lang, switched, reference_used: ref, ...scoreChinese(ref, transcript) } });
     }
-    const dlg = dialogue_id ? findListeningDialogue(dialogue_id) : null;
-    const seg = dlg && (dlg.segments || []).find((x) => x.seq === Number(seq));
     if (seg && Array.isArray(seg.key_units) && seg.key_units.length) {
       const data = analyzeInterpretation({ units: seg.key_units, transcript, lang, fluencyStats: null });
-      return res.json({ success: true, data: { mode: 'units', source, lang_used: lang, switched, ...data } });
+      return res.json({ success: true, data: { mode: 'units', source, model, confidence, lang_used: lang, switched, reference_used: ref, ...data } });
     }
-    return res.json({ success: true, data: { mode: 'words', source, lang_used: lang, switched, reference_used: ref, ...scoreWords(ref, transcript) } });
+    return res.json({ success: true, data: { mode: 'words', source, model, confidence, lang_used: lang, switched, reference_used: ref, ...scoreWords(ref, transcript) } });
   } catch (err) {
     console.error('quick-check lỗi:', err.message);
     res.status(500).json({ success: false, error: 'quick_check_failed' });
