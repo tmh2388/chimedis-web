@@ -13,7 +13,8 @@
  */
 import crypto from 'node:crypto';
 import { pinyin } from 'pinyin';
-import { styleBlock } from './tcm-style.js';
+import { styleBlock, STYLE_RULES } from './tcm-style.js';
+import { costFromUsage } from './ai-budget.js';
 import { CORE_TERMS } from './laoshi.js';
 
 const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
@@ -66,6 +67,12 @@ export async function ensureTables(pool) {
     id BIGINT AUTO_INCREMENT PRIMARY KEY, term_id VARCHAR(64) NOT NULL, admin_uid VARCHAR(128) NULL, admin_email VARCHAR(255) NULL,
     source VARCHAR(24) NOT NULL, before_json MEDIUMTEXT NULL, after_json MEDIUMTEXT NULL, feedback_ids VARCHAR(255) NULL, note VARCHAR(255) NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, KEY idx_term (term_id, created_at)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`);
+  await pool.query(`CREATE TABLE IF NOT EXISTS term_restyle (
+    term_id VARCHAR(64) NOT NULL PRIMARY KEY, src_table VARCHAR(32) NOT NULL, hz VARCHAR(64) NULL,
+    cur_vi VARCHAR(190) NULL, cur_en VARCHAR(190) NULL, prop_vi VARCHAR(190) NULL, prop_en VARCHAR(190) NULL, reason VARCHAR(255) NULL,
+    status ENUM('new','ok','applied','skipped') NOT NULL DEFAULT 'new', created_at DATETIME DEFAULT CURRENT_TIMESTAMP, handled_at DATETIME NULL,
+    KEY idx_status (status, created_at)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`);
   try {
     const ov = await columnsOf(pool, 'term_overrides');
@@ -412,6 +419,72 @@ export async function editTerm(pool, admin, edit) {
   } finally {
     conn.release();
   }
+}
+// ---------- Rà soát theo QUY ƯỚC DỊCH: đề xuất sửa các thuật ngữ máy dịch (machine_translated) — admin duyệt rồi mới ghi ----------
+async function askRestyle(items) {
+  const sys = 'Bạn là biên tập viên thuật ngữ Y học cổ truyền. Nhiệm vụ: kiểm tra TÊN TIẾNG VIỆT và TIẾNG ANH hiện có của từng thuật ngữ (do máy dịch) '
+    + 'có đúng QUY ƯỚC dưới đây không, và đề xuất bản đúng nếu chưa. Chỉ sửa khi bản hiện tại SAI quy ước/sai nghĩa Trung y; nếu đã ổn thì keep=true. '
+    + 'KHÔNG bịa; không chắc thì keep=true. Chỉ trả JSON.\n\n' + STYLE_RULES + '\n\n'
+    + styleBlock(items.map((x) => x.hz), { max: 30, rules: false });
+  const user = `Danh sách (JSON): ${JSON.stringify(items.map((x) => ({ id: x.term_id, hz: x.hz, vi: x.vi, en: x.en })))}\n`
+    + 'Trả JSON {"items":[{"id":"<id>","keep":true|false,"vi":"<tên Việt đề xuất, Hán-Việt>","en":"<tên Anh đề xuất>","reason":"<≤120 ký tự, tiếng Việt>"}]}';
+  const r = await fetch(`${OPENAI_BASE}/v1/chat/completions`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: MODEL, messages: [{ role: 'system', content: sys }, { role: 'user', content: user }], response_format: { type: 'json_object' }, max_completion_tokens: 4000 }),
+  });
+  if (!r.ok) throw new Error(`restyle_llm ${r.status} ${(await r.text()).slice(0, 120)}`);
+  const j = await r.json();
+  const parsed = JSON.parse(String(j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || '{}'));
+  return { items: Array.isArray(parsed.items) ? parsed.items : [], costUsd: costFromUsage(MODEL, j.usage) };
+}
+export async function restyleScan(pool, { limit = 25 } = {}) {
+  limit = Math.max(1, Math.min(40, Number(limit) || 25));
+  const picked = [];
+  for (const table of EDITABLE_TABLES) {
+    if (picked.length >= limit) break;
+    try {
+      const [rows] = await pool.query(
+        `SELECT term_id, hz, vi, en FROM ${table} WHERE machine_translated = 1 AND hz IS NOT NULL AND CHAR_LENGTH(hz) >= 2
+           AND term_id NOT IN (SELECT term_id FROM term_restyle) ORDER BY term_id LIMIT ?`, [limit - picked.length]);
+      rows.forEach((r) => picked.push({ ...r, table }));
+    } catch (_) { /* bảng không có cột này */ }
+  }
+  if (!picked.length) return { scanned: 0, proposed: 0, remaining: 0, costUsd: 0 };
+  const { items, costUsd } = await askRestyle(picked);
+  const byId = new Map(items.map((x) => [String(x.id), x]));
+  let proposed = 0;
+  for (const p of picked) {
+    const x = byId.get(String(p.term_id));
+    const pv = x && !x.keep ? cleanText(x.vi, 190) : '', pe = x && !x.keep ? cleanText(x.en, 190) : '';
+    const changed = x && !x.keep && ((pv && pv !== p.vi) || (pe && pe !== p.en));
+    await pool.query(
+      `INSERT INTO term_restyle (term_id, src_table, hz, cur_vi, cur_en, prop_vi, prop_en, reason, status) VALUES (?,?,?,?,?,?,?,?,?)
+       ON DUPLICATE KEY UPDATE status = VALUES(status)`,
+      [p.term_id, p.table, p.hz, p.vi, p.en, changed ? (pv || null) : null, changed ? (pe || null) : null, cleanText(x && x.reason, 250) || null, changed ? 'new' : 'ok']);
+    if (changed) proposed++;
+  }
+  const remaining = await restyleRemaining(pool);
+  return { scanned: picked.length, proposed, remaining, costUsd };
+}
+async function restyleRemaining(pool) {
+  let n = 0;
+  for (const table of EDITABLE_TABLES) {
+    try {
+      const [[r]] = await pool.query(`SELECT COUNT(*) c FROM ${table} WHERE machine_translated = 1 AND hz IS NOT NULL AND CHAR_LENGTH(hz) >= 2 AND term_id NOT IN (SELECT term_id FROM term_restyle)`);
+      n += Number(r.c) || 0;
+    } catch (_) { /* bỏ qua */ }
+  }
+  return n;
+}
+export async function restyleList(pool) {
+  const [rows] = await pool.query("SELECT term_id, src_table, hz, cur_vi, cur_en, prop_vi, prop_en, reason FROM term_restyle WHERE status = 'new' ORDER BY created_at, term_id LIMIT 200");
+  return { items: rows, remaining: await restyleRemaining(pool) };
+}
+export async function restyleResolve(pool, term_id, status) {
+  const st = status === 'applied' ? 'applied' : 'skipped';
+  const [r] = await pool.query("UPDATE term_restyle SET status = ?, handled_at = NOW() WHERE term_id = ? AND status = 'new'", [st, cleanText(term_id, 64)]);
+  return { ok: true, changed: r.affectedRows };
 }
 export async function dismissReports(pool, term_id, note) {
   const [r] = await pool.query("UPDATE term_feedback SET status = 'dismissed', handled_at = NOW(), admin_note = ? WHERE term_id = ? AND status = 'new'", [cleanText(note, 200) || 'bỏ qua', cleanText(term_id, 64)]);

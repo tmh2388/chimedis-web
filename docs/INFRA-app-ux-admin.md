@@ -67,3 +67,8 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - **Gộp báo cáo trùng**: `trUnique()` — cùng nội dung → một dòng "N người báo"; chỉ khi khác nhau mới liệt kê để chọn bản đúng (chạm = điền sẵn vào trình sửa).
 - **Lưu thuật ngữ**: lỗi mạng (TLS reset) → tự thử lại tối đa 3 lần, báo "đang thử lại".
 - Còn mở: quét lại hàng loạt thuật ngữ `machine_translated` theo quy ước (cần duyệt chi phí + ra danh sách đề xuất để admin duyệt, không tự ghi).
+
+## v58 — rà soát theo quy ước dịch, Trò chuyện tự do bố cục cố định, cử chỉ vuốt thông minh
+- **Rà soát thuật ngữ máy dịch theo quy ước** (admin, màn "Từ báo sai" → thẻ trên cùng): `POST /api/admin/term-restyle/run` quét 25 mục `machine_translated=1` mỗi lần (gpt-5-mini + `STYLE_RULES` + bảng thuật ngữ), lưu đề xuất vào bảng `term_restyle` (không tự ghi); admin bấm Áp dụng → ghi qua `/api/admin/term-edit` (transaction + nhật ký) hoặc Bỏ qua. Mục đã ổn đánh dấu `ok`, không quét lại. Tính vào ngân sách AI của admin.
+- **Trò chuyện tự do**: bố cục cố định (ngôn ngữ → mic → khung lưu hội thoại cuộn được → hai lựa chọn ghim dưới đáy). "Hiện chữ" chỉ làm mờ khung. Biểu tượng mic đổi bằng CSS `data-s` (không dựng lại DOM) + vòng xung bằng `::before` — tránh lỗi bóng ma trên iOS.
+- **Vuốt lùi/tiến**: bỏ nút gợi ý; chỉ hoạt động ở màn điều hướng. `swipeNavAllowed()` chặn khi: đang trò chuyện/chat với thầy, đang ghi âm, có form/sửa/xác nhận/thanh toán/đăng nhập, đang nhập liệu, chạm vào ô nhập/audio/video.

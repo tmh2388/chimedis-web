@@ -1608,6 +1608,17 @@ app.post('/api/admin/term-edit', ...adminOnly, requireDocsDb, async (req, res) =
   res.status(r.ok ? 200 : (r.error === 'edit_failed' ? 500 : 400)).json({ success: r.ok, ...r });
 });
 app.post('/api/admin/term-reports/dismiss', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.dismissReports(mysqlPool, String((req.body || {}).term_id || ''), (req.body || {}).note)));
+// ---- Rà soát thuật ngữ máy dịch theo QUY ƯỚC dịch (đề xuất → admin duyệt → ghi bằng /api/admin/term-edit) ----
+app.get('/api/admin/term-restyle', ...adminOnly, requireDocsDb, adminJson(() => termLearn.restyleList(mysqlPool)));
+app.post('/api/admin/term-restyle/run', ...adminOnly, requireDocsDb, requireOpenAI, async (req, res) => {
+  try {
+    if (!(await budgetGate(req, res, req.plan))) return;
+    const out = await termLearn.restyleScan(mysqlPool, { limit: Number((req.body || {}).limit) || 25 });
+    if (out.costUsd) aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'term_restyle', costUsd: out.costUsd });
+    res.json({ success: true, data: { scanned: out.scanned, proposed: out.proposed, remaining: out.remaining, cost_credits: Math.round(out.costUsd * 1000) / 10 } });
+  } catch (e) { console.error('restyle:', e.message); res.status(500).json({ success: false, error: 'restyle_failed', detail: String(e.message || '').slice(0, 80) }); }
+});
+app.post('/api/admin/term-restyle/resolve', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.restyleResolve(mysqlPool, String((req.body || {}).term_id || ''), (req.body || {}).status)));
 app.get('/api/admin/auto-terms', ...adminOnly, requireDocsDb, adminJson(() => termLearn.listAutoTerms(mysqlPool)));
 app.post('/api/admin/auto-terms/:id', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.reviewAutoTerm(mysqlPool, String(req.params.id), req.body || {})));
 app.post('/api/admin/term-promote/run', ...adminOnly, requireDocsDb, adminJson(() => termLearn.promoteBatch(mysqlPool)));
