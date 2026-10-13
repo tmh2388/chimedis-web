@@ -1,0 +1,67 @@
+{
+  "id": "ya-auto-yaan-103",
+  "category": "y_an",
+  "modality": "cham",
+  "level": "so_cap",
+  "auto": true,
+  "mt_translated": true,
+  "title_vi": "Y án châm cứu: Khối pi cạnh dạ dày khỏi bệnh",
+  "title_zh": "针灸医案：胃旁痞块治愈",
+  "title_en": "Acupuncture Case: Cured Mass Beside the Stomach",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "一名患者胃旁生一痞块，大小如倒扣的杯子。",
+      "text_vi": "Một bệnh nhân ở cạnh dạ dày xuất hiện một khối pi, kích thước bằng chiếc cốc úp.",
+      "text_en": "A patient developed a mass beside the stomach, the size of an upside-down cup.",
+      "text_pinyin": "yī míng huàn zhě wèi páng shēng yī pǐ kuài ， dà xiǎo rú dào kòu de bēi zi 。"
+    },
+    {
+      "seq": 2,
+      "text_zh": "患者形体消瘦，服药无效。",
+      "text_vi": "Bệnh nhân gầy yếu, dùng thuốc không có hiệu quả.",
+      "text_en": "He was emaciated and medication had no effect.",
+      "text_pinyin": "huàn zhě xíng tǐ xiāo shòu ， fú yào wú xiào 。"
+    },
+    {
+      "seq": 3,
+      "text_zh": "医者判断痞块已成形，单靠药力难以消散。",
+      "text_vi": "Bác sĩ cho rằng khối pi đã thành hình, chỉ dùng thuốc khó tan được.",
+      "text_en": "The physician judged the mass had formed and could not be removed by medicine alone.",
+      "text_pinyin": "yī zhě pàn duàn pǐ kuài yǐ chéng xíng ， dān kào yào lì nán yǐ xiāo sàn 。"
+    },
+    {
+      "seq": 4,
+      "text_zh": "于是医者决定用针灸并用艾灸治疗。",
+      "text_vi": "Vì vậy bác sĩ quyết định dùng châm cứu kết hợp hỏa cứu (đốt ngải) để điều trị.",
+      "text_en": "So the physician decided to treat with acupuncture combined with moxibustion.",
+      "text_pinyin": "yú shì yī zhě jué dìng yòng zhēn jiǔ bìng yòng ài jiǔ zhì liáo 。"
+    },
+    {
+      "seq": 5,
+      "text_zh": "他取盘针法，并在食仓和中脘处施行艾灸。",
+      "text_vi": "Bác sĩ dùng phương pháp châm pan và hỏa cứu tại huyệt Shicang và huyệt Zhongwan.",
+      "text_en": "He used the pan needling method and applied moxibustion at the Shicang and Zhongwan points.",
+      "text_pinyin": "tā qǔ pán zhēn fǎ ， bìng zài shí cāng hé zhōng wǎn chù shī xíng ài jiǔ 。"
+    },
+    {
+      "seq": 6,
+      "text_zh": "经过治疗，患者痊愈。",
+      "text_vi": "Sau điều trị, bệnh nhân khỏi hẳn.",
+      "text_en": "After treatment, the patient recovered.",
+      "text_pinyin": "jīng guò zhì liáo ， huàn zhě quán yù 。"
+    },
+    {
+      "seq": 7,
+      "text_zh": "医者还向患者解释痞、癖、积、聚、癥、瘕等腹中结块名词的区别与成因。",
+      "text_vi": "Bác sĩ còn giải thích khác nhau giữa các tên khối bụng như pi, pi, ji, ju, zheng, jia và nguyên nhân của chúng.",
+      "text_en": "The physician also explained the differences and causes of abdominal lumps called pi, pi, ji, ju, zheng, and jia.",
+      "text_pinyin": "yī zhě hái xiàng huàn zhě jiě shì pǐ 、 pǐ 、 jī 、 jù 、 zhēng 、 jiǎ děng fù zhōng jié kuài míng cí de qū bié yǔ chéng yīn 。"
+    }
+  ],
+  "source_note_vi": "Diễn giải tự động (AI) từ dữ kiện y án thật (Châm cứu), nguồn: 杨继洲医案，《针灸大成》，转引自针灸名家经典医案课件. Chưa qua rà soát thủ công.",
+  "source_note_zh": "由 AI 根据真实医案事实自动改写（针灸），来源：杨继洲医案，《针灸大成》，转引自针灸名家经典医案课件。尚未经人工校对。",
+  "source_note_en": "AI-generated narrative from real case facts (Acupuncture), source: 杨继洲医案，《针灸大成》，转引自针灸名家经典医案课件. Not yet human-reviewed.",
+  "created_at": "2026-10-13T03:07:13Z",
+  "updated_at": "2026-10-13T03:07:13Z"
+}
