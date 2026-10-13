@@ -1309,6 +1309,10 @@ app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLesso
       if (fx.applied.length) { corrections = fx.applied; msgs = [...msgs.slice(0, -1), { ...last, content: fx.text }]; }
     }
     const out = await laoshi.reply({ messages: msgs, quiz, lang: ['vi', 'zh', 'en'].includes(lang) ? lang : 'vi', corrections });
+    // Tự lọc câu hỏi/đáp đáng lưu vào kho (không cần người dùng bấm): quy tắc và ngưỡng nằm trong lib/laoshi-faq.js.
+    if (msgs.length && msgs[msgs.length - 1].role !== 'assistant' && !quiz) {
+      laoshiFaq.observe(mysqlPool, { uid: req.firebaseUser.uid, lang: ['vi', 'zh', 'en'].includes(lang) ? lang : 'vi', question: msgs[msgs.length - 1].content, answer: out.text, refs: out.refs }).catch(() => {});
+    }
     aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'laoshi', costUsd: out.costUsd });
     res.json({ success: true, data: { text: out.text, refs: out.refs, used: use.used, limit: lim } });
   } catch (e) {
@@ -1335,7 +1339,12 @@ const RE_PY_PAREN = new RegExp('([\\u3400-\\u9fff]+)\\s*[（(]\\s*' + PINYIN + '
 const RE_PY_COMMA = new RegExp('([\\u3400-\\u9fff]+)\\s*[,，、:：]\\s*' + PINYIN + '(?=\\s*[)）\\]。.;；,，]|\\s*$)', 'g');
 const RE_PY_IN = new RegExp('([\\u3400-\\u9fff]+)\\s*[,，、]\\s*' + PINYIN + '(?=\\s*[)）])', 'g');
 function lsSpeechText(raw) {
-  let t = String(raw || '').replace(/\*\*/g, '').replace(/[`#>_~]/g, '').replace(/\p{Extended_Pictographic}|️/gu, '');
+  // Tiếng cười: "haha/hì hì/hê hê" và biểu tượng cười → "哈哈哈" (giọng Mandarin đọc ra tiếng cười thật), thay vì im lặng.
+  let t = String(raw || '')
+    .replace(/(?<![\p{L}])(?:ha\s?ha(?:\s?ha)*|hà\s?hà|hì\s?hì|hi\s?hi|hê\s?hê|he\s?he|hô\s?hô)(?![\p{L}])/giu, '哈哈哈')
+    .replace(/哈{2,}/g, '哈哈哈').replace(/嘿嘿+/g, '嘿嘿')
+    .replace(/[\u{1F600}-\u{1F606}\u{1F602}\u{1F923}\u{1F605}]/gu, ' 哈哈哈 ');
+  t = t.replace(/\*\*/g, '').replace(/[`#>_~]/g, '').replace(/\p{Extended_Pictographic}|\uFE0F/gu, '');
   t = t.replace(RE_PY_PAREN, '$1').replace(RE_PY_IN, '$1').replace(RE_PY_COMMA, '$1');
   t = t.replace(/\(\s*([㐀-鿿][㐀-鿿\s,，、]*)\)/g, '（$1）').replace(/([.!?。！？:：])\s*\n\s*/g, '$1 ').replace(/\s*\n\s*/g, '. ').replace(/\s{2,}/g, ' ').trim();
   if (t.length > LS_TTS_MAX) { const cut = t.slice(0, LS_TTS_MAX); const k = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('。'), cut.lastIndexOf('? '), cut.lastIndexOf('! ')); t = (k > 200 ? cut.slice(0, k + 1) : cut); }
@@ -1376,14 +1385,6 @@ app.post('/api/laoshi/tts', ...maxOnly, async (req, res) => {
     console.error('laoshi tts:', e.message);
     res.status(502).json({ success: false, error: 'tts_failed' });
   }
-});
-// 👍/👎 cho một câu trả lời: 👍 → vào hàng chờ duyệt của kho câu hỏi (quản trị viên duyệt mới được dùng lại).
-app.post('/api/laoshi/feedback', ...maxOnly, requireDocsDb, async (req, res) => {
-  try {
-    const b = req.body || {};
-    const ok = await laoshiFaq.vote(mysqlPool, { uid: req.firebaseUser.uid, lang: ['vi', 'zh', 'en'].includes(b.lang) ? b.lang : 'vi', question: b.question, answer: b.answer, up: b.vote === 'up' });
-    res.json({ success: ok });
-  } catch (e) { res.status(500).json({ success: false, error: 'feedback_failed' }); }
 });
 // Người dùng sửa chữ nhận dạng sai đồng âm → ghi phiếu (MySQL). Chỉ nhận cặp thật sự đồng âm; ≥2 người hoặc quản trị viên → tự áp dụng.
 app.post('/api/laoshi/asr-fix', ...maxOnly, requireDocsDb, withLessonIndex(async (req, res) => {
@@ -1534,7 +1535,7 @@ app.post('/api/admin/term-feedback/:id', ...adminOnly, requireDocsDb, adminJson(
 app.get('/api/admin/auto-terms', ...adminOnly, requireDocsDb, adminJson(() => termLearn.listAutoTerms(mysqlPool)));
 app.post('/api/admin/auto-terms/:id', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.reviewAutoTerm(mysqlPool, String(req.params.id), req.body || {})));
 app.post('/api/admin/term-promote/run', ...adminOnly, requireDocsDb, adminJson(() => termLearn.promoteBatch(mysqlPool)));
-app.get('/api/admin/laoshi-faq', ...adminOnly, requireDocsDb, adminJson((req) => laoshiFaq.list(mysqlPool, String(req.query.status || 'pending'))));
+app.get('/api/admin/laoshi-faq', ...adminOnly, requireDocsDb, adminJson((req) => laoshiFaq.list(mysqlPool, String(req.query.status || 'pending'), req.query.auto === '1')));
 app.post('/api/admin/laoshi-faq/:id', ...adminOnly, requireDocsDb, adminJson(async (req) => ({ ok: await laoshiFaq.review(mysqlPool, Number(req.params.id), req.body || {}) })));
 
 app.get('/api/admin/orders', ...adminOnly, requireDocsDb, async (req, res) => {
