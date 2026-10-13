@@ -44,6 +44,12 @@ TÍNH CÁCH
 - Xưng "thầy", gọi người học là "em". Câu ngắn, sinh động, có hình ảnh dễ nhớ (mẹo nhớ, so sánh).
 - CHỦ ĐỘNG dẫn dắt: mỗi câu trả lời kết bằng MỘT câu hỏi ngắn hoặc một đề tài để đi tiếp (đố vui nhỏ, "em thử đoán...", gợi ý bài kế tiếp). Thỉnh thoảng đố một câu về thuật ngữ vừa nhắc.
 
+PHÂN LOẠI Ý ĐỊNH (làm trước khi trả lời)
+- Chào hỏi / hỏi thăm / cảm ơn / tạm biệt / hỏi thầy là ai → TRÒ CHUYỆN tự nhiên như người thật, đáp lại đúng điều em nói; không chấm, không phân tích, không bắt lỗi.
+- Trả lời câu đố (A/B/C hoặc nội dung đáp án) → chấm đúng/sai rồi đố tiếp.
+- Hỏi kiến thức → trả lời trực tiếp rồi hỏi lại một câu.
+- Muốn đổi đề tài/dừng → làm theo ngay.
+
 CÁCH DẠY
 - Ưu tiên gợi mở: hỏi lại để em tự suy nghĩ trước khi đưa đáp án đầy đủ, nhưng nếu em hỏi thẳng thì trả lời trực tiếp trước rồi mới hỏi thêm.
 - Mỗi thuật ngữ quan trọng viết kèm chữ Hán và pinyin, ví dụ: Ma hoàng (麻黄, má huáng).
@@ -196,21 +202,41 @@ function sanitizeMessages(messages) {
   return out;
 }
 
+// Nhận ra lời chào / xã giao (ngắn, không phải câu hỏi kiến thức, không phải đáp án A/B/C) để thầy ĐÁP LẠI như người thật thay vì chấm câu đố.
+const SMALLTALK_RE = new RegExp([
+  '^\\s*(xin\\s+)?ch[aà]o\\b', '\\bch[aà]o\\s+(th[aầ]y|l[aã]o\\s*s[uư]|c[oô])', '\\bem\\s+ch[aà]o', '\\bth[aầ]y\\s+(ơi|à|ạ|oi)\\b', '^\\s*(hello|hi|hey|alo|a\\s*lô)\\b',
+  'kh[oỏ]e\\s+kh[oô]ng', 'kho[eẻ]\\s+kh[oô]ng', 'c[aả]m\\s+[oơ]n', 'c[aá]m\\s+[oơ]n', 't[aạ]m\\s+bi[eệ]t', 'h[eẹ]n\\s+g[aặ]p', 'th[aầ]y\\s+l[aà]\\s+ai', 'b[aạ]n\\s+l[aà]\\s+ai',
+  'd[aạ]o\\s+n[aà]y\\s+th[eế]', 'ch[uú]c\\s+(th[aầ]y|ng[uủ])', 'good\\s+(morning|afternoon|evening|night)', 'thank', '\\bbye\\b', 'how\\s+are\\s+you', 'who\\s+are\\s+you',
+  '你好', '您好', '老师好', '早上好', '晚上好', '谢谢', '再见', '你是谁', '最近怎么样', '老师[,，!！\\s]*$',
+].join('|'), 'i');
+export function isSmallTalk(text) {
+  const x = String(text || '').trim();
+  if (!x || x.length > 70) return false;
+  if (/^[A-D][.)、:：\s]/i.test(x)) return false;           // đáp án trắc nghiệm
+  if (/[?？]/.test(x) && !/(khỏe|khoẻ|ai|who|how are|谁|怎么样)/i.test(x)) return false; // câu hỏi kiến thức
+  if (!SMALLTALK_RE.test(x)) return false;
+  return csdl.searchTerms(x, 1).length === 0;                // có thuật ngữ y học → coi là câu hỏi, không phải xã giao
+}
+
 /** Trả lời một lượt. quiz (tuỳ chọn) là câu đố đang mở từ opening() để thầy chấm đúng đáp án. */
 export async function reply({ messages, quiz = null, lang = 'vi', corrections = [] }) {
   const msgs = sanitizeMessages(messages);
   if (!msgs.length) throw Object.assign(new Error('empty'), { code: 'empty' });
   const last = msgs[msgs.length - 1].content;
 
-  const refs = csdl.searchTerms(last, 3);
+  const smallTalk = isSmallTalk(last);
+  const quizPending = !!(quiz && quiz.answer);
+  if (smallTalk) quiz = null; // lời chào KHÔNG phải đáp án: không chấm câu đố
+  const refs = smallTalk ? [] : csdl.searchTerms(last, 3);
   const homoHints = csdl.homophoneHints(last, CORE_TERMS);
   // Vừa trả lời câu đố/chọn đáp án → cho thầy sẵn một mục khác để đố tiếp (nối đất vào kho, không bịa).
   let nextSeed = '';
-  if (quiz || /^[A-D][.)、:：\s]/i.test(last)) { const t = csdl.randomTopic('', Date.now() ^ (Math.random() * 1e9)); if (t) nextSeed = csdl.factsFor(t, 3); }
+  if (!smallTalk && (quiz || /^[A-D][.)、:：\s]/i.test(last))) { const t = csdl.randomTopic('', Date.now() ^ (Math.random() * 1e9)); if (t) nextSeed = csdl.factsFor(t, 3); }
   const refText = refs.length ? refs.map((t) => csdl.factsFor(t, 5)).join('\n\n') : '';
   const sys = [
     PERSONA,
-    nextSeed ? `GỢI Ý CÂU TIẾP THEO (mục ngẫu nhiên từ kho Chimedis, dùng để ra câu đố kế tiếp):\n${nextSeed}` : '',
+    smallTalk ? `Ý ĐỊNH LƯỢT NÀY = CHÀO HỎI / TRÒ CHUYỆN XÃ GIAO (KHÔNG phải đáp án, KHÔNG phải câu hỏi kiến thức). Hãy ĐÁP LẠI như một người thầy thật: chào lại ấm áp, nhắc đúng điều em vừa nói (tên/xưng hô/lời hỏi thăm), có thể đùa nhẹ kèm tiếng cười thật, hỏi thăm em một câu (hôm nay em thế nào/muốn học gì). Trả lời NGẮN 1–3 câu. TUYỆT ĐỐI KHÔNG chấm điểm, KHÔNG phân tích/sửa câu của em, KHÔNG liệt kê đáp án; ${quizPending ? 'chỉ nhắc nhẹ ở cuối rằng câu đố ở trên vẫn đang chờ em nếu em muốn thử.' : 'cuối câu gợi ý em chọn một chủ đề hoặc để thầy ra câu đố.'}` : '',
+    nextSeed && !smallTalk ? `GỢI Ý CÂU TIẾP THEO (mục ngẫu nhiên từ kho Chimedis, dùng để ra câu đố kế tiếp):\n${nextSeed}` : '',
     corrections.length ? `ĐÃ TỰ SỬA NHẬN DẠNG GIỌNG NÓI (hệ thống đã học từ người dùng): ${corrections.map((c) => `"${c.heard}"→"${c.meant}"`).join(', ')}. Hãy hiểu câu của em theo chữ đã sửa.` : '',
     homoHints.length ? `NHẮC — NHẬN DẠNG GIỌNG NÓI CÓ THỂ NHẦM ĐỒNG ÂM: ${homoHints.map((h) => `"${h.heard}" có thể là ${h.maybe.join(' / ')}`).join('; ')}. Trong ngữ cảnh Trung y, hãy hiểu theo nghĩa Trung y.` : '',
     refText ? `NGỮ LIỆU THAM CHIẾU (từ cơ sở dữ liệu Chimedis):\n${refText}` : 'NGỮ LIỆU THAM CHIẾU: (không tìm thấy mục khớp — dựa vào kiến thức nền chắc chắn, và nói rõ nếu không chắc).',

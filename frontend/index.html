@@ -857,7 +857,9 @@ header{transition:padding .2s ease}
 .qs-kind{font-size:11px;color:#7A5A12;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
 .qs-issue small{color:var(--muc-mo,#6B6156);font-size:12.5px}
 .lu-overlay-dummy{}
-#busyOverlay{position:fixed;inset:0;z-index:2147482900;background:#0E3A3A;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;animation:luIn .12s ease}
+#busyOverlay{position:fixed;inset:0;z-index:2147482900;background:rgba(20,28,26,.22);display:flex;align-items:center;justify-content:center;padding:24px;animation:luIn .12s ease}
+.busy-card{display:flex;align-items:center;gap:12px;background:#fff;color:#1d2b28;border-radius:16px;padding:14px 18px;box-shadow:0 10px 32px rgba(0,0,0,.28);max-width:300px;font-size:14.5px;font-weight:700}
+.busy-spin{width:22px;height:22px;flex:0 0 22px;border-radius:50%;border:3px solid #E4DCCC;border-top-color:#0E3A3A;animation:acctspin .8s linear infinite}
 #luOverlay{position:fixed;inset:0;z-index:2147483000;background:#0E3A3A;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;animation:luIn .15s ease}
 @keyframes luIn{from{opacity:0}to{opacity:1}}
 .lu-box{width:min(340px,100%);display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -2919,7 +2921,7 @@ function busyShow(msg){
   let el = document.getElementById('busyOverlay');
   if(!el){
     el = document.createElement('div'); el.id = 'busyOverlay'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
-    el.innerHTML = '<div class="lu-box"><img class="lu-logo" src="icons/icon-192.png" alt="Chimedis"><div class="lu-brand">CHIMEDIS</div><div class="lu-title" id="busyMsg"></div><div class="lu-bar indet"><i></i></div></div>';
+    el.innerHTML = '<div class="busy-card"><span class="busy-spin"></span><span class="busy-msg" id="busyMsg"></span></div>';
     (document.body || document.documentElement).appendChild(el);
   }
   const m = document.getElementById('busyMsg'); if(m) m.textContent = msg || t('busy_loading');
@@ -8055,8 +8057,6 @@ if('serviceWorker' in navigator && !IN_NATIVE_APP){
   wrap('openCheckout', 'busy_loading');
   wrap('ckCreate', 'busy_loading');
   wrap('ckRedeem', 'busy_saving');
-  wrap('laoshiOpening', 'busy_loading', () => !laoshi.msgs.length);
-  wrap('laoshiShowPicker', 'busy_loading', () => !laoshi.fields);
   wrap('loadMyDocs', 'busy_loading', () => { if(myDocsOnce || !state.user || !planAtLeast('pro')) return false; myDocsOnce = true; return true; });
   wrap('submitMyDoc', 'busy_saving');
   wrap('myDocPickFile', 'my_reading');

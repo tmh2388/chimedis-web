@@ -56,3 +56,7 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Gốc lỗi "bấm lưu mà không thấy gì": `.listen-toast` là `position:absolute; z-index:60` trong `#app`, nằm DƯỚI bảng sửa (z 2147482000) → mọi thông báo (thành công/lỗi) đều vô hình khi có bảng/popup. Nay toast `position:fixed; z-index:2147483600` gắn vào `body`.
 - Trình sửa: dòng trạng thái trong bảng (Đang lưu / ✓ Đã lưu → tự đóng sau 0,9 s / ✗ lỗi kèm mã), timeout 30 s, lỗi server trả `detail` (chỉ route admin) để chẩn đoán.
 - Quy tắc: mọi thao tác ghi dữ liệu phải có trạng thái hiển thị CÙNG tầng với nơi người dùng đang nhìn, không dựa vào toast.
+
+## v56 — màn chờ dạng popup; Lão Sư nhận ra lời chào
+- Màn chờ chung (`#busyOverlay`) đổi thành **popup nhỏ** (thẻ trắng + vòng xoay, nền mờ 22%). Màn xanh toàn màn hình (`#luOverlay`) CHỈ dùng khi cập nhật phiên bản ứng dụng. Lão Sư dùng chỉ báo "đang gõ" trong khung chat, không dùng overlay.
+- Lão Sư (`backend/lib/laoshi.js`): thêm **phân loại ý định** — `isSmallTalk()` nhận ra chào hỏi/cảm ơn/tạm biệt/"thầy là ai" (vi/zh/en, ngắn, không có thuật ngữ y học, không phải đáp án A/B/C): bỏ chấm câu đố và nạp ngữ liệu, dặn mô hình ĐÁP LẠI như người thật (1–3 câu, có thể kèm tiếng cười), nhắc nhẹ câu đố đang chờ. Không đưa lời chào vào kho FAQ và không cho kho FAQ chặn lời chào.
