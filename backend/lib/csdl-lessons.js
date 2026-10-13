@@ -365,4 +365,5 @@ export function homophoneHints(text, extra = []) {
   const seen = new Set();
   return out.filter((h) => (seen.has(h.heard) ? false : (seen.add(h.heard), true))).slice(0, 4);
 }
-
+/** Có phải thuật ngữ đã biết (trong kho CSDL hoặc danh sách cốt lõi `extra`)? */
+export function isKnownTerm(hz, extra = []) { buildHomo(extra); return homoTerms.has(hz); }

@@ -166,7 +166,7 @@ function sanitizeMessages(messages) {
 }
 
 /** Trả lời một lượt. quiz (tuỳ chọn) là câu đố đang mở từ opening() để thầy chấm đúng đáp án. */
-export async function reply({ messages, quiz = null, lang = 'vi' }) {
+export async function reply({ messages, quiz = null, lang = 'vi', corrections = [] }) {
   const msgs = sanitizeMessages(messages);
   if (!msgs.length) throw Object.assign(new Error('empty'), { code: 'empty' });
   const last = msgs[msgs.length - 1].content;
@@ -176,6 +176,7 @@ export async function reply({ messages, quiz = null, lang = 'vi' }) {
   const refText = refs.length ? refs.map((t) => csdl.factsFor(t, 5)).join('\n\n') : '';
   const sys = [
     PERSONA,
+    corrections.length ? `ĐÃ TỰ SỬA NHẬN DẠNG GIỌNG NÓI (hệ thống đã học từ người dùng): ${corrections.map((c) => `"${c.heard}"→"${c.meant}"`).join(', ')}. Hãy hiểu câu của em theo chữ đã sửa.` : '',
     homoHints.length ? `NHẮC — NHẬN DẠNG GIỌNG NÓI CÓ THỂ NHẦM ĐỒNG ÂM: ${homoHints.map((h) => `"${h.heard}" có thể là ${h.maybe.join(' / ')}`).join('; ')}. Trong ngữ cảnh Trung y, hãy hiểu theo nghĩa Trung y.` : '',
     refText ? `NGỮ LIỆU THAM CHIẾU (từ cơ sở dữ liệu Chimedis):\n${refText}` : 'NGỮ LIỆU THAM CHIẾU: (không tìm thấy mục khớp — dựa vào kiến thức nền chắc chắn, và nói rõ nếu không chắc).',
     quiz && quiz.answer ? `CÂU ĐỐ ĐANG MỞ: "${String(quiz.question).slice(0, 200)}" — đáp án đúng là ${quiz.answer} (${String(quiz.answer_text).slice(0, 80)}). Nếu em vừa trả lời câu đố, chấm đúng/sai, giải thích ngắn gọn dựa trên dữ kiện: ${String(quiz.fact || '').slice(0, 500)}` : '',

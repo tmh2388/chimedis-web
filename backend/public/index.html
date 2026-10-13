@@ -851,6 +851,7 @@ header{transition:padding .2s ease}
 .ls-opt b{flex:none;min-width:18px}
 .ls-opt:active{background:var(--thamthm,#0E3A3A);color:#fff}
 .ls-mic{flex:none;width:42px;height:42px;border:1px solid var(--vien,#e5ddcc);border-radius:50%;background:#fff;font-size:18px;cursor:pointer;line-height:1}
+.ls-msg.user .ls-spk{background:rgba(255,255,255,.18);color:#fff}
 .ls-mic{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .ls-mic.rec{background:#c0392b;border-color:#c0392b;animation:lsPulse 1s infinite}
 .ls-mic.free{background:#8e2a1f;border-color:#8e2a1f}
@@ -3120,7 +3121,7 @@ Object.assign(I18N.vi, {
   laoshi_err: 'Ối, thầy bị nghẹn chữ một chút. Em thử lại sau ít phút nhé!', laoshi_limit: 'Hôm nay thầy nói nhiều quá, khản cả giọng rồi! Hẹn em ngày mai nhé.',
   laoshi_disclaimer: 'Công cụ học tập — không thay thế chẩn đoán hay điều trị. Thầy có thể nhầm; hãy đối chiếu giáo trình.',
   laoshi_chip_quiz: 'Đố thầy một câu', laoshi_chip_topic: 'Hôm nay học gì?', laoshi_chip_story: 'Kể một chuyện Trung y vui', laoshi_chip_explain: 'Giải thích dễ nhớ giúp em',
-  laoshi_autospeak: 'Tự đọc', laoshi_pick_topic: 'Chọn chủ đề', laoshi_pick_prompt: 'Em muốn học về lĩnh vực nào? Thầy chọn bài trong kho Chimedis cho em.', laoshi_pick_random: 'Ngẫu nhiên — thầy chọn giúp', laoshi_rec_hold: 'Đang nghe… thả tay để gửi', laoshi_rec_free: 'Đang ghi… bấm mic lần nữa để gửi', laoshi_rec_cancel: 'Huỷ', laoshi_mic_hint: 'Giữ mic để nói · chạm nhanh = rảnh tay', laoshi_speak: 'Nghe thầy đọc', laoshi_stop: 'Dừng', laoshi_mic: 'Nói', laoshi_st_listening: 'Thầy đang nghe em…', laoshi_st_speaking: 'Thầy đang nói…', laoshi_st_transcribing: 'Đang nhận dạng giọng nói…', laoshi_mic_denied: 'Chưa cho phép micro. Hãy bật quyền micro rồi thử lại.', laoshi_noasr: 'Thầy chưa nghe rõ, em thử nói lại nhé.', laoshi_voice_err: 'Chưa đọc to được lúc này, em thử lại nhé.',
+  laoshi_autospeak: 'Tự đọc', laoshi_fix: 'Sửa', laoshi_fix_prompt: 'Sửa lại câu em đã nói (thầy sẽ nhớ để lần sau nghe đúng hơn):', laoshi_fix_saved: 'Đã ghi nhớ cách sửa này. Cảm ơn em!', laoshi_fix_resend: 'Gửi lại câu đã sửa để thầy trả lời?', laoshi_pick_topic: 'Chọn chủ đề', laoshi_pick_prompt: 'Em muốn học về lĩnh vực nào? Thầy chọn bài trong kho Chimedis cho em.', laoshi_pick_random: 'Ngẫu nhiên — thầy chọn giúp', laoshi_rec_hold: 'Đang nghe… thả tay để gửi', laoshi_rec_free: 'Đang ghi… bấm mic lần nữa để gửi', laoshi_rec_cancel: 'Huỷ', laoshi_mic_hint: 'Giữ mic để nói · chạm nhanh = rảnh tay', laoshi_speak: 'Nghe thầy đọc', laoshi_stop: 'Dừng', laoshi_mic: 'Nói', laoshi_st_listening: 'Thầy đang nghe em…', laoshi_st_speaking: 'Thầy đang nói…', laoshi_st_transcribing: 'Đang nhận dạng giọng nói…', laoshi_mic_denied: 'Chưa cho phép micro. Hãy bật quyền micro rồi thử lại.', laoshi_noasr: 'Thầy chưa nghe rõ, em thử nói lại nhé.', laoshi_voice_err: 'Chưa đọc to được lúc này, em thử lại nhé.',
   verify_title: 'Email chưa được xác minh', verify_body: 'Mở thư chúng tôi vừa gửi (xem cả mục Spam) và bấm liên kết xác minh. Gói Pro theo email chỉ có hiệu lực sau khi xác minh.',
   verify_resend: 'Gửi lại thư', verify_done: 'Tôi đã xác minh', verify_sent: 'Đã gửi thư xác minh.', verify_ok: 'Đã xác minh email.', verify_not_yet: 'Chưa thấy xác minh — hãy bấm liên kết trong thư rồi thử lại.',
   my_trim_title: 'Tệp vượt giới hạn', my_trim_body: 'Tệp có {n} ký tự, gói của bạn cho tối đa {max} ký tự mỗi tài liệu. Cắt phần đuôi cho vừa (giữ phần đầu, dừng ở cuối câu gần nhất)?',
@@ -3188,7 +3189,7 @@ Object.assign(I18N.zh, {
   laoshi_err: '哎呀，老师卡壳了一下。请稍后再试！', laoshi_limit: '今天老师话说多了，嗓子哑了！明天再见。',
   laoshi_disclaimer: '学习工具——不能替代诊断或治疗。老师也会出错，请对照教材。',
   laoshi_chip_quiz: '考老师一个问题', laoshi_chip_topic: '今天学什么？', laoshi_chip_story: '讲个有趣的中医故事', laoshi_chip_explain: '帮我好记地解释一下',
-  laoshi_autospeak: '自动朗读', laoshi_pick_topic: '选择主题', laoshi_pick_prompt: '你想学哪个领域？老师从 Chimedis 词库里挑一课。', laoshi_pick_random: '随机——老师来选', laoshi_rec_hold: '正在听……松手发送', laoshi_rec_free: '正在录音……再点一次麦克风发送', laoshi_rec_cancel: '取消', laoshi_mic_hint: '按住说话 · 轻点 = 免提', laoshi_speak: '朗读', laoshi_stop: '停止', laoshi_mic: '说话', laoshi_st_listening: '老师在听……', laoshi_st_speaking: '老师在说话……', laoshi_st_transcribing: '正在识别语音……', laoshi_mic_denied: '未允许使用麦克风，请开启权限后重试。', laoshi_noasr: '老师没听清，请再说一遍。', laoshi_voice_err: '暂时无法朗读，请稍后再试。',
+  laoshi_autospeak: '自动朗读', laoshi_fix: '修改', laoshi_fix_prompt: '修改你说的话（老师会记住，下次听得更准）：', laoshi_fix_saved: '已记住这次修改，谢谢！', laoshi_fix_resend: '用修改后的话重新发给老师？', laoshi_pick_topic: '选择主题', laoshi_pick_prompt: '你想学哪个领域？老师从 Chimedis 词库里挑一课。', laoshi_pick_random: '随机——老师来选', laoshi_rec_hold: '正在听……松手发送', laoshi_rec_free: '正在录音……再点一次麦克风发送', laoshi_rec_cancel: '取消', laoshi_mic_hint: '按住说话 · 轻点 = 免提', laoshi_speak: '朗读', laoshi_stop: '停止', laoshi_mic: '说话', laoshi_st_listening: '老师在听……', laoshi_st_speaking: '老师在说话……', laoshi_st_transcribing: '正在识别语音……', laoshi_mic_denied: '未允许使用麦克风，请开启权限后重试。', laoshi_noasr: '老师没听清，请再说一遍。', laoshi_voice_err: '暂时无法朗读，请稍后再试。',
   verify_title: '邮箱尚未验证', verify_body: '请打开我们刚发送的邮件（也请查看垃圾邮件）并点击验证链接。按邮箱开通的 Pro 套餐需验证后才生效。',
   verify_resend: '重新发送', verify_done: '我已验证', verify_sent: '验证邮件已发送。', verify_ok: '邮箱已验证。', verify_not_yet: '尚未检测到验证——请点击邮件中的链接后重试。',
   my_trim_title: '文件超出限制', my_trim_body: '文件有 {n} 个字符，您的套餐每个文档最多 {max} 个字符。是否截去末尾使其符合限制（保留开头，在最近的句末处截断）？',
@@ -3256,7 +3257,7 @@ Object.assign(I18N.en, {
   laoshi_err: 'Oops, the teacher choked on words. Please try again in a few minutes!', laoshi_limit: 'The teacher talked too much today and lost their voice! See you tomorrow.',
   laoshi_disclaimer: 'A learning tool — not a substitute for diagnosis or treatment. The teacher can be wrong; check your textbooks.',
   laoshi_chip_quiz: 'Quiz me', laoshi_chip_topic: 'What shall we learn today?', laoshi_chip_story: 'Tell me a fun TCM story', laoshi_chip_explain: 'Explain it in a memorable way',
-  laoshi_autospeak: 'Read aloud', laoshi_pick_topic: 'Pick a topic', laoshi_pick_prompt: 'Which field would you like to study? I will pick a lesson from the Chimedis database.', laoshi_pick_random: 'Random — teacher\'s choice', laoshi_rec_hold: 'Listening… release to send', laoshi_rec_free: 'Recording… tap the mic again to send', laoshi_rec_cancel: 'Cancel', laoshi_mic_hint: 'Hold to talk · tap = hands-free', laoshi_speak: 'Listen', laoshi_stop: 'Stop', laoshi_mic: 'Speak', laoshi_st_listening: 'Listening…', laoshi_st_speaking: 'The teacher is speaking…', laoshi_st_transcribing: 'Recognizing speech…', laoshi_mic_denied: 'Microphone permission is off. Enable it and try again.', laoshi_noasr: 'The teacher did not catch that — please try again.', laoshi_voice_err: 'Cannot read aloud right now. Please try again.',
+  laoshi_autospeak: 'Read aloud', laoshi_fix: 'Edit', laoshi_fix_prompt: 'Correct what you said (the teacher will remember it for next time):', laoshi_fix_saved: 'Correction saved. Thank you!', laoshi_fix_resend: 'Send the corrected sentence to the teacher?', laoshi_pick_topic: 'Pick a topic', laoshi_pick_prompt: 'Which field would you like to study? I will pick a lesson from the Chimedis database.', laoshi_pick_random: 'Random — teacher\'s choice', laoshi_rec_hold: 'Listening… release to send', laoshi_rec_free: 'Recording… tap the mic again to send', laoshi_rec_cancel: 'Cancel', laoshi_mic_hint: 'Hold to talk · tap = hands-free', laoshi_speak: 'Listen', laoshi_stop: 'Stop', laoshi_mic: 'Speak', laoshi_st_listening: 'Listening…', laoshi_st_speaking: 'The teacher is speaking…', laoshi_st_transcribing: 'Recognizing speech…', laoshi_mic_denied: 'Microphone permission is off. Enable it and try again.', laoshi_noasr: 'The teacher did not catch that — please try again.', laoshi_voice_err: 'Cannot read aloud right now. Please try again.',
   verify_title: 'Email not verified yet', verify_body: 'Open the message we just sent (check Spam too) and tap the verification link. An email-based Pro plan only takes effect after verification.',
   verify_resend: 'Resend email', verify_done: 'I have verified', verify_sent: 'Verification email sent.', verify_ok: 'Email verified.', verify_not_yet: 'Not verified yet — tap the link in the email, then try again.',
   my_trim_title: 'File exceeds the limit', my_trim_body: 'The file has {n} characters; your plan allows {max} per document. Trim the end to fit (keeps the beginning, stops at the nearest sentence end)?',
@@ -3586,7 +3587,8 @@ function laoshiRender(){
   let html = laoshi.msgs.map((m, i) => {
     const tools = m.role === 'assistant'
       ? `<div class="ls-tools"><button type="button" class="ls-spk${lsSpeakingIdx === i ? ' on' : ''}" onclick="laoshiSpeak(${i})">${lsSpeakingIdx === i ? '⏹ ' + t('laoshi_stop') : '🔊 ' + t('laoshi_speak')}</button></div>` : '';
-    return `<div class="ls-msg ${m.role}">${lsFmt(m.content)}${tools}</div>`;
+    const fix = (m.role === 'user' && m.voice) ? `<div class="ls-tools"><button type="button" class="ls-spk" onclick="laoshiFixVoice(${i})">✎ ${t('laoshi_fix')}</button></div>` : '';
+    return `<div class="ls-msg ${m.role}">${lsFmt(m.content)}${tools}${fix}</div>`;
   }).join('');
   const last = laoshi.msgs[lastIdx];
   if(last && last.role === 'assistant' && !laoshi.busy){
@@ -3654,7 +3656,7 @@ async function laoshiSend(text, opts){
   if(input) input.value = '';
   lsStopSpeak();
   laoshi.picker = false;
-  laoshi.msgs.push({ role: 'user', content: msg });
+  laoshi.msgs.push({ role: 'user', content: msg, voice: !!opts.voice });
   laoshi.busy = true; laoshiRender(); lsSetStatus(t('laoshi_typing'));
   const quiz = laoshi.quiz; laoshi.quiz = null; // câu đố chỉ dùng cho lượt trả lời kế tiếp
   let reply = null;
@@ -3669,6 +3671,50 @@ async function laoshiSend(text, opts){
   }catch(e){ laoshi.msgs.push({ role: 'assistant', content: t('laoshi_err') }); }
   laoshi.busy = false; laoshiSave(); laoshiRender(); lsSetStatus('');
   if(reply && (opts.speak || lsPref.autoSpeak)) await lsSpeakText(reply, laoshi.msgs.length - 1);
+}
+
+// ---- Sửa chữ nhận dạng sai (hệ thống học đồng âm: 学位 → 穴位; lưu trong MySQL, ≥2 người xác nhận thì tự áp dụng) ----
+// Trả các cặp ứng viên (nghe nhầm → đúng): khác biệt tối thiểu và mở rộng sang trái/phải cho đủ ≥2 chữ. Máy chủ chọn cặp có vế đúng là thuật ngữ trong kho.
+function lsDiffPairs(a, b){
+  let p = 0; const m = Math.min(a.length, b.length);
+  while(p < m && a[p] === b[p]) p++;
+  let sfx = 0;
+  while(sfx < m - p && a[a.length - 1 - sfx] === b[b.length - 1 - sfx]) sfx++;
+  const ea0 = a.length - sfx, eb0 = b.length - sfx;
+  const out = [];
+  const push = (st, ea, eb) => {
+    const heard = a.slice(st, ea), meant = b.slice(st, eb);
+    if(heard && meant && heard !== meant && heard.length >= 2 && heard.length <= 6 && !out.some(x => x.heard === heard && x.meant === meant)) out.push({ heard, meant });
+  };
+  push(p, ea0, eb0);                                                    // đúng chỗ khác
+  if(ea0 - p < 2){
+    if(ea0 < a.length) push(p, ea0 + 1, eb0 + 1);                       // thêm 1 chữ bên phải (学位 ← 学|位)
+    if(p > 0) push(p - 1, ea0, eb0);                                    // thêm 1 chữ bên trái (经落 ← 经|落)
+    if(ea0 < a.length && p > 0) push(p - 1, ea0 + 1, eb0 + 1);
+  }
+  return out.slice(0, 4);
+}
+async function laoshiFixVoice(i){
+  const m = laoshi.msgs[i];
+  if(!m || m.role !== 'user') return;
+  const next = prompt(t('laoshi_fix_prompt'), m.content);
+  if(next == null) return;
+  const fixed = next.trim();
+  if(!fixed || fixed === m.content) return;
+  const pairs = lsDiffPairs(m.content, fixed);
+  m.content = fixed; m.voice = false; laoshiSave(); laoshiRender();
+  if(pairs.length){
+    try{
+      const r = await authFetch('/api/laoshi/asr-fix', { method: 'POST', body: JSON.stringify({ pairs }) });
+      if(r.ok) listenToast(t('laoshi_fix_saved'));
+    }catch(e){}
+  }
+  // Chỉ đề nghị gửi lại khi đây là câu người dùng CUỐI: thay thế câu cũ và câu trả lời (dựa trên chữ sai) bằng câu đã sửa.
+  const isLastUser = laoshi.msgs.slice(i + 1).every(x => x.role === 'assistant');
+  if(isLastUser && !laoshi.busy && confirm(t('laoshi_fix_resend'))){
+    laoshi.msgs.length = i; laoshiSave(); laoshiRender();
+    laoshiSend(fixed);
+  }
 }
 
 // ---- Đọc to ----
@@ -3826,7 +3872,7 @@ async function lsMicFinish(send){
   }
   lsSetStatus('');
   if(!text){ listenToast(t('laoshi_noasr')); return; }
-  laoshiSend(text, { speak: lsPref.autoSpeak });
+  laoshiSend(text, { speak: lsPref.autoSpeak, voice: true });
 }
 function lsMicCancel(){ if(lsMic.active) lsMicFinish(false); }
 function lsMicDown(e){

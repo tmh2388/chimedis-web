@@ -14,6 +14,7 @@ import { syncGeneralTerms } from './lib/general-terms-sync.js';
 import { resolvePlan, requirePlan, ensurePlanColumns, LIMITS, atLeast, planInfo, isAdmin } from './lib/plan.js';
 import * as billing from './lib/billing.js';
 import * as laoshi from './lib/laoshi.js';
+import * as laoshiLearn from './lib/laoshi-learn.js';
 import * as aiBudget from './lib/ai-budget.js';
 import { scoreChinese, scoreWords, ensureUsageTable, consumeServerAsr } from './lib/quick-score.js';
 import crypto from 'node:crypto';
@@ -1270,6 +1271,7 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
 
 // ===== Lão Sư Trung Y: thầy giáo AI (gói Max) — xem lib/laoshi.js =====
 onDbUp(() => laoshi.ensureTable(mysqlPool).catch((e) => console.error('[laoshi] init:', e.message)));
+onDbUp(() => laoshiLearn.ensureTables(mysqlPool).then(() => laoshiLearn.loadLearned(mysqlPool, true)).catch((e) => console.error('[laoshi-learn] init:', e.message)));
 const maxOnly = [verifyFirebaseToken, requirePlan(mysqlPool, 'max')];
 app.get('/api/laoshi/opening', ...maxOnly, withLessonIndex((req, res) => {
   const field = String(req.query.field || '');
@@ -1282,7 +1284,16 @@ app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLesso
   if (!use.ok) return res.status(429).json({ success: false, error: 'daily_limit', limit: lim });
   try {
     const { messages, quiz, lang } = req.body || {};
-    const out = await laoshi.reply({ messages, quiz, lang: ['vi', 'zh', 'en'].includes(lang) ? lang : 'vi' });
+    // Đã học: cặp nghe-nhầm → đúng (đồng âm, được ≥2 người hoặc quản trị viên xác nhận) tự sửa trong lượt người dùng cuối.
+    await laoshiLearn.loadLearned(mysqlPool);
+    let msgs = Array.isArray(messages) ? messages : [];
+    let corrections = [];
+    if (msgs.length && msgs[msgs.length - 1] && msgs[msgs.length - 1].role !== 'assistant') {
+      const last = msgs[msgs.length - 1];
+      const fx = laoshiLearn.applyLearned(String(last.content || ''));
+      if (fx.applied.length) { corrections = fx.applied; msgs = [...msgs.slice(0, -1), { ...last, content: fx.text }]; }
+    }
+    const out = await laoshi.reply({ messages: msgs, quiz, lang: ['vi', 'zh', 'en'].includes(lang) ? lang : 'vi', corrections });
     aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'laoshi', costUsd: out.costUsd });
     res.json({ success: true, data: { text: out.text, refs: out.refs, used: use.used, limit: lim } });
   } catch (e) {
@@ -1335,13 +1346,37 @@ app.post('/api/laoshi/tts', ...maxOnly, async (req, res) => {
     const text = lsSpeechText(req.body && req.body.text);
     if (!text) return res.status(400).json({ success: false, error: 'empty' });
     const runs = lsSplitRuns(text, lsDetectBase(text, lang));
-    const parts = await Promise.all(runs.map((r) => userDocs.synthesize(r.text, r.lang, voice, { uid: req.firebaseUser.uid })));
+    // Đệm DÙNG CHUNG theo từng đoạn (MySQL): đoạn đã có thì không tạo lại, không tốn chi phí; chỉ đoạn mới mới tính vào ngân sách người dùng.
+    const keys = runs.map((r) => laoshiLearn.ttsKey(r.lang, voice, r.text));
+    const cached = await laoshiLearn.ttsGetMany(mysqlPool, [...new Set(keys)]);
+    const parts = await Promise.all(runs.map(async (r, i) => {
+      const hit = cached.get(keys[i]);
+      if (hit) return hit;
+      const audio = await userDocs.synthesize(r.text, r.lang, voice, { uid: req.firebaseUser.uid });
+      laoshiLearn.ttsPut(mysqlPool, keys[i], { lang: r.lang, voice, chars: r.text.length, audio });
+      return audio;
+    }));
     res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, no-store' }).send(Buffer.concat(parts));
   } catch (e) {
     console.error('laoshi tts:', e.message);
     res.status(502).json({ success: false, error: 'tts_failed' });
   }
 });
+// Người dùng sửa chữ nhận dạng sai đồng âm → ghi phiếu (MySQL). Chỉ nhận cặp thật sự đồng âm; ≥2 người hoặc quản trị viên → tự áp dụng.
+app.post('/api/laoshi/asr-fix', ...maxOnly, requireDocsDb, withLessonIndex(async (req, res) => {
+  try {
+    const raw = req.body && Array.isArray(req.body.pairs) ? req.body.pairs : (req.body && req.body.heard ? [req.body] : []);
+    // Chọn cặp đầu tiên thật sự ĐỒNG ÂM và có vế đúng là thuật ngữ đã biết (kho CSDL / danh sách cốt lõi) → ngăn "dạy" từ tuỳ ý.
+    const pair = raw.slice(0, 4).map((p) => ({ heard: String((p && p.heard) || '').trim(), meant: String((p && p.meant) || '').trim() }))
+      .find((p) => laoshiLearn.validPair(p.heard, p.meant) && csdl.isKnownTerm(p.meant, laoshi.CORE_TERMS));
+    if (!pair) return res.status(400).json({ success: false, error: 'not_learnable' });
+    const ok = await laoshiLearn.recordFix(mysqlPool, { uid: req.firebaseUser.uid, heard: pair.heard, meant: pair.meant, isAdmin: isAdmin(req.firebaseUser) });
+    res.json({ success: ok, heard: pair.heard, meant: pair.meant });
+  } catch (e) {
+    console.error('asr-fix:', e.message);
+    res.status(500).json({ success: false, error: 'fix_failed' });
+  }
+}));
 // Nhận dạng giọng nói phía máy chủ (thiết bị không có Web Speech, vd. app iOS): WAV → văn bản. Giới hạn dùng chung với Chấm nhanh.
 app.post('/api/laoshi/transcribe', ...maxOnly, express.json({ limit: '25mb' }), async (req, res) => {
   try {
