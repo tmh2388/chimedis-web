@@ -919,9 +919,28 @@ app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool,
 // AI CHỈ dùng để phiên âm giọng nói (model phiên âm rẻ, ngôn ngữ đích cố định, gợi ý từ vựng từ chính
 // bài học). Việc quyết định đúng/sót là đối chiếu xác định trong lib/interpret-check.js. Kết quả chỉ
 // gồm mã trạng thái; giao diện tự lấy câu chữ từ bảng I18N nên ngôn ngữ nhận xét luôn đúng.
+// Nhận biết người nói tiếng Anh hay tiếng Việt từ văn bản (chỉ chữ Latin). Trả 'vi' | 'en' | null (không chắc).
+const VI_DIAC = /[ăâđêôơưĂÂĐÊÔƠƯàáảãạằắẳẵặầấẩẫậèéẻẽẹềếểễệìíỉĩịòóỏõọồốổỗộờớởỡợùúủũụừứửữựỳýỷỹỵ]/g;
+const EN_STOP = new Set('the of and is are to in a an for with that this it on as by be was were have has not you we they from at or which will can their there what when how'.split(' '));
+const VI_STOP = new Set('la va cua cho cac mot nhung duoc trong khi co khong nay nhu den voi tu da se bi ve nguoi thi hay neu ma de'.split(' '));
+function detectViEn(text) {
+  const t = String(text || '');
+  const latin = (t.match(/[A-Za-zÀ-ỹ]/g) || []).length;
+  if (latin < 6) return null;
+  if (((t.match(VI_DIAC) || []).length) >= 2) return 'vi';
+  const words = t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').split(/[^a-z]+/).filter(Boolean);
+  if (words.length < 3) return null;
+  let en = 0, vi = 0;
+  for (const w of words) { if (EN_STOP.has(w)) en++; if (VI_STOP.has(w)) vi++; }
+  if (en >= 2 && en > vi) return 'en';
+  if (vi >= 2 && vi > en) return 'vi';
+  return null;
+}
 async function transcribeWithOpenAI(buf, lang, hint, bias = '') {
   // zh: KHÔNG đưa câu mẫu vào prompt — làm vậy mô hình sẽ "tự sửa" theo câu mẫu và che mất lỗi phát âm của người học.
-  const prompt = lang === 'zh'
+  const prompt = lang === 'auto'
+    ? 'Thảo luận y học cổ truyền / Traditional Chinese Medicine discussion.'
+    : lang === 'zh'
     ? (bias ? `中医学习对话，请用简体中文转写。可能出现的中医术语：${bias}` : '中医学习，请用简体中文逐字转写，不要纠正发音。')
     : lang === 'en'
       ? `Traditional Chinese Medicine case discussion. Terms: ${hint}`
@@ -932,7 +951,7 @@ async function transcribeWithOpenAI(buf, lang, hint, bias = '') {
     const form = new FormData();
     form.append('file', new Blob([buf], { type: 'audio/wav' }), 'speech.wav');
     form.append('model', model);
-    form.append('language', lang);
+    if (lang !== 'auto') form.append('language', lang);
     form.append('response_format', 'json');
     form.append('temperature', '0');
     form.append('prompt', prompt.slice(0, 900));
@@ -1232,9 +1251,10 @@ app.get('/api/budget', verifyFirebaseToken, async (req, res) => {
 onDbUp(() => ensureUsageTable(mysqlPool).catch((e) => console.error('[quick-check] init:', e.message)));
 app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }), async (req, res) => {
   try {
-    const { lang: rawLang, reference, dialogue_id, seq, transcript: tIn, audio_base64 } = req.body || {};
-    const lang = ['zh', 'vi', 'en'].includes(rawLang) ? rawLang : 'zh';
-    const ref = String(reference || '').slice(0, 1500);
+    const { lang: rawLang, reference, dialogue_id, seq, transcript: tIn, audio_base64, alt_references, auto_lang } = req.body || {};
+    let lang = ['zh', 'vi', 'en'].includes(rawLang) ? rawLang : 'zh';
+    let ref = String(reference || '').slice(0, 1500);
+    const autoLang = auto_lang === true && (lang === 'vi' || lang === 'en'); // người dùng nói vi hay en đều được: nhận từ nội dung
     if (!ref.trim()) return res.status(400).json({ success: false, error: 'missing_reference' });
     let transcript = typeof tIn === 'string' ? tIn.slice(0, 1500) : null;
     let source = 'browser';
@@ -1251,10 +1271,19 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
       const dlg = dialogue_id ? findListeningDialogue(dialogue_id) : null;
       const segHint = dlg && (dlg.segments || []).find((x) => x.seq === Number(seq));
       const hint = segHint && Array.isArray(segHint.key_units) ? buildVocabHint(segHint.key_units, lang === 'en' ? 'en' : 'vi') : '';
-      transcript = (await transcribeWithOpenAI(buf, lang, hint)).text;
+      transcript = (await transcribeWithOpenAI(buf, autoLang ? 'auto' : lang, hint)).text;
       source = 'server';
     }
     if (!transcript.trim()) return res.json({ success: true, data: { mode: lang === 'zh' ? 'zh' : 'words', empty: true, score: 0, level: 'poor', source, heard: '' } });
+    // Người nói tiếng Anh nhưng tham chiếu đang là tiếng Việt (hoặc ngược lại): chuyển sang bản tham chiếu đúng ngôn ngữ nếu có.
+    let switched = false;
+    if (lang === 'vi' || lang === 'en') {
+      const said = detectViEn(transcript);
+      if (said && said !== lang) {
+        const alt = alt_references && typeof alt_references[said] === 'string' ? alt_references[said].slice(0, 1500) : '';
+        if (alt.trim()) { lang = said; ref = alt; switched = true; }
+      }
+    }
     if (lang === 'zh') {
       return res.json({ success: true, data: { mode: 'zh', source, ...scoreChinese(ref, transcript) } });
     }
@@ -1262,9 +1291,9 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
     const seg = dlg && (dlg.segments || []).find((x) => x.seq === Number(seq));
     if (seg && Array.isArray(seg.key_units) && seg.key_units.length) {
       const data = analyzeInterpretation({ units: seg.key_units, transcript, lang, fluencyStats: null });
-      return res.json({ success: true, data: { mode: 'units', source, ...data } });
+      return res.json({ success: true, data: { mode: 'units', source, lang_used: lang, switched, ...data } });
     }
-    return res.json({ success: true, data: { mode: 'words', source, ...scoreWords(ref, transcript) } });
+    return res.json({ success: true, data: { mode: 'words', source, lang_used: lang, switched, reference_used: ref, ...scoreWords(ref, transcript) } });
   } catch (err) {
     console.error('quick-check lỗi:', err.message);
     res.status(500).json({ success: false, error: 'quick_check_failed' });
@@ -1561,6 +1590,27 @@ app.post('/api/admin/grant', ...adminOnly, requireDocsDb, async (req, res) => {
     const exp = await billing.grantPlan(mysqlPool, { uid: u.firebase_uid, email: u.email, plan: String(plan), months: Number(months) });
     res.json({ success: true, data: { expires_at: exp } });
   } catch (e) { res.status(400).json({ success: false, error: 'grant_failed' }); }
+});
+// Tra cứu một tài khoản theo email: gói hiện hiệu lực, hạn, các đơn gần nhất, số dư credit, mức đã dùng tháng này (để đối soát nạp tiền).
+app.get('/api/admin/user', ...adminOnly, requireDocsDb, async (req, res) => {
+  try {
+    const email = String(req.query.email || '').trim().toLowerCase();
+    if (!email) return res.status(400).json({ success: false, error: 'email_required' });
+    const [[u]] = await mysqlPool.query('SELECT * FROM users WHERE email = ? ORDER BY id DESC LIMIT 1', [email]);
+    if (!u) return res.status(404).json({ success: false, error: 'user_not_found' });
+    const uid = u.firebase_uid;
+    const exp = u.plan_expires_at ? new Date(u.plan_expires_at) : null;
+    const effective = String(u.role || '').toLowerCase() === 'admin' ? 'max' : (exp && exp.getTime() < Date.now() ? 'free' : String(u.plan || 'free'));
+    const [orders] = await mysqlPool.query(
+      'SELECT code, kind, plan, plan_period, amount, credits, status, method, paid_amount, note, created_at, paid_at FROM orders WHERE firebase_uid = ? ORDER BY created_at DESC LIMIT 12', [uid]);
+    const b = await aiBudget.getBudget({ uid, plan: effective === 'max' || effective === 'pro' ? effective : 'free', pool: mysqlPool });
+    res.json({ success: true, data: {
+      email: u.email, uid, role: u.role || null, plan_stored: u.plan || 'free', plan_effective: effective,
+      plan_expires_at: exp ? exp.toISOString() : null, expired: !!(exp && exp.getTime() < Date.now()),
+      email_note: 'Gói theo email (PRO_EMAILS/MAX_EMAILS) chỉ áp dụng khi email đã xác minh — không hiện ở đây.',
+      budget: aiBudget.publicView(b), orders,
+    } });
+  } catch (e) { console.error('admin user:', e.message); res.status(500).json({ success: false, error: 'lookup_failed' }); }
 });
 app.post('/api/admin/credits', ...adminOnly, requireDocsDb, async (req, res) => {
   try {
