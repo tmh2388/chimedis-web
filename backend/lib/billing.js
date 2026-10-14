@@ -17,11 +17,11 @@ export const PRICES = {
   max: { month: 249000, year: 2490000 },
 };
 export const PERIOD_MONTHS = { month: 1, year: 12 };
-// Gói nạp credit (1 credit = 0,01 USD chi phí AI/TTS). Giá bán ≈ 2,3× giá vốn, mua nhiều rẻ hơn. Chỉ bán ở web (App Store 3.1.1).
+// Gói nạp credit (1 credit = 0,001 USD chi phí AI/TTS — đơn vị đổi 2026-10-14, số credit ×10, GIÁ BÁN giữ nguyên). Chỉ bán ở web (App Store 3.1.1).
 export const PACKS = {
-  p100: { credits: 100, amount: 59000 },
-  p300: { credits: 300, amount: 159000 },
-  p800: { credits: 800, amount: 399000 },
+  p100: { credits: 1000, amount: 59000 },
+  p300: { credits: 3000, amount: 159000 },
+  p800: { credits: 8000, amount: 399000 },
 };
 const ORDER_TTL_HOURS = 72;
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // bỏ ký tự dễ nhầm (0/O, 1/I/L)
@@ -64,6 +64,13 @@ export async function ensureTables(pool) {
     if (!have.has('kind')) await pool.query("ALTER TABLE orders ADD COLUMN kind VARCHAR(8) NOT NULL DEFAULT 'plan'");
     if (!have.has('credits')) await pool.query('ALTER TABLE orders ADD COLUMN credits INT NULL');
   } catch (e) { console.error('[billing] cột kind/credits:', e.message); }
+  // Đổi đơn vị credit (×10): các đơn nạp ĐANG CHỜ tạo theo đơn vị cũ phải được quy đổi, nếu không khi duyệt sẽ cộng thiếu 10 lần.
+  // Chỉ UPDATE (không DDL), khớp đúng cặp (credits cũ, số tiền) nên chạy lại nhiều lần vẫn an toàn.
+  try {
+    for (const [oldC, newC, amt] of [[100, 1000, 59000], [300, 3000, 159000], [800, 8000, 399000]]) {
+      await pool.query("UPDATE orders SET credits = ? WHERE kind = 'topup' AND status = 'pending' AND credits = ? AND amount = ?", [newC, oldC, amt]);
+    }
+  } catch (e) { console.error('[billing] quy đổi đơn nạp chờ:', e.message); }
   await pool.query(`CREATE TABLE IF NOT EXISTS redeem_codes (
     code VARCHAR(24) NOT NULL PRIMARY KEY, plan VARCHAR(16) NOT NULL, months INT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, created_by VARCHAR(255) NULL,

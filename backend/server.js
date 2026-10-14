@@ -921,7 +921,7 @@ app.post('/api/pronunciation-score', verifyFirebaseToken, requirePlan(mysqlPool,
     for (const k of ['pronunciation_score', 'grammar_score', 'coherence_score']) parsed[k] = Math.max(0, Math.min(100, Math.round(Number(parsed[k]) || 0)));
     parsed.overall = Math.round(0.4 * parsed.pronunciation_score + 0.3 * parsed.grammar_score + 0.3 * parsed.coherence_score);
     parsed.issues = Array.isArray(parsed.issues) ? parsed.issues.filter((x) => x && x.text).slice(0, 8) : [];
-    parsed.cost_credits = Math.round(costUsd * 1000) / 10; // 1 credit = 0,01 USD; làm tròn 0,1
+    parsed.cost_credits = Math.round(costUsd * aiBudget.CREDITS_PER_USD * 10) / 10; // 1 credit = 0,001 USD; làm tròn 0,1
     parsed.audio_hash = hash;
     speech.analysisCachePut(mysqlPool, key, { ...parsed, cost_credits: 0 });
     res.json({ success: true, data: parsed });
@@ -1614,6 +1614,12 @@ app.post('/api/admin/term-edit', ...adminOnly, requireDocsDb, async (req, res) =
     res.status(500).json({ success: false, error: 'edit_failed', detail: String((e && (e.code || e.message)) || '').slice(0, 80) });
   }
 });
+app.post('/api/admin/term-edit-batch', ...adminOnly, requireDocsDb, async (req, res) => {
+  try {
+    const out = await termLearn.editTermsBatch(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, (req.body || {}).edits);
+    res.json({ success: true, data: out });
+  } catch (e) { console.error('term-edit-batch:', e.message); res.status(500).json({ success: false, error: 'edit_failed', detail: String((e && (e.code || e.message)) || '').slice(0, 80) }); }
+});
 app.post('/api/admin/term-reports/dismiss', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.dismissReports(mysqlPool, String((req.body || {}).term_id || ''), (req.body || {}).note)));
 // ---- Rà soát thuật ngữ máy dịch theo QUY ƯỚC dịch (đề xuất → admin duyệt → ghi bằng /api/admin/term-edit) ----
 app.get('/api/admin/term-restyle', ...adminOnly, requireDocsDb, adminJson(() => termLearn.restyleList(mysqlPool)));
@@ -1622,10 +1628,10 @@ app.post('/api/admin/term-restyle/run', ...adminOnly, requireDocsDb, requireOpen
     if (!(await budgetGate(req, res, req.plan))) return;
     const out = await termLearn.restyleScan(mysqlPool, { limit: Number((req.body || {}).limit) || 25 });
     if (out.costUsd) aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'term_restyle', costUsd: out.costUsd });
-    res.json({ success: true, data: { scanned: out.scanned, proposed: out.proposed, remaining: out.remaining, cost_credits: Math.round(out.costUsd * 1000) / 10 } });
+    res.json({ success: true, data: { scanned: out.scanned, proposed: out.proposed, remaining: out.remaining, cost_credits: Math.round(out.costUsd * aiBudget.CREDITS_PER_USD * 10) / 10 } });
   } catch (e) { console.error('restyle:', e.message); res.status(500).json({ success: false, error: 'restyle_failed', detail: String(e.message || '').slice(0, 80) }); }
 });
-app.post('/api/admin/term-restyle/resolve', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.restyleResolve(mysqlPool, String((req.body || {}).term_id || ''), (req.body || {}).status)));
+app.post('/api/admin/term-restyle/resolve', ...adminOnly, requireDocsDb, adminJson((req) => ((req.body || {}).term_ids ? termLearn.restyleResolveMany(mysqlPool, (req.body || {}).term_ids, (req.body || {}).status) : termLearn.restyleResolve(mysqlPool, String((req.body || {}).term_id || ''), (req.body || {}).status))));
 app.get('/api/admin/auto-terms', ...adminOnly, requireDocsDb, adminJson(() => termLearn.listAutoTerms(mysqlPool)));
 app.post('/api/admin/auto-terms/:id', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.reviewAutoTerm(mysqlPool, String(req.params.id), req.body || {})));
 app.post('/api/admin/term-promote/run', ...adminOnly, requireDocsDb, adminJson(() => termLearn.promoteBatch(mysqlPool)));
@@ -1683,7 +1689,7 @@ app.post('/api/admin/credits', ...adminOnly, requireDocsDb, async (req, res) => 
     const [[u]] = await mysqlPool.query('SELECT firebase_uid FROM users WHERE email = ? ORDER BY id DESC LIMIT 1', [String(email || '').trim().toLowerCase()]);
     if (!u) return res.status(404).json({ success: false, error: 'user_not_found' });
     const n = Number(credits);
-    if (!Number.isFinite(n) || n === 0 || Math.abs(n) > 100000) return res.status(400).json({ success: false, error: 'bad_credits' });
+    if (!Number.isFinite(n) || n === 0 || Math.abs(n) > 1000000) return res.status(400).json({ success: false, error: 'bad_credits' });
     await aiBudget.addCredits({ uid: u.firebase_uid, credits: n, reason: 'admin', ref: `admin-${Date.now()}`, pool: mysqlPool });
     res.json({ success: true });
   } catch (e) { res.status(400).json({ success: false, error: 'credits_failed' }); }

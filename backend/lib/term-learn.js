@@ -489,10 +489,31 @@ export async function restyleList(pool) {
   const [[c]] = await pool.query("SELECT COUNT(*) n FROM term_restyle");
   return { items: rows, checked: ok, total_checked: Number(c.n) || 0, remaining: await restyleRemaining(pool) };
 }
+export async function restyleResolveMany(pool, ids, status) {
+  const st = status === 'applied' ? 'applied' : 'skipped';
+  const list = (Array.isArray(ids) ? ids : []).map((x) => cleanText(x, 64)).filter(Boolean).slice(0, 100);
+  if (!list.length) return { ok: true, changed: 0 };
+  const [r] = await pool.query("UPDATE term_restyle SET status = ?, handled_at = NOW() WHERE status = 'new' AND term_id IN (?)", [st, list]);
+  return { ok: true, changed: r.affectedRows };
+}
 export async function restyleResolve(pool, term_id, status) {
   const st = status === 'applied' ? 'applied' : 'skipped';
   const [r] = await pool.query("UPDATE term_restyle SET status = ?, handled_at = NOW() WHERE term_id = ? AND status = 'new'", [st, cleanText(term_id, 64)]);
   return { ok: true, changed: r.affectedRows };
+}
+/** Sửa nhiều thuật ngữ một lượt: mỗi mục một giao dịch riêng (một mục lỗi không kéo theo các mục khác). */
+export async function editTermsBatch(pool, admin, edits) {
+  const list = (Array.isArray(edits) ? edits : []).slice(0, 60);
+  const results = [];
+  for (const e of list) {
+    try {
+      const r = await editTerm(pool, admin, e);
+      results.push({ term_id: String((e && e.term_id) || ''), ok: !!r.ok, error: r.ok ? undefined : r.error, source: r.source, after: r.after });
+    } catch (err) {
+      results.push({ term_id: String((e && e.term_id) || ''), ok: false, error: 'edit_failed' });
+    }
+  }
+  return { results, ok_count: results.filter((x) => x.ok).length, fail_count: results.filter((x) => !x.ok).length };
 }
 export async function dismissReports(pool, term_id, note) {
   const [r] = await pool.query("UPDATE term_feedback SET status = 'dismissed', handled_at = NOW(), admin_note = ? WHERE term_id = ? AND status = 'new'", [cleanText(note, 200) || 'bỏ qua', cleanText(term_id, 64)]);

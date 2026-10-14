@@ -11,10 +11,11 @@
  *   - Hạn mức THÁNG theo gói (free/pro/max). Thêm hạn mức NGÀY (12% tháng) và GIỜ (6% tháng, cuốn chiếu 60 phút) để không ai
  *     dùng hết cả tháng trong vài ngày/giờ.
  *   - Hết hạn mức tháng: dùng credit đã nạp (không bị chặn theo ngày/giờ vì đã trả tiền); hết credit thì chặn đến tháng sau.
- *   - 1 credit = 0,01 USD chi phí nhà cung cấp.
+ *   - 1 credit = 0,001 USD chi phí nhà cung cấp (đổi 2026-10-14 từ 0,01: số credit hiển thị ×10 cho dễ hình dung, giá trị tiền không đổi).
  * Giá bên dưới là ƯỚC LƯỢNG chi phí (không phải giá bán).
  */
-export const CREDIT_MICRO = 10000; // 1 credit = $0.01 = 10.000 micro-USD
+export const CREDIT_MICRO = 1000; // 1 credit = $0.001 = 1.000 micro-USD
+export const CREDITS_PER_USD = 1e6 / CREDIT_MICRO; // 1.000
 const envNum = (k, d) => { const v = parseFloat(process.env[k]); return Number.isFinite(v) ? v : d; };
 
 export const PLAN_BUDGET_USD = {
@@ -144,7 +145,7 @@ export async function addCredits({ uid, credits, reason = 'topup', ref = null, p
 
 /** Dạng gọn gửi cho giao diện (credit làm tròn, USD 2 chữ số). */
 export function publicView(b) {
-  const toCr = (u) => Math.round(u * 1000) / 10; // USD → credit, làm tròn 0,1 (tránh hiển thị 0 rồi nhảy 1)
+  const toCr = (u) => Math.round(u * CREDITS_PER_USD * 10) / 10; // USD → credit, làm tròn 0,1 (tránh hiển thị 0 rồi nhảy 1)
   return {
     state: b.state, plan: b.plan, usingCredits: b.usingCredits, retryAfterS: b.retryAfterS,
     month: { used: toCr(b.usedMonth), limit: toCr(b.monthLimit) },
