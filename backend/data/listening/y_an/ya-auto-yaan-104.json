@@ -1,0 +1,67 @@
+{
+  "id": "ya-auto-yaan-104",
+  "category": "y_an",
+  "modality": "cham",
+  "level": "cao_cap",
+  "auto": true,
+  "mt_translated": true,
+  "title_vi": "Y án châm cứu cổ: cứu Quan Nguyên trị hai ca hư lao",
+  "title_zh": "古代针灸医案：灸关元治虚劳二则",
+  "title_en": "Ancient Acupuncture Cases: Moxibustion at Guanyuan (CV4) for Two Cases of Xu-lao",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "古代针灸医案记载，一患者罹虚劳证，形体羸弱气将脱，状若受邪祟侵扰，精神萎顿气息微弱。",
+      "text_vi": "Y án châm cứu cổ ghi rằng, một bệnh nhân mắc chứng hư lao, thân thể suy nhược, khí như sắp thoát, trạng thái tựa như bị tà quỷ quấy nhiễu, tinh thần sa sút và hơi thở yếu ớt.",
+      "text_en": "An ancient acupuncture case records a patient with xu-lao: the body emaciated and qi nearly collapsing, appearing as if disturbed by malignant influences, spirit listless and breath faint.",
+      "text_pinyin": "gǔ dài zhēn jiǔ yī àn jì zǎi ， yī huàn zhě lí xū láo zhèng ， xíng tǐ léi ruò qì jiāng tuō ， zhuàng ruò shòu xié suì qīn rǎo ， jīng shén wēi dùn qì xī wēi ruò 。"
+    },
+    {
+      "seq": 2,
+      "text_zh": "医者先令其服睡圣散以耐受灸痛，俾其镇静以便承受灸感而施治，作为后续施灸之先导。",
+      "text_vi": "Thầy thuốc trước tiên bảo bệnh nhân dùng Thuỵ Thánh tán để chịu đựng đau do cứu, khiến người bệnh tĩnh tâm nhằm có thể chịu cảm giác cứu và tiến hành điều trị, làm tiền đề cho việc cứu tiếp theo.",
+      "text_en": "The physician first ordered Shuisheng San to be taken to tolerate the pain of moxibustion, calming the patient so they could endure the moxa sensations and proceed with treatment, serving as a prelude to subsequent moxibustion.",
+      "text_pinyin": "yī zhě xiān lìng qí fú shuì shèng sàn yǐ nài shòu jiǔ tòng ， bǐ qí zhèn jìng yǐ biàn chéng shòu jiǔ gǎn ér shī zhì ， zuò wéi hòu xù shī jiǔ zhī xiān dǎo 。"
+    },
+    {
+      "seq": 3,
+      "text_zh": "乃用大艾炷灸关元穴，一百五十壮后患者苏醒，续灸至三百壮，虚劳渐愈。",
+      "text_vi": "Rồi dùng đốt nhang moxa lớn cứu vào huyệt Quan Nguyên, cứu một trăm năm mươi lần thì bệnh nhân tỉnh lại, tiếp tục cứu tới ba trăm lần, hư lao dần hồi phục.",
+      "text_en": "He then applied large moxa cones to Guanyuan (CV4); after 150 cones the patient regained consciousness, moxibustion was continued to 300 cones, and the xu-lao gradually improved.",
+      "text_pinyin": "nǎi yòng dà ài zhù jiǔ guān yuán xué ， yì bǎi wǔ shí zhuàng hòu huàn zhě sū xǐng ， xù jiǔ zhì sān bǎi zhuàng ， xū láo jiàn yù 。"
+    },
+    {
+      "seq": 4,
+      "text_zh": "又有一病者，久病虚劳十余年，喘促吐痰沫、呕血不得进食，形体枯瘦，精神困顿。",
+      "text_vi": "Một bệnh nhân khác bị hư lao lâu ngày hơn mười năm, thở gấp, khạc đàm bọt, nôn ra máu không thể ăn, thân thể gầy gò khô khốc, tinh thần mệt mỏi.",
+      "text_en": "Another patient had suffered chronic xu-lao for more than ten years, with dyspnea, expectoration of frothy sputum, vomiting blood and inability to eat, an emaciated body and listless spirit.",
+      "text_pinyin": "yòu yǒu yī bìng zhě ， jiǔ bìng xū láo shí yú nián ， chuǎn cù tǔ tán mò 、 ǒu xuè bù dé jìn shí ， xíng tǐ kū shòu ， jīng shén kùn dùn 。"
+    },
+    {
+      "seq": 5,
+      "text_zh": "此前诸医皆以滋阴润肺之药治之，服药后病情反而加重，患者况愈见消瘦。",
+      "text_vi": "Trước đó các thầy thuốc đều dùng thuốc dưỡng âm, nhuận phổi để trị, nhưng sau khi dùng thuốc bệnh tình trái lại nặng hơn, bệnh nhân càng ngày càng gầy sút.",
+      "text_en": "Previously various physicians treated him with yin-nourishing, lung-moistening medicines; after taking those drugs the condition instead worsened and the patient became progressively more emaciated.",
+      "text_pinyin": "cǐ qián zhū yī jiē yǐ zī yīn rùn fèi zhī yào zhì zhī ， fú yào hòu bìng qíng fǎn ér jiā zhòng ， huàn zhě kuàng yù jiàn xiāo shòu 。"
+    },
+    {
+      "seq": 6,
+      "text_zh": "后改以大剂量人参、黄芪、干姜、附子温补脾肾，两剂之后喘定，诸症略见好转。",
+      "text_vi": "Sau đó đổi sang dùng liều lớn nhân sâm, hoàng kỳ, can khương và phụ tử để ôn bổ tỳ thận, sau hai thang chứng thở ổn định, các triệu chứng phần nào cải thiện.",
+      "text_en": "Subsequently the regimen was changed to large doses of ginseng, astragalus, dry ginger, and aconite to warm-tonify the spleen and kidneys; after two doses the dyspnea settled and the symptoms showed some improvement.",
+      "text_pinyin": "hòu gǎi yǐ dà jì liàng rén shēn 、 huáng qí 、 gān jiāng 、 fù zi wēn bǔ pí shèn ， liǎng jì zhī hòu chuǎn dìng ， zhū zhèng lüè jiàn hǎo zhuǎn 。"
+    },
+    {
+      "seq": 7,
+      "text_zh": "复配合灸关元穴五十壮，并行长期调养，十余年后体复强健。",
+      "text_vi": "Rồi phối hợp cứu huyệt Quan Nguyên năm mươi lần và tiến hành dưỡng sinh lâu dài; sau hơn mười năm điều dưỡng, thân thể hồi phục mạnh khỏe.",
+      "text_en": "He then combined moxibustion at Guanyuan with fifty cones and undertook long-term recuperation; after more than ten years of convalescence the body was restored to robustness.",
+      "text_pinyin": "fù pèi hé jiǔ guān yuán xué wǔ shí zhuàng ， bìng xíng cháng qī tiáo yǎng ， shí yú nián hòu tǐ fù qiáng jiàn 。"
+    }
+  ],
+  "source_note_vi": "Diễn giải tự động (AI) từ dữ kiện y án thật (Châm cứu), nguồn: 窦材医案，《扁鹊心书》，转引自针灸名家经典医案课件. Chưa qua rà soát thủ công.",
+  "source_note_zh": "由 AI 根据真实医案事实自动改写（针灸），来源：窦材医案，《扁鹊心书》，转引自针灸名家经典医案课件。尚未经人工校对。",
+  "source_note_en": "AI-generated narrative from real case facts (Acupuncture), source: 窦材医案，《扁鹊心书》，转引自针灸名家经典医案课件. Not yet human-reviewed.",
+  "created_at": "2026-10-14T01:20:00Z",
+  "updated_at": "2026-10-14T01:20:00Z"
+}
