@@ -21,6 +21,7 @@ import { pinyin } from 'pinyin';
 import * as laoshiFaq from './lib/laoshi-faq.js';
 import * as termLearn from './lib/term-learn.js';
 import * as aiLookup from './lib/ai-lookup.js';
+import * as webDefine from './lib/web-define.js';
 import * as aiBudget from './lib/ai-budget.js';
 import { scoreChinese, scoreWords, ensureUsageTable, consumeServerAsr } from './lib/quick-score.js';
 import crypto from 'node:crypto';
@@ -1345,6 +1346,7 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
 onDbUp(() => laoshi.ensureTable(mysqlPool).catch((e) => console.error('[laoshi] init:', e.message)));
 onDbUp(() => laoshiFaq.ensureTable(mysqlPool).catch((e) => console.error('[laoshi-faq] init:', e.message)));
 onDbUp(() => termLearn.ensureTables(mysqlPool).then(() => termLearn.startPromoteJob(mysqlPool)).catch((e) => console.error('[term-learn] init:', e.message)));
+onDbUp(() => webDefine.ensureTables(mysqlPool).catch((e) => console.error('[web-define] init:', e.message)));
 onDbUp(() => aiLookup.ensureTables(mysqlPool).catch((e) => console.error('[ai-lookup] init:', e.message)));
 onDbUp(() => speech.ensureTables(mysqlPool).catch((e) => console.error('[speech] init:', e.message)));
 onDbUp(() => laoshiLearn.ensureTables(mysqlPool).then(() => laoshiLearn.loadLearned(mysqlPool, true)).catch((e) => console.error('[laoshi-learn] init:', e.message)));
@@ -1624,6 +1626,13 @@ app.post('/api/ai-lookup', express.json({ limit: '4kb' }), verifyFirebaseToken, 
     res.status(502).json({ success: false, error: 'upstream' });
   }
 });
+// Định nghĩa từ phổ thông từ nguồn mở (Wiktionary) — không AI, không credit; chỉ cho người dùng đã đăng nhập (chống lạm dụng).
+app.get('/api/web-define', verifyFirebaseToken, async (req, res) => {
+  try {
+    const out = await webDefine.define(mysqlPool, String(req.query.q || ''));
+    res.json({ success: true, data: out && out.entries && out.entries.length ? out : null });
+  } catch (e) { res.status(502).json({ success: false, error: 'upstream' }); }
+});
 // ---- Quản trị: góp ý thuật ngữ / thuật ngữ mới tự học / kho câu hỏi Lão Sư ----
 const adminJson = (fn) => async (req, res) => { try { res.json({ success: true, data: await fn(req) }); } catch (e) { console.error('admin:', e.message); res.status(500).json({ success: false, error: 'admin_failed' }); } };
 app.get('/api/admin/term-feedback', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.listFeedback(mysqlPool, String(req.query.status || 'new'))));
@@ -1645,6 +1654,16 @@ app.post('/api/admin/term-edit-batch', ...adminOnly, requireDocsDb, async (req, 
     const out = await termLearn.editTermsBatch(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, (req.body || {}).edits);
     res.json({ success: true, data: out });
   } catch (e) { console.error('term-edit-batch:', e.message); res.status(500).json({ success: false, error: 'edit_failed', detail: String((e && (e.code || e.message)) || '').slice(0, 80) }); }
+});
+// Thêm một thuật ngữ MỚI vào kho theo đề nghị của người dùng (báo "kho chưa có") — admin duyệt rồi mới vào.
+app.post('/api/admin/term-add', ...adminOnly, requireDocsDb, async (req, res) => {
+  try {
+    const b = req.body || {};
+    const l = await termLearn.learnTermDirect(mysqlPool, { hz: b.hz, py: b.py, vi: b.vi, en: b.en, def_vi: b.def_vi, group: b.group }, 'đề nghị người dùng (admin duyệt)');
+    if (!l) return res.status(400).json({ success: false, error: 'invalid_term' });
+    if (b.report_term_id) await termLearn.dismissReports(mysqlPool, String(b.report_term_id), `đã thêm vào kho (${l.termId})`);
+    res.json({ success: true, data: { term_id: l.termId, inserted: l.inserted } });
+  } catch (e) { console.error('term-add:', e.message); res.status(500).json({ success: false, error: 'add_failed', detail: String(e.message || '').slice(0, 80) }); }
 });
 app.post('/api/admin/term-reports/dismiss', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.dismissReports(mysqlPool, String((req.body || {}).term_id || ''), (req.body || {}).note)));
 // ---- Rà soát thuật ngữ máy dịch theo QUY ƯỚC dịch (đề xuất → admin duyệt → ghi bằng /api/admin/term-edit) ----

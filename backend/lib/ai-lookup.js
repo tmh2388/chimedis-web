@@ -8,7 +8,7 @@
  */
 import crypto from 'node:crypto';
 import { pinyin } from 'pinyin';
-import { styleBlock } from './tcm-style.js';
+import { styleBlock, termByHz } from './tcm-style.js';
 import { searchTerms, factsFor } from './csdl-lessons.js';
 import { costFromUsage } from './ai-budget.js';
 import { learnTermDirect } from './term-learn.js';
@@ -42,6 +42,13 @@ export async function ensureTables(pool) {
     term_id VARCHAR(64) NULL, hits INT NOT NULL DEFAULT 0, created_by VARCHAR(128) NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, KEY idx_created (created_at)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`);
+  // cột mới (bảng do dict sở hữu): loại truy vấn + nghĩa thông thường + ngữ cảnh Trung y
+  try {
+    const [cols] = await pool.query("SELECT COLUMN_NAME AS n FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'ai_lookup'");
+    const have = new Set(cols.map((c) => c.n));
+    const add = [['kind', 'VARCHAR(24) NULL'], ['meaning_vi', 'TEXT NULL'], ['meaning_zh', 'TEXT NULL'], ['meaning_en', 'TEXT NULL'], ['tcm_context', 'TEXT NULL']];
+    for (const [c, def] of add) if (!have.has(c)) await pool.query(`ALTER TABLE ai_lookup ADD COLUMN ${c} ${def}`);
+  } catch (e) { console.error('[ai-lookup] cột mới:', e.message); }
   await pool.query(`CREATE TABLE IF NOT EXISTS ai_lookup_usage (
     firebase_uid VARCHAR(128) NOT NULL, day DATE NOT NULL, n INT NOT NULL DEFAULT 0, PRIMARY KEY (firebase_uid, day)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`);
@@ -49,7 +56,8 @@ export async function ensureTables(pool) {
 
 function rowToData(r, source) {
   let related = []; try { related = JSON.parse(r.related_json || '[]'); } catch (_) { /* bỏ qua */ }
-  return { q: r.q_display, is_medical: !!r.is_medical, hz: r.hz, py: r.py, vi: r.vi, en: r.en, def_vi: r.def_vi, def_zh: r.def_zh, def_en: r.def_en,
+  return { q: r.q_display, kind: r.kind || (r.is_medical ? 'tcm_term' : 'general_word'), is_medical: !!r.is_medical, hz: r.hz, py: r.py, vi: r.vi, en: r.en,
+    def_vi: r.def_vi, def_zh: r.def_zh, def_en: r.def_en, meaning_vi: r.meaning_vi, meaning_zh: r.meaning_zh, meaning_en: r.meaning_en, tcm_context: r.tcm_context,
     related, confidence: r.confidence == null ? null : Number(r.confidence), note: r.note, term_id: r.term_id, source };
 }
 
@@ -63,17 +71,23 @@ export async function getCached(pool, q) {
 
 async function askModel(q, ctxText) {
   const sys = 'Bạn là biên tập viên từ điển Trung y – y khoa Việt/Trung/Anh của Chimedis. Người dùng tra một cụm mà kho chưa có. '
-    + 'Hãy cho biết đó là gì: chữ Hán giản thể, pinyin, tên tiếng Việt (HÁN-VIỆT chuẩn nếu là thuật ngữ Trung y), tiếng Anh chuẩn, định nghĩa ngắn gọn (≤ 220 ký tự mỗi ngôn ngữ), '
-    + 'và vài thuật ngữ liên quan. KHÔNG bịa: không chắc thì confidence thấp. Không phải thuật ngữ y khoa/Trung y/sinh lý/bệnh học thì is_medical=false. '
-    + 'Không chẩn đoán/kê đơn. Chỉ trả JSON.\n\n' + ctxText;
-  const user = `Cụm cần tra: "${q}"\nTrả JSON: {"is_medical":true|false,"hz":"<chữ Hán giản thể, 1-12 chữ>","py":"<pinyin có thanh>","vi":"<tên Việt>","en":"<tên Anh>",`
-    + '"def_vi":"<định nghĩa Việt>","def_zh":"<定义>","def_en":"<English definition>","group":"ly_luan|chan_doan|benh_chung|thuoc|cham_cuu|giai_phau|nghien_cuu|khac",'
-    + '"related":[{"hz":"","vi":"","en":""}],"confidence":0.0,"note":"<lưu ý ngắn nếu có nhiều nghĩa>"}';
+    + 'Phân loại cụm đó (kind): "tcm_term" = thuật ngữ Trung y/y khoa/giải phẫu/bệnh học; "general_word" = từ phổ thông không thuộc y khoa; '
+    + '"symptom_or_topic" = cách nói đời thường về triệu chứng/cảm giác/vấn đề (vd. 心疼, mất ngủ, đau đầu) mà người học muốn biết LIÊN QUAN gì trong Trung y. '
+    + 'LUÔN cho nghĩa thông thường của cụm (meaning_*), không từ chối vì "không phải thuật ngữ". Nếu có liên hệ với Trung y, nêu ngắn trong tcm_context '
+    + 'và liệt kê thuật ngữ liên quan (related) kèm loại: huyet (huyệt vị), benh (bệnh/chứng), phuong (phương/bài thuốc), duoc (vị thuốc), khac. '
+    + 'Chỉ nêu những thuật ngữ BẠN CHẮC CHẮN có thật, ưu tiên đúng tên Hán chuẩn (giản thể). KHÔNG bịa; không chắc thì bỏ. '
+    + 'Không chẩn đoán/kê đơn: chỉ là thông tin tra cứu học tập. Chỉ trả JSON.\n\n' + ctxText;
+  const user = `Cụm cần tra: "${q}"\nTrả JSON: {"kind":"tcm_term|general_word|symptom_or_topic","hz":"<chữ Hán giản thể của cụm hoặc tương đương, 1-12 chữ, nếu có>","py":"","vi":"<tên/nghĩa ngắn tiếng Việt (Hán-Việt nếu là thuật ngữ Trung y)>","en":"<English>",`
+    + '"meaning_vi":"<nghĩa thông thường ≤ 200 ký tự>","meaning_zh":"","meaning_en":"",'
+    + '"tcm_context":"<liên hệ Trung y ≤ 260 ký tự, hoặc rỗng>",'
+    + '"def_vi":"<định nghĩa thuật ngữ nếu kind=tcm_term>","def_zh":"","def_en":"",'
+    + '"group":"ly_luan|chan_doan|benh_chung|thuoc|cham_cuu|giai_phau|nghien_cuu|khac",'
+    + '"related":[{"hz":"","vi":"","en":"","type":"huyet|benh|phuong|duoc|khac"}],"confidence":0.0,"note":"<lưu ý ngắn nếu nhiều nghĩa>"}';
   const r = await fetch(`${OPENAI_BASE}/v1/chat/completions`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: MODEL, messages: [{ role: 'system', content: sys }, { role: 'user', content: user }],
-      response_format: { type: 'json_object' }, max_completion_tokens: 3500, reasoning_effort: 'low' }),
+      response_format: { type: 'json_object' }, max_completion_tokens: 4000, reasoning_effort: 'low' }),
   });
   if (!r.ok) throw Object.assign(new Error(`lookup_llm ${r.status}`), { code: 'upstream' });
   const j = await r.json();
@@ -107,33 +121,37 @@ export async function lookup(pool, { q, uid, plan = 'free', chargeSystem }) {
   const { parsed, costUsd } = await askModel(display, ctx);
   if (chargeSystem && costUsd) chargeSystem(costUsd);
 
+  const kind = ['tcm_term', 'general_word', 'symptom_or_topic'].includes(parsed.kind) ? parsed.kind : (parsed.is_medical ? 'tcm_term' : 'general_word');
+  const isMed = kind === 'tcm_term';
   const hz = String(parsed.hz || '').replace(/[^㐀-鿿]/g, '').slice(0, 24);
-  const isMed = !!parsed.is_medical;
   let py = String(parsed.py || '').slice(0, 160);
   if (hz) { try { py = pinyin(hz, { style: 'tone' }).map((a) => a[0]).join(' '); } catch (_) { /* giữ bản của mô hình */ } }
   const conf = Math.max(0, Math.min(1, Number(parsed.confidence) || 0));
+  // Thuật ngữ liên quan: đối chiếu với KHO — mục có trong kho dùng tên chuẩn của kho và dẫn tới mục đó; mục chưa có chỉ là gợi ý của AI.
+  const related = (Array.isArray(parsed.related) ? parsed.related : []).slice(0, 8).map((x) => {
+    const rhz = String(x.hz || '').replace(/[^㐀-鿿]/g, '').slice(0, 24);
+    const hit = rhz ? termByHz(rhz) : null;
+    return { hz: rhz, vi: String((hit && hit.vi) || x.vi || '').slice(0, 80), en: String((hit && hit.en) || x.en || '').slice(0, 80),
+      type: ['huyet', 'benh', 'phuong', 'duoc', 'khac'].includes(x.type) ? x.type : 'khac', term_id: hit ? hit.id : null, in_kho: !!hit };
+  }).filter((x) => x.hz);
   const row = {
-    q_display: display, is_medical: isMed ? 1 : 0, hz: hz || null, py: py || null,
+    q_display: display, is_medical: isMed ? 1 : 0, kind, hz: hz || null, py: py || null,
     vi: String(parsed.vi || '').slice(0, 190) || null, en: String(parsed.en || '').slice(0, 190) || null,
     def_vi: String(parsed.def_vi || '').slice(0, 600) || null, def_zh: String(parsed.def_zh || '').slice(0, 600) || null, def_en: String(parsed.def_en || '').slice(0, 600) || null,
-    related_json: JSON.stringify((Array.isArray(parsed.related) ? parsed.related : []).slice(0, 6).map((x) => ({ hz: String(x.hz || '').slice(0, 24), vi: String(x.vi || '').slice(0, 80), en: String(x.en || '').slice(0, 80) }))),
-    confidence: conf, note: String(parsed.note || '').slice(0, 250) || null,
+    meaning_vi: String(parsed.meaning_vi || '').slice(0, 600) || null, meaning_zh: String(parsed.meaning_zh || '').slice(0, 600) || null, meaning_en: String(parsed.meaning_en || '').slice(0, 600) || null,
+    tcm_context: String(parsed.tcm_context || '').slice(0, 800) || null,
+    related_json: JSON.stringify(related), confidence: conf, note: String(parsed.note || '').slice(0, 250) || null,
   };
   let termId = null;
   if (isMed && conf >= 0.6 && hz && row.vi && row.en) {
     try { const l = await learnTermDirect(pool, { ...row, group: parsed.group }, `tra cứu AI "${display}"`); termId = l ? l.termId : null; } catch (e) { console.error('[ai-lookup] learn:', e.message); }
   }
-  await pool.query(
-    `INSERT INTO ai_lookup (qkey, q_display, is_medical, hz, py, vi, en, def_vi, def_zh, def_en, related_json, confidence, note, term_id, created_by)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-     ON DUPLICATE KEY UPDATE hits = hits + 1`,
-    [key, row.q_display, row.is_medical, row.hz, row.py, row.vi, row.en, row.def_vi, row.def_zh, row.def_en, row.related_json, row.confidence, row.note, termId, uid]);
-  // Cùng một thuật ngữ có thể được tra bằng nhiều cách viết (vd. tiếng Việt và chữ Hán) → thêm khoá theo chữ Hán để lần sau trúng cache.
+  const cols = '(qkey, q_display, is_medical, kind, hz, py, vi, en, def_vi, def_zh, def_en, meaning_vi, meaning_zh, meaning_en, tcm_context, related_json, confidence, note, term_id, created_by)';
+  const vals = (k, d) => [k, d, row.is_medical, row.kind, row.hz, row.py, row.vi, row.en, row.def_vi, row.def_zh, row.def_en, row.meaning_vi, row.meaning_zh, row.meaning_en, row.tcm_context, row.related_json, row.confidence, row.note, termId, uid];
+  await pool.query(`INSERT INTO ai_lookup ${cols} VALUES (${new Array(20).fill('?').join(',')}) ON DUPLICATE KEY UPDATE hits = hits + 1`, vals(key, row.q_display));
+  // Cùng một thuật ngữ có thể được tra bằng nhiều cách viết → thêm khoá theo chữ Hán để lần sau trúng cache.
   if (hz && normKey(hz) !== key) {
-    await pool.query(
-      `INSERT IGNORE INTO ai_lookup (qkey, q_display, is_medical, hz, py, vi, en, def_vi, def_zh, def_en, related_json, confidence, note, term_id, created_by)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-      [normKey(hz), hz, row.is_medical, row.hz, row.py, row.vi, row.en, row.def_vi, row.def_zh, row.def_en, row.related_json, row.confidence, row.note, termId, uid]).catch(() => {});
+    await pool.query(`INSERT IGNORE INTO ai_lookup ${cols} VALUES (${new Array(20).fill('?').join(',')})`, vals(normKey(hz), hz)).catch(() => {});
   }
   return { ok: true, data: { ...rowToData({ ...row, term_id: termId }, 'ai'), term_id: termId } };
 }

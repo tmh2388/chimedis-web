@@ -68,3 +68,10 @@ export function styleBlock(texts, { max = 40, rules = true } = {}) {
     : '';
   return [rules ? STYLE_RULES : '', table].filter(Boolean).join('\n\n');
 }
+
+/** Mục CSDL có chữ Hán đúng bằng `hz` (null nếu kho chưa có). */
+export function termByHz(hz) {
+  const { byHz } = build();
+  const a = byHz.get(String(hz || '').trim());
+  return a && a[0] ? a[0] : null;
+}
