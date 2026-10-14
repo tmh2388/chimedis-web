@@ -89,3 +89,7 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## v61 — đồng bộ ngôn ngữ chimedis.vn ⇄ dict
 - Vào dict kèm `?lang=vi|zh|en` → lưu `chimedis_lang` TRƯỚC khi khởi tạo giao diện, xoá tham số khỏi URL (replaceState); ngôn ngữ từ URL thắng cài đặt máy chủ lần đó rồi được đẩy lên máy chủ.
 - `withLangParam(url)`: mọi liên kết ra `*.chimedis.vn` (không phải dict) gắn `?lang=` theo `state.lang` TẠI LÚC BẤM (hiện áp dụng cho nút Nâng cấp/Gia hạn → goi.html).
+
+## v62 — bộ tra cứu offline: trạng thái rõ + tải bền
+- Mục menu "Bộ tra cứu offline" giờ MỞ màn trạng thái (không tự tải lại mỗi lần bấm). Trạng thái: ✓ đã tải đủ (n mục, a/b hình, ngày) · ◐ tải dở a/b (nút "Tiếp tục tải") · chưa tải; nút đổi theo trạng thái (Tải về máy / Tiếp tục tải / Cập nhật).
+- Tải hình: mỗi hình thử lại 3 lần, timeout 20 s; một hình lỗi KHÔNG hỏng cả gói (đếm số hình chưa tải, lần sau tiếp tục). Lỗi được báo đúng nguyên nhân: không có mạng / quá 20 giây / máy chủ từ chối (mã) / máy chủ lỗi / kết nối ngắt giữa chừng — thay vì chung chung "kiểm tra mạng".
