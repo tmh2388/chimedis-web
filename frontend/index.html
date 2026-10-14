@@ -1671,6 +1671,28 @@ function saveFavoritesLocal(){
   try{ localStorage.setItem(FAVORITES_KEY, JSON.stringify([...state.favorites])); }catch(e){}
 }
 
+// ĐỒNG BỘ NGÔN NGỮ giữa chimedis.vn ⇄ dict.chimedis.vn: localStorage không chung tên miền nên ngôn ngữ đi theo URL (?lang=vi|zh|en).
+// Đọc TRƯỚC khi khởi tạo giao diện: lưu vào khoá ngôn ngữ của dict rồi xoá tham số khỏi URL.
+window.__urlLang = null;
+(function(){
+  try{
+    const u = new URL(location.href);
+    if(!u.searchParams.has('lang')) return;
+    const v = (u.searchParams.get('lang') || '').toLowerCase();
+    if(['vi', 'zh', 'en'].includes(v)){ localStorage.setItem('chimedis_lang', v); window.__urlLang = v; }
+    u.searchParams.delete('lang');
+    history.replaceState(null, '', u.pathname + (u.search || '') + u.hash);
+  }catch(e){}
+})();
+// Gắn ?lang=<ngôn ngữ đang dùng> vào liên kết ra chimedis.vn / admin.chimedis.vn TẠI THỜI ĐIỂM BẤM (không cố định lúc dựng).
+function withLangParam(url){
+  try{
+    const u = new URL(url, location.href);
+    if(/(^|\.)chimedis\.vn$/.test(u.hostname) && u.hostname !== 'dict.chimedis.vn' && ['vi', 'zh', 'en'].includes(state.lang)) u.searchParams.set('lang', state.lang);
+    return u.toString();
+  }catch(e){ return url; }
+}
+
 let state = {
   group1: 'all',       // nhóm cấp 1 đang chọn
   group2: null,        // nhóm cấp 2 (hệ cơ quan) đang chọn
@@ -1857,7 +1879,8 @@ async function syncSettingsWithServer(){
     const json = await res.json();
     const saved = json.data;
     if(saved && (saved.lang || saved.content_langs || saved.han_script)){
-      if(saved.lang) { state.lang = saved.lang; localStorage.setItem('chimedis_lang', saved.lang); }
+      if(saved.lang && !window.__urlLang) { state.lang = saved.lang; localStorage.setItem('chimedis_lang', saved.lang); }
+      else if(window.__urlLang && saved.lang !== window.__urlLang){ window.__urlLang = null; setTimeout(() => { try{ pushSettingsIfLoggedIn(); }catch(e){} }, 0); } // ngôn ngữ từ URL thắng, rồi đẩy lên máy chủ
       if(saved.content_langs){
         const keys = saved.content_langs.split(',').map(s=>s.trim()).filter(Boolean);
         state.contentLangs = { zh: keys.includes('zh'), vi: keys.includes('vi'), en: keys.includes('en') };
@@ -2052,12 +2075,12 @@ function updateAuthUI(){
 // chimedis.vn là TRANG MẸ về gói/nâng cấp/mức dùng (quyết định chủ dự án 2026-10-14; xem docs/INFRA-plans-and-usage.md ở chimedis-home).
 // dict KHÔNG dựng khung nâng cấp riêng nữa: mọi nút Nâng cấp/Gia hạn/Nạp credit mở trang này. App iOS vẫn NO_PURCHASE_UI (không link).
 const PLANS_URL = 'https://chimedis.vn/goi.html';
-function openPlansPage(){ try{ window.open(PLANS_URL, '_blank', 'noopener'); }catch(e){ window.location.href = PLANS_URL; } }
+function openPlansPage(){ const url = withLangParam(PLANS_URL); try{ window.open(url, '_blank', 'noopener'); }catch(e){ window.location.href = url; } }
 function maybeOpenUpgradeFromHash(){
   if(location.hash !== '#nang-cap' || NO_PURCHASE_UI) return;
   if(!state.user){ if(window.__nangCapAsked) return; window.__nangCapAsked = true; openAuthModal(); return; }
   try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
-  window.location.href = PLANS_URL; // tới từ liên kết ngoài (không có cử chỉ người dùng → không dùng cửa sổ mới)
+  window.location.href = withLangParam(PLANS_URL); // tới từ liên kết ngoài (không có cử chỉ người dùng → không dùng cửa sổ mới)
 }
 window.chimedisAuthStateChanged = async function(user){
   const prevPlan = state.plan;

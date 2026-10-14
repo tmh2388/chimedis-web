@@ -85,3 +85,7 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - **Trình xem hình huyệt**: áp dụng transform đồng bộ (trước dùng rAF — trên iOS có lúc không chạy nên ảnh không hiện tới khi bấm +/−) và khớp lại khi ảnh tải xong.
 - **Duyệt/sửa hàng loạt**: `POST /api/admin/term-edit-batch` (≤60 mục, mỗi mục một giao dịch); màn Từ báo sai: chọn nhiều → "Áp dụng đề xuất chính"; thẻ Rà soát: ô sửa nhanh VI/EN từng dòng + "Áp dụng đã chọn"; sau khi lưu có thanh "Xem từ" để xem thực tế. Danh sách báo sai có bộ nhớ đệm (mở màn hiện ngay, cập nhật sau).
 - **Layout ≥1024px** (web/iPad ngang): khung 1120px (≥1360: 1280px), danh sách thuật ngữ 2–3 cột, bài nghe 2–3 cột, hộp chi tiết 760px, màn chat/nói giới hạn 860px. Điện thoại và iPad dọc không đổi.
+
+## v61 — đồng bộ ngôn ngữ chimedis.vn ⇄ dict
+- Vào dict kèm `?lang=vi|zh|en` → lưu `chimedis_lang` TRƯỚC khi khởi tạo giao diện, xoá tham số khỏi URL (replaceState); ngôn ngữ từ URL thắng cài đặt máy chủ lần đó rồi được đẩy lên máy chủ.
+- `withLangParam(url)`: mọi liên kết ra `*.chimedis.vn` (không phải dict) gắn `?lang=` theo `state.lang` TẠI LÚC BẤM (hiện áp dụng cho nút Nâng cấp/Gia hạn → goi.html).
