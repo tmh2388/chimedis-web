@@ -198,6 +198,29 @@ export async function promoteBatch(pool, { limit = BATCH } = {}) {
   return out;
 }
 
+/**
+ * Đưa MỘT thuật ngữ (do tra cứu AI sinh ra) vào kho "Tổng hợp" (chưa duyệt, đánh dấu máy dịch) để lần sau tìm thấy ngay, không gọi AI nữa.
+ * @returns {{termId:string, inserted:boolean}|null} null nếu thiếu dữ liệu
+ */
+export async function learnTermDirect(pool, it, noteSrc = 'tra cứu AI') {
+  const hz = String(it.hz || '').trim();
+  const vi = String(it.vi || '').trim().slice(0, 150), en = String(it.en || '').trim().slice(0, 150);
+  if (!HAN_TERM.test(hz) || !vi || !en) return null;
+  const names = await knownNameSet(pool);
+  const termId = termIdOf(hz);
+  const exists = names.has(hz.toLowerCase());
+  if (exists) return { termId, inserted: false };
+  const g = GROUPS[it.group] || GROUPS.khac;
+  const note = `AI đề xuất ${new Date().toISOString().slice(0, 10)} từ ${noteSrc} — chờ chuyên gia duyệt`;
+  await pool.query(
+    `INSERT IGNORE INTO general_terms (term_id, domain, organ_system_zh, organ_system_vi, organ_system_en, hz, py, vi, en, position_vi, source, verify, machine_translated, verify_note)
+     VALUES (?, 'Tổng hợp', ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, ?)`,
+    [termId, `新增·${g.zh}`, `Mới (tự học) · ${g.vi}`, `New (auto-learned) · ${g.en}`, hz, String(it.py || '').slice(0, 120) || null, vi, en,
+      String(it.def_vi || '').slice(0, 400) || null, SOURCE, note]);
+  invalidateNames();
+  return { termId, inserted: true };
+}
+
 let timer = null;
 export function startPromoteJob(pool, everyMs = 30 * 60e3) {
   if (timer || !pool) return;

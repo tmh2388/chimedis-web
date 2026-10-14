@@ -20,6 +20,7 @@ import { quickEval, dominantLang, isMixed as isMixedText } from './lib/quick-eva
 import { pinyin } from 'pinyin';
 import * as laoshiFaq from './lib/laoshi-faq.js';
 import * as termLearn from './lib/term-learn.js';
+import * as aiLookup from './lib/ai-lookup.js';
 import * as aiBudget from './lib/ai-budget.js';
 import { scoreChinese, scoreWords, ensureUsageTable, consumeServerAsr } from './lib/quick-score.js';
 import crypto from 'node:crypto';
@@ -1344,6 +1345,7 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
 onDbUp(() => laoshi.ensureTable(mysqlPool).catch((e) => console.error('[laoshi] init:', e.message)));
 onDbUp(() => laoshiFaq.ensureTable(mysqlPool).catch((e) => console.error('[laoshi-faq] init:', e.message)));
 onDbUp(() => termLearn.ensureTables(mysqlPool).then(() => termLearn.startPromoteJob(mysqlPool)).catch((e) => console.error('[term-learn] init:', e.message)));
+onDbUp(() => aiLookup.ensureTables(mysqlPool).catch((e) => console.error('[ai-lookup] init:', e.message)));
 onDbUp(() => speech.ensureTables(mysqlPool).catch((e) => console.error('[speech] init:', e.message)));
 onDbUp(() => laoshiLearn.ensureTables(mysqlPool).then(() => laoshiLearn.loadLearned(mysqlPool, true)).catch((e) => console.error('[laoshi-learn] init:', e.message)));
 const maxOnly = [verifyFirebaseToken, requirePlan(mysqlPool, 'max')];
@@ -1599,6 +1601,29 @@ app.post('/api/payments/email', requireDocsDb, async (req, res) => {
   }
 });
 
+// ---- Tra cứu bằng AI cho thuật ngữ kho chưa có (tự học; chi phí do hệ thống chịu) ----
+app.post('/api/ai-lookup', express.json({ limit: '4kb' }), verifyFirebaseToken, requireDocsDb, async (req, res) => {
+  try {
+    const b = req.body || {};
+    const q = String(b.q || '').trim().slice(0, 60);
+    if (!q) return res.status(400).json({ success: false, error: 'empty' });
+    if (b.cache_only) {
+      const hit = await aiLookup.getCached(mysqlPool, q);
+      return res.json({ success: true, data: hit || null });
+    }
+    if (!process.env.OPENAI_API_KEY) return res.status(503).json({ success: false, error: 'openai_not_configured' });
+    const plan = await resolvePlan(mysqlPool, req.firebaseUser);
+    const out = await aiLookup.lookup(mysqlPool, {
+      q, uid: req.firebaseUser.uid, plan,
+      chargeSystem: (costUsd) => aiBudget.charge({ uid: 'system', app: 'dict', feature: 'ai_lookup', costUsd }),
+    });
+    if (!out.ok) return res.status(out.error === 'not_a_term' ? 400 : 429).json({ success: false, error: out.error, limit: out.limit });
+    res.json({ success: true, data: out.data });
+  } catch (e) {
+    console.error('ai-lookup:', e.message);
+    res.status(502).json({ success: false, error: 'upstream' });
+  }
+});
 // ---- Quản trị: góp ý thuật ngữ / thuật ngữ mới tự học / kho câu hỏi Lão Sư ----
 const adminJson = (fn) => async (req, res) => { try { res.json({ success: true, data: await fn(req) }); } catch (e) { console.error('admin:', e.message); res.status(500).json({ success: false, error: 'admin_failed' }); } };
 app.get('/api/admin/term-feedback', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.listFeedback(mysqlPool, String(req.query.status || 'new'))));
