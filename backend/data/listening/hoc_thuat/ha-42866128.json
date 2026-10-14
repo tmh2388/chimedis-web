@@ -1,0 +1,129 @@
+{
+  "id": "ha-42866128",
+  "category": "hoc_thuat",
+  "level": "so_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Wangshi Baochi Pill for functional dyspepsia syndrome in infants and toddlers: a multicenter randomized placebo-controlled trial.",
+  "title_zh": "王氏宝驰丸治疗婴幼儿功能性消化不良综合征：一项多中心随机安慰剂对照试验",
+  "title_vi": "Wangshi Baochi Pill cho hội chứng khó tiêu chức năng ở trẻ sơ sinh và trẻ mới biết đi: một thử nghiệm đối chứng giả dược ngẫu nhiên đa trung tâm.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Gastrointestinal discomfort in infants and toddlers is common, yet many cases may not meet the Rome IV diagnostic criteria, posing a challenge to clinical management.",
+      "text_zh": "婴幼儿胃肠道不适很常见，但许多病例可能不符合罗马IV诊断标准，对临床管理构成挑战。",
+      "text_vi": "Khó chịu đường tiêu hóa ở trẻ sơ sinh và trẻ mới biết đi là phổ biến, nhưng nhiều trường hợp có thể không đáp ứng các tiêu chí chẩn đoán Rome IV, đặt ra một thách thức đối với việc quản lý lâm sàng.",
+      "text_pinyin": "yīng yòu ér wèi cháng dào bù shì hěn cháng jiàn ， dàn xǔ duō bìng lì kě néng bù fú hé luó mǎ IV zhěn duàn biāo zhǔn ， duì lín chuáng guǎn lǐ gòu chéng tiǎo zhàn 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "To address this gap, Chinese experts have proposed the novel diagnostic entity \"functional dyspepsia syndrome in infants and toddlers\" (FDSIT).",
+      "text_zh": "为了解决这一差距，中国专家提出了新型诊断实体“婴幼儿功能性消化不良综合征” （ FDSIT ）。",
+      "text_vi": "Để giải quyết khoảng cách này, các chuyên gia Trung Quốc đã đề xuất tổ chức chẩn đoán mới \"hội chứng khó tiêu chức năng ở trẻ sơ sinh và trẻ mới biết đi\" (FDSIT).",
+      "text_pinyin": "wèi le jiě jué zhè yī chā jù ， zhōng guó zhuān jiā tí chū le xīn xíng zhěn duàn shí tǐ “ yīng yòu ér gōng néng xìng xiāo huà bù liáng zōng hé zhēng ” （ FDSIT ）。"
+    },
+    {
+      "seq": 3,
+      "text_en": "Therapeutic options for functional gastrointestinal disorders in infants and toddlers remain considerably limited, particularly with regard to conventional Western pharmacotherapies.",
+      "text_zh": "婴幼儿功能性胃肠道疾病的治疗选择仍然相当有限，特别是在常规西方药物治疗方面。",
+      "text_vi": "Các lựa chọn điều trị cho các rối loạn chức năng đường tiêu hóa ở trẻ sơ sinh và trẻ mới biết đi vẫn còn hạn chế đáng kể, đặc biệt là đối với các liệu pháp dược lý thông thường của phương Tây.",
+      "text_pinyin": "yīng yòu ér gōng néng xìng wèi cháng dào jí bìng de zhì liáo xuǎn zé réng rán xiāng dāng yǒu xiàn ， tè bié shì zài cháng guī xī fāng yào wù zhì liáo fāng miàn 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "Wangshi Baochi Pill (WBP), a traditional Chinese medicine with a long history of pediatric use, has shown efficacy in older children (≥4 years) with functional dyspepsia.",
+      "text_zh": "王氏宝驰丸（ WBP ）是一种儿科使用历史悠久的中药，在功能性消化不良的大龄儿童（ ≥ 4岁）中显示出疗效。",
+      "text_vi": "Wangshi Baochi Pill (WBP), một loại thuốc cổ truyền Trung Quốc có lịch sử sử dụng lâu dài ở trẻ em, đã cho thấy hiệu quả ở trẻ lớn hơn (≥4 tuổi) với chứng khó tiêu chức năng.",
+      "text_pinyin": "wáng shì bǎo chí wán （ WBP ） shì yī zhǒng ér kē shǐ yòng lì shǐ yōu jiǔ de zhōng yào ， zài gōng néng xìng xiāo huà bù liáng de dà líng ér tóng （ ≥ 4 suì ） zhōng xiǎn shì chū liáo xiào 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "However, its efficacy and safety for FDSIT remain unclear.",
+      "text_zh": "然而，其对FDSIT的疗效和安全性尚不清楚。",
+      "text_vi": "Tuy nhiên, hiệu quả và độ an toàn của nó đối với FDSIT vẫn chưa rõ ràng.",
+      "text_pinyin": "rán ér ， qí duì FDSIT de liáo xiào hé ān quán xìng shàng bù qīng chǔ 。"
+    },
+    {
+      "seq": 6,
+      "text_en": "This study aimed to assess the efficacy and safety of WBP in infants and toddlers diagnosed with FDSIT according to the Chinese expert consensus.",
+      "text_zh": "本研究旨在根据中国专家共识评估WBP在诊断为FDSIT的婴儿和幼儿中的有效性和安全性。",
+      "text_vi": "Nghiên cứu này nhằm đánh giá hiệu quả và độ an toàn của WBP ở trẻ sơ sinh và trẻ mới biết đi được chẩn đoán mắc FDSIT theo sự đồng thuận của chuyên gia Trung Quốc.",
+      "text_pinyin": "běn yán jiū zhǐ zài gēn jù zhōng guó zhuān jiā gòng shí píng gū WBP zài zhěn duàn wèi FDSIT de yīng ér hé yòu ér zhōng de yǒu xiào xìng hé ān quán xìng 。"
+    },
+    {
+      "seq": 7,
+      "text_en": "This multicenter, randomized, double-blind, placebo-controlled trial was conducted across 15 hospitals in China.",
+      "text_zh": "这项多中心、随机、双盲、安慰剂对照试验在中国15家医院进行。",
+      "text_vi": "Thử nghiệm đa trung tâm, ngẫu nhiên, mù đôi, có đối chứng với giả dược này được thực hiện trên 15 bệnh viện ở Trung Quốc.",
+      "text_pinyin": "zhè xiàng duō zhōng xīn 、 suí jī 、 shuāng máng 、 ān wèi jì duì zhào shì yàn zài zhōng guó 15 jiā yī yuàn jìn xíng 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "Eligible participants aged 1-36 months were randomly assigned (1:1, block size 4) to receive WBP (2 mg/kg twice daily) or a matching placebo for 7 days, with follow-up through day 14.",
+      "text_zh": "年龄在1-36个月的合格参与者被随机分配（ 1: 1 ，块大小4 ）接受WBP （ 2 mg/kg ，每日两次）或对应的安慰剂，持续7天，随访至第14天。",
+      "text_vi": "Những người tham gia đủ điều kiện từ 1-36 tháng tuổi được chỉ định ngẫu nhiên (1:1, kích thước khối 4) để nhận WBP (2 mg/kg hai lần mỗi ngày) hoặc giả dược phù hợp trong 7 ngày, theo dõi đến ngày 14.",
+      "text_pinyin": "nián líng zài 1-36 gè yuè de hé gé cān yù zhě bèi suí jī fēn pèi （ 1: 1 ， kuài dà xiǎo 4 ） jiē shòu WBP （ 2 mg/kg ， měi rì liǎng cì ） huò duì yìng de ān wèi jì ， chí xù 7 tiān ， suí fǎng zhì dì 14 tiān 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "The primary endpoint was the combined symptom effectiveness rate (CSER) at day 7, defined as the proportion of participants achieving a ≥50% reduction in total symptom score across five prespecified symptom domains, each graded on a 4‑point scale.",
+      "text_zh": "主要终点是第7天的综合症状有效率（ CSER ） ，定义为在五个预先指定的症状域中总症状评分降低≥ 50 ％的参与者比例，每个症状域以4分制评分。",
+      "text_vi": "Điểm cuối chính là tỷ lệ hiệu quả của triệu chứng kết hợp (CSER) vào ngày thứ 7, được định nghĩa là tỷ lệ người tham gia đạt được mức giảm ≥50% tổng điểm triệu chứng trên năm lĩnh vực triệu chứng được chỉ định trước, mỗi lĩnh vực được phân loại theo thang điểm 4.",
+      "text_pinyin": "zhǔ yào zhōng diǎn shì dì 7 tiān de zōng hé zhèng zhuàng yǒu xiào lǜ （ CSER ） ， dìng yì wèi zài wǔ gè yù xiān zhǐ dìng de zhèng zhuàng yù zhōng zǒng zhèng zhuàng píng fēn jiàng dī ≥ 50 ％ de cān yù zhě bǐ lì ， měi gè zhèng zhuàng yù yǐ 4 fēn zhì píng fēn 。"
+    },
+    {
+      "seq": 10,
+      "text_en": "Secondary endpoints included CSER at days 3 and 14, individual symptom remission rates, growth parameters, and adverse events (AEs), which were systematically monitored via diary cards and clinical assessments.",
+      "text_zh": "次要终点包括第3天和第14天的CSER、个体症状缓解率、生长参数和不良事件（ AE ） ，通过日记卡和临床评估进行系统监测。",
+      "text_vi": "Các chỉ tiêu thứ cấp BAO gồm Cser ở ngày 3 và 14, tỷ lệ thuyên giảm triệu chứng riêng lẻ, thông số tăng trưởng và các biến cố bất lợi (AE), được theo dõi một cách có hệ thống thông qua thẻ nhật ký và đánh giá lâm sàng.",
+      "text_pinyin": "cì yào zhōng diǎn bāo kuò dì 3 tiān hé dì 14 tiān de CSER、 gè tǐ zhèng zhuàng huǎn jiě lǜ 、 shēng zhǎng cān shù hé bù liáng shì jiàn （ AE ） ， tōng guò rì jì kǎ hé lín chuáng píng gū jìn xíng xì tǒng jiān cè 。"
+    },
+    {
+      "seq": 11,
+      "text_en": "There were 240 infants and toddlers randomized; 229 were included in the full analytical set (WBP, n=113; placebo, n=116).",
+      "text_zh": "240名婴幼儿被随机分组； 229名被纳入全分析集（ WBP ， n = 113 ；安慰剂， n = 116 ）。",
+      "text_vi": "Có 240 trẻ sơ sinh và trẻ mới biết đi được chọn ngẫu nhiên; 229 trẻ được đưa vào bộ phân tích đầy đủ (WBP, n=113; giả dược, n=116).",
+      "text_pinyin": "240 míng yīng yòu ér bèi suí jī fēn zǔ ； 229 míng bèi nà rù quán fēn xī jí （ WBP ， n = 113 ； ān wèi jì ， n = 116 ）。"
+    },
+    {
+      "seq": 12,
+      "text_en": "Baseline characteristics were well balanced.",
+      "text_zh": "基线特征平衡良好。",
+      "text_vi": "Các đặc điểm cơ bản được cân bằng tốt.",
+      "text_pinyin": "jī xiàn tè zhēng píng héng liáng hǎo 。"
+    },
+    {
+      "seq": 13,
+      "text_en": "At day 7, CSER was significantly higher in the WBP group than in the placebo group [69.03% In this trial, WBP demonstrated notable efficacy and a favorable short-term safety profile for the treatment of FDSIT.",
+      "text_zh": "在第7天， WBP组的CSER显著高于安慰剂组[69.03%在这项试验中， WBP在治疗FDSIT方面表现出显著的疗效和有利的短期安全性。",
+      "text_vi": "Vào ngày thứ 7, CSER cao hơn đáng kể ở nhóm WBP so với nhóm giả dược [69,03% Trong thử nghiệm này, WBP đã chứng minh hiệu quả đáng chú ý và hồ sơ an toàn ngắn hạn thuận lợi để điều trị FDSIT.",
+      "text_pinyin": "zài dì 7 tiān ， WBP zǔ de CSER xiǎn zhù gāo yú ān wèi jì zǔ [69.03% zài zhè xiàng shì yàn zhōng ， WBP zài zhì liáo FDSIT fāng miàn biǎo xiàn chū xiǎn zhù de liáo xiào hé yǒu lì de duǎn qī ān quán xìng 。"
+    },
+    {
+      "seq": 14,
+      "text_en": "These findings suggest that WBP may represent a potential therapeutic option, although further confirmatory studies are warranted.",
+      "text_zh": "这些研究结果表明， WBP可能是一种潜在的治疗选择，尽管还需要进一步的确认性研究。",
+      "text_vi": "Những phát hiện này cho thấy WBP có thể đại diện cho một lựa chọn điều trị tiềm năng, mặc dù các nghiên cứu xác nhận tiếp theo được bảo đảm.",
+      "text_pinyin": "zhè xiē yán jiū jié guǒ biǎo míng ， WBP kě néng shì yī zhǒng qián zài de zhì liáo xuǎn zé ， jǐn guǎn hái xū yào jìn yí bù dí què rèn xìng yán jiū 。"
+    },
+    {
+      "seq": 15,
+      "text_en": "Chinese Clinical Trial Registry (ChiCTR), ChiCTR2300072543.",
+      "text_zh": "中国临床试验注册处（ ChiCTR ） ， ChiCTR2300072543。",
+      "text_vi": "Nghiên cứu đăng ký thử nghiệm lâm sàng Trung Quốc (ChiCTR), ChiCTR2300072543.",
+      "text_pinyin": "zhōng guó lín chuáng shì yàn zhù cè chù （ ChiCTR ） ， ChiCTR2300072543。"
+    },
+    {
+      "seq": 16,
+      "text_en": "Registered on 16 June 2023.",
+      "text_zh": "2023年6月16日注册。",
+      "text_vi": "Đăng ký vào ngày 16 tháng 6 năm 2023.",
+      "text_pinyin": "2023 nián 6 yuè 16 rì zhù cè 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42866128), Translational pediatrics (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42866128/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42866128), Translational pediatrics (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42866128/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42866128），Translational pediatrics (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42866128/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-14T00:44:56Z",
+  "updated_at": "2026-10-14T00:44:56Z"
+}
