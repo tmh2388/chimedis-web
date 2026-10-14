@@ -354,8 +354,10 @@ export async function editTerm(pool, admin, edit) {
   if (hz && !/^[㐀-鿿]{1,40}$/.test(hz)) return { ok: false, error: 'hz_invalid' }; // chỉ chữ Hán
   if (!hz && !vi && !en && !defVi && !defZh && !defEn && !Object.keys(fieldsIn).length) return { ok: false, error: 'nothing_to_change' };
   const toPy = (h) => { try { return pinyin(h, { style: 'tone' }).map((a) => a[0]).join(' '); } catch (_) { return null; } };
-  const conn = await pool.getConnection();
+  let conn;
   try {
+    if (!pool || typeof pool.getConnection !== 'function') throw new Error('pool_no_transaction');
+    conn = await pool.getConnection();
     await conn.beginTransaction();
     let source = null, before = null, after = null, definitionIgnored = false;
     for (const table of EDITABLE_TABLES) {
@@ -413,11 +415,11 @@ export async function editTerm(pool, admin, edit) {
     }
     return { ok: true, source, before, after, definition_ignored: definitionIgnored, closed_reports: ids.length };
   } catch (e) {
-    try { await conn.rollback(); } catch (_) { /* bỏ qua */ }
+    try { if (conn) await conn.rollback(); } catch (_) { /* bỏ qua */ }
     console.error('[term-learn] editTerm:', e.message);
     return { ok: false, error: 'edit_failed', detail: String((e && (e.code || e.message)) || '').slice(0, 80) }; // chỉ route admin gọi — hiển thị để chẩn đoán
   } finally {
-    conn.release();
+    if (conn) conn.release();
   }
 }
 // ---------- Rà soát theo QUY ƯỚC DỊCH: đề xuất sửa các thuật ngữ máy dịch (machine_translated) — admin duyệt rồi mới ghi ----------
@@ -431,7 +433,7 @@ async function askRestyle(items) {
   const r = await fetch(`${OPENAI_BASE}/v1/chat/completions`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: MODEL, messages: [{ role: 'system', content: sys }, { role: 'user', content: user }], response_format: { type: 'json_object' }, max_completion_tokens: 4000 }),
+    body: JSON.stringify({ model: MODEL, messages: [{ role: 'system', content: sys }, { role: 'user', content: user }], response_format: { type: 'json_object' }, max_completion_tokens: 6000, reasoning_effort: 'low' }),
   });
   if (!r.ok) throw new Error(`restyle_llm ${r.status} ${(await r.text()).slice(0, 120)}`);
   const j = await r.json();
@@ -452,10 +454,12 @@ export async function restyleScan(pool, { limit = 25 } = {}) {
   }
   if (!picked.length) return { scanned: 0, proposed: 0, remaining: 0, costUsd: 0 };
   const { items, costUsd } = await askRestyle(picked);
+  if (!items.length) throw new Error('restyle_empty_response'); // mô hình không trả kết quả: KHÔNG đánh dấu đã quét
   const byId = new Map(items.map((x) => [String(x.id), x]));
   let proposed = 0;
   for (const p of picked) {
     const x = byId.get(String(p.term_id));
+    if (!x) continue; // mô hình bỏ sót mục này → để lần quét sau
     const pv = x && !x.keep ? cleanText(x.vi, 190) : '', pe = x && !x.keep ? cleanText(x.en, 190) : '';
     const changed = x && !x.keep && ((pv && pv !== p.vi) || (pe && pe !== p.en));
     await pool.query(
@@ -468,18 +472,22 @@ export async function restyleScan(pool, { limit = 25 } = {}) {
   return { scanned: picked.length, proposed, remaining, costUsd };
 }
 async function restyleRemaining(pool) {
-  let n = 0;
+  let total = 0, done = 0;
   for (const table of EDITABLE_TABLES) {
     try {
-      const [[r]] = await pool.query(`SELECT COUNT(*) c FROM ${table} WHERE machine_translated = 1 AND hz IS NOT NULL AND CHAR_LENGTH(hz) >= 2 AND term_id NOT IN (SELECT term_id FROM term_restyle)`);
-      n += Number(r.c) || 0;
+      const [[r]] = await pool.query(`SELECT COUNT(*) c FROM ${table} WHERE machine_translated = 1 AND hz IS NOT NULL AND CHAR_LENGTH(hz) >= 2`);
+      total += Number(r.c) || 0;
     } catch (_) { /* bỏ qua */ }
   }
-  return n;
+  try { const [[d]] = await pool.query('SELECT COUNT(*) c FROM term_restyle'); done = Number(d.c) || 0; } catch (_) { /* chưa có bảng */ }
+  return Math.max(0, total - done);
 }
 export async function restyleList(pool) {
   const [rows] = await pool.query("SELECT term_id, src_table, hz, cur_vi, cur_en, prop_vi, prop_en, reason FROM term_restyle WHERE status = 'new' ORDER BY created_at, term_id LIMIT 200");
-  return { items: rows, remaining: await restyleRemaining(pool) };
+  // Các mục đã quét và ĐẠT quy ước (để admin thấy hệ thống đã kiểm tra những gì, không chỉ "không có đề xuất")
+  const [ok] = await pool.query("SELECT term_id, hz, cur_vi, cur_en FROM term_restyle WHERE status IN ('ok','applied','skipped') ORDER BY COALESCE(handled_at, created_at) DESC, created_at DESC LIMIT 40");
+  const [[c]] = await pool.query("SELECT COUNT(*) n FROM term_restyle");
+  return { items: rows, checked: ok, total_checked: Number(c.n) || 0, remaining: await restyleRemaining(pool) };
 }
 export async function restyleResolve(pool, term_id, status) {
   const st = status === 'applied' ? 'applied' : 'skipped';

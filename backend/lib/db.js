@@ -111,7 +111,8 @@ if (CONFIGURED) {
 }
 
 /** Giống pool mysql2 ở mức .query(); luôn trỏ vào pool đang chạy. null nếu chưa cấu hình MYSQL_HOST. */
-export const mysqlPool = CONFIGURED ? { query: (...args) => pool.query(...args) } : null;
+// getConnection: cần cho giao dịch (BEGIN/COMMIT) — thiếu hàm này từng làm /api/admin/term-edit ném lỗi ngoài try và sập tiến trình.
+export const mysqlPool = CONFIGURED ? { query: (...args) => pool.query(...args), getConnection: () => pool.getConnection() } : null;
 
 export function dbStatus() {
   return {

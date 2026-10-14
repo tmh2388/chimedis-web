@@ -72,3 +72,10 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - **Rà soát thuật ngữ máy dịch theo quy ước** (admin, màn "Từ báo sai" → thẻ trên cùng): `POST /api/admin/term-restyle/run` quét 25 mục `machine_translated=1` mỗi lần (gpt-5-mini + `STYLE_RULES` + bảng thuật ngữ), lưu đề xuất vào bảng `term_restyle` (không tự ghi); admin bấm Áp dụng → ghi qua `/api/admin/term-edit` (transaction + nhật ký) hoặc Bỏ qua. Mục đã ổn đánh dấu `ok`, không quét lại. Tính vào ngân sách AI của admin.
 - **Trò chuyện tự do**: bố cục cố định (ngôn ngữ → mic → khung lưu hội thoại cuộn được → hai lựa chọn ghim dưới đáy). "Hiện chữ" chỉ làm mờ khung. Biểu tượng mic đổi bằng CSS `data-s` (không dựng lại DOM) + vòng xung bằng `::before` — tránh lỗi bóng ma trên iOS.
 - **Vuốt lùi/tiến**: bỏ nút gợi ý; chỉ hoạt động ở màn điều hướng. `swipeNavAllowed()` chặn khi: đang trò chuyện/chat với thầy, đang ghi âm, có form/sửa/xác nhận/thanh toán/đăng nhập, đang nhập liệu, chạm vào ô nhập/audio/video.
+
+## v59 (2026-10-14) — GỐC LỖI "Mất kết nối" khi lưu thuật ngữ
+- **Nguyên nhân thật**: `mysqlPool` (lib/db.js) chỉ là wrapper `{ query }`, KHÔNG có `getConnection`. `editTerm` gọi `pool.getConnection()` NẰM NGOÀI `try` → ném TypeError trong handler async → Express 4 không bắt → *unhandled rejection* → tiến trình Node chết giữa chừng → điện thoại thấy "mất kết nối" (và máy chủ khởi động lại → các màn khác tải rất lâu). Không phải lỗi mạng.
+- **Sửa**: wrapper thêm `getConnection`; `editTerm` đưa getConnection vào `try`, kiểm tra hàm tồn tại; route `term-edit` bọc try/catch; thêm `process.on('unhandledRejection'/'uncaughtException')` ghi log thay vì sập.
+- **Bài học**: mọi code dùng giao dịch phải kiểm thử trên wrapper thật; không để `await` ngoài try trong handler async của Express 4.
+- Rà soát quy ước: kết quả quét luôn hiển thị trong thẻ (tóm tắt lần quét, tổng đã kiểm tra, danh sách mục đạt, lỗi nếu có); mô hình không trả kết quả thì KHÔNG đánh dấu đã quét. Đếm "còn lại" không còn dùng NOT IN (chậm).
+- Nút "lên đầu trang" căn giữa đáy, không đè nút ghi hình.

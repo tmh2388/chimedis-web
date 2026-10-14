@@ -37,6 +37,8 @@ const __dirname = path.dirname(__filename);
 dns.setDefaultResultOrder('ipv4first');
 
 const app = express();
+process.on('unhandledRejection', (err) => { console.error('[unhandledRejection]', err && err.message ? err.message : err); });
+process.on('uncaughtException', (err) => { console.error('[uncaughtException]', err && err.message ? err.message : err); });
 
 // CORS + JSON phải đứng TRƯỚC mọi route /api/*: app iOS chạy ở capacitor://localhost nên gọi API chéo origin;
 // route đặt trước cors() sẽ không có header CORS (app bị chặn) và route POST/PUT trước express.json() nhận req.body rỗng.
@@ -1604,8 +1606,13 @@ app.post('/api/admin/term-feedback/:id', ...adminOnly, requireDocsDb, adminJson(
 app.get('/api/admin/term-reports', ...adminOnly, requireDocsDb, adminJson(() => termLearn.listReports(mysqlPool)));
 app.get('/api/admin/term-reports/count', ...adminOnly, requireDocsDb, adminJson(async () => ({ count: await termLearn.countReports(mysqlPool) })));
 app.post('/api/admin/term-edit', ...adminOnly, requireDocsDb, async (req, res) => {
-  const r = await termLearn.editTerm(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, req.body || {});
-  res.status(r.ok ? 200 : (r.error === 'edit_failed' ? 500 : 400)).json({ success: r.ok, ...r });
+  try {
+    const r = await termLearn.editTerm(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, req.body || {});
+    res.status(r.ok ? 200 : (r.error === 'edit_failed' ? 500 : 400)).json({ success: r.ok, ...r });
+  } catch (e) { // không để lỗi bất ngờ làm sập tiến trình (Express 4 không tự bắt lỗi async)
+    console.error('term-edit:', e.message);
+    res.status(500).json({ success: false, error: 'edit_failed', detail: String((e && (e.code || e.message)) || '').slice(0, 80) });
+  }
 });
 app.post('/api/admin/term-reports/dismiss', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.dismissReports(mysqlPool, String((req.body || {}).term_id || ''), (req.body || {}).note)));
 // ---- Rà soát thuật ngữ máy dịch theo QUY ƯỚC dịch (đề xuất → admin duyệt → ghi bằng /api/admin/term-edit) ----
