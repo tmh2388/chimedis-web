@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'chimedis-v62';
+const CACHE_VERSION = 'chimedis-v63';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 

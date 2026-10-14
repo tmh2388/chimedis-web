@@ -93,3 +93,8 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## v62 — bộ tra cứu offline: trạng thái rõ + tải bền
 - Mục menu "Bộ tra cứu offline" giờ MỞ màn trạng thái (không tự tải lại mỗi lần bấm). Trạng thái: ✓ đã tải đủ (n mục, a/b hình, ngày) · ◐ tải dở a/b (nút "Tiếp tục tải") · chưa tải; nút đổi theo trạng thái (Tải về máy / Tiếp tục tải / Cập nhật).
 - Tải hình: mỗi hình thử lại 3 lần, timeout 20 s; một hình lỗi KHÔNG hỏng cả gói (đếm số hình chưa tải, lần sau tiếp tục). Lỗi được báo đúng nguyên nhân: không có mạng / quá 20 giây / máy chủ từ chối (mã) / máy chủ lỗi / kết nối ngắt giữa chừng — thay vì chung chung "kiểm tra mạng".
+
+## v63 — Đăng nhập MỘT LẦN (SSO) với chimedis.vn
+- ĐẾN dict: `?sso=<mã>` → xoá khỏi URL ngay; đợi auth (tối đa 6 s) → `POST https://chimedis.vn/api/sso/peek` → cùng uid thì bỏ qua; chưa đăng nhập thì `exchange` + `signInWithCustomToken`; ĐANG đăng nhập tài khoản KHÁC thì HỎI "Chuyển sang X / giữ Y" (uiConfirm) rồi mới exchange. Không chạy trong app iOS.
+- ĐI từ dict: `openPlansPage()` mở tab `about:blank` ngay trong cú bấm, rồi `chimedisSsoStart()` (`/api/sso/start` với ID token) và điều hướng tới `goi.html?lang=..&sso=<mã>`; lỗi thì mở liên kết thường.
+- Server: `getOrCreateUser` dùng `COALESCE(VALUES(x), x)` cho email/tên/ảnh (phiên custom token có thể thiếu claim).

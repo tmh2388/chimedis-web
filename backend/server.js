@@ -537,8 +537,9 @@ async function getOrCreateUser(firebaseUser) {
   await mysqlPool.query(
     `INSERT INTO users (firebase_uid, email, display_name, photo_url)
      VALUES (?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE email = VALUES(email), display_name = VALUES(display_name),
-       photo_url = VALUES(photo_url), last_login_at = CURRENT_TIMESTAMP`,
+     ON DUPLICATE KEY UPDATE email = COALESCE(VALUES(email), email), display_name = COALESCE(VALUES(display_name), display_name),
+       photo_url = COALESCE(VALUES(photo_url), photo_url), last_login_at = CURRENT_TIMESTAMP`,
+    // COALESCE: phiên đăng nhập bằng custom token (SSO từ chimedis.vn) có thể thiếu claim — không được ghi đè thông tin cũ bằng rỗng.
     [uid, email, name, picture]
   );
   const [rows] = await mysqlPool.query('SELECT * FROM users WHERE firebase_uid = ?', [uid]);
