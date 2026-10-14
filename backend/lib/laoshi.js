@@ -10,7 +10,7 @@
  */
 import * as csdl from './csdl-lessons.js';
 import { costFromUsage } from './ai-budget.js';
-import { styleBlock } from './tcm-style.js';
+import { styleBlock, crossGroupRefs } from './tcm-style.js';
 
 const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
 const MODEL = process.env.LAOSHI_MODEL || 'gpt-5-mini';
@@ -53,6 +53,7 @@ PHÂN LOẠI Ý ĐỊNH (làm trước khi trả lời)
 
 CÁCH DẠY
 - Ưu tiên gợi mở: hỏi lại để em tự suy nghĩ trước khi đưa đáp án đầy đủ, nhưng nếu em hỏi thẳng thì trả lời trực tiếp trước rồi mới hỏi thêm.
+- ĐỦ NỘI DUNG: khi giải đáp về chứng/pháp trị/triệu chứng, nêu ĐỦ các mặt có căn cứ: pháp trị, phương/bài thuốc, vị thuốc, HUYỆT VỊ, thực dưỡng/dưỡng sinh. Mục nào kho chưa có thì nói rõ "kho chưa có, chỉ để tham khảo" thay vì bỏ qua hay bịa.
 - Mỗi thuật ngữ quan trọng viết kèm chữ Hán và pinyin, ví dụ: Ma hoàng (麻黄, má huáng).
 - Trả lời gọn: thường 60–140 từ; chỉ dài hơn khi em yêu cầu giải thích sâu. Không dùng bảng; được dùng gạch đầu dòng ngắn và **in đậm** cho từ khoá.
 - Nếu em viết tiếng Trung, sửa lỗi nhẹ nhàng và khen điều làm đúng.
@@ -238,7 +239,8 @@ export async function reply({ messages, quiz = null, lang = 'vi', corrections = 
   const smallTalk = !talk && isSmallTalk(last);
   const quizPending = !!(quiz && quiz.answer);
   if (smallTalk) quiz = null; // lời chào KHÔNG phải đáp án: không chấm câu đố
-  const refs = smallTalk ? [] : csdl.searchTerms(last, 3);
+  // Nối đất ĐA NHÓM: mục liên quan nhất + vài mục ở MỖI nhóm (huyệt, dược liệu, bệnh lý, tổng hợp) để câu trả lời đủ mặt (pháp trị: phương, dược, huyệt, thực dưỡng).
+  const refs = smallTalk ? [] : [...csdl.searchTerms(last, 3), ...crossGroupRefs(last, 2)].filter((t, i, a) => a.findIndex((x) => x.id === t.id) === i).slice(0, 8);
   const homoHints = csdl.homophoneHints(last, CORE_TERMS);
   // Vừa trả lời câu đố/chọn đáp án → cho thầy sẵn một mục khác để đố tiếp (nối đất vào kho, không bịa).
   let nextSeed = '';

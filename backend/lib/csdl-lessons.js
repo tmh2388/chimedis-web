@@ -275,7 +275,10 @@ const fold = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').rep
 const HAN = /[一-鿿]/;
 // Từ đệm tiếng Việt (đã bỏ dấu) — không dùng để tìm mục.
 const STOP = new Set('nao dau vay thay qua nam gia khong duoc nhung cac nhu nay the sao cua cho hay roi con vua dang chua minh em thi la va hoc gioi biet noi hoi'.split(' '));
-export function searchTerms(query, k = 3) {
+/** Mục theo id (không có tiền tố db-). */
+export const termById = (id) => (index ? index.byId.get(String(id)) || null : null);
+
+export function searchTerms(query, k = 3, group = null) {
   if (!index) return [];
   const q = clean(query);
   if (q.length < 2) return [];
@@ -285,6 +288,7 @@ export function searchTerms(query, k = 3) {
   const words = fold(q).split(/[^a-z0-9]+/).filter((w) => w.length >= 3 && !STOP.has(w));
   const scored = [];
   for (const t of index.byId.values()) {
+    if (group && t.group1 !== group) continue;
     let sc = 0;
     if (han && t.hz && han.includes(t.hz)) sc += 8;       // tên mục xuất hiện nguyên vẹn trong câu hỏi
     if (t.hz) for (const b of bigrams) if (t.hz.includes(b)) sc += 2;

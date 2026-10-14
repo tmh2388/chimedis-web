@@ -7,7 +7,7 @@
  *  2. BẢNG THUẬT NGỮ BẮT BUỘC: các mục CSDL (hz/vi/en) có mặt trong văn bản nguồn được chèn vào prompt → AI phải dùng đúng
  *     dạng đã duyệt, không tự nghĩ ra cách dịch khác.
  */
-import { allTerms } from './csdl-lessons.js';
+import { allTerms, searchTerms } from './csdl-lessons.js';
 
 export const STYLE_RULES = `QUY ƯỚC DỊCH THUẬT NGỮ TRUNG Y CỦA CHIMEDIS (bắt buộc, dùng chung toàn hệ thống):
 1. Thuật ngữ Trung y (bệnh danh, chứng, huyệt, dược liệu, phương, pháp trị, lý luận) → tiếng Việt theo âm HÁN-VIỆT chuẩn, \
@@ -74,4 +74,40 @@ export function termByHz(hz) {
   const { byHz } = build();
   const a = byHz.get(String(hz || '').trim());
   return a && a[0] ? a[0] : null;
+}
+
+const GROUP_TYPE = { 'Huyệt vị': 'huyet', 'Dược liệu': 'duoc', 'Bệnh lý': 'benh', 'Tổng hợp': 'khac', 'Sinh lý': 'khac', 'Giải phẫu': 'khac' };
+/**
+ * Làm giàu: từ một nhóm mục "hạt giống" của kho, quét NỘI DUNG của chúng (định nghĩa, công năng, lâm sàng…) để tìm các mục KHÁC của kho
+ * được nhắc tới (huyệt, dược liệu, bệnh/chứng…). Trả { huyet:[...], duoc:[...], benh:[...], khac:[...] } mỗi loại tối đa `perType`.
+ */
+export function relatedFromKho(seeds, { perType = 4 } = {}) {
+  const { byHz } = build();
+  const seedIds = new Set(seeds.map((s) => String(s.id)));
+  const score = new Map();
+  for (const seed of seeds) {
+    const text = Object.values(seed).filter((v) => typeof v === 'string' && v.length > 1).join('\n');
+    const han = text.replace(/[^一-鿿]+/g, ' ');
+    for (const seg of han.split(' ')) {
+      for (let len = Math.min(6, seg.length); len >= 2; len--) {
+        for (let i = 0; i + len <= seg.length; i++) {
+          const hit = byHz.get(seg.slice(i, i + len));
+          if (hit && hit[0] && !seedIds.has(String(hit[0].id))) score.set(hit[0].id, { t: hit[0], n: ((score.get(hit[0].id) || { n: 0 }).n) + 1 });
+        }
+      }
+    }
+  }
+  const out = { huyet: [], duoc: [], benh: [], khac: [] };
+  [...score.values()].sort((a, b) => b.n - a.n).forEach(({ t }) => {
+    const ty = GROUP_TYPE[t.group1] || null; if (!ty || !out[ty] || out[ty].length >= perType) return;
+    out[ty].push(t);
+  });
+  return out;
+}
+/** Truy xuất đa nhóm cho một câu/chủ đề: vài mục liên quan nhất ở MỖI nhóm chính (huyệt, dược liệu, bệnh lý, tổng hợp). */
+export function crossGroupRefs(query, perGroup = 2) {
+  const groups = ['Tổng hợp', 'Bệnh lý', 'Huyệt vị', 'Dược liệu'];
+  const seen = new Set(), out = [];
+  for (const g of groups) for (const t of searchTerms(query, perGroup, g)) if (!seen.has(t.id)) { seen.add(t.id); out.push(t); }
+  return out;
 }

@@ -1222,6 +1222,42 @@ app.get('/api/csdl/lesson/:id', withLessonIndex(async (req, res) => {
   res.json({ success: true, data: lesson });
 }));
 
+// Nghe bài theo ngôn ngữ khác (vi/en) — tổng hợp giọng đọc cho câu đó, đệm dùng chung trong MySQL (cùng bảng tts của Lão Sư).
+app.get('/api/listen-tts', withLessonIndex(async (req, res) => {
+  try {
+    const tk = verifyTicket(req.query.t);
+    if (!tk) return res.status(401).json({ success: false, error: 'login_required' });
+    if (!atLeast(tk.plan, 'pro')) return res.status(403).json({ success: false, error: 'pro_required' });
+    const lang = ['vi', 'en', 'zh'].includes(req.query.lang) ? req.query.lang : null;
+    if (!lang) return res.status(400).json({ success: false, error: 'bad_lang' });
+    const id = String(req.query.id || ''), seq = Number(req.query.seq);
+    let text = '';
+    if (id.startsWith('db-')) {
+      const lesson = csdl.lessonById(id);
+      const sg = lesson && lesson.segments.find((x) => Number(x.seq) === seq);
+      text = sg ? String(sg['text_' + lang] || '') : '';
+    } else {
+      const d = findListeningDialogue(id);
+      const sg = d && (d.segments || []).find((x) => Number(x.seq) === seq);
+      text = sg ? String(sg['text_' + lang] || '') : '';
+    }
+    text = lsSpeechText(text);
+    if (!text) return res.status(404).json({ success: false, error: 'not_found' });
+    const voice = userDocs.VOICE_KEYS.includes(req.query.voice) ? req.query.voice : 'default';
+    const key = laoshiLearn.ttsKey(lang, voice, text);
+    const cached = await laoshiLearn.ttsGetMany(mysqlPool, [key]);
+    let audio = cached.get(key);
+    if (!audio) {
+      audio = await userDocs.synthesize(text, lang, voice, { uid: tk.uid });
+      laoshiLearn.ttsPut(mysqlPool, key, { lang, voice, chars: text.length, audio });
+    }
+    res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, max-age=86400' }).send(audio);
+  } catch (e) {
+    console.error('listen-tts:', e.message);
+    res.status(502).json({ success: false, error: 'tts_failed' });
+  }
+}));
+
 app.get('/api/csdl/audio/:id/:seq', withLessonIndex(async (req, res) => {
   const tk = verifyTicket(req.query.t);
   if (!tk) return res.status(401).json({ success: false, error: 'login_required' });
@@ -1632,6 +1668,30 @@ app.get('/api/web-define', verifyFirebaseToken, async (req, res) => {
     const out = await webDefine.define(mysqlPool, String(req.query.q || ''));
     res.json({ success: true, data: out && out.entries && out.entries.length ? out : null });
   } catch (e) { res.status(502).json({ success: false, error: 'upstream' }); }
+});
+// ---- Ghi chú của admin → GitHub Issue (nhãn claude-todo) để Claude Code xử lý từ xa ----
+// Cần env: GITHUB_NOTES_TOKEN (fine-grained PAT, quyền Issues: write) và tuỳ chọn GITHUB_NOTES_REPO (mặc định tmh2388/chimedis-web).
+app.post('/api/admin/dev-note', ...adminOnly, async (req, res) => {
+  try {
+    const token = process.env.GITHUB_NOTES_TOKEN;
+    if (!token) return res.status(503).json({ success: false, error: 'not_configured' });
+    const b = req.body || {};
+    const note = String(b.note || '').trim().slice(0, 4000);
+    if (note.length < 5) return res.status(400).json({ success: false, error: 'too_short' });
+    const ctx = b.context && typeof b.context === 'object' ? b.context : {};
+    const lines = Object.entries(ctx).slice(0, 14).map(([k, v]) => `- **${String(k).slice(0, 30)}**: ${String(v).slice(0, 200)}`);
+    const body = `${note}\n\n---\n_Ghi bởi ${req.firebaseUser.email || req.firebaseUser.uid} qua Chimedis (admin)._\n${lines.join('\n')}`;
+    const repo = process.env.GITHUB_NOTES_REPO || 'tmh2388/chimedis-web';
+    const title = String(b.title || note.split('\n')[0]).slice(0, 90);
+    const r = await fetch(`https://api.github.com/repos/${repo}/issues`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json', 'User-Agent': 'ChimedisDict', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: `[Ghi chú admin] ${title}`, body, labels: ['claude-todo'] }),
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) return res.status(502).json({ success: false, error: 'github_failed', detail: String(j.message || r.status).slice(0, 80) });
+    res.json({ success: true, data: { number: j.number, url: j.html_url } });
+  } catch (e) { console.error('dev-note:', e.message); res.status(500).json({ success: false, error: 'note_failed' }); }
 });
 // ---- Quản trị: góp ý thuật ngữ / thuật ngữ mới tự học / kho câu hỏi Lão Sư ----
 const adminJson = (fn) => async (req, res) => { try { res.json({ success: true, data: await fn(req) }); } catch (e) { console.error('admin:', e.message); res.status(500).json({ success: false, error: 'admin_failed' }); } };

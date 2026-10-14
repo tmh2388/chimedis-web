@@ -8,8 +8,8 @@
  */
 import crypto from 'node:crypto';
 import { pinyin } from 'pinyin';
-import { styleBlock, termByHz } from './tcm-style.js';
-import { searchTerms, factsFor } from './csdl-lessons.js';
+import { styleBlock, termByHz, relatedFromKho, crossGroupRefs } from './tcm-style.js';
+import { searchTerms, factsFor, termById } from './csdl-lessons.js';
 import { costFromUsage } from './ai-budget.js';
 import { learnTermDirect } from './term-learn.js';
 
@@ -74,7 +74,8 @@ async function askModel(q, ctxText) {
     + 'Phân loại cụm đó (kind): "tcm_term" = thuật ngữ Trung y/y khoa/giải phẫu/bệnh học; "general_word" = từ phổ thông không thuộc y khoa; '
     + '"symptom_or_topic" = cách nói đời thường về triệu chứng/cảm giác/vấn đề (vd. 心疼, mất ngủ, đau đầu) mà người học muốn biết LIÊN QUAN gì trong Trung y. '
     + 'LUÔN cho nghĩa thông thường của cụm (meaning_*), không từ chối vì "không phải thuật ngữ". Nếu có liên hệ với Trung y, nêu ngắn trong tcm_context '
-    + 'và liệt kê thuật ngữ liên quan (related) kèm loại: huyet (huyệt vị), benh (bệnh/chứng), phuong (phương/bài thuốc), duoc (vị thuốc), khac. '
+    + 'và liệt kê thuật ngữ liên quan (related) kèm loại: huyet (huyệt vị), benh (bệnh/chứng/pháp trị), phuong (phương/bài thuốc), duoc (vị thuốc), thucduong (món ăn/thực dưỡng/dưỡng sinh), khac. '
+    + 'Khi nói về pháp trị/bệnh chứng, hãy ĐỦ các mặt: bài thuốc, vị thuốc, HUYỆT, và thực dưỡng/dưỡng sinh nếu có. '
     + 'Chỉ nêu những thuật ngữ BẠN CHẮC CHẮN có thật, ưu tiên đúng tên Hán chuẩn (giản thể). KHÔNG bịa; không chắc thì bỏ. '
     + 'Không chẩn đoán/kê đơn: chỉ là thông tin tra cứu học tập. Chỉ trả JSON.\n\n' + ctxText;
   const user = `Cụm cần tra: "${q}"\nTrả JSON: {"kind":"tcm_term|general_word|symptom_or_topic","hz":"<chữ Hán giản thể của cụm hoặc tương đương, 1-12 chữ, nếu có>","py":"","vi":"<tên/nghĩa ngắn tiếng Việt (Hán-Việt nếu là thuật ngữ Trung y)>","en":"<English>",`
@@ -82,7 +83,7 @@ async function askModel(q, ctxText) {
     + '"tcm_context":"<liên hệ Trung y ≤ 260 ký tự, hoặc rỗng>",'
     + '"def_vi":"<định nghĩa thuật ngữ nếu kind=tcm_term>","def_zh":"","def_en":"",'
     + '"group":"ly_luan|chan_doan|benh_chung|thuoc|cham_cuu|giai_phau|nghien_cuu|khac",'
-    + '"related":[{"hz":"","vi":"","en":"","type":"huyet|benh|phuong|duoc|khac"}],"confidence":0.0,"note":"<lưu ý ngắn nếu nhiều nghĩa>"}';
+    + '"related":[{"hz":"","vi":"","en":"","type":"huyet|benh|phuong|duoc|thucduong|khac"}],"confidence":0.0,"note":"<lưu ý ngắn nếu nhiều nghĩa>"}';
   const r = await fetch(`${OPENAI_BASE}/v1/chat/completions`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
@@ -115,7 +116,7 @@ export async function lookup(pool, { q, uid, plan = 'free', chargeSystem }) {
   await pool.query('INSERT INTO ai_lookup_usage (firebase_uid, day, n) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE n = n + 1', [uid, day]);
 
   // Nối đất: mục liên quan trong kho + bảng thuật ngữ bắt buộc của các chữ có mặt trong cụm
-  const refs = searchTerms(display, 4);
+  const refs = [...searchTerms(display, 3), ...crossGroupRefs(display, 2)].filter((t, i, a) => a.findIndex((x) => x.id === t.id) === i).slice(0, 8);
   const refText = refs.length ? 'CÁC MỤC LIÊN QUAN TRONG KHO CHIMEDIS (dùng để đối chiếu Hán-Việt/Anh):\n' + refs.map((t) => factsFor(t, 2)).join('\n\n') : '';
   const ctx = [styleBlock([display], { max: 25 }), refText].filter(Boolean).join('\n\n');
   const { parsed, costUsd } = await askModel(display, ctx);
@@ -132,8 +133,22 @@ export async function lookup(pool, { q, uid, plan = 'free', chargeSystem }) {
     const rhz = String(x.hz || '').replace(/[^㐀-鿿]/g, '').slice(0, 24);
     const hit = rhz ? termByHz(rhz) : null;
     return { hz: rhz, vi: String((hit && hit.vi) || x.vi || '').slice(0, 80), en: String((hit && hit.en) || x.en || '').slice(0, 80),
-      type: ['huyet', 'benh', 'phuong', 'duoc', 'khac'].includes(x.type) ? x.type : 'khac', term_id: hit ? hit.id : null, in_kho: !!hit };
+      type: ['huyet', 'benh', 'phuong', 'duoc', 'thucduong', 'khac'].includes(x.type) ? x.type : 'khac', term_id: hit ? hit.id : null, in_kho: !!hit };
   }).filter((x) => x.hz);
+  // Làm giàu bằng CHÍNH nội dung kho: các mục kho liên quan (huyệt/dược/bệnh) được nhắc trong định nghĩa của những mục đã khớp.
+  try {
+    const seeds = [...related.filter((x) => x.term_id).map((x) => termById(String(x.term_id).replace(/^db-/, ''))), ...refs].filter(Boolean);
+    const dedupSeeds = seeds.filter((t, i, a) => a.findIndex((x) => x.id === t.id) === i).slice(0, 6);
+    if (dedupSeeds.length) {
+      const mined = relatedFromKho(dedupSeeds, { perType: 3 });
+      const have = new Set(related.map((x) => x.hz));
+      for (const [ty, arr] of Object.entries(mined)) for (const m of arr) {
+        if (!m.hz || have.has(m.hz) || related.length >= 14) continue;
+        have.add(m.hz);
+        related.push({ hz: m.hz, vi: String(m.vi || '').slice(0, 80), en: String(m.en || '').slice(0, 80), type: ty, term_id: m.id, in_kho: true, from: 'kho' });
+      }
+    }
+  } catch (e) { console.error('[ai-lookup] mined:', e.message); }
   const row = {
     q_display: display, is_medical: isMed ? 1 : 0, kind, hz: hz || null, py: py || null,
     vi: String(parsed.vi || '').slice(0, 190) || null, en: String(parsed.en || '').slice(0, 190) || null,
