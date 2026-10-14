@@ -120,3 +120,7 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - **Tìm kiếm nhiều từ**: tầng mới — đủ MỌI từ trong tên/nội dung chính (3,5) > đủ mọi từ ở bất cứ đâu (4,5) > chỉ một phần/đồng nghĩa. Tra cứu online chỉ chạy khi KHO KHÔNG có mục chứa đủ các từ (`searchHasFullMatch`).
 - **Liên quan đa nhóm**: tra cứu online và Lão Sư truy xuất kho ở nhiều nhóm (Tổng hợp, Bệnh lý, Huyệt vị, Dược liệu) và quét nội dung các mục khớp để nêu thêm huyệt/dược/bệnh liên quan; thêm loại "thực dưỡng" (AI gợi ý).
 - Ghi chú admin → GitHub: xem `docs/ADMIN-NOTES-TO-CLAUDE.md`.
+
+## v67 — đăng nhập ở Trung Quốc (app iOS)
+- Triệu chứng: bấm Google trong app → "auth/chimedis-timeout" sau 20 s. Nguyên nhân: bộ chọn Google gốc không tới được dịch vụ Google khi không có VPN → treo. App trước đây luôn coi là tới được.
+- Sửa: app cũng thăm dò `generate_204` (khi múi giờ/ngôn ngữ nghi ở TQ) → ẩn nút Google/Facebook (`[data-gfw]`), GIỮ Apple và email; khi timeout thì tự ẩn và báo rõ "cần VPN, hãy dùng Apple/email". Có lối "đã bật VPN → bấm để hiện".
