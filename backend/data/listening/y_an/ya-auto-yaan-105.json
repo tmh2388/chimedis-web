@@ -1,0 +1,60 @@
+{
+  "id": "ya-auto-yaan-105",
+  "category": "y_an",
+  "modality": "cham",
+  "level": "so_cap",
+  "auto": true,
+  "mt_translated": true,
+  "title_vi": "Ca châm cứu: tự hãn phải theo chứng chọn huyệt",
+  "title_zh": "针灸医案：自汗辨证取穴",
+  "title_en": "Acupuncture case: spontaneous sweating requires point selection by pattern",
+  "segments": [
+    {
+      "seq": 1,
+      "text_zh": "一名患者每天自汗四五次。",
+      "text_vi": "Một bệnh nhân tự ra mồ hôi bốn đến năm lần mỗi ngày.",
+      "text_en": "A patient had spontaneous sweating four to five times daily.",
+      "text_pinyin": "yī míng huàn zhě měi tiān zì hàn sì wǔ cì 。"
+    },
+    {
+      "seq": 2,
+      "text_zh": "医生先在关元穴灸治，但没有效果。",
+      "text_vi": "Bác sĩ trước tiên cứu ở huyệt Quan Nguyên, nhưng không có hiệu quả.",
+      "text_en": "The doctor first moxibusted the Guanyuan (CV4) point, but it had no effect.",
+      "text_pinyin": "yī shēng xiān zài guān yuán xué jiǔ zhì ， dàn méi yǒu xiào guǒ 。"
+    },
+    {
+      "seq": 3,
+      "text_zh": "后来发现病因是房事后饮冷，伤及脾气。",
+      "text_vi": "Sau đó phát hiện nguyên nhân là sau quan hệ tình dục uống đồ lạnh, làm tổn thương tỳ khí.",
+      "text_en": "Later they found the cause was drinking cold after sexual activity, which injured the spleen qi.",
+      "text_pinyin": "hòu lái fā xiàn bìng yīn shì fáng shì hòu yǐn lěng ， shāng jí pí qì 。"
+    },
+    {
+      "seq": 4,
+      "text_zh": "于是改灸左命关穴，一共灸了一百壮。",
+      "text_vi": "Vì vậy chuyển sang cứu huyệt Mệnh Quan bên trái, tổng cộng cứu một trăm nén moxa.",
+      "text_en": "They then switched to moxibustion on the left Mingguan point, applying one hundred moxa-cones in total.",
+      "text_pinyin": "yú shì gǎi jiǔ zuǒ mìng guān xué ， yī gòng jiǔ le yì bǎi zhuàng 。"
+    },
+    {
+      "seq": 5,
+      "text_zh": "病人因此痊愈了。",
+      "text_vi": "Bệnh nhân do đó đã khỏi bệnh.",
+      "text_en": "The patient recovered as a result.",
+      "text_pinyin": "bìng rén yīn cǐ quán yù le 。"
+    },
+    {
+      "seq": 6,
+      "text_zh": "这个病例说明同为自汗，要按不同病因选穴。",
+      "text_vi": "Ca này cho thấy cùng là tự ra mồ hôi nhưng phải theo từng nguyên nhân mà chọn huyệt.",
+      "text_en": "This case shows that for the same spontaneous sweating symptom, point selection must follow different causes.",
+      "text_pinyin": "zhè ge bìng lì shuō míng tóng wèi zì hàn ， yào àn bù tóng bìng yīn xuǎn xué 。"
+    }
+  ],
+  "source_note_vi": "Diễn giải tự động (AI) từ dữ kiện y án thật (Châm cứu), nguồn: 窦材医案，《扁鹊心书》，转引自针灸名家经典医案课件. Chưa qua rà soát thủ công.",
+  "source_note_zh": "由 AI 根据真实医案事实自动改写（针灸），来源：窦材医案，《扁鹊心书》，转引自针灸名家经典医案课件。尚未经人工校对。",
+  "source_note_en": "AI-generated narrative from real case facts (Acupuncture), source: 窦材医案，《扁鹊心书》，转引自针灸名家经典医案课件. Not yet human-reviewed.",
+  "created_at": "2026-10-15T00:42:37Z",
+  "updated_at": "2026-10-15T00:42:37Z"
+}
