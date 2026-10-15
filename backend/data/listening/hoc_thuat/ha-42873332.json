@@ -1,0 +1,101 @@
+{
+  "id": "ha-42873332",
+  "category": "hoc_thuat",
+  "level": "trung_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Gentiopicroside alleviates depression-like symptoms in animal models through regulating COX-2-mediated autophagy and inflammation.",
+  "title_zh": "龙胆苦苷通过调节COX-2介导的自噬和炎症来缓解动物模型中的抑郁样症状。",
+  "title_vi": "Gentiopicroside làm giảm các triệu chứng giống như trầm cảm ở các mô hình động vật thông qua việc điều chỉnh quá trình tự thực và viêm do COX-2 gây ra.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Depression is a serious mental illness affecting millions of people worldwide.",
+      "text_zh": "抑郁症是一种严重的精神疾病，影响着全世界数百万人。",
+      "text_vi": "Trầm cảm là một bệnh tâm thần nghiêm trọng ảnh hưởng đến hàng triệu người trên toàn thế giới.",
+      "text_pinyin": "yì yù zhèng shì yī zhǒng yán zhòng de jīng shén jí bìng ， yǐng xiǎng zhe quán shì jiè shù bǎi wàn rén 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "This study investigates the effects of gentiopicroside, a compound found in traditional Chinese medicine, on depression-like animal models and its potential mechanism of action.",
+      "text_zh": "本研究研究了龙胆苦苷（一种在中药中发现的化合物）对抑郁样动物模型的影响及其潜在的作用机制。",
+      "text_vi": "Nghiên cứu này điều tra tác động của gentiopicroside, một hợp chất được tìm thấy trong y học cổ truyền Trung Quốc, trên các mô hình động vật giống như trầm cảm và cơ chế hoạt động tiềm năng của nó.",
+      "text_pinyin": "běn yán jiū yán jiū le lóng dǎn kǔ gān （ yī zhǒng zài zhōng yào zhōng fā xiàn de huà hé wù ） duì yì yù yàng dòng wù mó xíng de yǐng xiǎng jí qí qián zài de zuò yòng jī zhì 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "The study utilized rat models with corticosterone-induced depression and treated them with various concentrations of gentiopicroside.",
+      "text_zh": "该研究使用皮质酮诱导抑郁的大鼠模型，并用不同浓度的龙胆苦苷治疗。",
+      "text_vi": "Nghiên cứu sử dụng các mô hình chuột bị trầm cảm do corticosterone và điều trị chúng với các nồng độ gentiopicroside khác nhau.",
+      "text_pinyin": "gāi yán jiū shǐ yòng pí zhì tóng yòu dǎo yì yù de dà shǔ mó xíng ， bìng yòng bù tóng nóng dù de lóng dǎn kǔ gān zhì liáo 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "The effects on hippocampal cells, serum 5-HT levels, inflammation, autophagy, and oxidative stress markers were observed.",
+      "text_zh": "观察对海马细胞、血清5-HT水平、炎症、自噬和氧化应激标志物的影响。",
+      "text_vi": "Các tác động lên các tế bào hồi hải mã, nồng độ 5-HT huyết thanh, viêm, tự thực bào, và các dấu hiệu stress oxy hóa được quan sát thấy.",
+      "text_pinyin": "guān chá duì hǎi mǎ xì bāo 、 xuè qīng 5-HT shuǐ píng 、 yán zhèng 、 zì shì hé yǎng huà yīng jī biāo zhì wù de yǐng xiǎng 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "The role of Cyclooxygenase-2 (COX-2) expression and mitophagy was also examined using in vitro neuron cell models.",
+      "text_zh": "还使用体外神经元细胞模型检查了环氧合酶-2 (COX-2)表达和线粒体吞噬的作用。",
+      "text_vi": "Vai trò của sự biểu hiện xyclooxygenaza-2 (COX-2) và mitophagy cũng được kiểm tra bằng cách sử dụng các mô hình tế bào thần kinh in vitro.",
+      "text_pinyin": "hái shǐ yòng tǐ wài shén jīng yuán xì bāo mó xíng jiǎn chá le huán yǎng hé méi -2 (COX-2) biǎo dá hé xiàn lì tǐ tūn shì de zuò yòng 。"
+    },
+    {
+      "seq": 6,
+      "text_en": "Gentiopicroside demonstrated dose-dependent effects on alleviating hippocampal cell damage, restoring serum 5-HT levels, and inhibiting inflammation and oxidative stress markers.",
+      "text_zh": "龙胆苦苷对减轻海马细胞损伤、恢复血清5-HT水平、抑制炎症和氧化应激标志物具有剂量依赖性作用。",
+      "text_vi": "Gentiopicroside đã chứng minh tác dụng phụ thuộc liều vào việc làm giảm tổn thương tế bào vùng hồi hải mã, phục hồi nồng độ 5-HT trong huyết thanh, và ức chế các dấu hiệu viêm và stress oxy hóa.",
+      "text_pinyin": "lóng dǎn kǔ gān duì jiǎn qīng hǎi mǎ xì bāo sǔn shāng 、 huī fù xuè qīng 5-HT shuǐ píng 、 yì zhì yán zhèng hé yǎng huà yīng jī biāo zhì wù jù yǒu jì liàng yī lài xìng zuò yòng 。"
+    },
+    {
+      "seq": 7,
+      "text_en": "It also promoted autophagy and modulated COX-2 expression in the rat models.",
+      "text_zh": "它还促进大鼠模型中的自噬和调节的COX-2表达。",
+      "text_vi": "Nó cũng thúc đẩy quá trình tự thực bào và sự biểu hiện COX-2 được điều biến trong các mô hình chuột.",
+      "text_pinyin": "tā hái cù jìn dà shǔ mó xíng zhōng de zì shì hé tiáo jié de COX-2 biǎo dá 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "The in vitro study revealed that gentiopicroside could regulate COX-2 expression, reduce mitochondrial membrane potential loss and cell apoptosis, and inhibit NLRP3 (NOD-like receptor family, pyrin domain-containing 3) inflammatory complex-related proteins and cytokines.",
+      "text_zh": "体外研究显示龙胆苦苷可调节COX-2表达，减少线粒体膜电位损失和细胞凋亡，抑制NLRP3 （ NOD样受体家族，含吡啶结构域3 ）炎症复合物相关蛋白和细胞因子。",
+      "text_vi": "Nghiên cứu in vitro cho thấy gentiopicroside có thể điều hòa sự biểu hiện COX-2, làm giảm sự mất điện thế màng ty thể và chết tế bào theo chương trình, và ức chế các protein và cytokine liên quan đến phức hợp viêm NLRP3 (họ thụ thể giống như NOD, chứa vùng pyrin 3).",
+      "text_pinyin": "tǐ wài yán jiū xiǎn shì lóng dǎn kǔ gān kě tiáo jié COX-2 biǎo dá ， jiǎn shǎo xiàn lì tǐ mó diàn wèi sǔn shī hé xì bāo diāo wáng ， yì zhì NLRP3 （ NOD yàng shòu tǐ jiā zú ， hán bǐ dìng jié gòu yù 3 ） yán zhèng fù hé wù xiāng guān dàn bái hé xì bāo yīn zi 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "Overexpression of COX-2 significantly reversed the positive effects of gentiopicroside, while PINK1 (PTEN-induced kinase 1) overexpression promoted mitophagy, inhibited NLRP3 inflammatory complex activation, and reduced oxidative stress.",
+      "text_zh": "COX-2过表达显著逆转龙胆苦苷的积极作用，而PINK1 （ PTEN诱导的激酶1 ）过表达促进线粒体吞噬，抑制NLRP3炎症复合物活化，并降低氧化应激。",
+      "text_vi": "Sự biểu hiện quá mức COX-2 đã đảo ngược đáng kể tác dụng tích cực của gentiopicroside, trong khi sự biểu hiện quá mức PINK1 (kinaza do PTEN gây ra 1) thúc đẩy sự phân bào, ức chế sự hoạt hóa phức hợp viêm NLRP3, và giảm stress oxy hóa.",
+      "text_pinyin": "COX-2 guò biǎo dá xiǎn zhù nì zhuǎn lóng dǎn kǔ gān de jī jí zuò yòng ， ér PINK1 （ PTEN yòu dǎo de jī méi 1 ） guò biǎo dá cù jìn xiàn lì tǐ tūn shì ， yì zhì NLRP3 yán zhèng fù hé wù huó huà ， bìng jiàng dī yǎng huà yīng jī 。"
+    },
+    {
+      "seq": 10,
+      "text_en": "Gentiopicroside ameliorates depression-like symptoms in animal models by suppressing COX-2 expression.",
+      "text_zh": "龙胆苦苷通过抑制COX-2表达来改善动物模型中的抑郁样症状。",
+      "text_vi": "Gentiopicroside cải thiện các triệu chứng giống trầm cảm ở mô hình động vật bằng cách ức chế sự biểu hiện COX-2.",
+      "text_pinyin": "lóng dǎn kǔ gān tōng guò yì zhì COX-2 biǎo dá lái gǎi shàn dòng wù mó xíng zhōng de yì yù yàng zhèng zhuàng 。"
+    },
+    {
+      "seq": 11,
+      "text_en": "This suppression is necessary for the subsequent enhancement of PINK1-mediated mitophagy, which helps to re-establish mitochondrial homeostasis and attenuate neuroinflammation and oxidative stress.",
+      "text_zh": "这种抑制对于随后增强PINK1介导的线粒体吞噬是必要的，这有助于重新建立线粒体稳态并减轻神经炎症和氧化应激。",
+      "text_vi": "Sự ức chế này là cần thiết cho sự tăng cường tiếp theo của phân bào qua trung gian PINK1, giúp thiết lập lại cân bằng nội môi ty thể và làm giảm viêm thần kinh và stress oxy hóa.",
+      "text_pinyin": "zhè zhǒng yì zhì duì yú suí hòu zēng qiáng PINK1 jiè dǎo de xiàn lì tǐ tūn shì shì bì yào de ， zhè yǒu zhù yú chóng xīn jiàn lì xiàn lì tǐ wěn tài bìng jiǎn qīng shén jīng yán zhèng hé yǎng huà yīng jī 。"
+    },
+    {
+      "seq": 12,
+      "text_en": "This novel mechanism may potentially lead to the development of new therapies for depression treatment.",
+      "text_zh": "这种新机制可能潜在地导致抑郁症治疗新疗法的开发。",
+      "text_vi": "Cơ chế mới lạ này có thể dẫn đến sự phát triển của các liệu pháp mới để điều trị trầm cảm.",
+      "text_pinyin": "zhè zhǒng xīn jī zhì kě néng qián zài dì dǎo zhì yì yù zhèng zhì liáo xīn liáo fǎ de kāi fā 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42873332), Metabolic brain disease (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42873332/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42873332), Metabolic brain disease (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42873332/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42873332），Metabolic brain disease (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42873332/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-15T00:11:48Z",
+  "updated_at": "2026-10-15T00:11:48Z"
+}
