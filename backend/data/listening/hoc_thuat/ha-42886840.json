@@ -1,0 +1,108 @@
+{
+  "id": "ha-42886840",
+  "category": "hoc_thuat",
+  "level": "trung_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Interventions to reduce cognitive decline post-stroke: an umbrella review.",
+  "title_zh": "减少中风后认知能力下降的干预措施：综述。",
+  "title_vi": "Các can thiệp để giảm suy giảm nhận thức sau đột quỵ: một đánh giá ô.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Post-stroke cognitive impairment (PSCI) remains a common problem that can lead to significant disability and dependency.",
+      "text_zh": "中风后认知障碍（ PSCI ）仍然是一个常见问题，可能导致严重的残疾和依赖。",
+      "text_vi": "Suy giảm nhận thức sau đột quỵ (PSCI) vẫn là một vấn đề phổ biến có thể dẫn đến tình trạng khuyết tật và phụ thuộc đáng kể.",
+      "text_pinyin": "zhòng fēng hòu rèn zhī zhàng ài （ PSCI ） réng rán shì yí gè cháng jiàn wèn tí ， kě néng dǎo zhì yán zhòng de cán jí hé yī lài 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "Previous work suggested that methodologically robust trials were lacking and that there is continued uncertainty on the benefits and limitations of pharmacological and non-pharmacological interventions.",
+      "text_zh": "先前的研究表明，缺乏方法论上可靠的试验，并且药理学和非药理学干预措施的益处和局限性仍然存在不确定性。",
+      "text_vi": "Công trình trước đây cho thấy các thử nghiệm mạnh mẽ về phương pháp luận còn thiếu và tiếp tục có sự không chắc chắn về lợi ích và hạn chế của các can thiệp dược lý và phi dược lý.",
+      "text_pinyin": "xiān qián de yán jiū biǎo míng ， quē fá fāng fǎ lùn shàng kě kào de shì yàn ， bìng qiě yào lǐ xué hé fēi yào lǐ xué gān yù cuò shī de yì chù hé jú xiàn xìng réng rán cún zài bù què dìng xìng 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "This umbrella review aims to update and synthesise evidence on pharmacological and non-pharmacological interventions for PSCI.",
+      "text_zh": "本综述旨在更新和综合PSCI的药理和非药理干预证据。",
+      "text_vi": "Đánh giá ô này nhằm mục đích cập nhật và tổng hợp bằng chứng về các can thiệp dược lý và phi dược lý cho PSCI.",
+      "text_pinyin": "běn zōng shù zhǐ zài gēng xīn hé zōng hé PSCI de yào lǐ hé fēi yào lǐ gān yù zhèng jù 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "This review was pre-registered on PROSPERO (CRD42024611909) with searches from 2019 to 2024.",
+      "text_zh": "此评论已在PROSPERO （ CRD42024611909 ）上预先注册，搜索时间为2019年至2024年。",
+      "text_vi": "Đánh giá này đã được đăng ký trước trên PROSPERO (CRD42024611909) với các tìm kiếm từ năm 2019 đến năm 2024.",
+      "text_pinyin": "cǐ píng lùn yǐ zài PROSPERO （ CRD42024611909 ） shàng yù xiān zhù cè ， sōu suǒ shí jiān wèi 2019 nián zhì 2024 nián 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "Eligible studies were systematic reviews (SRs) of randomised controlled trials (RCTs) evaluating pharmacological or non-pharmacological interventions in adult stroke survivors (≥18 years) of any severity and reporting change in global cognition (eg, Mini-Mental State Examination).",
+      "text_zh": "符合条件的研究是随机对照试验（ RCT ）的系统评价（ SR ） ，用于评估成人卒中幸存者（ ≥ 18岁）的药理学或非药理学干预措施以及全球认知的任何严重程度和报告变化（例如，简易精神状态检查）。",
+      "text_vi": "Các nghiên cứu đủ điều kiện là các đánh giá có hệ thống (SR) về các thử nghiệm ngẫu nhiên có đối chứng (RCT) đánh giá các can thiệp dược lý hoặc phi dược lý ở những người sống sót sau đột quỵ ở người lớn (≥18 tuổi) ở bất kỳ mức độ nghiêm trọng nào và báo cáo sự thay đổi trong nhận thức toàn cầu (ví dụ: Kiểm tra Trạng thái Tâm thần Nhỏ).",
+      "text_pinyin": "fú hé tiáo jiàn de yán jiū shì suí jī duì zhào shì yàn （ RCT ） de xì tǒng píng jià （ SR ） ， yòng yú píng gū chéng rén zú zhōng xìng cún zhě （ ≥ 18 suì ） de yào lǐ xué huò fēi yào lǐ xué gān yù cuò shī yǐ jí quán qiú rèn zhī de rèn hé yán zhòng chéng dù hé bào gào biàn huà （ lì rú ， jiǎn yì jīng shén zhuàng tài jiǎn chá ）。"
+    },
+    {
+      "seq": 6,
+      "text_en": "AMSTAR2 was used for risk of bias.",
+      "text_zh": "AMSTAR2用于偏倚风险。",
+      "text_vi": "AMSTAR2 được sử dụng cho nguy cơ sai lệch.",
+      "text_pinyin": "AMSTAR2 yòng yú piān yǐ fēng xiǎn 。"
+    },
+    {
+      "seq": 7,
+      "text_en": "Of 4889 records identified, 69 SRs (global cognition data from 747 unique RCTs; 57,176 participants) met inclusion criteria.",
+      "text_zh": "在确定的4889个记录中， 69个SR （来自747个独特RCT的全球认知数据； 57,176名参与者）符合入选标准。",
+      "text_vi": "Trong số 4889 hồ sơ được xác định, 69 SR (dữ liệu nhận thức toàn cầu từ 747 RCT duy nhất; 57.176 người tham gia) đáp ứng các tiêu chí hòa nhập.",
+      "text_pinyin": "zài què dìng de 4889 gè jì lù zhōng ， 69 gè SR （ lái zì 747 gè dú tè RCT de quán qiú rèn zhī shù jù ； 57,176 míng cān yù zhě ） fú hé rù xuǎn biāo zhǔn 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "Interventions were grouped into 37 categories including both single (eg, acupuncture, exercise, cognitive rehabilitation) and combined modalities and assessed at categorical level.",
+      "text_zh": "干预措施分为37类，包括单一（例如，针灸、运动、认知康复）和联合模式，并在分类水平上进行评估。",
+      "text_vi": "Các can thiệp được nhóm thành 37 loại bao gồm cả đơn (ví dụ: châm cứu, tập thể dục, phục hồi nhận thức) và các phương thức kết hợp và được đánh giá ở cấp độ phân loại.",
+      "text_pinyin": "gān yù cuò shī fēn wéi 37 lèi ， bāo kuò dān yī （ lì rú ， zhēn jiǔ 、 yùn dòng 、 rèn zhī kāng fù ） hé lián hé mó shì ， bìng zài fēn lèi shuǐ píng shàng jìn xíng píng gū 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "Most intervention types were associated with statistically significant improvements in global cognition.",
+      "text_zh": "大多数干预类型与全球认知的统计学显著改善相关。",
+      "text_vi": "Hầu hết các loại can thiệp có liên quan đến những cải thiện có ý nghĩa thống kê trong nhận thức toàn cầu.",
+      "text_pinyin": "dà duō shù gān yù lèi xíng yǔ quán qiú rèn zhī de tǒng jì xué xiǎn zhù gǎi shàn xiāng guān 。"
+    },
+    {
+      "seq": 10,
+      "text_en": "Substantial heterogeneity and wide prediction intervals indicate that effect sizes may vary considerably across populations and settings.",
+      "text_zh": "显著的异质性和较宽的预测间隔表明，不同人群和环境的影响大小可能存在很大差异。",
+      "text_vi": "Tính không đồng nhất đáng kể và khoảng thời gian dự đoán rộng chỉ ra rằng kích thước hiệu ứng có thể thay đổi đáng kể giữa các quần thể và môi trường.",
+      "text_pinyin": "xiǎn zhù de yì zhì xìng hé jiào kuān de yù cè jiàn gé biǎo míng ， bù tóng rén qún hé huán jìng de yǐng xiǎng dà xiǎo kě néng cún zài hěn dà chā yì 。"
+    },
+    {
+      "seq": 11,
+      "text_en": "This review identifies promising evidence that several interventions may produce clinically meaningful improvements in global cognition post-stroke.",
+      "text_zh": "本综述确定了有希望的证据，表明几种干预措施可能对中风后全球认知产生临床意义的改善。",
+      "text_vi": "Đánh giá này xác định bằng chứng đầy hứa hẹn rằng một số can thiệp có thể tạo ra những cải thiện có ý nghĩa lâm sàng trong nhận thức toàn cầu sau đột quỵ.",
+      "text_pinyin": "běn zōng shù què dìng le yǒu xī wàng de zhèng jù ， biǎo míng jǐ zhǒng gān yù cuò shī kě néng duì zhòng fēng hòu quán qiú rèn zhī chǎn shēng lín chuáng yì yì de gǎi shàn 。"
+    },
+    {
+      "seq": 12,
+      "text_en": "However, confidence in this evidence is low: despite a substantial increase in the number of RCTs most included reviews were rated as critically low in quality with methodological limitations.",
+      "text_zh": "然而，对这一证据的信心很低：尽管RCT数量大幅增加，但大多数纳入的综述被评为质量极低，存在方法学局限性。",
+      "text_vi": "Tuy nhiên, độ tin cậy vào bằng chứng này là thấp: mặc dù có sự gia tăng đáng kể về số lượng RCT được đưa vào hầu hết các đánh giá được đánh giá là cực kỳ thấp về chất lượng với những hạn chế về phương pháp luận.",
+      "text_pinyin": "rán ér ， duì zhè yī zhèng jù de xìn xīn hěn dī ： jǐn guǎn RCT shù liàng dà fú zēng jiā ， dàn dà duō shù nà rù de zōng shù bèi píng wéi zhì liàng jí dī ， cún zài fāng fǎ xué jú xiàn xìng 。"
+    },
+    {
+      "seq": 13,
+      "text_en": "Current evidence is insufficient to support firm recommendations for the inclusion of specific interventions in guidance.",
+      "text_zh": "目前的证据不足以支持在指南中纳入具体干预措施的坚定建议。",
+      "text_vi": "Bằng chứng hiện tại là không đủ để hỗ trợ các khuyến nghị của công ty về việc đưa các can thiệp cụ thể vào hướng dẫn.",
+      "text_pinyin": "mù qián de zhèng jù bù zú yǐ zhī chí zài zhǐ nán zhōng nà rù jù tǐ gān yù cuò shī de jiān dìng jiàn yì 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42886840), European stroke journal (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42886840/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42886840), European stroke journal (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42886840/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42886840），European stroke journal (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42886840/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-17T00:02:46Z",
+  "updated_at": "2026-10-17T00:02:46Z"
+}
