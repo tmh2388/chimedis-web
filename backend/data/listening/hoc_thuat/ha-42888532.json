@@ -1,0 +1,108 @@
+{
+  "id": "ha-42888532",
+  "category": "hoc_thuat",
+  "level": "so_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Moxibustion for depression: A meta-analysis.",
+  "title_zh": "艾灸治疗抑郁症：荟萃分析。",
+  "title_vi": "Moxibustion cho trầm cảm: Một phân tích tổng hợp.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Moxibustion, a traditional Chinese medicine therapy, is widely used for various diseases and has recently been applied in treating depression.",
+      "text_zh": "艾灸是一种中医药疗法，广泛用于各种疾病，最近已应用于治疗抑郁症。",
+      "text_vi": "Moxibustion, một liệu pháp y học cổ truyền Trung Quốc, được sử dụng rộng rãi cho các bệnh khác nhau và gần đây đã được áp dụng trong điều trị trầm cảm.",
+      "text_pinyin": "ài jiǔ shì yī zhǒng zhōng yī yào liáo fǎ ， guǎng fàn yòng yú gè zhǒng jí bìng ， zuì jìn yǐ yìng yòng yú zhì liáo yì yù zhèng 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "This study aims to systematically assess the efficacy and safety of moxibustion, either alone or in combination with other therapies, for depression.",
+      "text_zh": "本研究旨在系统地评估艾灸单独或与其他疗法联合治疗抑郁症的疗效和安全性。",
+      "text_vi": "Nghiên cứu này nhằm mục đích đánh giá một cách có hệ thống hiệu quả và độ an toàn của moxibustion, một mình hoặc kết hợp với các liệu pháp khác, đối với trầm cảm.",
+      "text_pinyin": "běn yán jiū zhǐ zài xì tǒng dì píng gū ài jiǔ dān dú huò yǔ qí tā liáo fǎ lián hé zhì liáo yì yù zhèng de liáo xiào hé ān quán xìng 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "We conducted a comprehensive search across 7 databases from their inception to December 20, 2023, focusing on randomized controlled trials that compared moxibustion with sham treatments, no treatment, or conventional therapies.",
+      "text_zh": "从成立到2023年12月20日，我们对7个数据库进行了全面搜索，重点是比较艾灸与假治疗、无治疗或常规治疗的随机对照试验。",
+      "text_vi": "Chúng tôi đã tiến hành tìm kiếm toàn diện trên 7 cơ sở dữ liệu từ khi thành lập đến ngày 20 tháng 12 năm 2023, tập trung vào các thử nghiệm ngẫu nhiên có đối chứng so sánh moxibustion với các phương pháp điều trị giả, không điều trị hoặc các liệu pháp thông thường.",
+      "text_pinyin": "cóng chéng lì dào 2023 nián 12 yuè 20 rì ， wǒ men duì 7 gè shù jù kù jìn xíng le quán miàn sōu suǒ ， zhòng diǎn shì bǐ jiào ài jiǔ yǔ jiǎ zhì liáo 、 wú zhì liáo huò cháng guī zhì liáo de suí jī duì zhào shì yàn 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "The primary outcomes were the overall effective rate and Hamilton Depression Rating Scale scores, with adverse reaction incidence as the secondary outcome.",
+      "text_zh": "主要结局为总有效率和汉密尔顿抑郁量表评分，不良反应发生率为次要结局。",
+      "text_vi": "Các kết quả chính là tỷ lệ hiệu quả tổng thể và điểm số Thang đánh giá Trầm cảm Hamilton, với tỷ lệ phản ứng bất lợi là kết quả thứ cấp.",
+      "text_pinyin": "zhǔ yào jié jú wèi zǒng yǒu xiào lǜ hé hàn mì ěr dùn yì yù liàng biǎo píng fēn ， bù liáng fǎn yìng fā shēng lǜ wèi cì yào jié jú 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "Data were analyzed with RevMan 5.4 and Stata 18, with bias risk assessed using the Cochrane Risk of Bias tool.",
+      "text_zh": "使用RevMan 5.4和Stata 18分析数据，使用Cochrane Risk of Bias工具评估偏倚风险。",
+      "text_vi": "Dữ liệu được phân tích với RevMan 5.4 và Stata 18, với rủi ro thiên vị được đánh giá bằng cách sử dụng công cụ Cochrane Risk of Bias.",
+      "text_pinyin": "shǐ yòng RevMan 5.4 hé Stata 18 fēn xī shù jù ， shǐ yòng Cochrane Risk of Bias gōng jù píng gū piān yǐ fēng xiǎn 。"
+    },
+    {
+      "seq": 6,
+      "text_en": "Evidence quality was graded with GRADEpro.",
+      "text_zh": "使用GRADEpro对证据质量进行分级。",
+      "text_vi": "Chất lượng bằng chứng được phân loại với GRADEpro.",
+      "text_pinyin": "shǐ yòng GRADEpro duì zhèng jù zhì liàng jìn xíng fēn jí 。"
+    },
+    {
+      "seq": 7,
+      "text_en": "This study included 15 randomized controlled trials with 1510 patients.",
+      "text_zh": "该研究包括15项随机对照试验，涉及1510名患者。",
+      "text_vi": "Nghiên cứu này bao gồm 15 thử nghiệm ngẫu nhiên có đối chứng với 1510 bệnh nhân.",
+      "text_pinyin": "gāi yán jiū bāo kuò 15 xiàng suí jī duì zhào shì yàn ， shè jí 1510 míng huàn zhě 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "Meta-analysis results showed that moxibustion, alone or combined with other therapies, was more effective than other treatments for managing depression (relative risk = 1.07, 95% confidence interval [CI]: [1.03-1.10], P = .0003).",
+      "text_zh": "荟萃分析结果表明，艾灸单独或与其他疗法相结合治疗抑郁症比其他疗法更有效（相对风险= 1.07 ， 95%置信区间[CI] ： [1.03-1.10] ， P = 0.0003 ）。",
+      "text_vi": "Kết quả phân tích tổng hợp cho thấy rằng moxibustion, một mình hoặc kết hợp với các liệu pháp khác, có hiệu quả hơn các phương pháp điều trị khác để kiểm soát trầm cảm (nguy cơ tương đối = 1,07, khoảng tin cậy 95% [CI]: [1,03-1,10], P = .0003).",
+      "text_pinyin": "huì cuì fēn xī jié guǒ biǎo míng ， ài jiǔ dān dú huò yǔ qí tā liáo fǎ xiàng jié hé zhì liáo yì yù zhèng bǐ qí tā liáo fǎ gèng yǒu xiào （ xiāng duì fēng xiǎn = 1.07 ， 95% zhì xìn qū jiān [CI] ： [1.03-1.10] ， P = 0.0003 ）。"
+    },
+    {
+      "seq": 9,
+      "text_en": "Moxibustion, either alone or in combination with other treatments, significantly reduced Hamilton Depression Rating Scale scores compared to other treatments used alone (mean difference = -2.10, 95% CI: [-3.00 to -1.20]), with its efficacy comparable to that of antidepressant medications (mean difference = -0.60, 95% CI [-1.31 to 0.12], P = .10).",
+      "text_zh": "与单独使用的其他治疗相比，艾灸单独或联合其他治疗显著降低了汉密尔顿抑郁量表评分（平均差异= -2.10 ， 95% CI ： [-3.00至-1.20] ） ，其疗效与抗抑郁药物相当（平均差异= -0.60 ， 95% CI [-1.31至0.12] ， P = 0.10 ）。",
+      "text_vi": "Ngứa, một mình hoặc kết hợp với các phương pháp điều trị khác, làm giảm đáng kể điểm số thang đánh giá trầm cảm Hamilton so với các phương pháp điều trị khác được sử dụng một mình (chênh lệch trung bình = -2,10, KTC 95%: [-3,00 đến -1,20]), với hiệu quả tương đương với thuốc chống trầm cảm (chênh lệch trung bình = -0,60, KTC 95% [-1,31 đến 0,12], P = .10).",
+      "text_pinyin": "yǔ dān dú shǐ yòng de qí tā zhì liáo xiāng bǐ ， ài jiǔ dān dú huò lián hé qí tā zhì liáo xiǎn zhù jiàng dī le hàn mì ěr dùn yì yù liàng biǎo píng fēn （ píng jūn chà yì = -2.10 ， 95% CI ： [-3.00 zhì -1.20] ） ， qí liáo xiào yǔ kàng yì yù yào wù xiāng dāng （ píng jūn chà yì = -0.60 ， 95% CI [-1.31 zhì 0.12] ， P = 0.10 ）。"
+    },
+    {
+      "seq": 10,
+      "text_en": "Additionally, in terms of safety, the incidence of adverse reactions associated with moxibustion alone or in combination with other therapies for depression is relatively low (relative risk = 0.57, 95% CI: [0.39-0.84], P = .005).",
+      "text_zh": "此外，在安全性方面，单独艾灸或联合其他抑郁症疗法相关不良反应的发生率相对较低（相对风险= 0.57 ， 95% CI ： [0.39-0.84] ， P = 0.005 ）。",
+      "text_vi": "Ngoài ra, về mặt an toàn, tỷ lệ các phản ứng bất lợi liên quan đến moxibustion đơn thuần hoặc kết hợp với các liệu pháp điều trị trầm cảm khác là tương đối thấp (nguy cơ tương đối = 0,57, KTC 95%: [0,39-0,84], P = 0,005).",
+      "text_pinyin": "cǐ wài ， zài ān quán xìng fāng miàn ， dān dú ài jiǔ huò lián hé qí tā yì yù zhèng liáo fǎ xiàng guān bù liáng fǎn yìng de fā shēng lǜ xiāng duì jiào dī （ xiāng duì fēng xiǎn = 0.57 ， 95% CI ： [0.39-0.84] ， P = 0.005 ）。"
+    },
+    {
+      "seq": 11,
+      "text_en": "However, the overall quality of the evidence was assessed as low to very low.",
+      "text_zh": "然而，证据的整体质量被评估为低到非常低。",
+      "text_vi": "Tuy nhiên, chất lượng tổng thể của bằng chứng được đánh giá từ thấp đến rất thấp.",
+      "text_pinyin": "rán ér ， zhèng jù de zhěng tǐ zhì liàng bèi píng gū wèi dī dào fēi cháng dī 。"
+    },
+    {
+      "seq": 12,
+      "text_en": "Moxibustion has been shown to alleviate depressive symptoms, particularly when combined with other therapies, offering both enhanced efficacy and safety.",
+      "text_zh": "艾灸已被证明可以缓解抑郁症状，特别是与其他疗法联合使用时，可提高疗效和安全性。",
+      "text_vi": "Ngứa đã được chứng minh là làm giảm các triệu chứng trầm cảm, đặc biệt là khi kết hợp với các liệu pháp khác, mang lại cả hiệu quả và độ an toàn.",
+      "text_pinyin": "ài jiǔ yǐ bèi zhèng míng kě yǐ huǎn jiě yì yù zhèng zhuàng ， tè bié shì yǔ qí tā liáo fǎ lián hé shǐ yòng shí ， kě tí gāo liáo xiào hé ān quán xìng 。"
+    },
+    {
+      "seq": 13,
+      "text_en": "However, further high-quality studies are necessary to confirm its effectiveness.",
+      "text_zh": "然而，需要进一步的高质量研究来确认其有效性。",
+      "text_vi": "Tuy nhiên, các nghiên cứu chất lượng cao hơn là cần thiết để xác nhận hiệu quả của nó.",
+      "text_pinyin": "rán ér ， xū yào jìn yí bù de gāo zhì liàng yán jiū lái què rèn qí yǒu xiào xìng 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42888532), Medicine (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42888532/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42888532), Medicine (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42888532/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42888532），Medicine (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42888532/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-17T23:37:22Z",
+  "updated_at": "2026-10-17T23:37:22Z"
+}
