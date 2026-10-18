@@ -1,0 +1,115 @@
+{
+  "id": "ha-42893564",
+  "category": "hoc_thuat",
+  "level": "trung_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Compound Astragalus Oral Liquid Attenuates Ventricular Remodeling in Heart Failure After Myocardial Infarction via the AMPK/TGF-β/Smad Signaling Pathway.",
+  "title_zh": "复方黄芪口服液通过AMPK/TGF-β/Smad信号通路减弱心肌梗死后心力衰竭的心室重构。",
+  "title_vi": "Chất lỏng uống Astragalus hợp chất làm suy giảm sự tái tạo tâm thất trong suy tim sau nhồi máu cơ tim thông qua con đường truyền tín hiệu AMPK/TGF-β/Smad.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Ventricular remodeling following acute myocardial infarction (AMI) is a critical cause of heart failure (HF).",
+      "text_zh": "急性心肌梗死（ AMI ）后心室重构是心力衰竭（ HF ）的关键原因。",
+      "text_vi": "Tái cấu trúc tâm thất sau nhồi máu cơ tim cấp tính (AMI) là một nguyên nhân quan trọng gây suy tim (HF).",
+      "text_pinyin": "jí xìng xīn jī gěng sǐ （ AMI ） hòu xīn shì zhòng gòu shì xīn lì shuāi jié （ HF ） de guān jiàn yuán yīn 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "Compound Astragalus Oral Liquid (CAOL) is a traditional Chinese medicine formulation with anti-inflammatory, antioxidant, and tonifying properties.",
+      "text_zh": "复方黄芪口服液（ CAOL ）是一种具有抗炎、抗氧化、补益功效的中药制剂。",
+      "text_vi": "Chất lỏng uống hợp chất Astragalus (CAOL) là một chế phẩm y học cổ truyền Trung Quốc có đặc tính chống viêm, chống oxy hóa và làm săn chắc da.",
+      "text_pinyin": "fù fāng huáng qí kǒu fú yè （ CAOL ） shì yī zhǒng jù yǒu kàng yán 、 kàng yǎng huà 、 bǔ yì gōng xiào de zhōng yào zhì jì 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "However, its effects and underlying mechanisms in post-acute myocardial infarction heart failure (AMI-HF) remain unclear.",
+      "text_zh": "然而，其在急性心肌梗死后心力衰竭（ AMI-HF ）中的作用和潜在机制尚不清楚。",
+      "text_vi": "Tuy nhiên, tác dụng của nó và các cơ chế cơ bản trong suy tim nhồi máu cơ tim sau cấp tính (AMI-HF) vẫn chưa rõ ràng.",
+      "text_pinyin": "rán ér ， qí zài jí xìng xīn jī gěng sǐ hòu xīn lì shuāi jié （ AMI-HF ） zhōng de zuò yòng hé qián zài jī zhì shàng bù qīng chǔ 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "To evaluate the cardioprotective efficacy of CAOL in a rat model of AMI-HF and elucidate the associated molecular mechanisms.",
+      "text_zh": "评价CAOL在AMI-HF大鼠模型中的心脏保护作用，并阐明相关的分子机制。",
+      "text_vi": "Để đánh giá hiệu quả bảo vệ tim của CAOL trong mô hình chuột AMI-HF và làm sáng tỏ các cơ chế phân tử liên quan.",
+      "text_pinyin": "píng jià CAOL zài AMI-HF dà shǔ mó xíng zhōng de xīn zàng bǎo hù zuò yòng ， bìng chǎn míng xiāng guān de fèn zǐ jī zhì 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "CAOL constituents were identified by UPLC-Q-TOF/MS, and network pharmacology predicted potential targets.",
+      "text_zh": "通过UPLC-Q-TOF/MS鉴定CAOL成分，网络药理学预测潜在靶点。",
+      "text_vi": "Các thành phần CAOL được xác định bằng UPLC-Q-TOF/MS, và dược lý mạng dự đoán các đích tiềm năng.",
+      "text_pinyin": "tōng guò UPLC-Q-TOF/MS jiàn dìng CAOL chéng fèn ， wǎng luò yào lǐ xué yù cè qián zài bǎ diǎn 。"
+    },
+    {
+      "seq": 6,
+      "text_en": "A rat model of AMI-induced HF was established by left anterior descending (LAD) coronary ligation.",
+      "text_zh": "通过左前降支（ LAD ）冠状动脉结扎建立AMI诱导的HF大鼠模型。",
+      "text_vi": "Một mô hình chuột của HF do AMI gây ra được thiết lập bằng cách thắt mạch vành giảm dần trước bên trái (LAD).",
+      "text_pinyin": "tōng guò zuǒ qián jiàng zhī （ LAD ） guān zhuàng dòng mài jié zā jiàn lì AMI yòu dǎo de HF dà shǔ mó xíng 。"
+    },
+    {
+      "seq": 7,
+      "text_en": "Animals received CAOL at low, medium, and high doses, or perindopril.",
+      "text_zh": "动物接受低、中和高剂量的CAOL或培哚普利。",
+      "text_vi": "Các động vật nhận CAOL ở liều thấp, liều trung bình và liều cao, hoặc perindopril.",
+      "text_pinyin": "dòng wù jiē shòu dī 、 zhōng hé gāo jì liàng de CAOL huò péi duǒ pǔ lì 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "Cardiac function, histopathology, serum oxidative and inflammatory markers, and myocardial molecular expression were assessed by echocardiography, staining, ELISA, Western blotting, and RT-qPCR.",
+      "text_zh": "通过超声心动图、染色、ELISA、Western印迹和RT-qPCR评估心脏功能、组织病理学、血清氧化和炎症标志物以及心肌分子表达。",
+      "text_vi": "Chức năng tim, mô bệnh học, các dấu hiệu oxy hóa và viêm trong huyết thanh, và sự biểu hiện phân tử cơ tim được đánh giá bằng siêu âm tim, nhuộm màu, ELISA, thấm tách Tây, và RT-qPCR.",
+      "text_pinyin": "tōng guò chāo shēng xīn dòng tú 、 rǎn sè 、ELISA、Western yìn jì hé RT-qPCR píng gū xīn zàng gōng néng 、 zǔ zhī bìng lǐ xué 、 xuè qīng yǎng huà hé yán zhèng biāo zhì wù yǐ jí xīn jī fèn zǐ biǎo dá 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "CAOL treatment improved cardiac performance in a dose-dependent manner, as evidenced by increased LVEF and improvements in LVIDd and LVIDs.",
+      "text_zh": "CAOL治疗以剂量依赖的方式改善心脏性能， LVEF增加以及LVIDd和LVIDs的改善就证明了这一点。",
+      "text_vi": "Điều trị bằng CAOL cải thiện hiệu suất tim theo cách phụ thuộc vào liều, bằng chứng là tăng LVEF và cải thiện LVIDd và LVID.",
+      "text_pinyin": "CAOL zhì liáo yǐ jì liàng yī lài de fāng shì gǎi shàn xīn zàng xìng néng ， LVEF zēng jiā yǐ jí LVIDd hé LVIDs de gǎi shàn jiù zhèng míng liǎo zhè yì diǎn 。"
+    },
+    {
+      "seq": 10,
+      "text_en": "Histological analyses demonstrated that CAOL reduced myocardial necrosis, inflammatory cell infiltration, and collagen deposition in a dose-dependent fashion.",
+      "text_zh": "组织学分析表明， CAOL以剂量依赖性方式减少心肌坏死、炎症细胞浸润和胶原沉积。",
+      "text_vi": "Các phân tích mô học đã chứng minh rằng CAOL làm giảm hoại tử cơ tim, thâm nhiễm tế bào viêm và lắng đọng collagen theo cách phụ thuộc vào liều lượng.",
+      "text_pinyin": "zǔ zhī xué fēn xī biǎo míng ， CAOL yǐ jì liàng yī lài xìng fāng shì jiǎn shǎo xīn jī huài sǐ 、 yán zhèng xì bāo jìn rùn hé jiāo yuán chén jī 。"
+    },
+    {
+      "seq": 11,
+      "text_en": "CAOL also ameliorated serum markers of inflammation and oxidative stress.",
+      "text_zh": "CAOL还改善了炎症和氧化应激的血清标志物。",
+      "text_vi": "CAOL cũng cải thiện các dấu hiệu huyết thanh của tình trạng viêm và stress oxy hóa.",
+      "text_pinyin": "CAOL hái gǎi shàn le yán zhèng hé yǎng huà yīng jī de xuè qīng biāo zhì wù 。"
+    },
+    {
+      "seq": 12,
+      "text_en": "Mechanistically, CAOL modulated AMPK activity and inhibited TGF-β1/Smad-mediated profibrotic signaling, consistent with its antifibrotic and cytoprotective effects.",
+      "text_zh": "在机制上， CAOL调节AMPK活性并抑制TGF-β1/Smad介导的纤维化信号传导，这与其抗纤维化和细胞保护作用一致。",
+      "text_vi": "Về mặt cơ học, hoạt tính AMPK do CAOL điều biến và ức chế tín hiệu profibrotic qua trung gian TGF-β1/Smad, phù hợp với tác dụng chống xơ hóa và bảo vệ tế bào của nó.",
+      "text_pinyin": "zài jī zhì shàng ， CAOL tiáo jié AMPK huó xìng bìng yì zhì TGF-β1/Smad jiè dǎo de xiān wéi huà xìn hào chuán dǎo ， zhè yǔ qí kàng xiān wéi huà hé xì bāo bǎo hù zuò yòng yí zhì 。"
+    },
+    {
+      "seq": 13,
+      "text_en": "CAOL ameliorates postinfarction ventricular remodeling and preserves cardiac function in a manner associated with AMPK activation and suppression of TGF-β/Smad-mediated fibrosis.",
+      "text_zh": "CAOL通过与AMPK激活和抑制TGF-β/Smad介导的纤维化相关的方式改善梗死后心室重构并保留心脏功能。",
+      "text_vi": "CAOL cải thiện quá trình tái cấu trúc tâm thất sau nhồi máu và bảo tồn chức năng tim theo cách liên quan đến hoạt hóa AMPK và ức chế xơ hóa qua trung gian TGF-β/Smad.",
+      "text_pinyin": "CAOL tōng guò yǔ AMPK jī huó hé yì zhì TGF-β/Smad jiè dǎo de xiān wéi huà xiāng guān de fāng shì gǎi shàn gěng sǐ hòu xīn shì zhòng gòu bìng bǎo liú xīn zàng gōng néng 。"
+    },
+    {
+      "seq": 14,
+      "text_en": "These findings provide experimental evidence supporting CAOL as a potential therapeutic agent for AMI-HF.",
+      "text_zh": "这些发现提供了支持CAOL作为AMI-HF潜在治疗剂的实验证据。",
+      "text_vi": "Những phát hiện này cung cấp bằng chứng thực nghiệm hỗ trợ CAOL như một tác nhân điều trị tiềm năng cho AMI-HF.",
+      "text_pinyin": "zhè xiē fā xiàn tí gōng le zhī chí CAOL zuò wéi AMI-HF qián zài zhì liáo jì de shí yàn zhèng jù 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42893564), BioMed research international (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42893564/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42893564), BioMed research international (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42893564/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42893564），BioMed research international (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42893564/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-18T23:48:11Z",
+  "updated_at": "2026-10-18T23:48:11Z"
+}
