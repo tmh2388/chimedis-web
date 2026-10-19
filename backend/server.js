@@ -1690,7 +1690,20 @@ app.post('/api/admin/dev-note', ...adminOnly, async (req, res) => {
     });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) return res.status(502).json({ success: false, error: 'github_failed', detail: String(j.message || r.status).slice(0, 80) });
-    res.json({ success: true, data: { number: j.number, url: j.html_url } });
+    // Tuỳ chọn: đánh thức NGAY "routine" của Claude Code trên cloud (không cần chờ tác vụ định kỳ). Cần CLAUDE_ROUTINE_FIRE_URL + CLAUDE_ROUTINE_TOKEN.
+    // Routine chạy bằng gói thuê bao Claude (không dùng khoá API); prompt của routine phải tham chiếu khối <routine-fire-payload>.
+    let fired = false;
+    if (process.env.CLAUDE_ROUTINE_FIRE_URL && process.env.CLAUDE_ROUTINE_TOKEN) {
+      try {
+        const fr = await fetch(process.env.CLAUDE_ROUTINE_FIRE_URL, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${process.env.CLAUDE_ROUTINE_TOKEN}`, 'anthropic-beta': 'experimental-cc-routine-2026-04-01', 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: `Repo: ${repo}\nIssue: #${j.number} ${j.html_url}\nGhi chú của admin:\n${note}` }),
+        });
+        fired = fr.ok;
+      } catch (_) { /* không chặn: Issue đã tạo, tác vụ định kỳ sẽ nhặt */ }
+    }
+    res.json({ success: true, data: { number: j.number, url: j.html_url, routine_fired: fired } });
   } catch (e) { console.error('dev-note:', e.message); res.status(500).json({ success: false, error: 'note_failed' }); }
 });
 // ---- Quản trị: góp ý thuật ngữ / thuật ngữ mới tự học / kho câu hỏi Lão Sư ----

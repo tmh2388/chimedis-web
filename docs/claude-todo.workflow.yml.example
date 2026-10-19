@@ -1,12 +1,9 @@
-# Sao chép sang .github/workflows/claude-todo.yml khi đã đặt secret ANTHROPIC_API_KEY.
+# Phương án B (tính tiền theo token API nếu dùng anthropic_api_key). Sao chép sang .github/workflows/claude-todo.yml khi sẵn sàng.
 name: claude-todo
 on:
   issues:
     types: [labeled]
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+permissions: { contents: write, pull-requests: write, issues: write }
 jobs:
   fix:
     if: github.event.label.name == 'claude-todo'
@@ -17,6 +14,5 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
-            Đọc Issue #${{ github.event.issue.number }} (ghi chú của admin Chimedis). Sửa đúng phần được yêu cầu,
-            giữ nguyên các phần đang ổn, kiểm tra cú pháp, tăng phiên bản service worker, rồi mở Pull Request
-            liên kết Issue. Không tự merge.
+            Đọc Issue #${{ github.event.issue.number }} (ghi chú của admin Chimedis). Sửa đúng phần được yêu cầu, giữ nguyên phần đang ổn,
+            kiểm tra cú pháp, tăng phiên bản service worker, mở Pull Request liên kết Issue. Không tự merge.

@@ -124,3 +124,6 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## v67 — đăng nhập ở Trung Quốc (app iOS)
 - Triệu chứng: bấm Google trong app → "auth/chimedis-timeout" sau 20 s. Nguyên nhân: bộ chọn Google gốc không tới được dịch vụ Google khi không có VPN → treo. App trước đây luôn coi là tới được.
 - Sửa: app cũng thăm dò `generate_204` (khi múi giờ/ngôn ngữ nghi ở TQ) → ẩn nút Google/Facebook (`[data-gfw]`), GIỮ Apple và email; khi timeout thì tự ẩn và báo rõ "cần VPN, hãy dùng Apple/email". Có lối "đã bật VPN → bấm để hiện".
+
+## v68 — ghi chú admin: đánh thức routine Claude Code (cloud) + hướng dẫn chi tiết
+- `POST /api/admin/dev-note` sau khi tạo Issue gọi API trigger của routine nếu có `CLAUDE_ROUTINE_FIRE_URL` + `CLAUDE_ROUTINE_TOKEN`. Hướng dẫn từng bước + chi phí: `docs/ADMIN-NOTES-TO-CLAUDE.md`.
