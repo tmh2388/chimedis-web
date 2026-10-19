@@ -3146,25 +3146,43 @@ async function loadListenCategory(cat){
   state._listenLevel = 'all';
   if(cat === 'tu_them'){ render(); return; }
   if(cat === 'csdl'){ render(); loadCsdlHome(); return; }
-  const first = !listenDialoguesCache[cat];
+  // Bản đã lưu trên máy (IndexedDB) hiện NGAY, mạng chỉ cập nhật ngầm — mở lại không phải chờ tải từ đầu.
+  let had = !!listenDialoguesCache[cat];
+  if(!had){
+    try{ const c = await OFF.get('lst:' + cat); if(Array.isArray(c) && c.length){ listenDialoguesCache[cat] = c; had = true; if(state.tab === 'listenhome') render(); } }catch(e){}
+  }
+  const first = !had;
   if(first) busyShow(t('busy_loading'));
   try{
     const res = await fetch(`${API_BASE}/api/listening/dialogues?category=${encodeURIComponent(cat)}`, { signal: (window.AbortSignal && AbortSignal.timeout) ? AbortSignal.timeout(20000) : undefined });
     const json = await res.json();
-    listenDialoguesCache[cat] = json.data || [];
-  }catch(e){ delete listenDialoguesCache[cat]; } // lỗi mạng: không nhớ rỗng, lần vào sau sẽ tải lại
+    if(json && Array.isArray(json.data)){ listenDialoguesCache[cat] = json.data; OFF.set('lst:' + cat, json.data); }
+    else if(!had) listenDialoguesCache[cat] = json.data || [];
+  }catch(e){ if(!had) delete listenDialoguesCache[cat]; } // lỗi mạng: có bản đã lưu thì giữ; chưa có thì không nhớ rỗng
   finally{ if(first) busyHide(); }
   if(state.tab === 'listenhome') render();
 }
 
 async function openListenDialogue(id){
   listenStopPlayback();
-  busyShow(t('busy_loading'));
-  try{ await openListenDialogueInner(id); } finally{ busyHide(); }
+  await openListenDialogueInner(id);
 }
 async function openListenDialogueInner(id){
   if(String(listenLastDialogueId) !== String(id)){ listenResetLineState(); }
   listenLastDialogueId = id;
+  // Bài đã mở trước đó: hiện NGAY từ máy rồi cập nhật ngầm (không màn chờ, không phải tải lại từ đầu).
+  let shownFromCache = false;
+  if(!String(id).startsWith('my-')){
+    try{
+      const c = await OFF.get('dlgc:' + id);
+      if(c && c.segments){
+        listenCurrentDialogue = c; await offAudioPreload(c).catch(() => {});
+        state.tab = 'listendialogue'; render(); scrollToTop(); shownFromCache = true;
+      }
+    }catch(e){}
+  }
+  const _bz = !shownFromCache;
+  if(_bz) busyShow(t('busy_loading'));
   try{
     const isMine = String(id).startsWith('my-');
     const isDb = String(id).startsWith('db-');
@@ -3173,16 +3191,21 @@ async function openListenDialogueInner(id){
       : isDb
         ? await authFetch(`/api/csdl/lesson/${encodeURIComponent(id)}`)
         : await fetch(`${API_BASE}/api/listening/dialogues/${encodeURIComponent(id)}`);
-    if(isDb && res.status === 401){ listenNeedLogin('listen'); return; }
-    if(isDb && res.status === 403){ state.plan = 'free'; openUpgradeModal('csdl'); return; }
+    if(isDb && res.status === 401){ if(_bz) busyHide(); listenNeedLogin('listen'); return; }
+    if(isDb && res.status === 403){ if(_bz) busyHide(); state.plan = 'free'; openUpgradeModal('csdl'); return; }
     const json = await res.json();
-    listenCurrentDialogue = (json.data && json.data.segments) ? json.data : null;
+    const fresh = (json.data && json.data.segments) ? json.data : null;
+    if(fresh && !String(id).startsWith('my-')) OFF.set('dlgc:' + id, fresh);
+    if(shownFromCache) return; // đã hiện bản lưu; bản mới dùng cho lần mở sau (không dựng lại giữa chừng)
+    listenCurrentDialogue = fresh;
     if(listenCurrentDialogue && offAudioIndex.some(x => String(x.id) === String(id))) OFF.set('dlg:' + id, listenCurrentDialogue); // giữ bản văn bản offline luôn mới
-  }catch(e){ listenCurrentDialogue = null; }
+  }catch(e){ if(shownFromCache) return; listenCurrentDialogue = null; }
+  if(shownFromCache) return;
   if(!listenCurrentDialogue){ // mất mạng/lỗi: dùng bản đã tải về (nếu có)
     try{ const cached = await OFF.get('dlg:' + id); if(cached && cached.segments) listenCurrentDialogue = cached; }catch(e){}
   }
   if(listenCurrentDialogue) await offAudioPreload(listenCurrentDialogue).catch(() => {});
+  if(_bz) busyHide();
   state.tab = 'listendialogue';
   render(); scrollToTop();
 }
@@ -3212,6 +3235,9 @@ const csdlState = { loaded: false, loading: false, daily: [], fields: [], field:
 async function loadCsdlHome(){
   if(csdlState.loading) return;
   csdlState.loading = true;
+  if(!csdlState.loaded){
+    try{ const c = await OFF.get('csdl:home'); if(c && Array.isArray(c.daily)){ csdlState.daily = c.daily; csdlState.fields = c.fields || []; listenDialoguesCache.csdl = csdlState.daily; csdlState.loaded = true; if(state.tab === 'listenhome' && state._listenCategory === 'csdl') render(); } }catch(e){}
+  }
   const firstCsdl = !csdlState.loaded;
   if(firstCsdl) busyShow(t('busy_loading'));
   try{
@@ -3223,6 +3249,7 @@ async function loadCsdlHome(){
     csdlState.fields = (f.data && f.data.fields) || [];
     listenDialoguesCache.csdl = csdlState.daily;
     csdlState.loaded = true;
+    OFF.set('csdl:home', { daily: csdlState.daily, fields: csdlState.fields });
   }catch(e){}
   csdlState.loading = false;
   if(firstCsdl) busyHide();
@@ -7768,6 +7795,20 @@ async function offFigUrl(src){
   if(!rec || !rec.buf) return null;
   return _offUrls[src] = URL.createObjectURL(new Blob([rec.buf], { type: rec.type || 'image/jpeg' }));
 }
+// Hình đã lưu trên máy: dùng NGAY (không chờ mạng), kể cả khi đang online — trước đây chỉ dùng khi mạng lỗi nên mở hình vẫn chờ tải.
+function offFigHydrate(root){
+  const imgs = root.tagName === 'IMG' ? [root] : (root.querySelectorAll ? root.querySelectorAll('img[src*="/figures/"]') : []);
+  imgs.forEach((el) => {
+    if(!el.dataset || el.dataset.offSwap) return;
+    el.dataset.offSwap = '1';
+    const src = relUrl(el.getAttribute('src') || '');
+    if(!src.startsWith('/figures/')) return;
+    offFigUrl(src).then((u) => { if(u && el.isConnected && el.src !== u){ el.dataset.offTried = '1'; el.src = u; } });
+  });
+}
+try{
+  new MutationObserver((muts) => { for(const m of muts) m.addedNodes.forEach((n) => { if(n.nodeType === 1) offFigHydrate(n); }); }).observe(document.documentElement, { childList: true, subtree: true });
+}catch(e){}
 document.addEventListener('error', e => {
   const el = e.target;
   if(!el || el.tagName !== 'IMG' || el.dataset.offTried) return;
@@ -8083,6 +8124,8 @@ setupScrollWatch();
 setupPopupSwipe();
 primeTermsFromIDB();
 loadTermsFromAPI();
+// Làm nóng (khi rảnh): tải sẵn danh sách bài nghe mặc định vào máy để lần mở Luyện nghe đầu tiên cũng nhanh.
+setTimeout(() => { try{ if(navigator.onLine) fetch(`${API_BASE}/api/listening/dialogues?category=bao_chi`).then(r => r.json()).then(j => { if(j && Array.isArray(j.data) && j.data.length) OFF.set('lst:bao_chi', j.data); }).catch(() => {}); }catch(e){} }, 4000);
 loadTcmVocabularyFromAPI();
 refreshOfflineStatus();
 

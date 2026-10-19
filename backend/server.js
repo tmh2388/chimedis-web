@@ -1823,7 +1823,13 @@ app.get('/api/admin/codes', ...adminOnly, requireDocsDb, async (req, res) => {
   catch (e) { res.status(500).json({ success: false, error: 'list_failed' }); }
 });
 
-app.use(express.static(PUBLIC_DIR));
+app.use(express.static(PUBLIC_DIR, {
+  // Hình huyệt/biểu tượng đổi rất hiếm (tên tệp cố định): cho trình duyệt/CDN giữ 30 ngày thay vì hỏi lại máy chủ mỗi lần (max-age=0 trước đây).
+  setHeaders(res, filePath) {
+    if (/[\\/](figures|icons)[\\/]/.test(filePath)) res.setHeader('Cache-Control', 'public, max-age=2592000');
+    else if (/[\\/]vendor[\\/]/.test(filePath)) res.setHeader('Cache-Control', 'public, max-age=86400');
+  },
+}));
 // Gói giao diện cho app iOS (live update) — dựng từ chính PUBLIC_DIR, xem lib/app-bundle.js.
 // Chẩn đoán live-update: ghi lại mỗi lần app hỏi/tải gói giao diện (để biết app thật có đang cập nhật không).
 app.use('/app-bundle', (req, res, next) => {
