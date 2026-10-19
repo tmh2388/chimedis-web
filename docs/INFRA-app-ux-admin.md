@@ -127,3 +127,6 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 
 ## v68 — ghi chú admin: đánh thức routine Claude Code (cloud) + hướng dẫn chi tiết
 - `POST /api/admin/dev-note` sau khi tạo Issue gọi API trigger của routine nếu có `CLAUDE_ROUTINE_FIRE_URL` + `CLAUDE_ROUTINE_TOKEN`. Hướng dẫn từng bước + chi phí: `docs/ADMIN-NOTES-TO-CLAUDE.md`.
+
+## v68b — ghi chú admin: chốt cách đơn giản
+- Gác lại dịch vụ chung ở chimedis.vn. Mỗi app tự tạo Issue `claude-todo` trong repo của mình; việc xử lý bằng lệnh `/chimedis-note` (skill ở `~/.claude/skills/chimedis-note`). Xem `docs/ADMIN-NOTES-TO-CLAUDE.md`.
