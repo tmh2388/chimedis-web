@@ -130,3 +130,6 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 
 ## v68b — ghi chú admin: chốt cách đơn giản
 - Gác lại dịch vụ chung ở chimedis.vn. Mỗi app tự tạo Issue `claude-todo` trong repo của mình; việc xử lý bằng lệnh `/chimedis-note` (skill ở `~/.claude/skills/chimedis-note`). Xem `docs/ADMIN-NOTES-TO-CLAUDE.md`.
+
+## v69 — hộp ghi chú/sửa không bị bàn phím che (Issue #1)
+- iOS không co khung nhìn bố cục khi bàn phím mở nên bottom-sheet bị nằm dưới bàn phím. Nay `.ui-sheet-scrim.kb` bám theo `visualViewport` (biến `--vvh`/`--vvt`), `.ed-sheet` giới hạn chiều cao theo vùng nhìn thấy và ô đang gõ tự cuộn vào giữa.
