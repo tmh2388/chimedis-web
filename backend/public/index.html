@@ -1101,7 +1101,10 @@ header{transition:padding .2s ease}
 .rev-meta{font-size:11.5px;color:var(--muc-mo,#6B6156)}
 .rev-rep{background:#F7F2E6;border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.45}.rev-rep small{color:var(--muc-mo,#6B6156);display:block}
 .rev-sg{color:#0E3A3A}
-.ed-sheet{max-height:92vh;overflow:auto}
+.ed-sheet{max-height:min(92vh,calc(var(--vvh,100vh) - 12px));overflow:auto}
+/* Bàn phím (iOS) không co khung nhìn bố cục: khung bảng được căn theo VÙNG NHÌN THẤY (visualViewport) để ô nhập nằm TRÊN bàn phím */
+.ui-sheet-scrim.kb{bottom:auto;top:var(--vvt,0px);height:var(--vvh,100%)}
+.ui-sheet-scrim.kb .ui-sheet{padding-bottom:12px}
 .ed-l{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--muc-mo,#6B6156);margin:8px 2px}
 .ed-l input,.ed-l textarea{border:1px solid var(--vien,#e5ddcc);border-radius:12px;padding:11px 12px;font:inherit;font-size:15px;font-weight:500;color:var(--muc,#2a2118);background:#fff}
 .ed-l small{font-weight:500;font-size:11.5px}
@@ -8352,6 +8355,20 @@ function openDevNote(){
   };
   document.body.appendChild(el); requestAnimationFrame(() => el.classList.add('show'));
 }
+// Bàn phím mở: bảng (bottom-sheet) bám theo vùng nhìn thấy để ô nhập không bị bàn phím che; tự cuộn ô đang gõ vào giữa.
+(function(){
+  const vv = window.visualViewport; if(!vv) return;
+  const sync = () => {
+    const sc = document.querySelector('.ui-sheet-scrim.show, .ui-sheet-scrim');
+    const kb = (window.innerHeight - vv.height) > 120;
+    document.documentElement.style.setProperty('--vvh', vv.height + 'px');
+    document.documentElement.style.setProperty('--vvt', vv.offsetTop + 'px');
+    document.querySelectorAll('.ui-sheet-scrim').forEach((el) => el.classList.toggle('kb', kb));
+    if(kb){ const a = document.activeElement; if(a && /TEXTAREA|INPUT/.test(a.tagName) && a.closest('.ui-sheet')){ setTimeout(() => { try{ a.scrollIntoView({ block: 'center', behavior: 'smooth' }); }catch(e){} }, 60); } }
+  };
+  vv.addEventListener('resize', sync); vv.addEventListener('scroll', sync);
+  document.addEventListener('focusin', (e) => { if(e.target && e.target.closest && e.target.closest('.ui-sheet')) setTimeout(sync, 350); });
+})();
 // ===== Duyệt/sửa HÀNG LOẠT =====
 function snackShow(msg, label, fn){
   let el = document.getElementById('snackBar');
