@@ -137,3 +137,10 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## v70 — tốc độ: mở lại không phải tải từ đầu
 - **Gốc chậm đã tìm ra**: (1) service worker phục vụ `index.html` kiểu *network-first* → mở app phải chờ tải ~300 KB qua mạng (chậm/đứt ở TQ); (2) hình huyệt `Cache-Control: max-age=0` + bộ nhớ hình bị XOÁ mỗi lần phát hành (cache theo phiên bản); trong app còn không dùng bản đã tải offline khi đang online (chỉ dùng khi lỗi); (3) danh sách bài nghe/Học Thuật chỉ giữ trong RAM nên mở lại là tải lại và hiện màn chờ.
 - **Sửa**: SW — HTML *stale-while-revalidate* (hiện ngay, cập nhật ngầm; bản mới vào qua cập nhật SW như cũ); bộ nhớ hình/biểu tượng riêng `chimedis-media-v1` KHÔNG xoá khi phát hành, cache-first; `/api/terms` chờ mạng tối đa 4 s rồi dùng bản đã lưu; danh sách bài nghe/Học Thuật SWR. Máy chủ — hình/biểu tượng `max-age=30 ngày`, vendor 1 ngày. App — danh sách bài nghe, bài đã mở và Học Thuật lưu IndexedDB và hiện NGAY (mạng cập nhật ngầm, không màn chờ); hình đã tải offline được dùng NGAY khi có (MutationObserver), không chờ mạng; làm nóng danh sách bài nghe khi rảnh.
+
+## v71 — Tìm kiếm: từ điển + Bác sĩ Trung Y (2026-10-19)
+- Thẻ "Bác sĩ Trung Y" trong kết quả tìm kiếm (thu gọn 2 dòng, nút "Chat với Lão Sư →", "Xem đầy đủ" nhỏ bên phải). Kho có khớp đủ → chỉ gợi ý, không gọi AI; kho không khớp → tự tra AI sau 1,5s (hệ thống trả phí, có giới hạn), lưu server (`ai_lookup`) + IndexedDB (`ail:<key>`) để hiện lại tức thì.
+- Tô sáng từ trùng bằng `mark.hl` (không gạch chân).
+- Xếp hạng: từ nhóm (huyệt/thuốc/bệnh/phương…) chỉ làm gợi ý nhóm; mục đúng nhóm lên trước.
+- Lão Sư: lịch sử chỉ trong sessionStorage (thoát app là xoá), nút "Làm mới", mic cạnh nút Gửi, `openLaoshi({seedQuery,seedAnswer})`.
+- Màn ≥1024px: hai cột (từ điển trái, thẻ bác sĩ phải, sticky). SW v71.
