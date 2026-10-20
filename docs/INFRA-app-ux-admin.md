@@ -161,3 +161,9 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Thẻ Bác sĩ: kho ưu tiên. Kho đã có từ → tóm tắt từ kho (miễn phí, tức thì: mục khớp nhất + mục liên quan gom theo nhóm) và nút "Giải thích kỹ hơn bằng AI" (chỉ chạy khi bấm). Kho chưa có → AI tự tra (lưu vĩnh viễn, dùng chung).
 - Pipeline tự động (GitHub Actions fetch-pubmed/news/yaan) đẩy bài lên MySQL qua `scripts/push_lessons.py` thay vì commit vào main → hết redeploy hằng ngày. Cần secret `LESSON_PUSH_KEY` ở GitHub (Settings → Secrets → Actions) VÀ biến môi trường cùng giá trị trên Hostinger. Chưa có khoá → tự dùng cách commit cũ. Trạng thái "đã xử lý" lưu ở nhánh `pipeline-state` (`scripts/pipeline_state.sh`).
 - `/app-bundle/log.json`: nhật ký 200 lượt hỏi/tải gói cập nhật của app (chẩn đoán).
+
+## v77 — Speaking: đọc hết, rảnh tay có dừng, bỏ đọc pinyin (2026-10-20)
+- Nguyên nhân đọc cụt: `LS_TTS_MAX=700` cắt văn bản + `lsSplitRuns` giới hạn 14 đoạn. Nay giới hạn 3600 ký tự, đoạn dài cắt ≤700 ở chỗ ngắt câu, tối đa 80 khúc (mỗi khúc dùng bộ đệm dùng chung).
+- Rảnh tay: tự dừng sau 45 giây không chạm gửi; tối đa 15 phút/phiên; nút "Dừng" cạnh micro (`talkStop`).
+- Pinyin không đọc: `lsStripPinyin` (âm tiết hợp lệ có dấu thanh, cần dấu đặc trưng hoặc đứng sau chữ Hán) + persona Trò chuyện không viết pinyin.
+- Chi phí giọng: nam = Wavenet 16 USD/triệu ký tự, nữ = Chirp3 HD 30 USD/triệu ký tự (`ai-budget.js`).

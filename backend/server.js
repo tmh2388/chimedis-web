@@ -1467,7 +1467,7 @@ app.post('/api/laoshi/chat', ...maxOnly, requireDocsDb, requireOpenAI, withLesso
 }));
 
 // Đọc to câu trả lời của thầy (Google TTS; nhiều ngôn ngữ trong cùng câu → tách theo chữ Hán / còn lại, ghép MP3). Tính vào ngân sách người dùng.
-const LS_TTS_MAX = 700;
+const LS_TTS_MAX = 3600; // đủ cho một câu trả lời dài; từng đoạn được cắt nhỏ ở lsSplitRuns để không vượt giới hạn của dịch vụ đọc
 const isHanCh = (c) => /[㐀-鿿豈-﫿]/.test(c);
 // Chữ cái chỉ có trong tiếng Việt (không có trong pinyin/tiếng Anh): ă â đ ê ô ơ ư và các nguyên âm có dấu hỏi/ngã/nặng/mũ+dấu…
 const VI_ONLY = /[ăâđêôơưĂÂĐÊÔƠƯảạãầấẩẫậằắẳẵặẻẹẽềếểễệỉịĩỏọõồốổỗộờớởỡợủụũừứửữựỳỷỵỹẢẠÃẦẤẨẪẬẰẮẲẴẶẺẸẼỀẾỂỄỆỈỊĨỎỌÕỒỐỔỖỘỜỚỞỠỢỦỤŨỪỨỬỮỰỲỶỴỸ]/g;
@@ -1482,6 +1482,26 @@ const PINYIN = "[a-zA-ZüÜāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ'’�
 const RE_PY_PAREN = new RegExp('([\\u3400-\\u9fff]+)\\s*[（(]\\s*' + PINYIN + '\\s*[)）]', 'g');
 const RE_PY_COMMA = new RegExp('([\\u3400-\\u9fff]+)\\s*[,，、:：]\\s*' + PINYIN + '(?=\\s*[)）\\]。.;；,，]|\\s*$)', 'g');
 const RE_PY_IN = new RegExp('([\\u3400-\\u9fff]+)\\s*[,，、]\\s*' + PINYIN + '(?=\\s*[)）])', 'g');
+// Pinyin KHÔNG đọc (giọng Việt/Anh đọc pinyin sai; chữ Hán đã được đọc bằng giọng Mandarin). Chỉ xoá chuỗi âm tiết hợp lệ có dấu thanh,
+// và cần dấu đặc trưng của pinyin (ā ē ī ō ū ǎ ě ǐ ǒ ǔ ǚ…) hoặc đứng ngay sau chữ Hán/dấu "(" — để không xoá nhầm từ tiếng Việt như "là".
+const PY_SYL = /^(?:b|p|m|f|d|t|n|l|g|k|h|j|q|x|zh|ch|sh|r|z|c|s|y|w)?(?:a|o|e|ai|ei|ao|ou|an|en|ang|eng|ong|er|i|ia|ie|iao|iu|ian|in|iang|ing|iong|u|ua|uo|uai|ui|uan|un|uang|ueng|ü|üe|üan|ün)$/;
+const PY_TONE = /[āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜüÜ]/i;
+const PY_SPECIAL = /[āēīōūǖǎěǐǒǔǚǘǜ]/i;
+const toneless = (w) => w.normalize('NFD').replace(/[\u0300-\u036f]/g, (m) => '').normalize('NFC').toLowerCase();
+function lsStripPinyin(t) {
+  const re = /[\p{L}]+/gu; const toks = []; let m;
+  while ((m = re.exec(t))) { const w = m[0]; const ok = PY_TONE.test(w) && PY_SYL.test(toneless(w).replace(/ǖ|ǘ|ǚ|ǜ/g, 'ü')); toks.push({ w, s: m.index, e: m.index + w.length, ok }); }
+  const cuts = [];
+  for (let i = 0; i < toks.length;) {
+    if (!toks[i].ok) { i++; continue; }
+    let j = i; while (j + 1 < toks.length && toks[j + 1].ok && /^\s+$/.test(t.slice(toks[j].e, toks[j + 1].s))) j++;
+    const run = toks.slice(i, j + 1); const before = t.slice(0, run[0].s).replace(/\s+$/, '').slice(-1);
+    if (run.some((x) => PY_SPECIAL.test(x.w)) || (run.length >= 2 && (/[㐀-鿿(（]/.test(before)))) cuts.push([run[0].s, run[run.length - 1].e]);
+    i = j + 1;
+  }
+  for (let k = cuts.length - 1; k >= 0; k--) t = t.slice(0, cuts[k][0]) + t.slice(cuts[k][1]);
+  return t.replace(/\(\s*\)|（\s*）/g, '').replace(/\s{2,}/g, ' ');
+}
 function lsSpeechText(raw) {
   // Tiếng cười: "haha/hì hì/hê hê" và biểu tượng cười → "哈哈哈" (giọng Mandarin đọc ra tiếng cười thật), thay vì im lặng.
   let t = String(raw || '')
@@ -1490,6 +1510,7 @@ function lsSpeechText(raw) {
     .replace(/[\u{1F600}-\u{1F606}\u{1F602}\u{1F923}\u{1F605}]/gu, ' 哈哈哈 ');
   t = t.replace(/\*\*/g, '').replace(/[`#>_~]/g, '').replace(/\p{Extended_Pictographic}|\uFE0F/gu, '');
   t = t.replace(RE_PY_PAREN, '$1').replace(RE_PY_IN, '$1').replace(RE_PY_COMMA, '$1');
+  t = lsStripPinyin(t);
   t = t.replace(/\(\s*([㐀-鿿][㐀-鿿\s,，、]*)\)/g, '（$1）').replace(/([.!?。！？:：])\s*\n\s*/g, '$1 ').replace(/\s*\n\s*/g, '. ').replace(/\s{2,}/g, ' ').trim();
   if (t.length > LS_TTS_MAX) { const cut = t.slice(0, LS_TTS_MAX); const k = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('。'), cut.lastIndexOf('? '), cut.lastIndexOf('! ')); t = (k > 200 ? cut.slice(0, k + 1) : cut); }
   return t;
@@ -1504,7 +1525,17 @@ function lsSplitRuns(text, baseLang) {
     if (last && (neutral || last.lang === lang)) last.text += ch;
     else runs.push({ lang, text: ch });
   }
-  return runs.filter((r) => /[\p{L}\p{N}]/u.test(r.text)).slice(0, 14);
+  // cắt mỗi đoạn dài thành các khúc ≤ 700 ký tự ở chỗ ngắt câu (giới hạn dịch vụ đọc), KHÔNG bỏ bớt đoạn nào → đọc hết toàn bộ
+  const out = [];
+  for (const r of runs.filter((x) => /[\p{L}\p{N}]/u.test(x.text))) {
+    let rest = r.text;
+    while (rest.length > 700) {
+      const cut = rest.slice(0, 700); const k = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('。'), cut.lastIndexOf('? '), cut.lastIndexOf('! '), cut.lastIndexOf('；'), cut.lastIndexOf('，'), cut.lastIndexOf(', '));
+      const at = k > 200 ? k + 1 : 700; out.push({ lang: r.lang, text: rest.slice(0, at) }); rest = rest.slice(at);
+    }
+    if (/[\p{L}\p{N}]/u.test(rest)) out.push({ lang: r.lang, text: rest });
+  }
+  return out.slice(0, 80);
 }
 app.post('/api/laoshi/tts', ...maxOnly, async (req, res) => {
   try {

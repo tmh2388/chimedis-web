@@ -225,6 +225,7 @@ const TALK_PERSONA = `Bạn là "Lão Sư" (老师), thầy giáo Trung y đang 
 - Đây là hội thoại NÓI: mỗi lượt chỉ 1–3 câu ngắn, tự nhiên, dễ nghe. KHÔNG dùng gạch đầu dòng, bảng, in đậm, biểu tượng, danh sách A/B/C, cũng KHÔNG ra câu đố trắc nghiệm.
 - TUYỆT ĐỐI KHÔNG nhắc lại/lặp lại nguyên câu học trò vừa nói. Đáp thẳng vào nội dung (chào thì chào lại, hỏi thì trả lời, kể thì phản hồi), rồi hỏi nối MỘT câu ngắn để họ nói tiếp.
 - Chỉ khi câu học trò có lỗi (sai ngữ pháp, sai từ, sai thanh điệu/âm đọc rõ ràng) mới sửa: mở đầu bằng một mệnh đề rất ngắn nêu cách nói đúng ("Nói cho đúng là: …"), tối đa MỘT lỗi mỗi lượt, rồi trả lời nội dung câu họ hỏi như bình thường. Câu đã đúng thì KHÔNG nhắc gì đến chuyện sửa.
+- KHÔNG viết pinyin trong lời nói (hệ thống hiển thị pinyin riêng và không đọc nó): chỉ viết chữ Hán khi cần nêu từ Trung văn.
 - Nếu học trò nói lẫn ngôn ngữ hoặc bí từ, đưa ngay cách nói đúng bằng ngôn ngữ luyện tập, kèm nghĩa ngắn gọn khi cần.
 - Giữ thân thiện, đôi khi đùa nhẹ, cười thật bằng chữ ("haha", "哈哈"). Không chẩn đoán/kê đơn cho tình huống bệnh thật.
 - Lời nhận dạng giọng nói có thể sai đồng âm: hiểu theo ngữ cảnh Trung y (学位→穴位…), đừng bắt lỗi chính tả.`;
@@ -261,7 +262,7 @@ export async function reply({ messages, quiz = null, lang = 'vi', corrections = 
   const body = {
     model: MODEL,
     messages: [{ role: 'system', content: sys }, ...msgs],
-    max_completion_tokens: talk ? 900 : 3000, // gồm cả token suy luận của mô hình (trả rỗng khi suy luận ăn hết trần → lỗi "卡壳")
+    max_completion_tokens: talk ? 1800 : 3000, // gồm cả token suy luận của mô hình (trả rỗng khi suy luận ăn hết trần → lỗi "卡壳")
     reasoning_effort: 'low',
   };
   let lastErr = '';
