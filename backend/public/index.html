@@ -1719,6 +1719,24 @@ function hlText(text, q){
   if(open) out += '</mark>';
   return out;
 }
+// Khi từ khoá khớp ở trường KHÔNG hiện trên dòng (ngôn ngữ khác, đồng nghĩa, nội dung dài) → trích đoạn có tô sáng.
+function hlSnippet(term, q){
+  try{
+    const toks = hlTokens(q).map((tk) => [...tk].map(hlFoldChar).join('')).filter(Boolean);
+    if(!toks.length) return '';
+    const g = buildSearchFieldGroups(term); const fields = [].concat(g.primary || [], g.secondary || []).filter((x) => typeof x === 'string' && x);
+    for(const tk of toks){
+      for(const fld of fields){
+        const chars = [...fld], folded = chars.map(hlFoldChar);
+        if(folded.some((x) => x.length !== 1)) continue;
+        const at = folded.join('').indexOf(tk); if(at < 0) continue;
+        const from = Math.max(0, at - 24), to = Math.min(chars.length, at + tk.length + 36);
+        return (from > 0 ? '…' : '') + hlText(chars.slice(from, to).join(''), q) + (to < chars.length ? '…' : '');
+      }
+    }
+  }catch(e){}
+  return '';
+}
 function rowSummary(term){
   let text;
   if(term.category === 'herb'){
@@ -6713,7 +6731,7 @@ function aiLookupCardHtml(q){
   }
   const S = state._ai;
   const kho = searchHasFullMatch(q);
-  if(!state.user) return kho ? '' : wrap(`<p class="dc-lead">${t('ai_lk_login')}</p><div class="dc-act"><button type="button" class="ui-btn primary" onclick="openAuthModal()">${t('dr_login')}</button></div>`);
+  if(!state.user) return wrap(`<p class="dc-lead">${t('ai_lk_login')}</p><div class="dc-act"><button type="button" class="ui-btn primary" onclick="openAuthModal()">${t('dr_login')}</button></div>`);
   if(S.status === 'idle'){
     if(kho) return wrap(`<p class="dc-lead dc-idle">${t('dc_ask').replace('{q}', esc(q))}</p>`);
     return wrap(`<div class="dc-skel"><i></i><i></i></div>`);
@@ -6897,12 +6915,17 @@ function renderVocabTab(){
         </span>
       </div>`;
     }
+    let _snip = '';
+    if(state.searchQuery){
+      const _vis = [hzOf(term), term.py, term.vi, term.en, summary].map((x) => hlText(x || '', state.searchQuery)).join('');
+      if(_vis.indexOf('<mark') < 0){ const _sn = hlSnippet(term, state.searchQuery); if(_sn) _snip = `<div class="summary hl-src">${_sn}</div>`; }
+    }
     const _hzTxt = String(hzOf(term) || '');
     const _long = _hzTxt.length > 4 || /[A-Za-z]/.test(_hzTxt);
     return `<div class="vrow${_long ? ' long-hz' : ''}" onclick="openPopup('${term.id}')">
       <span class="stt">${i+1}</span>
       <span class="hz han">${state.searchQuery ? hlText(hzOf(term), state.searchQuery) : hzOf(term)}</span>
-      <span class="mid"><div class="py">${state.searchQuery ? hlText(term.py||'', state.searchQuery) : (term.py||'')}</div><div class="vi">${state.searchQuery ? hlText(term.vi||'', state.searchQuery) : term.vi}</div><div class="en">${state.searchQuery ? hlText(term.en||'', state.searchQuery) : (term.en||'')}</div>${summary?`<div class="summary">${state.searchQuery ? hlText(summary, state.searchQuery) : summary}</div>`:''}</span>
+      <span class="mid"><div class="py">${state.searchQuery ? hlText(term.py||'', state.searchQuery) : (term.py||'')}</div><div class="vi">${state.searchQuery ? hlText(term.vi||'', state.searchQuery) : term.vi}</div><div class="en">${state.searchQuery ? hlText(term.en||'', state.searchQuery) : (term.en||'')}</div>${summary?`<div class="summary">${state.searchQuery ? hlText(summary, state.searchQuery) : summary}</div>`:''}${_snip}</span>
     </div>`;
   }).join('');
   const loadMore = visibleCount < list.length
