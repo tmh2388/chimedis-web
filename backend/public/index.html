@@ -1413,7 +1413,7 @@ mark.hl{background:#FFE9A8;color:inherit;font-weight:800;border-radius:3px;paddi
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/></svg><span data-i18n="dr_source">Nguồn học thuật</span><span class="soon" data-i18n="soon">Sắp có</span></div>
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span data-i18n="dr_about">Giới thiệu Hạ Vân Y Đạo</span><span class="soon" data-i18n="soon">Sắp có</span></div>
     </div>
-    <div class="drawer-foot">夏雲醫道 — Hạ Vân Y Đạo<br>contact@chimedis.vn<div style="margin-top:6px;font-size:10px;opacity:.55">Chimedis web v73</div><div id="luStatus" onclick="checkLiveUpdate(true)" style="margin-top:8px;font-size:10px;opacity:.55;word-break:break-all"></div></div>
+    <div class="drawer-foot">夏雲醫道 — Hạ Vân Y Đạo<br>contact@chimedis.vn<div style="margin-top:6px;font-size:10px;opacity:.55">Chimedis web v74</div><div id="luStatus" onclick="checkLiveUpdate(true)" style="margin-top:8px;font-size:10px;opacity:.55;word-break:break-all"></div></div>
   </aside>
 
   <!-- ĐĂNG NHẬP -->
@@ -6773,12 +6773,14 @@ function aiLookupCardHtml(q){
   if(S.status === 'limit') return wrap(`<p class="dc-lead">${t('ai_lk_limit')}</p>`) + aiWebBoxHtml();
   if(S.status === 'err') return wrap(`<p class="dc-lead">${t('ai_lk_err')}</p><div class="dc-act"><button type="button" class="ui-btn primary" onclick="aiLookupRun()">${t('ai_lk_retry')}</button></div>`) + aiWebBoxHtml();
   const d = S.data; if(!d) return '';
+  if(!aiHasLang(d) && window.__aiRegen !== q + '|' + state.lang){ window.__aiRegen = q + '|' + state.lang; setTimeout(() => { if(state._ai.q === q && state._ai.status === 'done') aiLookupRun(); }, 50); }
   const lang = state.lang;
   const pick = (vi, zh, en) => lang === 'zh' ? (zh || vi || en) : lang === 'en' ? (en || vi || zh) : (vi || en || zh);
   const kind = d.kind || (d.is_medical ? 'tcm_term' : 'general_word');
   const meaning = pick(d.meaning_vi, d.meaning_zh, d.meaning_en);
   const def = kind === 'tcm_term' ? pick(d.def_vi, d.def_zh, d.def_en) : '';
-  const lead = d.tcm_context || meaning || def || '';
+  const ctx = pick(d.tcm_context, d.tcm_context_zh, d.tcm_context_en);
+  const lead = ctx || meaning || def || '';
   const title = [d.hz, d.vi].filter(Boolean).join(' · ');
   const saved = d.source === 'cache' || d.term_id;
   const open = !!S.open;
@@ -6816,11 +6818,17 @@ async function aiWebDefine(q){
   }catch(e){}
 }
 function aiStoreLocal(q, data){ try{ OFF.set('ail:' + aiKey(q), data); }catch(e){} }
+function aiHasLang(d){
+  if(!d) return false; const l = state.lang;
+  if(l === 'zh') return !!(d.meaning_zh || d.tcm_context_zh || d.def_zh);
+  if(l === 'en') return !!(d.meaning_en || d.tcm_context_en || d.def_en);
+  return true;
+}
 async function aiLookupLocal(q){
   if(!state.user || state._ai.q !== q || state._ai.status !== 'idle') return;
   try{
     const c = await OFF.get('ail:' + aiKey(q));
-    if(c && state._ai.q === q && state._ai.status === 'idle'){
+    if(c && aiHasLang(c) && state._ai.q === q && state._ai.status === 'idle'){
       state._ai = { q, status: 'done', data: Object.assign({}, c, { source: 'cache' }), web: null, open: false };
       aiLookupAdopt(c); aiRefresh(); if((c.kind || '') !== 'tcm_term') aiWebDefine(q);
     }
@@ -6833,7 +6841,7 @@ async function aiLookupServerCache(q){
     const r = await authFetch('/api/ai-lookup', { method: 'POST', body: JSON.stringify({ q, cache_only: true }) });
     const j = await r.json().catch(() => ({}));
     if(state._ai.q !== q || state._ai.status !== 'idle') return;
-    if(r.ok && j.success && j.data){ state._ai = { q, status: 'done', data: j.data, web: null, open: false }; aiStoreLocal(q, j.data); aiLookupAdopt(j.data); aiRefresh(); if((j.data.kind || '') !== 'tcm_term') aiWebDefine(q); }
+    if(r.ok && j.success && j.data && j.data.ml === 1 && aiHasLang(j.data)){ state._ai = { q, status: 'done', data: j.data, web: null, open: false }; aiStoreLocal(q, j.data); aiLookupAdopt(j.data); aiRefresh(); if((j.data.kind || '') !== 'tcm_term') aiWebDefine(q); }
   }catch(e){}
 }
 async function aiLookupAuto(q){
@@ -8293,7 +8301,6 @@ updateAuthUI();
 primeTermsFromCache(); // nạp ngay bộ TERMS đầy đủ đã cache trước khi render lần đầu (xem ghi chú ở loadTermsFromAPI)
 render();
 setupScrollWatch();
-try{ langFabInit(); }catch(e){}
 setupPopupSwipe();
 primeTermsFromIDB();
 loadTermsFromAPI();
