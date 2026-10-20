@@ -144,3 +144,9 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Xếp hạng: từ nhóm (huyệt/thuốc/bệnh/phương…) chỉ làm gợi ý nhóm; mục đúng nhóm lên trước.
 - Lão Sư: lịch sử chỉ trong sessionStorage (thoát app là xoá), nút "Làm mới", mic cạnh nút Gửi, `openLaoshi({seedQuery,seedAnswer})`.
 - Màn ≥1024px: hai cột (từ điển trái, thẻ bác sĩ phải, sticky). SW v71.
+
+## v73 (2026-10-20)
+- Tìm kiếm: tô cả từ đồng nghĩa; đoạn trích có tô sáng khi khớp ở trường không hiện; thẻ Bác sĩ tự giải thích cả khi kho đã có từ (lưu vĩnh viễn → lần sau không tốn AI).
+- Header thu gọn khi cuộn: rAF + trễ (90/15px) để hết giật.
+- Trò chuyện tự do: thầy mở lời tại chỗ (không gọi AI); persona không lặp lại câu học trò, chỉ sửa khi có lỗi rồi trả lời; bỏ bảng thuật ngữ nặng, max 900 token.
+- Nút đổi ngôn ngữ nổi (#langFab) + 3 nút VI/中文/EN trong Lão Sư. Hiện số phiên bản web ở chân menu.

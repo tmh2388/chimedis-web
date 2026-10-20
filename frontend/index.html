@@ -974,6 +974,16 @@ header{transition:padding .2s ease}
 mark.hl{background:#FFE9A8;color:inherit;font-weight:800;border-radius:3px;padding:0 1px;text-decoration:none}
 /* Thẻ Bác sĩ Trung Y (đầu kết quả tìm kiếm) */
 @media(min-width:1024px){.vsplit{display:grid;grid-template-columns:minmax(0,1fr) 380px;column-gap:18px;align-items:start}.vsplit>*{grid-column:1}.vsplit>.dc{grid-column:2;grid-row:1;position:sticky;top:12px;margin:0 0 -3000px}}
+.langfab{position:absolute;right:10px;bottom:calc(var(--navoff,0px) + 74px);z-index:5700;min-width:40px;height:40px;padding:0 10px;border-radius:20px;border:1px solid rgba(14,58,58,.25);background:rgba(255,255,255,.92);color:#0E3A3A;font:800 13px/1 inherit;box-shadow:0 2px 10px rgba(0,0,0,.18);cursor:pointer;transition:bottom .22s ease,opacity .2s;-webkit-tap-highlight-color:transparent}
+.langfab:active{transform:scale(.95)}
+.langfab-menu{display:none;position:absolute;right:10px;bottom:calc(var(--navoff,0px) + 120px);z-index:5701;background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.2);overflow:hidden}
+.langfab-menu.open{display:block}
+.langfab-menu button{display:block;width:100%;min-height:44px;padding:0 18px;border:0;background:none;font:700 15px inherit;text-align:left;color:#0E3A3A;cursor:pointer}
+.langfab-menu button.on{background:#F3EAD7;color:#C8452F}
+.app.kb-open .langfab,.app.kb-open .langfab-menu{display:none}
+.ls-langs{display:inline-flex;gap:4px;margin-right:6px}
+.ls-lang{min-width:44px;min-height:36px;border:1px solid var(--vien,#e5ddcc);background:#fff;border-radius:18px;font:800 12px inherit;color:#0E3A3A;cursor:pointer}
+.ls-lang.on{background:#0E3A3A;color:#fff;border-color:#0E3A3A}
 .dc{background:#fff;border:1px solid var(--vien,#e5ddcc);border-radius:14px;overflow:hidden;margin:10px 0 12px}
 .dc-h{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--thamthm,#0E3A3A);color:#F6F0E2;padding:8px 12px;font-weight:800;font-size:13px}
 .dc-chat{border:0;background:rgba(255,255,255,.16);color:#F6F0E2;border-radius:999px;padding:6px 11px;font:inherit;font-weight:700;font-size:12px;min-height:34px;cursor:pointer;white-space:nowrap}
@@ -1403,7 +1413,7 @@ mark.hl{background:#FFE9A8;color:inherit;font-weight:800;border-radius:3px;paddi
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/></svg><span data-i18n="dr_source">Nguồn học thuật</span><span class="soon" data-i18n="soon">Sắp có</span></div>
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span data-i18n="dr_about">Giới thiệu Hạ Vân Y Đạo</span><span class="soon" data-i18n="soon">Sắp có</span></div>
     </div>
-    <div class="drawer-foot">夏雲醫道 — Hạ Vân Y Đạo<br>contact@chimedis.vn<div id="luStatus" onclick="checkLiveUpdate(true)" style="margin-top:8px;font-size:10px;opacity:.55;word-break:break-all"></div></div>
+    <div class="drawer-foot">夏雲醫道 — Hạ Vân Y Đạo<br>contact@chimedis.vn<div style="margin-top:6px;font-size:10px;opacity:.55">Chimedis web v73</div><div id="luStatus" onclick="checkLiveUpdate(true)" style="margin-top:8px;font-size:10px;opacity:.55;word-break:break-all"></div></div>
   </aside>
 
   <!-- ĐĂNG NHẬP -->
@@ -1504,7 +1514,23 @@ function pickLang3(vi, zh, en){
   const cn = (state.lang !== 'zh' && zh && zh !== primary) ? zh : '';
   return { text: primary, cn };
 }
-function setLang(l){ state.lang=l; localStorage.setItem('chimedis_lang', l); closeLangMenu(); syncIfaceLangPanel(); render(); pushSettingsIfLoggedIn(); }
+function setLang(l){ state.lang=l; localStorage.setItem('chimedis_lang', l); closeLangMenu(); syncIfaceLangPanel(); render(); pushSettingsIfLoggedIn(); langFabSync();
+  if(document.getElementById('laoshiScreen')){ try{ laoshiSave(); }catch(e){} openLaoshi(); } } // dựng lại khung Lão Sư theo ngôn ngữ mới, giữ nguyên hội thoại
+// Nút đổi ngôn ngữ nổi (luôn thấy, kể cả trong các màn phủ toàn khung như Lão Sư/Trò chuyện/Luyện nghe)
+function langFabSync(){
+  const b = document.getElementById('langFab'); if(b) b.textContent = state.lang === 'zh' ? '中' : state.lang.toUpperCase();
+  document.querySelectorAll('#langFabMenu button').forEach((x) => x.classList.toggle('on', x.dataset.l === state.lang));
+}
+function langFabToggle(ev){ ev && ev.stopPropagation(); document.getElementById('langFabMenu')?.classList.toggle('open'); }
+function langFabPick(l){ document.getElementById('langFabMenu')?.classList.remove('open'); setLang(l); }
+function langFabInit(){
+  if(document.getElementById('langFab')) return;
+  document.getElementById('app').insertAdjacentHTML('beforeend',
+    '<div id="langFabMenu" class="langfab-menu"><button type="button" data-l="vi" onclick="langFabPick(\'vi\')">Tiếng Việt</button><button type="button" data-l="zh" onclick="langFabPick(\'zh\')">中文</button><button type="button" data-l="en" onclick="langFabPick(\'en\')">English</button></div>' +
+    '<button type="button" id="langFab" class="langfab" aria-label="Language" onclick="langFabToggle(event)">VI</button>');
+  document.addEventListener('click', () => document.getElementById('langFabMenu')?.classList.remove('open'));
+  langFabSync();
+}
 // Mục "Ngôn ngữ giao diện" trong drawer dùng chung state.lang/setLang() với nút VI ở
 // header — không phải cài đặt riêng, chỉ là lối vào thứ 2 cho cùng 1 lựa chọn.
 function syncIfaceLangPanel(){
@@ -1697,7 +1723,8 @@ function hlTokens(q){
   const parts = nq.split(/[+,;，；\s]+/).map((x) => x.trim()).filter((x) => x.length >= 1 && x !== '-');
   const toks = new Set([nq]); parts.forEach((x) => { if(x.length >= 2 || /[㐀-鿿]/.test(x)) toks.add(x); });
   if(/[㐀-鿿]/.test(nq)) [...nq].filter((c) => /[㐀-鿿]/.test(c)).forEach((c) => toks.add(c));
-  return [...toks].sort((a, b) => b.length - a.length).slice(0, 8);
+  try{ const grp = SYNONYM_LOOKUP.get(norm(nq)); if(grp) grp.forEach((w) => { if(w && w.length >= 2) toks.add(w); }); }catch(e){}
+  return [...toks].sort((a, b) => b.length - a.length).slice(0, 12);
 }
 function hlFoldChar(c){ return c.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase(); }
 function hlText(text, q){
@@ -4368,6 +4395,13 @@ async function talkSend(text, first){
   const my = ++talk.token;
   if(!first){ talk.msgs.push({ role: 'user', content: text }); talkRender(); }
   talkSetState('thinking');
+  if(first){ // thầy mở lời tại chỗ (không gọi AI → vào là có chữ ngay, chỉ còn đọc to)
+    const hello = ({ zh: '你好！今天我们聊聊中医吧。你想说什么？', vi: 'Chào em! Hôm nay mình trò chuyện về Trung y nhé. Em muốn nói gì trước?', en: 'Hello! Let us chat about Chinese medicine today. What would you like to talk about?' })[talk.lang] || '';
+    talk.msgs.push({ role: 'assistant', content: hello }); talkRender();
+    try{ await talkSpeak(hello, my); } finally{ talk.busy = false; }
+    if(talk.open && my === talk.token && talk.handsfree && talk.state === 'idle') talkListen();
+    return;
+  }
   const seed = first ? [{ role: 'user', content: ({ zh: '老师好！我们开始练口语吧。', vi: 'Chào thầy! Mình bắt đầu luyện nói nhé.', en: 'Hello teacher! Let us start practising speaking.' })[talk.lang] }] : [];
   try{
     const r = await authFetch('/api/laoshi/chat', { method: 'POST', body: JSON.stringify({ messages: [...seed, ...talk.msgs.slice(-10)], lang: talk.lang, talk: true }) });
@@ -4420,7 +4454,7 @@ function openLaoshi(opts){
     `<div class="mde-head"><div class="ls-title"><b>${t('laoshi_title')}</b><small>${t('laoshi_sub')}</small></div>` +
     `<button type="button" class="mde-btn" onclick="laoshiReset()">${t('laoshi_new')}</button>` +
     `<button type="button" class="mde-btn" onclick="closeLaoshi()">${t('plans_close')}</button></div>` +
-    `<div class="ls-bar"><button type="button" id="lsTogSpeak" class="ls-tog" onclick="lsToggleAutoSpeak()">🔊 ${t('laoshi_autospeak')}</button>` +
+    `<div class="ls-bar"><span class="ls-langs">${['vi','zh','en'].map((l) => `<button type="button" class="ls-lang${state.lang === l ? ' on' : ''}" onclick="setLang('${l}')">${l === 'zh' ? '中文' : l === 'vi' ? 'VI' : 'EN'}</button>`).join('')}</span><button type="button" id="lsTogSpeak" class="ls-tog" onclick="lsToggleAutoSpeak()">🔊 ${t('laoshi_autospeak')}</button>` +
         `<span id="lsStatus" class="ls-status"></span>` +
     `<button type="button" id="lsMicCancel" class="ls-tog" style="display:none" onclick="lsMicCancel()">✕ ${t('laoshi_rec_cancel')}</button></div>` +
     `<div id="lsMsgs" class="ls-msgs"></div>` +
@@ -6733,7 +6767,6 @@ function aiLookupCardHtml(q){
   const kho = searchHasFullMatch(q);
   if(!state.user) return wrap(`<p class="dc-lead">${t('ai_lk_login')}</p><div class="dc-act"><button type="button" class="ui-btn primary" onclick="openAuthModal()">${t('dr_login')}</button></div>`);
   if(S.status === 'idle'){
-    if(kho) return wrap(`<p class="dc-lead dc-idle">${t('dc_ask').replace('{q}', esc(q))}</p>`);
     return wrap(`<div class="dc-skel"><i></i><i></i></div>`);
   }
   if(S.status === 'loading') return wrap(`<div class="dc-skel"><i></i><i></i></div><div class="dc-wait">${t('ai_lk_loading')}</div>`);
@@ -6805,8 +6838,7 @@ async function aiLookupServerCache(q){
 }
 async function aiLookupAuto(q){
   if(!state.user || state._ai.q !== q || state._ai.status !== 'idle') return;
-  if(searchHasFullMatch(q)) return; // kho đã có mục chứa đủ các từ → không cần tra thêm
-  aiLookupRun(true);
+  aiLookupRun(true); // kho có hay chưa đều để Bác sĩ giải thích (kết quả lưu vĩnh viễn, lần sau không tốn AI)
 }
 function aiLookupAdopt(d){
   if(d && d.term_id && d.hz && d.kind === 'tcm_term' && !TERMS.some((x) => String(x.id) === String(d.term_id))){
@@ -7525,14 +7557,19 @@ function goHome(){
 function setupScrollWatch(){
   const app = document.getElementById('app');
   const zone = document.getElementById('scrollZone');
-  zone.addEventListener('scroll', ()=>{
+  let ticking = false;
+  const onScroll = () => {
+    ticking = false;
     if(zone.scrollLeft) zone.scrollLeft = 0; // không bao giờ để nội dung trượt ngang (lỗi app 2026-10-10)
-    app.classList.toggle('scrolled', zone.scrollTop > 50);
-    app.classList.toggle('deep-scrolled', zone.scrollTop > 400);
-    // Thanh điều hướng dưới tự ẩn khi cuộn xuống, hiện lại khi cuộn lên (như Facebook); nút nổi bám theo qua biến --navoff.
-    const top = zone.scrollTop, dy = top - (setupScrollWatch._last || 0); setupScrollWatch._last = top;
+    const top = zone.scrollTop;
+    // Trễ (hysteresis): thu gọn khi >90, chỉ mở lại khi <15 — tránh nháy qua lại ở ngưỡng làm giật.
+    const sc = app.classList.contains('scrolled');
+    if(!sc && top > 90) app.classList.add('scrolled'); else if(sc && top < 15) app.classList.remove('scrolled');
+    app.classList.toggle('deep-scrolled', top > 400);
+    const dy = top - (setupScrollWatch._last || 0); setupScrollWatch._last = top;
     if(top < 40 || dy < -10) app.classList.remove('nav-hidden'); else if(dy > 10) app.classList.add('nav-hidden');
-  }, {passive:true});
+  };
+  zone.addEventListener('scroll', () => { if(!ticking){ ticking = true; requestAnimationFrame(onScroll); } }, {passive:true});
 }
 function scrollToTop(){
   const zone=document.getElementById('scrollZone');
@@ -8256,6 +8293,7 @@ updateAuthUI();
 primeTermsFromCache(); // nạp ngay bộ TERMS đầy đủ đã cache trước khi render lần đầu (xem ghi chú ở loadTermsFromAPI)
 render();
 setupScrollWatch();
+try{ langFabInit(); }catch(e){}
 setupPopupSwipe();
 primeTermsFromIDB();
 loadTermsFromAPI();

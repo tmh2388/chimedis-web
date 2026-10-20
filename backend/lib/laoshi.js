@@ -223,9 +223,8 @@ export function isSmallTalk(text) {
 // ===== Chế độ "Trò chuyện tự do": luyện khẩu ngữ bằng giọng nói giữa học trò và thầy (khác khung chat chữ có đố/trắc nghiệm) =====
 const TALK_PERSONA = `Bạn là "Lão Sư" (老师), thầy giáo Trung y đang LUYỆN KHẨU NGỮ với học trò bằng giọng nói (như hai người ngồi nói chuyện).
 - Đây là hội thoại NÓI: mỗi lượt chỉ 1–3 câu ngắn, tự nhiên, dễ nghe. KHÔNG dùng gạch đầu dòng, bảng, in đậm, biểu tượng, danh sách A/B/C, cũng KHÔNG ra câu đố trắc nghiệm.
-- Luôn đáp ĐÚNG điều học trò vừa nói trước (chào thì chào lại, hỏi thì trả lời, kể thì phản hồi), rồi mới hỏi nối MỘT câu ngắn để họ nói tiếp.
-- Chủ đề ưa thích: Trung y (huyệt vị, dược liệu, chẩn đoán, bệnh án, dưỡng sinh) nhưng cho phép xã giao, hỏi han, kể chuyện học tập.
-- Sửa lỗi bằng cách NHẮC LẠI đúng (recast), nhẹ nhàng, tối đa một lỗi mỗi lượt: lặp lại câu em nói cho đúng rồi nói tiếp; không giảng dài.
+- TUYỆT ĐỐI KHÔNG nhắc lại/lặp lại nguyên câu học trò vừa nói. Đáp thẳng vào nội dung (chào thì chào lại, hỏi thì trả lời, kể thì phản hồi), rồi hỏi nối MỘT câu ngắn để họ nói tiếp.
+- Chỉ khi câu học trò có lỗi (sai ngữ pháp, sai từ, sai thanh điệu/âm đọc rõ ràng) mới sửa: mở đầu bằng một mệnh đề rất ngắn nêu cách nói đúng ("Nói cho đúng là: …"), tối đa MỘT lỗi mỗi lượt, rồi trả lời nội dung câu họ hỏi như bình thường. Câu đã đúng thì KHÔNG nhắc gì đến chuyện sửa.
 - Nếu học trò nói lẫn ngôn ngữ hoặc bí từ, đưa ngay cách nói đúng bằng ngôn ngữ luyện tập, kèm nghĩa ngắn gọn khi cần.
 - Giữ thân thiện, đôi khi đùa nhẹ, cười thật bằng chữ ("haha", "哈哈"). Không chẩn đoán/kê đơn cho tình huống bệnh thật.
 - Lời nhận dạng giọng nói có thể sai đồng âm: hiểu theo ngữ cảnh Trung y (学位→穴位…), đừng bắt lỗi chính tả.`;
@@ -240,7 +239,7 @@ export async function reply({ messages, quiz = null, lang = 'vi', corrections = 
   const quizPending = !!(quiz && quiz.answer);
   if (smallTalk) quiz = null; // lời chào KHÔNG phải đáp án: không chấm câu đố
   // Nối đất ĐA NHÓM: mục liên quan nhất + vài mục ở MỖI nhóm (huyệt, dược liệu, bệnh lý, tổng hợp) để câu trả lời đủ mặt (pháp trị: phương, dược, huyệt, thực dưỡng).
-  const refs = smallTalk ? [] : [...csdl.searchTerms(last, 3), ...crossGroupRefs(last, 2)].filter((t, i, a) => a.findIndex((x) => x.id === t.id) === i).slice(0, 8);
+  const refs = smallTalk ? [] : talk ? csdl.searchTerms(last, 2) : [...csdl.searchTerms(last, 3), ...crossGroupRefs(last, 2)].filter((t, i, a) => a.findIndex((x) => x.id === t.id) === i).slice(0, 8);
   const homoHints = csdl.homophoneHints(last, CORE_TERMS);
   // Vừa trả lời câu đố/chọn đáp án → cho thầy sẵn một mục khác để đố tiếp (nối đất vào kho, không bịa).
   let nextSeed = '';
@@ -252,7 +251,7 @@ export async function reply({ messages, quiz = null, lang = 'vi', corrections = 
     nextSeed && !smallTalk ? `GỢI Ý CÂU TIẾP THEO (mục ngẫu nhiên từ kho Chimedis, dùng để ra câu đố kế tiếp):\n${nextSeed}` : '',
     corrections.length ? `ĐÃ TỰ SỬA NHẬN DẠNG GIỌNG NÓI (hệ thống đã học từ người dùng): ${corrections.map((c) => `"${c.heard}"→"${c.meant}"`).join(', ')}. Hãy hiểu câu của em theo chữ đã sửa.` : '',
     homoHints.length ? `NHẮC — NHẬN DẠNG GIỌNG NÓI CÓ THỂ NHẦM ĐỒNG ÂM: ${homoHints.map((h) => `"${h.heard}" có thể là ${h.maybe.join(' / ')}`).join('; ')}. Trong ngữ cảnh Trung y, hãy hiểu theo nghĩa Trung y.` : '',
-    smallTalk ? '' : styleBlock([last, refText], { max: 25 }), // quy ước dịch + bảng thuật ngữ bắt buộc (đồng bộ với từ điển)
+    (smallTalk || talk) ? '' : styleBlock([last, refText], { max: 25 }), // quy ước dịch + bảng thuật ngữ bắt buộc (đồng bộ với từ điển)
     refText ? `NGỮ LIỆU THAM CHIẾU (từ cơ sở dữ liệu Chimedis):\n${refText}` : 'NGỮ LIỆU THAM CHIẾU: (không tìm thấy mục khớp — dựa vào kiến thức nền chắc chắn, và nói rõ nếu không chắc).',
     quiz && quiz.answer ? `CÂU ĐỐ ĐANG MỞ: "${String(quiz.question).slice(0, 200)}" — đáp án đúng là ${quiz.answer} (${String(quiz.answer_text).slice(0, 80)}). Nếu em vừa trả lời câu đố, chấm đúng/sai, giải thích ngắn gọn dựa trên dữ kiện: ${String(quiz.fact || '').slice(0, 500)}` : '',
     // Đặt CUỐI cùng để mô hình không bị kéo về tiếng Việt bởi phần tính cách viết bằng tiếng Việt ở trên.
@@ -262,7 +261,7 @@ export async function reply({ messages, quiz = null, lang = 'vi', corrections = 
   const body = {
     model: MODEL,
     messages: [{ role: 'system', content: sys }, ...msgs],
-    max_completion_tokens: 3000, // gồm cả token suy luận của mô hình (trả rỗng khi suy luận ăn hết trần → lỗi "卡壳")
+    max_completion_tokens: talk ? 900 : 3000, // gồm cả token suy luận của mô hình (trả rỗng khi suy luận ăn hết trần → lỗi "卡壳")
     reasoning_effort: 'low',
   };
   let lastErr = '';
