@@ -172,3 +172,7 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Lỗi "tự gửi một loạt chữ Hán": khi im lặng, ASR trả lại danh sách thuật ngữ gợi ý (`ASR_BIAS`). Sửa 2 lớp: (1) client đo âm lượng (VAD) — chưa có tiếng nói thì không gửi; (2) `/api/laoshi/transcribe` loại bản chép chủ yếu gồm thuật ngữ trong danh sách gợi ý.
 - Nút ⏸ Tạm dừng / ▶ Tiếp tục: đang đọc → tạm dừng giọng thầy (tiếp tục đọc đúng chỗ); đang nghe/chờ → dừng hẳn, ▶ để nghe tiếp.
 - Rảnh tay: chưa nói sau N giây → tự dừng (mặc định 10s); nói xong im quá M giây → tự dừng và gửi (mặc định 5s). Chỉnh ở Cài đặt hệ thống → Tuỳ chọn nghe (N: 5/10/15/30, M: 2/3/5/8). Trần cứng 90 giây/lượt nghe, 15 phút/phiên.
+
+## v80 — Cập nhật app iOS chịu mạng chậm (2026-10-20)
+- Điện thoại báo "Fetch is aborted" dù máy chủ chạy: yêu cầu hỏi `latest.json` xếp hàng sau các tải nặng lúc khởi động và bị huỷ ở 20 giây (v76). Nay yêu cầu được khởi động ngay đầu `<head>` (`window.__luFirst`), chờ tới 60 giây, rồi thử lại tối đa 3 lần (45 giây/lần). Trạng thái ghi `không tới được máy chủ: …` kèm lý do.
+- Đã đưa www/ v80 vào repo chimedis-ios cho Build 16.

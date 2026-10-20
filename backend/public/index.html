@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+<script>
+// App iOS: bắt đầu hỏi gói cập nhật NGAY khi trang vừa nạp — trước mọi yêu cầu tải dữ liệu khác (hàng đợi kết nối của WKWebView có hạn;
+// khi mạng chậm, yêu cầu hỏi cập nhật xếp sau các tải nặng và bị huỷ oan). checkLiveUpdate() dùng lại kết quả này.
+try{ if(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()){
+  window.__luFirst = fetch('https://dict.chimedis.vn/app-bundle/latest.json', { cache: 'no-store' }).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+  window.__luFirst.catch(function(){});
+} }catch(e){}
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1417,7 +1425,7 @@ mark.hl{background:#FFE9A8;color:inherit;font-weight:800;border-radius:3px;paddi
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/></svg><span data-i18n="dr_source">Nguồn học thuật</span><span class="soon" data-i18n="soon">Sắp có</span></div>
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span data-i18n="dr_about">Giới thiệu Hạ Vân Y Đạo</span><span class="soon" data-i18n="soon">Sắp có</span></div>
     </div>
-    <div class="drawer-foot">夏雲醫道 — Hạ Vân Y Đạo<br>contact@chimedis.vn<div style="margin-top:6px;font-size:10px;opacity:.55">Chimedis web v79</div><div id="luStatus" onclick="checkLiveUpdate(true)" style="margin-top:8px;font-size:10px;opacity:.55;word-break:break-all"></div></div>
+    <div class="drawer-foot">夏雲醫道 — Hạ Vân Y Đạo<br>contact@chimedis.vn<div style="margin-top:6px;font-size:10px;opacity:.55">Chimedis web v80</div><div id="luStatus" onclick="checkLiveUpdate(true)" style="margin-top:8px;font-size:10px;opacity:.55;word-break:break-all"></div></div>
   </aside>
 
   <!-- ĐĂNG NHẬP -->
@@ -9183,10 +9191,23 @@ async function checkLiveUpdate(force){
   _luBusy = true; _luLast = Date.now();
   try{
     luSet('đang kiểm tra');
-    const _ctl = new AbortController(); const _to = setTimeout(() => _ctl.abort(), 20000);
-    let res; try{ res = await fetch(`${API_BASE}/app-bundle/latest.json`, { cache: 'no-store', signal: _ctl.signal }); } finally { clearTimeout(_to); }
-    if(!res.ok){ luSet('máy chủ trả ' + res.status); return; }
-    const latest = await res.json();
+    // Hỏi gói cập nhật: dùng yêu cầu đã khởi động sớm (nếu có), chờ tối đa 60 giây; lỗi thì thử lại tới 3 lần (mỗi lần 45 giây), nghỉ 3 giây giữa các lần.
+    let latest = null, lastErr = '';
+    if(window.__luFirst){
+      const first = window.__luFirst; window.__luFirst = null;
+      try{ latest = await Promise.race([first, new Promise((_, rej) => setTimeout(() => rej(new Error('quá 60 giây')), 60000))]); }catch(e){ lastErr = String((e && e.message) || e); }
+    }
+    for(let attempt = 1; !latest && attempt <= 3; attempt++){
+      luSet('đang kiểm tra (lần ' + attempt + ')');
+      const _ctl = new AbortController(); const _to = setTimeout(() => _ctl.abort(), 45000);
+      try{
+        const res = await fetch(`${API_BASE}/app-bundle/latest.json?t=${Date.now()}`, { cache: 'no-store', signal: _ctl.signal });
+        if(!res.ok){ lastErr = 'máy chủ trả ' + res.status; } else { latest = await res.json(); }
+      }catch(e){ lastErr = String((e && e.message) || e); }
+      finally{ clearTimeout(_to); }
+      if(!latest && attempt < 3) await new Promise((r) => setTimeout(r, 3000));
+    }
+    if(!latest){ luSet('không tới được máy chủ: ' + lastErr); return; }
     if(!latest || !latest.version || !latest.url){ luSet('latest.json thiếu dữ liệu'); return; }
     let own = '';
     try{ const ownTxt = (await (await fetch('bundle-version.txt', { cache: 'no-store' })).text()).trim(); if(/^\d+\.\d+\.\d+$/.test(ownTxt)) own = ownTxt; }catch(e){}
