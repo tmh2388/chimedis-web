@@ -167,3 +167,8 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Rảnh tay: tự dừng sau 45 giây không chạm gửi; tối đa 15 phút/phiên; nút "Dừng" cạnh micro (`talkStop`).
 - Pinyin không đọc: `lsStripPinyin` (âm tiết hợp lệ có dấu thanh, cần dấu đặc trưng hoặc đứng sau chữ Hán) + persona Trò chuyện không viết pinyin.
 - Chi phí giọng: nam = Wavenet 16 USD/triệu ký tự, nữ = Chirp3 HD 30 USD/triệu ký tự (`ai-budget.js`).
+
+## v78 — Speaking: không gửi khi im lặng, ⏸/▶, tự dừng chỉnh được (2026-10-20)
+- Lỗi "tự gửi một loạt chữ Hán": khi im lặng, ASR trả lại danh sách thuật ngữ gợi ý (`ASR_BIAS`). Sửa 2 lớp: (1) client đo âm lượng (VAD) — chưa có tiếng nói thì không gửi; (2) `/api/laoshi/transcribe` loại bản chép chủ yếu gồm thuật ngữ trong danh sách gợi ý.
+- Nút ⏸ Tạm dừng / ▶ Tiếp tục: đang đọc → tạm dừng giọng thầy (tiếp tục đọc đúng chỗ); đang nghe/chờ → dừng hẳn, ▶ để nghe tiếp.
+- Rảnh tay: chưa nói sau N giây → tự dừng (mặc định 10s); nói xong im quá M giây → tự dừng và gửi (mặc định 5s). Chỉnh ở Cài đặt hệ thống → Tuỳ chọn nghe (N: 5/10/15/30, M: 2/3/5/8). Trần cứng 90 giây/lượt nghe, 15 phút/phiên.

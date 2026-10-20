@@ -1592,7 +1592,12 @@ app.post('/api/laoshi/transcribe', ...maxOnly, express.json({ limit: '25mb' }), 
     }
     const out = await transcribeWithOpenAI(buf, lang, lang === 'zh' ? '' : laoshi.ASR_BIAS, lang === 'zh' ? laoshi.ASR_BIAS : '');
     aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'laoshi_asr', costUsd: 0.002 });
-    res.json({ success: true, data: { text: String(out.text || '').slice(0, 800) } });
+    // Im lặng/tiếng ồn: mô hình hay "đọc lại" danh sách thuật ngữ gợi ý (ASR_BIAS) làm bản chép. Chặn: văn bản chủ yếu gồm các thuật ngữ trong danh sách gợi ý → coi như không có lời.
+    const heard = String(out.text || '').trim();
+    const items = heard.split(/[、,，;；\s。.]+/).filter(Boolean);
+    const inBias = items.filter((x) => laoshi.ASR_BIAS.includes(x)).length;
+    const echoed = items.length >= 5 && inBias / items.length >= 0.7;
+    res.json({ success: true, data: { text: echoed ? '' : heard.slice(0, 800) } });
   } catch (e) {
     console.error('laoshi transcribe:', e.message);
     res.status(502).json({ success: false, error: 'asr_failed' });
