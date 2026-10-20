@@ -1,0 +1,87 @@
+{
+  "id": "ha-42895011",
+  "category": "hoc_thuat",
+  "level": "so_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Clinical outcomes and safety of Five Element Acupuncture for preventive treatment of primary headache disorders: a multi-center real-world longitudinal observational study.",
+  "title_zh": "五行针灸预防原发性头痛疾病的临床结局和安全性：一项多中心真实世界纵向观察研究",
+  "title_vi": "Kết quả lâm sàng và độ an toàn của Châm cứu Năm yếu tố để điều trị dự phòng các rối loạn đau đầu nguyên phát: một nghiên cứu quan sát theo chiều dọc thực tế đa trung tâm.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "To observe the real-world association of Five Element Acupuncture (FEA) with symptom improvement when used for the preventive treatment of primary headache disorders.",
+      "text_zh": "观察用于预防性治疗原发性头痛疾病时，五行针灸（ FEA ）与症状改善的实际关联。",
+      "text_vi": "Quan sát mối liên hệ thực tế của Châm cứu Năm yếu tố (FEA) với sự cải thiện triệu chứng khi được sử dụng để điều trị dự phòng các rối loạn đau đầu nguyên phát.",
+      "text_pinyin": "guān chá yòng yú yù fáng xìng zhì liáo yuán fā xìng tóu tòng jí bìng shí ， wǔ xíng zhēn jiǔ （ FEA ） yǔ zhèng zhuàng gǎi shàn de shí jì guān lián 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "This prospective case series study was conducted across multiple centers in China.",
+      "text_zh": "这项前瞻性案例系列研究是在中国的多个中心进行的。",
+      "text_vi": "Nghiên cứu chuỗi trường hợp tiềm năng này được thực hiện trên nhiều trung tâm ở Trung Quốc.",
+      "text_pinyin": "zhè xiàng qián zhān xìng àn lì xì liè yán jiū shì zài zhōng guó de duō gè zhōng xīn jìn xíng de 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "Patients diagnosed with migraine, tension-type headache (TTH), or trigeminal autonomic cephalalgias (TACs) according to the International Classification of Headache Disorders, Third Edition (ICHD-3), received standardized FEA treatment once every 1-2 weeks for 12 weeks, followed by a 12-week follow-up.",
+      "text_zh": "根据国际头痛疾病分类第三版（ ICHD-3 ）诊断为偏头痛、张力型头痛（ TTH ）或三叉神经自主性头痛（ TACS ）的患者，每1-2周接受一次标准化的FEA治疗，持续12周，然后进行12周随访。",
+      "text_vi": "Bệnh nhân được chẩn đoán mắc chứng đau nửa đầu, nhức đầu kiểu căng thẳng (TTH) hoặc chứng đau đầu tự trị sinh ba (TAC) theo Phân loại Rối loạn Nhức đầu Quốc tế, Ấn bản thứ ba (ICHD-3), được điều trị FEA tiêu chuẩn 1-2 tuần một lần trong 12 tuần, sau đó theo dõi 12 tuần.",
+      "text_pinyin": "gēn jù guó jì tóu tòng jí bìng fēn lèi dì sān bǎn （ ICHD-3 ） zhěn duàn wèi piān tóu tòng 、 zhāng lì xíng tóu tòng （ TTH ） huò sān chā shén jīng zì zhǔ xìng tóu tòng （ TACS ） de huàn zhě ， měi 1-2 zhōu jiē shòu yī cì biāo zhǔn huà de FEA zhì liáo ， chí xù 12 zhōu ， rán hòu jìn xíng 12 zhōu suí fǎng 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "Outcomes included headache days per 4 weeks, headache frequency, headache intensity (visual analog scale, VAS), total analgesic units, and headache-related quality of life (Headache Impact Test-6, HIT-6).",
+      "text_zh": "结果包括每4周头痛天数、头痛频率、头痛强度（视觉模拟量表， VAS ）、总镇痛单位和头痛相关生活质量（头痛影响测试-6 ， HIT-6 ）。",
+      "text_vi": "Kết quả bao gồm số ngày đau đầu mỗi 4 tuần, tần suất đau đầu, cường độ đau đầu (thang đo tương tự trực quan, VAS), tổng số đơn vị giảm đau và chất lượng cuộc sống liên quan đến đau đầu (Headache Impact Test-6, HIT-6).",
+      "text_pinyin": "jié guǒ bāo kuò měi 4 zhōu tóu tòng tiān shù 、 tóu tòng pín lǜ 、 tóu tòng qiáng dù （ shì jué mó nǐ liàng biǎo ， VAS ）、 zǒng zhèn tòng dān wèi hé tóu tòng xiāng guān shēng huó zhì liàng （ tóu tòng yǐng xiǎng cè shì -6 ， HIT-6 ）。"
+    },
+    {
+      "seq": 5,
+      "text_en": "Safety was assessed by recording acupuncture-related adverse events (AEs).",
+      "text_zh": "通过记录针灸相关不良事件（ AE ）来评估安全性。",
+      "text_vi": "An toàn được đánh giá bằng cách ghi lại các tác dụng phụ liên quan đến châm cứu (AE).",
+      "text_pinyin": "tōng guò jì lù zhēn jiǔ xiāng guān bù liáng shì jiàn （ AE ） lái píng gū ān quán xìng 。"
+    },
+    {
+      "seq": 6,
+      "text_en": "Linear mixed models were used for analysis.",
+      "text_zh": "使用线性混合模型进行分析。",
+      "text_vi": "Các mô hình hỗn hợp tuyến tính được sử dụng để phân tích.",
+      "text_pinyin": "shǐ yòng xiàn xìng hùn hé mó xíng jìn xíng fēn xī 。"
+    },
+    {
+      "seq": 7,
+      "text_en": "Ninety-three participants were included in the intention-to-treat analysis.",
+      "text_zh": "93名受试者被纳入意向性治疗分析。",
+      "text_vi": "Chín mươi ba người tham gia đã được đưa vào phân tích ý định điều trị.",
+      "text_pinyin": "93 míng shòu shì zhě bèi nà rù yì xiàng xìng zhì liáo fēn xī 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "Headache days were significantly reduced from baseline to the 12-week treatment ( This real-world exploratory observational study suggests that FEA is associated with significant improvements in headache days, headache frequency, headache intensity, analgesic use, and quality of life, with sustained effects noted during follow-up.",
+      "text_zh": "从基线到12周治疗，头痛天数显著减少（这项真实世界的探索性观察性研究表明， FEA与头痛天数、头痛频率、头痛强度、镇痛药使用和生活质量的显著改善有关，在随访期间观察到持续的效果。",
+      "text_vi": "Số ngày đau đầu đã giảm đáng kể từ ban đầu xuống còn 12 tuần điều trị (Nghiên cứu quan sát thăm dò trong thế giới thực này cho thấy FEA có liên quan đến những cải thiện đáng kể trong những ngày đau đầu, tần suất đau đầu, cường độ đau đầu, sử dụng thuốc giảm đau và chất lượng cuộc sống, với các tác dụng lâu dài được ghi nhận trong quá trình theo dõi.",
+      "text_pinyin": "cóng jī xiàn dào 12 zhōu zhì liáo ， tóu tòng tiān shù xiǎn zhù jiǎn shǎo （ zhè xiàng zhēn shí shì jiè de tàn suǒ xìng guān chá xìng yán jiū biǎo míng ， FEA yǔ tóu tòng tiān shù 、 tóu tòng pín lǜ 、 tóu tòng qiáng dù 、 zhèn tòng yào shǐ yòng hé shēng huó zhì liàng de xiǎn zhù gǎi shàn yǒu guān ， zài suí fǎng qī jiān guān chá dào chí xù de xiào guǒ 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "These findings provide preliminary observational evidence that may inform the design of future randomized controlled trials.",
+      "text_zh": "这些发现提供了初步观察证据，可为未来随机对照试验的设计提供参考。",
+      "text_vi": "Những phát hiện này cung cấp bằng chứng quan sát sơ bộ có thể cung cấp thông tin cho việc thiết kế các thử nghiệm ngẫu nhiên có đối chứng trong tương lai.",
+      "text_pinyin": "zhè xiē fā xiàn tí gōng le chū bù guān chá zhèng jù ， kě wèi wèi lái suí jī duì zhào shì yàn de shè jì tí gōng cān kǎo 。"
+    },
+    {
+      "seq": 10,
+      "text_en": "Registration No.: ChiCTR2200061878.",
+      "text_zh": "注册号： ChiCTR2200061878。",
+      "text_vi": "Số đăng ký: ChiCTR2200061878.",
+      "text_pinyin": "zhù cè hào ： ChiCTR2200061878。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42895011), Journal of oral & facial pain and headache (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42895011/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42895011), Journal of oral & facial pain and headache (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42895011/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42895011），Journal of oral & facial pain and headache (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42895011/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-20T00:48:08Z",
+  "updated_at": "2026-10-20T00:48:08Z"
+}
