@@ -1907,7 +1907,8 @@ app.delete('/api/admin/listening/lesson/:id', lessonAuth, requireDocsDb, async (
   try { res.json({ success: true, data: await listeningDb.remove(mysqlPool, req.params.id) }); }
   catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
-onDbUp(() => listeningDb.ensureTables(mysqlPool).catch((e) => console.error('[listening-db] init:', e.message)));
+// TẠM TẮT để dò nguyên nhân 503 (khởi động lại khi bật: đặt LISTENING_DB=on)
+if (process.env.LISTENING_DB === 'on') onDbUp(() => listeningDb.ensureTables(mysqlPool).catch((e) => console.error('[listening-db] init:', e.message)));
 
 app.use(express.static(PUBLIC_DIR, {
   // Hình huyệt/biểu tượng đổi rất hiếm (tên tệp cố định): cho trình duyệt/CDN giữ 30 ngày thay vì hỏi lại máy chủ mỗi lần (max-age=0 trước đây).
