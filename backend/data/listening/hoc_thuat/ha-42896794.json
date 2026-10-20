@@ -1,0 +1,108 @@
+{
+  "id": "ha-42896794",
+  "category": "hoc_thuat",
+  "level": "trung_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Tongsai Granules Ameliorate Airway Mucus Hypersecretion in AECOPD by Remodeling LIPA-Driven Ceramide Metabolism.",
+  "title_zh": "通塞颗粒通过重塑LIPA驱动的神经酰胺代谢来改善AECOPD中的气道粘液分泌过多。",
+  "title_vi": "Tongsai Granules Ameliorate Airway Mucus Hypersecretion in AECOPD by Remodeling LIPA-Driven Ceramide Metabolism.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Tongsai Granules (TSG) is a traditional Chinese medicine formula traditionally used for the treatment of acute exacerbation of chronic obstructive pulmonary disease (AECOPD) with phlegm-heat obstructing lung syndrome, a condition characterized by cough, excessive sputum production, and dyspnea; however, its underlying therapeutic mechanisms remain unclear.",
+      "text_zh": "通塞颗粒（ TSG ）是一种传统用于治疗痰热阻肺综合征的慢性阻塞性肺疾病急性加重期（ AECOPD ）的中药配方，以咳嗽、痰量过多和呼吸困难为特征，但其潜在的治疗机制尚不清楚。",
+      "text_vi": "Hạt Tongsai (TSG) là một công thức y học cổ truyền Trung Quốc truyền thống được sử dụng để điều trị đợt cấp của bệnh phổi tắc nghẽn mạn tính (AECOPD) với hội chứng phổi tắc nghẽn đờm, một tình trạng đặc trưng bởi ho, sản xuất đờm quá mức và khó thở; tuy nhiên, cơ chế điều trị cơ bản của nó vẫn chưa rõ ràng.",
+      "text_pinyin": "tōng sāi kē lì （ TSG ） shì yī zhǒng chuán tǒng yòng yú zhì liáo tán rè zǔ fèi zōng hé zhēng de màn xìng zǔ sè xìng fèi jí bìng jí xìng jiā zhòng qī （ AECOPD ） de zhōng yào pèi fāng ， yǐ ké sòu 、 tán liàng guò duō hé hū xī kùn nán wèi tè zhēng ， dàn qí qián zài de zhì liáo jī zhì shàng bù qīng chǔ 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "To investigate the mechanisms by which TSG alleviates airway mucus hypersecretion in AECOPD through regulation of the LIPA/ceramide axis.",
+      "text_zh": "研究TSG通过调节LIPA/神经酰胺轴来减轻AECOPD气道粘液高分泌的机制。",
+      "text_vi": "Nghiên cứu các cơ chế mà TSG làm giảm sự tăng tiết dịch nhầy đường thở trong AECOPD thông qua việc điều hòa trục LIPA/ceramide.",
+      "text_pinyin": "yán jiū TSG tōng guò tiáo jié LIPA/ shén jīng xiān àn zhóu lái jiǎn qīng AECOPD qì dào nián yè gāo fēn mì de jī zhì 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "A murine AECOPD model and airway epithelial cells were used.",
+      "text_zh": "使用鼠AECOPD模型和气道上皮细胞。",
+      "text_vi": "Mô hình AECOPD của chuột và các tế bào biểu mô đường thở được sử dụng.",
+      "text_pinyin": "shǐ yòng shǔ AECOPD mó xíng hé qì dào shàng pí xì bāo 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "Proteomic and lipidomic analyses, molecular docking, surface plasmon resonance (SPR), drug affinity responsive target stability (DARTS), and LIPA overexpression and knockdown assays were performed.",
+      "text_zh": "进行蛋白质组学和脂质组学分析、分子对接、表面等离子体共振（ SPR ）、药物亲和力响应靶稳定性（ DARTS ）以及LIPA过表达和敲低测定。",
+      "text_vi": "Các phân tích proteomic và lipidomic, gắn kết phân tử, cộng hưởng plasmon bề mặt (SPR), độ ổn định đích đáp ứng ái lực thuốc (DART), và CÁC thử nghiệm biểu hiện quá mức LIPA và knockdown được thực hiện.",
+      "text_pinyin": "jìn xíng dàn bái zhì zǔ xué hé zhī zhì zǔ xué fēn xī 、 fèn zǐ duì jiē 、 biǎo miàn děng lí zǐ tǐ gòng zhèn （ SPR ）、 yào wù qīn hé lì xiǎng yìng bǎ wěn dìng xìng （ DARTS ） yǐ jí LIPA guò biǎo dá hé qiāo dī cè dìng 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "TSG improved pulmonary function, attenuated lung injury and inflammation, and suppressed MUC5AC expression in AECOPD mice.",
+      "text_zh": "TSG改善了AECOPD小鼠的肺功能，减轻了肺损伤和炎症，并抑制了MUC5AC的表达。",
+      "text_vi": "TSG cải thiện chức năng phổi, làm giảm tổn thương và viêm phổi, và ức chế sự biểu hiện MUC5AC ở chuột AECOPD.",
+      "text_pinyin": "TSG gǎi shàn le AECOPD xiǎo shǔ de fèi gōng néng ， jiǎn qīng le fèi sǔn shāng hé yán zhèng ， bìng yì zhì le MUC5AC de biǎo dá 。"
+    },
+    {
+      "seq": 6,
+      "text_en": "Multi-omics analyses showed that TSG regulated lipid metabolism and reduced triglyceride and ceramide accumulation while downregulating lysosomal acid lipase A (LIPA).",
+      "text_zh": "多组学分析表明， TSG调节脂质代谢并减少甘油三酯和神经酰胺的积累，同时下调溶酶体酸脂肪酶A （ LIPA ）。",
+      "text_vi": "Các phân tích đa gen cho thấy TSG điều hòa quá trình chuyển hóa lipid và giảm sự tích tụ triglyceride và ceramide trong khi điều hòa giảm lipase A của axit lysosome (LIPA).",
+      "text_pinyin": "duō zǔ xué fēn xī biǎo míng ， TSG tiáo jié zhī zhì dài xiè bìng jiǎn shǎo gān yóu sān zhǐ hé shén jīng xiān àn de jī lěi ， tóng shí xià tiáo róng méi tǐ suān zhī fáng méi A （ LIPA ）。"
+    },
+    {
+      "seq": 7,
+      "text_en": "Several serum-exposed constituents of TSG inhibited MUC5AC expression.",
+      "text_zh": "TSG的几种血清暴露成分抑制MUC5AC表达。",
+      "text_vi": "Một số thành phần tiếp xúc với huyết thanh của TSG ức chế sự biểu hiện MUC5AC.",
+      "text_pinyin": "TSG de jǐ zhǒng xuè qīng bào lù chéng fèn yì zhì MUC5AC biǎo dá 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "Bergenin (BER) was selected as a representative bioactive constituent for subsequent target-identification and mechanistic studies.",
+      "text_zh": "Bergenin (BER)被选为后续靶标鉴定和机理研究的代表性生物活性成分。",
+      "text_vi": "Bergenin (BER) được chọn làm thành phần hoạt tính sinh học đại diện cho các nghiên cứu xác định đích và cơ học tiếp theo.",
+      "text_pinyin": "Bergenin (BER) bèi xuǎn wèi hòu xù bǎ biāo jiàn dìng hé jī lǐ yán jiū de dài biǎo xìng shēng wù huó xìng chéng fèn 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "Molecular docking, SPR, and DARTS assays demonstrated direct interaction between BER and LIPA.",
+      "text_zh": "分子对接、SPR和DARTS测定表明BER和LIPA之间存在直接相互作用。",
+      "text_vi": "Các thử nghiệm gắn kết phân tử, SPR, và PHI TIÊU đã chứng minh sự tương tác trực tiếp giữa BER và LIPA.",
+      "text_pinyin": "fèn zǐ duì jiē 、SPR hé DARTS cè dìng biǎo míng BER hé LIPA zhī jiān cún zài zhí jiē xiāng hù zuò yòng 。"
+    },
+    {
+      "seq": 10,
+      "text_en": "LIPA knockdown suppressed MUC5AC expression, whereas LIPA overexpression attenuated the inhibitory effect of BER.",
+      "text_zh": "LIPA敲低抑制MUC5AC表达，而LIPA过表达减弱BER的抑制作用。",
+      "text_vi": "LIPA knockdown ức chế sự biểu hiện MUC5AC, trong khi LIPA biểu hiện quá mức làm giảm tác dụng ức chế CỦA BER.",
+      "text_pinyin": "LIPA qiāo dī yì zhì MUC5AC biǎo dá ， ér LIPA guò biǎo dá jiǎn ruò BER de yì zhì zuò yòng 。"
+    },
+    {
+      "seq": 11,
+      "text_en": "Moreover, exogenous ceramide reversed BER-mediated suppression of MUC5AC.",
+      "text_zh": "此外，外源性神经酰胺逆转了BER介导的MUC5AC抑制。",
+      "text_vi": "Hơn nữa, ceramit ngoại sinh đã đảo ngược sự ức chế MUC5AC qua trung gian BER.",
+      "text_pinyin": "cǐ wài ， wài yuán xìng shén jīng xiān àn nì zhuǎn le BER jiè dǎo de MUC5AC yì zhì 。"
+    },
+    {
+      "seq": 12,
+      "text_en": "TSG alleviates airway mucus hypersecretion in AECOPD by targeting the LIPA/ceramide axis.",
+      "text_zh": "TSG通过靶向LIPA/神经酰胺轴来缓解AECOPD中的气道粘液分泌过多。",
+      "text_vi": "TSG làm giảm sự tăng tiết dịch nhầy đường thở trong AECOPD bằng cách nhắm mục tiêu trục LIPA/ceramide.",
+      "text_pinyin": "TSG tōng guò bǎ xiàng LIPA/ shén jīng xiān àn zhóu lái huǎn jiě AECOPD zhōng de qì dào nián yè fēn mì guò duō 。"
+    },
+    {
+      "seq": 13,
+      "text_en": "Bergenin directly targets LIPA to regulate lipid metabolism and suppress MUC5AC overexpression.",
+      "text_zh": "Bergenin直接靶向LIPA调节脂质代谢并抑制MUC5AC过表达。",
+      "text_vi": "Bergenin nhắm mục tiêu trực tiếp LIPA để điều hòa chuyển hóa lipid và ức chế sự biểu hiện quá mức MUC5AC.",
+      "text_pinyin": "Bergenin zhí jiē bǎ xiàng LIPA tiáo jié zhī zhì dài xiè bìng yì zhì MUC5AC guò biǎo dá 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42896794), Journal of ethnopharmacology (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42896794/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42896794), Journal of ethnopharmacology (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42896794/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42896794），Journal of ethnopharmacology (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42896794/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-20T03:39:30Z",
+  "updated_at": "2026-10-20T03:39:30Z"
+}
