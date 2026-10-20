@@ -150,3 +150,9 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Header thu gọn khi cuộn: rAF + trễ (90/15px) để hết giật.
 - Trò chuyện tự do: thầy mở lời tại chỗ (không gọi AI); persona không lặp lại câu học trò, chỉ sửa khi có lỗi rồi trả lời; bỏ bảng thuật ngữ nặng, max 900 token.
 - Nút đổi ngôn ngữ nổi (#langFab) + 3 nút VI/中文/EN trong Lão Sư. Hiện số phiên bản web ở chân menu.
+
+## v74 — Bài nghe lưu MySQL (không cần redeploy) + Bác sĩ 3 ngôn ngữ (2026-10-20)
+- Bảng `listening_lessons` + `listening_audio` (MEDIUMBLOB); `backend/lib/listening-db.js`. Bài trong MySQL gộp với bài file cũ (trùng id → MySQL thắng). Danh sách giữ trong RAM, làm mới sau mỗi lần ghi và mỗi 60 giây.
+- Âm thanh MySQL phục vụ ở `/audio/listening/<cat>/<id>/…mp3` (có Range) khi không có file cùng đường dẫn.
+- Đẩy bài: `PUT /api/admin/listening/lesson` ({lesson, audio:{path:base64}}), xoá: `DELETE …/:id`; xác thực admin Firebase HOẶC header `x-lesson-key` = env `LESSON_PUSH_KEY` (cần đặt trên Hostinger rồi Restart). Script: `backend/push-listening-lesson.mjs`.
+- `ai_lookup`: thêm cột `tcm_context_zh/_en`, `ml`; AI trả đủ Việt/Trung/Anh; bản cũ chỉ tiếng Việt được tra lại một lần khi cần ngôn ngữ khác.

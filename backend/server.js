@@ -21,6 +21,7 @@ import { pinyin } from 'pinyin';
 import * as laoshiFaq from './lib/laoshi-faq.js';
 import * as termLearn from './lib/term-learn.js';
 import * as aiLookup from './lib/ai-lookup.js';
+import * as listeningDb from './lib/listening-db.js';
 import * as webDefine from './lib/web-define.js';
 import * as aiBudget from './lib/ai-budget.js';
 import { scoreChinese, scoreWords, ensureUsageTable, consumeServerAsr } from './lib/quick-score.js';
@@ -88,7 +89,7 @@ app.all(/^\/__fb\/(idtk|stk)(\/.*)$/, express.raw({ type: '*/*', limit: '256kb' 
 });
 // Mọi đường dẫn /__fb/ còn lại (ngoài idtk/stk) → 404 JSON, không rơi về trang chủ (SPA fallback).
 app.all(/^\/__fb(\/|$)/, (req, res) => res.status(404).json({ error: { message: 'NOT_FOUND' } }));
-app.use((req, res, next) => (['/api/pronunciation-score', '/api/interpret-check', '/api/quick-check', '/api/laoshi/transcribe'].includes(req.path) ? next() : defaultJson(req, res, next)));
+app.use((req, res, next) => (['/api/pronunciation-score', '/api/interpret-check', '/api/quick-check', '/api/laoshi/transcribe', '/api/admin/listening/lesson'].includes(req.path) ? next() : defaultJson(req, res, next)));
 const PORT = process.env.PORT || 3000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'chimedis-secret-key';
 
@@ -735,7 +736,20 @@ app.put('/api/progress', requireMysql, verifyFirebaseToken, async (req, res) => 
 // (backend/public/audio/listening/...). Điểm chấm "Nghe & nhắc lại" mới cần MySQL.
 const LISTENING_DATA_DIR = path.join(__dirname, 'data', 'listening');
 
+const summarizeDialogue = (data) => ({
+  id: data.id, category: data.category, title: data.title, level: data.level || null,
+  title_vi: data.title_vi || data.title, title_zh: data.title_zh || data.title, title_en: data.title_en || data.title,
+  created_at: data.created_at || null, updated_at: data.updated_at || data.created_at || null,
+  source_lang: data.source_lang || undefined,
+  seqs: Array.isArray(data.segments) ? data.segments.map((x) => x.seq) : [],
+});
+// Bài lưu trong MySQL (thêm không cần redeploy) gộp với bài trong file; trùng id → bản MySQL thắng.
 function listListeningDialogues(category) {
+  const fromDb = listeningDb.dbLessons(category).map(summarizeDialogue);
+  const ids = new Set(fromDb.map((x) => x.id));
+  return [...fromDb, ...listFileDialogues(category).filter((x) => !ids.has(x.id))];
+}
+function listFileDialogues(category) {
   if (!fs.existsSync(LISTENING_DATA_DIR)) return [];
   const categories = category
     ? [category]
@@ -763,6 +777,7 @@ function listListeningDialogues(category) {
 }
 
 function findListeningDialogue(id) {
+  const fromDb = listeningDb.dbLesson(id); if (fromDb) return fromDb;
   if (!fs.existsSync(LISTENING_DATA_DIR)) return null;
   const categories = fs.readdirSync(LISTENING_DATA_DIR, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name);
   for (const cat of categories) {
@@ -785,7 +800,9 @@ function availableVoices(d) {
   const lang = d.source_lang === 'en' ? 'text_en' : 'text_zh';
   const base = path.join(PUBLIC_DIR, 'audio', 'listening', String(d.category), String(d.id));
   const has = (sub) => (d.segments || []).every((s) => {
-    try { return fs.statSync(path.join(base, sub, `${String(s.seq).padStart(2, '0')}-${lang}.mp3`)).size > 0; } catch { return false; }
+    const file = `${String(s.seq).padStart(2, '0')}-${lang}.mp3`;
+    if (listeningDb.hasDbAudio(`${d.category}/${d.id}/${sub ? sub + '/' : ''}${file}`)) return true;
+    try { return fs.statSync(path.join(base, sub, file)).size > 0; } catch { return false; }
   });
   return ['default', 'aoede'].filter((v) => has(v === 'default' ? '' : v));
 }
@@ -1077,6 +1094,22 @@ app.use('/audio/listening', (req, res, next) => {
   if (!verifyTicket(req.query.t)) return res.status(401).json({ success: false, error: 'login_required' });
   res.set('Cache-Control', 'private, max-age=3600');
   next();
+});
+
+// Âm thanh bài nghe lưu trong MySQL: chỉ dùng khi KHÔNG có file cùng đường dẫn trong public/ (bài cũ vẫn phục vụ tĩnh như trước). Hỗ trợ Range cho iOS.
+app.get(/^\/audio\/listening\/(.+\.mp3)$/, async (req, res, next) => {
+  try {
+    const rel = decodeURIComponent(req.params[0]);
+    if (!listeningDb.hasDbAudio(rel) || fs.existsSync(path.join(PUBLIC_DIR, 'audio', 'listening', rel))) return next();
+    const buf = await listeningDb.getAudio(mysqlPool, rel); if (!buf) return next();
+    res.set({ 'Content-Type': 'audio/mpeg', 'Accept-Ranges': 'bytes' });
+    const m = /^bytes=(\d*)-(\d*)$/.exec(String(req.headers.range || ''));
+    if (m) {
+      const start = m[1] ? parseInt(m[1], 10) : 0; const end = m[2] ? Math.min(parseInt(m[2], 10), buf.length - 1) : buf.length - 1;
+      if (start > end || start >= buf.length) return res.status(416).set('Content-Range', `bytes */${buf.length}`).end();
+      res.status(206).set({ 'Content-Range': `bytes ${start}-${end}/${buf.length}`, 'Content-Length': end - start + 1 }).end(buf.subarray(start, end + 1));
+    } else res.set('Content-Length', buf.length).end(buf);
+  } catch (e) { next(); }
 });
 
 app.get('/api/me', verifyFirebaseToken, async (req, res) => {
@@ -1822,6 +1855,23 @@ app.get('/api/admin/codes', ...adminOnly, requireDocsDb, async (req, res) => {
   try { res.json({ success: true, data: await billing.listCodes(mysqlPool) }); }
   catch (e) { res.status(500).json({ success: false, error: 'list_failed' }); }
 });
+
+// ===== Thêm/sửa/xoá bài Luyện nghe KHÔNG cần redeploy =====
+// Xác thực: tài khoản admin (Firebase) HOẶC khoá LESSON_PUSH_KEY (biến môi trường) gửi ở header x-lesson-key — dùng cho script/pipeline tự động.
+const lessonAuth = (req, res, next) => {
+  const key = process.env.LESSON_PUSH_KEY;
+  if (key && String(req.headers['x-lesson-key'] || '') === key) return next();
+  return verifyFirebaseToken(req, res, () => (isAdmin(req.firebaseUser) ? next() : res.status(403).json({ success: false, error: 'admin_required' })));
+};
+app.put('/api/admin/listening/lesson', express.json({ limit: '80mb' }), lessonAuth, requireDocsDb, async (req, res) => {
+  try { res.json({ success: true, data: await listeningDb.upsert(mysqlPool, (req.body || {}).lesson, (req.body || {}).audio) }); }
+  catch (e) { res.status(e.code === 'bad_request' ? 400 : 500).json({ success: false, error: e.message }); }
+});
+app.delete('/api/admin/listening/lesson/:id', lessonAuth, requireDocsDb, async (req, res) => {
+  try { res.json({ success: true, data: await listeningDb.remove(mysqlPool, req.params.id) }); }
+  catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+onDbUp(() => listeningDb.ensureTables(mysqlPool).catch((e) => console.error('[listening-db] init:', e.message)));
 
 app.use(express.static(PUBLIC_DIR, {
   // Hình huyệt/biểu tượng đổi rất hiếm (tên tệp cố định): cho trình duyệt/CDN giữ 30 ngày thay vì hỏi lại máy chủ mỗi lần (max-age=0 trước đây).
