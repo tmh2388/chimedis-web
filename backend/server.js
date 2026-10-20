@@ -745,7 +745,7 @@ const summarizeDialogue = (data) => ({
 });
 // Bài lưu trong MySQL (thêm không cần redeploy) gộp với bài trong file; trùng id → bản MySQL thắng.
 function listListeningDialogues(category) {
-  const fromDb = listeningDb.dbLessons(category).map(summarizeDialogue);
+  const fromDb = listeningDb.dbLessons(category).map((d) => ({ ...summarizeDialogue(d), db: true }));
   const ids = new Set(fromDb.map((x) => x.id));
   return [...fromDb, ...listFileDialogues(category).filter((x) => !ids.has(x.id))];
 }

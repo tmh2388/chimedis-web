@@ -156,3 +156,8 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Âm thanh MySQL phục vụ ở `/audio/listening/<cat>/<id>/…mp3` (có Range) khi không có file cùng đường dẫn.
 - Đẩy bài: `PUT /api/admin/listening/lesson` ({lesson, audio:{path:base64}}), xoá: `DELETE …/:id`; xác thực admin Firebase HOẶC header `x-lesson-key` = env `LESSON_PUSH_KEY` (cần đặt trên Hostinger rồi Restart). Script: `backend/push-listening-lesson.mjs`.
 - `ai_lookup`: thêm cột `tcm_context_zh/_en`, `ml`; AI trả đủ Việt/Trung/Anh; bản cũ chỉ tiếng Việt được tra lại một lần khi cần ngôn ngữ khác.
+
+## v75 (2026-10-20)
+- Thẻ Bác sĩ: kho ưu tiên. Kho đã có từ → tóm tắt từ kho (miễn phí, tức thì: mục khớp nhất + mục liên quan gom theo nhóm) và nút "Giải thích kỹ hơn bằng AI" (chỉ chạy khi bấm). Kho chưa có → AI tự tra (lưu vĩnh viễn, dùng chung).
+- Pipeline tự động (GitHub Actions fetch-pubmed/news/yaan) đẩy bài lên MySQL qua `scripts/push_lessons.py` thay vì commit vào main → hết redeploy hằng ngày. Cần secret `LESSON_PUSH_KEY` ở GitHub (Settings → Secrets → Actions) VÀ biến môi trường cùng giá trị trên Hostinger. Chưa có khoá → tự dùng cách commit cũ. Trạng thái "đã xử lý" lưu ở nhánh `pipeline-state` (`scripts/pipeline_state.sh`).
+- `/app-bundle/log.json`: nhật ký 200 lượt hỏi/tải gói cập nhật của app (chẩn đoán).

@@ -25,6 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Nạp trạng thái đã xử lý (nhánh pipeline-state)
+        run: bash scripts/pipeline_state.sh load backend/data/listening/y_an/.processed_yaan.json
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -48,7 +51,23 @@ jobs:
           python scripts/audio_build.py backfill-voices
           python scripts/audio_build.py check-voices
 
-      - name: Commit bài mới
+      - name: Đẩy bài lên máy chủ (không commit → không redeploy Hostinger)
+        id: push
+        env:
+          LESSON_PUSH_KEY: ${{ secrets.LESSON_PUSH_KEY }}
+        run: |
+          set +e
+          python scripts/push_lessons.py y_an --keep 100000
+          rc=$?
+          if [ $rc -eq 0 ]; then echo "pushed=1" >> "$GITHUB_OUTPUT"; fi
+          exit 0
+
+      - name: Lưu trạng thái (nhánh pipeline-state)
+        if: steps.push.outputs.pushed == '1'
+        run: bash scripts/pipeline_state.sh save backend/data/listening/y_an/.processed_yaan.json
+
+      - name: Commit bài mới (dự phòng khi chưa có khoá đẩy bài)
+        if: steps.push.outputs.pushed != '1'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
