@@ -8,7 +8,7 @@
  */
 const LESSON_ID_RE = /^[A-Za-z0-9_-]{3,80}$/;
 const CATEGORY_RE = /^[a-z0-9_]{2,40}$/;
-const AUDIO_PATH_RE = /^[a-z0-9_]{2,40}\/[A-Za-z0-9_-]{3,80}\/([a-z0-9_]{1,20}\/)?\d{1,3}-[a-z]{2}\.mp3$/;
+const AUDIO_PATH_RE = /^[a-z0-9_]{2,40}\/[A-Za-z0-9_-]{3,80}\/([a-z0-9_]{1,20}\/)?\d{1,3}-[a-z_]{2,12}\.mp3$/;
 
 let lessons = new Map();      // id → data
 let audioPaths = new Set();   // đường dẫn tương đối có trong MySQL
