@@ -1882,10 +1882,21 @@ app.use(express.static(PUBLIC_DIR, {
 }));
 // Gói giao diện cho app iOS (live update) — dựng từ chính PUBLIC_DIR, xem lib/app-bundle.js.
 // Chẩn đoán live-update: ghi lại mỗi lần app hỏi/tải gói giao diện (để biết app thật có đang cập nhật không).
+// Nhật ký trong RAM (200 dòng gần nhất) để xem app thật có hỏi/tải gói không: GET /app-bundle/log.json (chỉ thời gian, đường dẫn, mã trả về, số byte đã gửi, loại máy).
+const bundleLog = [];
 app.use('/app-bundle', (req, res, next) => {
-  console.log('[app-bundle]', req.method, req.originalUrl, String(req.headers['user-agent'] || '').slice(0, 90));
+  const ua = String(req.headers['user-agent'] || '').slice(0, 90);
+  console.log('[app-bundle]', req.method, req.originalUrl, ua);
+  if (req.path === '/log.json') return next();
+  const t0 = Date.now();
+  res.on('close', () => {
+    bundleLog.push({ at: new Date(t0 + 8 * 3600e3).toISOString().replace('T', ' ').slice(0, 19) + '+08', m: req.method, url: req.originalUrl.slice(0, 120), status: res.statusCode,
+      sent: Number(res.getHeader('content-length')) || undefined, finished: res.writableFinished, ms: Date.now() - t0, range: req.headers.range ? String(req.headers.range).slice(0, 40) : undefined, ua });
+    if (bundleLog.length > 200) bundleLog.shift();
+  });
   next();
 });
+app.get('/app-bundle/log.json', (req, res) => { res.set('Cache-Control', 'no-store'); res.json({ now: new Date().toISOString(), n: bundleLog.length, log: bundleLog.slice().reverse() }); });
 mountAppBundle(app, PUBLIC_DIR);
 
 // ===== API ENDPOINTS =====
