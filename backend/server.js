@@ -1896,6 +1896,11 @@ app.use('/app-bundle', (req, res, next) => {
   });
   next();
 });
+app.post('/app-bundle/report', express.text({ type: '*/*', limit: '2kb' }), (req, res) => {
+  bundleLog.push({ at: new Date(Date.now() + 8 * 3600e3).toISOString().replace('T', ' ').slice(0, 19) + '+08', report: String(req.body || '').slice(0, 300), ua: String(req.headers['user-agent'] || '').slice(0, 90) });
+  if (bundleLog.length > 200) bundleLog.shift();
+  res.json({ ok: true });
+});
 app.get('/app-bundle/log.json', (req, res) => { res.set('Cache-Control', 'no-store'); res.json({ now: new Date().toISOString(), n: bundleLog.length, log: bundleLog.slice().reverse() }); });
 mountAppBundle(app, PUBLIC_DIR);
 
