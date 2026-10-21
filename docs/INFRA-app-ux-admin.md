@@ -188,3 +188,4 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - `user-docs.zhSpeechFix` (áp dụng trong `synthesize` cho mọi giọng tiếng Trung — Lão Sư, Trò chuyện, Học Thuật, Tự Thêm): 腧/俞→述 (shù), 输穴→述穴, 白术/苍术→竹, 膻中, 数脉, 率谷, 阿胶. Chỉ đổi chữ đưa cho giọng đọc, chữ hiển thị không đổi. Thêm bảng tại ZH_SPEECH_FIX.
 - Bộ đệm giọng cũ: `laoshi_tts` đổi khoá sang `v2|…`; `csdl_audio` thêm cột `fixv`, câu cũ có chữ cần sửa sinh lại đúng một lần.
 - Chặn pinyin không dấu đứng sau chữ Hán (vd "麻黄 ma huang"). Bài nghe dựng sẵn bằng Python (hoc_thuat/bao_chi/y_an) KHÔNG đổi.
+- (v83) Đã tắt tự gọi AI khi gõ: chỉ còn kiểm tra bản đã lưu (máy + máy chủ, miễn phí); AI chỉ chạy khi bấm nút quả địa cầu. Thẻ Bác sĩ chưa có kết quả hiện gợi ý "bấm nút quả địa cầu".
