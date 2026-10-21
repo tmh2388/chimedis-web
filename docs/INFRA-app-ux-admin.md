@@ -177,6 +177,10 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Điện thoại báo "Fetch is aborted" dù máy chủ chạy: yêu cầu hỏi `latest.json` xếp hàng sau các tải nặng lúc khởi động và bị huỷ ở 20 giây (v76). Nay yêu cầu được khởi động ngay đầu `<head>` (`window.__luFirst`), chờ tới 60 giây, rồi thử lại tối đa 3 lần (45 giây/lần). Trạng thái ghi `không tới được máy chủ: …` kèm lý do.
 - Đã đưa www/ v80 vào repo chimedis-ios cho Build 16.
 
+## Ghi chú #4 (2026-10-21) — Nút tra online riêng (quả địa cầu)
+- Kính lúp vẫn là tìm kiếm thường. Nút quả địa cầu `#onlineBtn` (chỉ hiện khi đã đăng nhập và gõ ≥2 ký tự) gọi `searchOnline()`: tra online (AI + Wiktionary bản web), luôn chạy lại, kể cả khi kho đã có kết quả hoặc đổi sang từ khác. Không trừ credit (hệ thống chịu, có giới hạn ngày); kết quả lưu `ai_lookup` dùng chung.
+- Y khoa kho chưa có → `learnTermDirect` ghi vào CSDL y khoa (đã có). Từ phổ thông → lưu ở `ai_lookup`; chưa đưa vào kết quả tìm kiếm thường.
+
 ## Ghi chú #5 (2026-10-21) — Ghi âm bị ngắt khi khoá máy (phương án nhỏ)
 - `visibilitychange` (trước `loadTermsFromAPI`): khi app bị ẩn → Trò chuyện dừng nghe gọn (`talkInterrupt`), Lão Sư huỷ mic, Luyện nghe dừng và giữ phần đã ghi; khi hiện lại → rảnh tay tự nghe tiếp, còn lại báo "Ghi âm bị ngắt khi khoá máy. Chạm micro để ghi tiếp." và dọn trạng thái "đang ghi" bị hệ điều hành ngắt ngầm. Ghi âm khi khoá máy (nền) cần quyền âm thanh nền iOS + build lại — chưa làm.
 ## Ghi chú #3 (2026-10-21) — Speaking: bỏ tiếng cười, đọc đúng 腧/俞, chặn pinyin
@@ -184,3 +188,4 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - `user-docs.zhSpeechFix` (áp dụng trong `synthesize` cho mọi giọng tiếng Trung — Lão Sư, Trò chuyện, Học Thuật, Tự Thêm): 腧/俞→述 (shù), 输穴→述穴, 白术/苍术→竹, 膻中, 数脉, 率谷, 阿胶. Chỉ đổi chữ đưa cho giọng đọc, chữ hiển thị không đổi. Thêm bảng tại ZH_SPEECH_FIX.
 - Bộ đệm giọng cũ: `laoshi_tts` đổi khoá sang `v2|…`; `csdl_audio` thêm cột `fixv`, câu cũ có chữ cần sửa sinh lại đúng một lần.
 - Chặn pinyin không dấu đứng sau chữ Hán (vd "麻黄 ma huang"). Bài nghe dựng sẵn bằng Python (hoc_thuat/bao_chi/y_an) KHÔNG đổi.
+- (v83) Đã tắt tự gọi AI khi gõ: chỉ còn kiểm tra bản đã lưu (máy + máy chủ, miễn phí); AI chỉ chạy khi bấm nút quả địa cầu. Thẻ Bác sĩ chưa có kết quả hiện gợi ý "bấm nút quả địa cầu".
