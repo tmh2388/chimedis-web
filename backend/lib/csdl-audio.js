@@ -3,7 +3,7 @@
  * Lần nghe đầu của một câu sinh bằng Google TTS (qua user-docs.synthesize), các lần sau lấy từ đệm. Có giới hạn tần suất
  * sinh mới theo người dùng và toàn hệ thống để không bị lạm dụng chi phí, và tự dọn khi đệm quá lớn.
  */
-import { synthesize } from './user-docs.js';
+import { synthesize, zhSpeechFix } from './user-docs.js';
 
 const VOICES = ['default', 'aoede']; // nam (Wavenet) + nữ (Chirp 3 HD)
 const MAX_ROWS = Number(process.env.CSDL_AUDIO_MAX_ROWS) || 12000; // ~ 24KB/câu → khoảng 300MB
@@ -18,6 +18,11 @@ export async function ensureTable(pool) {
     mp3 MEDIUMBLOB NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (lesson_id, seq, voice), KEY idx_created (created_at)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`);
+  // fixv=1: bản đã sinh SAU khi sửa cách đọc 腧/俞…; bản cũ có chữ cần sửa sẽ được sinh lại đúng một lần.
+  try {
+    const [c] = await pool.query("SELECT COUNT(*) AS n FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'csdl_audio' AND COLUMN_NAME = 'fixv'");
+    if (!Number(c[0].n)) await pool.query('ALTER TABLE csdl_audio ADD COLUMN fixv TINYINT NOT NULL DEFAULT 0');
+  } catch (e) { console.error('[csdl-audio] cột fixv:', e.message); }
   tableReady = true;
 }
 
@@ -41,15 +46,16 @@ let inserts = 0;
 export async function getAudio(pool, { lessonId, seq, text, voice, uid, chargeUser = true, beforeGenerate = null }) {
   if (!pool || !tableReady) throw Object.assign(new Error('db_unavailable'), { code: 'db_unavailable' });
   const v = VOICES.includes(voice) ? voice : 'default';
-  const [rows] = await pool.query('SELECT mp3 FROM csdl_audio WHERE lesson_id = ? AND seq = ? AND voice = ?', [lessonId, seq, v]);
-  if (rows[0]) return rows[0].mp3;
+  const [rows] = await pool.query('SELECT mp3, fixv FROM csdl_audio WHERE lesson_id = ? AND seq = ? AND voice = ?', [lessonId, seq, v]);
+  const needsFix = !!(rows[0] && Number(rows[0].fixv) !== 1 && zhSpeechFix(text) !== text);
+  if (rows[0] && !needsFix) return rows[0].mp3;
   const key = `${lessonId}|${seq}|${v}`;
   if (inflight.has(key)) return inflight.get(key);
   if (!allow(uid)) throw Object.assign(new Error('rate_limited'), { code: 'rate_limited' });
   if (beforeGenerate) await beforeGenerate(); // ngân sách người dùng (bài trong ngày thì miễn — nền tảng chịu)
   const p = (async () => {
     const mp3 = await synthesize(text, 'zh', v, { uid: chargeUser ? uid : null });
-    await pool.query('INSERT IGNORE INTO csdl_audio (lesson_id, seq, voice, mp3) VALUES (?,?,?,?)', [lessonId, seq, v, mp3]);
+    await pool.query('INSERT INTO csdl_audio (lesson_id, seq, voice, mp3, fixv) VALUES (?,?,?,?,1) ON DUPLICATE KEY UPDATE mp3 = VALUES(mp3), fixv = 1', [lessonId, seq, v, mp3]);
     if (++inserts % 100 === 0) prune(pool).catch(() => {});
     return mp3;
   })().finally(() => inflight.delete(key));

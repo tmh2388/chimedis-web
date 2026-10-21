@@ -219,7 +219,21 @@ function googleTts() {
 }
 
 /** opts.uid: nếu có thì ghi chi phí TTS vào ngân sách người dùng (chỉ gọi khi KHÔNG trúng đệm). */
+// Chữ Hán đa âm trong thuật ngữ Trung y mà giọng đọc hay đọc sai (腧/俞 phải đọc shù, không phải yù/yú). CHỈ đổi chữ đưa cho giọng đọc
+// sang chữ cùng âm đúng; chữ hiển thị trên màn hình không đổi.
+const ZH_SPEECH_FIX = [
+  [/腧/g, '述'],                                   // 腧穴 shù xué
+  [/(?<=[\u4e00-\u9fff])俞(?!跗|伯牙|樾)/g, '述'], // 肺俞/心俞/膈俞… shù
+  [/俞穴/g, '述穴'], [/输穴/g, '述穴'], [/五输/g, '五述'],
+  [/([白苍])术/g, '$1竹'],                         // 白术/苍术 zhú
+  [/膻中/g, '但中'],                               // dàn zhōng
+  [/数脉/g, '朔脉'],                               // shuò mài
+  [/率谷/g, '帅谷'],                               // shuài gǔ
+  [/阿胶/g, '婀胶'],                               // ē jiāo
+];
+export function zhSpeechFix(text) { let t = String(text || ''); for (const [re, to] of ZH_SPEECH_FIX) t = t.replace(re, to); return t; }
 export async function synthesize(text, lang, voiceKey, opts = {}) {
+  if (lang !== 'en' && lang !== 'vi') text = zhSpeechFix(text);
   const key = VOICE_KEYS.includes(voiceKey) ? voiceKey : 'default';
   const l = lang === 'en' ? 'en' : lang === 'vi' ? 'vi' : 'zh';
   if (googleTtsConfigured()) {
