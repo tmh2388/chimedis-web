@@ -28,7 +28,7 @@ export async function ensureTables(pool) {
 }
 
 // ---------- Đệm giọng đọc ----------
-export const ttsKey = (lang, voice, text) => crypto.createHash('sha256').update(`${lang}|${voice}|${text}`).digest('hex');
+export const ttsKey = (lang, voice, text) => crypto.createHash('sha256').update(`v2|${lang}|${voice}|${text}`).digest('hex');
 
 /** Trả Map(hash → Buffer) cho các khoá đã có; cộng lượt dùng lại. Lỗi DB → rỗng (rơi về tạo giọng mới). */
 export async function ttsGetMany(pool, keys) {
