@@ -1738,6 +1738,20 @@ app.get('/api/web-define', verifyFirebaseToken, async (req, res) => {
     res.json({ success: true, data: out && out.entries && out.entries.length ? out : null });
   } catch (e) { res.status(502).json({ success: false, error: 'upstream' }); }
 });
+// Tìm kiếm online (Wiktionary + Wikipedia): đăng nhập, không AI, không credit; giới hạn tần suất theo người dùng để không bị lạm dụng.
+const webSearchHits = new Map();
+app.get('/api/web-search', verifyFirebaseToken, async (req, res) => {
+  try {
+    const uid = req.firebaseUser.uid, now = Date.now();
+    const hits = (webSearchHits.get(uid) || []).filter((t) => now - t < 600e3);
+    if (hits.length >= 40) return res.status(429).json({ success: false, error: 'rate_limited' });
+    hits.push(now); webSearchHits.set(uid, hits);
+    if (webSearchHits.size > 5000) for (const [k, v] of webSearchHits) if (!v.some((t) => now - t < 600e3)) webSearchHits.delete(k);
+    const lang = ['vi', 'zh', 'en'].includes(req.query.lang) ? req.query.lang : 'vi';
+    const out = await webDefine.webSearch(mysqlPool, String(req.query.q || ''), lang);
+    res.json({ success: true, data: out });
+  } catch (e) { res.status(502).json({ success: false, error: 'upstream' }); }
+});
 // ---- Ghi chú của admin → GitHub Issue (nhãn claude-todo) để Claude Code xử lý từ xa ----
 // Cần env: GITHUB_NOTES_TOKEN (fine-grained PAT, quyền Issues: write) và tuỳ chọn GITHUB_NOTES_REPO (mặc định tmh2388/chimedis-web).
 app.post('/api/admin/dev-note', ...adminOnly, async (req, res) => {
