@@ -1490,24 +1490,24 @@ const PY_SPECIAL = /[āēīōūǖǎěǐǒǔǚǘǜ]/i;
 const toneless = (w) => w.normalize('NFD').replace(/[\u0300-\u036f]/g, (m) => '').normalize('NFC').toLowerCase();
 function lsStripPinyin(t) {
   const re = /[\p{L}]+/gu; const toks = []; let m;
-  while ((m = re.exec(t))) { const w = m[0]; const ok = PY_TONE.test(w) && PY_SYL.test(toneless(w).replace(/ǖ|ǘ|ǚ|ǜ/g, 'ü')); toks.push({ w, s: m.index, e: m.index + w.length, ok }); }
+  while ((m = re.exec(t))) { const w = m[0]; const plain = /^[a-z]+$/i.test(w); const ok = (PY_TONE.test(w) || plain) && PY_SYL.test(toneless(w).replace(/ǖ|ǘ|ǚ|ǜ/g, 'ü')); toks.push({ w, s: m.index, e: m.index + w.length, ok }); }
   const cuts = [];
   for (let i = 0; i < toks.length;) {
     if (!toks[i].ok) { i++; continue; }
     let j = i; while (j + 1 < toks.length && toks[j + 1].ok && /^\s+$/.test(t.slice(toks[j].e, toks[j + 1].s))) j++;
     const run = toks.slice(i, j + 1); const before = t.slice(0, run[0].s).replace(/\s+$/, '').slice(-1);
-    if (run.some((x) => PY_SPECIAL.test(x.w)) || (run.length >= 2 && (/[㐀-鿿(（]/.test(before)))) cuts.push([run[0].s, run[run.length - 1].e]);
+    const hasTone = run.some((x) => PY_TONE.test(x.w));
+    if (run.some((x) => PY_SPECIAL.test(x.w)) || (run.length >= 2 && /[㐀-鿿(（]/.test(before) && (hasTone || run.length >= 2))) cuts.push([run[0].s, run[run.length - 1].e]);
     i = j + 1;
   }
   for (let k = cuts.length - 1; k >= 0; k--) t = t.slice(0, cuts[k][0]) + t.slice(cuts[k][1]);
   return t.replace(/\(\s*\)|（\s*）/g, '').replace(/\s{2,}/g, ' ');
 }
 function lsSpeechText(raw) {
-  // Tiếng cười: "haha/hì hì/hê hê" và biểu tượng cười → "哈哈哈" (giọng Mandarin đọc ra tiếng cười thật), thay vì im lặng.
+  // Tiếng cười ("haha", "hì hì", "哈哈", biểu tượng cười) KHÔNG đọc ra — nghe không hay (ghi chú admin #3).
   let t = String(raw || '')
-    .replace(/(?<![\p{L}])(?:ha\s?ha(?:\s?ha)*|hà\s?hà|hì\s?hì|hi\s?hi|hê\s?hê|he\s?he|hô\s?hô)(?![\p{L}])/giu, '哈哈哈')
-    .replace(/哈{2,}/g, '哈哈哈').replace(/嘿嘿+/g, '嘿嘿')
-    .replace(/[\u{1F600}-\u{1F606}\u{1F602}\u{1F923}\u{1F605}]/gu, ' 哈哈哈 ');
+    .replace(/(?<![\p{L}])(?:ha\s?ha(?:\s?ha)*|hà\s?hà|hì\s?hì|hi\s?hi|hê\s?hê|he\s?he|hô\s?hô|hehe+|hihi+|kk+)(?![\p{L}])/giu, ' ')
+    .replace(/[哈嘿呵]{2,}/g, ' ').replace(/[\u{1F600}-\u{1F64F}]/gu, ' ');
   t = t.replace(/\*\*/g, '').replace(/[`#>_~]/g, '').replace(/\p{Extended_Pictographic}|\uFE0F/gu, '');
   t = t.replace(RE_PY_PAREN, '$1').replace(RE_PY_IN, '$1').replace(RE_PY_COMMA, '$1');
   t = lsStripPinyin(t);

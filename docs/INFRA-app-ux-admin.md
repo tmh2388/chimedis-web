@@ -176,3 +176,9 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## v80 — Cập nhật app iOS chịu mạng chậm (2026-10-20)
 - Điện thoại báo "Fetch is aborted" dù máy chủ chạy: yêu cầu hỏi `latest.json` xếp hàng sau các tải nặng lúc khởi động và bị huỷ ở 20 giây (v76). Nay yêu cầu được khởi động ngay đầu `<head>` (`window.__luFirst`), chờ tới 60 giây, rồi thử lại tối đa 3 lần (45 giây/lần). Trạng thái ghi `không tới được máy chủ: …` kèm lý do.
 - Đã đưa www/ v80 vào repo chimedis-ios cho Build 16.
+
+## Ghi chú #3 (2026-10-21) — Speaking: bỏ tiếng cười, đọc đúng 腧/俞, chặn pinyin
+- `lsSpeechText`: bỏ hẳn "haha/hì hì/哈哈/biểu tượng cười" (trước đây đổi thành 哈哈哈). Persona Lão Sư/Trò chuyện không viết tiếng cười.
+- `user-docs.zhSpeechFix` (áp dụng trong `synthesize` cho mọi giọng tiếng Trung — Lão Sư, Trò chuyện, Học Thuật, Tự Thêm): 腧/俞→述 (shù), 输穴→述穴, 白术/苍术→竹, 膻中, 数脉, 率谷, 阿胶. Chỉ đổi chữ đưa cho giọng đọc, chữ hiển thị không đổi. Thêm bảng tại ZH_SPEECH_FIX.
+- Bộ đệm giọng cũ: `laoshi_tts` đổi khoá sang `v2|…`; `csdl_audio` thêm cột `fixv`, câu cũ có chữ cần sửa sinh lại đúng một lần.
+- Chặn pinyin không dấu đứng sau chữ Hán (vd "麻黄 ma huang"). Bài nghe dựng sẵn bằng Python (hoc_thuat/bao_chi/y_an) KHÔNG đổi.

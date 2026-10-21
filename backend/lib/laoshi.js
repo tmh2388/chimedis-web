@@ -57,7 +57,7 @@ CÁCH DẠY
 - Mỗi thuật ngữ quan trọng viết kèm chữ Hán và pinyin, ví dụ: Ma hoàng (麻黄, má huáng).
 - Trả lời gọn: thường 60–140 từ; chỉ dài hơn khi em yêu cầu giải thích sâu. Không dùng bảng; được dùng gạch đầu dòng ngắn và **in đậm** cho từ khoá.
 - Nếu em viết tiếng Trung, sửa lỗi nhẹ nhàng và khen điều làm đúng.
-- KHI ĐÙA/CƯỜI: viết tiếng cười thật bằng chữ ("haha", "hì hì", "hê hê" / 哈哈 / "haha"), không chỉ dùng biểu tượng cảm xúc — vì giọng đọc sẽ đọc ra tiếng cười. Mỗi câu trả lời có tối đa một chỗ đùa, đa dạng cách đùa, không lặp mở đầu giống nhau giữa các lượt.
+- Có thể đùa nhẹ bằng lời, nhưng KHÔNG viết tiếng cười ("haha", "hì hì", "哈哈") và không dùng biểu tượng cảm xúc — giọng đọc không đọc chúng.
 - LUÔN ĐI TIẾP, KHÔNG BAO GIỜ KẾT THÚC CỤT: sau khi chấm câu đố (đúng/sai + một dữ kiện dễ nhớ 1–2 câu), ĐƯA NGAY câu đố tiếp theo (trắc nghiệm A/B/C) dựa trên mục "GỢI Ý CÂU TIẾP THEO" nếu có; trừ khi em xin dừng. Với câu hỏi thường, trả lời xong luôn kết bằng một câu hỏi/đề xuất tiếp.
 - TRẮC NGHIỆM: khi ra câu hỏi chọn đáp án, luôn liệt kê mỗi đáp án trên MỘT dòng riêng, đúng dạng "A. …", "B. …", "C. …" (tối đa 4 đáp án), rồi kết bằng một câu hỏi ngắn. Không nhét đáp án vào cùng một dòng.
 - Văn bản của em có thể là lời nói được nhận dạng nên có thể sai chính tả/đồng âm; hiểu theo ngữ cảnh, đừng bắt lỗi chính tả.
@@ -80,7 +80,7 @@ const OPEN_PARTS = {
       evening: ['Tối rồi, âm khí lên, mình học thong thả thôi.', 'Tối nay học vài thuật ngữ rồi ngủ sớm cho Can được nghỉ nhé.'],
       night: ['Khuya rồi mà vẫn học, thầy khen — nhưng nhớ nhường chỗ cho Can ngủ nhé.', 'Giờ này mà còn chăm thế, thầy cảm động muốn đổi trà thành… trà sen.'],
     },
-    quip: ['Thầy vừa tự bắt mạch, ra mạch "học-hăng" — hợp để học lắm, haha!', 'Dược liệu không tự sắc thuốc, kinh mạch không tự thông — nên mình học thôi, hì hì!', 'Thầy mà quên bài thì em đừng nói với ai nhé, haha!', 'Hôm nay thầy mang theo nửa ly trà gừng và cả bụng kiến thức, hì hì.', 'Học Trung y mà không cười thì Can khí uất đó em, haha!', 'Bài hôm nay thầy chọn kỹ, đảm bảo "bổ" hơn nhân sâm, hì hì.', 'Nhớ bài là nhờ ôn đều, giống như uống thuốc đủ liệu trình vậy, haha.', 'Thầy hứa hôm nay không đố khó… quá một chút, hì hì.', 'Học xong mà em quên thì thầy sẽ… đố lại, haha!', 'Em học đều thì thầy cười đều, tốt cho cả hai Can, haha.'],
+    quip: ['Thầy vừa tự bắt mạch, ra mạch "học-hăng" — hợp để học lắm!', 'Dược liệu không tự sắc thuốc, kinh mạch không tự thông — nên mình học thôi, hì hì!', 'Thầy mà quên bài thì em đừng nói với ai nhé!', 'Hôm nay thầy mang theo nửa ly trà gừng và cả bụng kiến thức, hì hì.', 'Học Trung y mà không cười thì Can khí uất đó em!', 'Bài hôm nay thầy chọn kỹ, đảm bảo "bổ" hơn nhân sâm, hì hì.', 'Nhớ bài là nhờ ôn đều, giống như uống thuốc đủ liệu trình vậy, haha.', 'Thầy hứa hôm nay không đố khó… quá một chút, hì hì.', 'Học xong mà em quên thì thầy sẽ… đố lại!', 'Em học đều thì thầy cười đều, tốt cho cả hai Can, haha.'],
     lead: ['Hôm nay mình học một món này nhé:', 'Thầy chọn cho em đề tài này:', 'Khởi động bằng bài này nào:', 'Em thử sức với mục này nhé:', 'Món khai vị hôm nay là:'],
   },
   zh: {
@@ -92,7 +92,7 @@ const OPEN_PARTS = {
       evening: ['晚上阴气渐升，我们轻松地学一点。', '今晚学几个术语，然后早点睡，让肝好好休息。'],
       night: ['这么晚还在学，老师夸你——不过也要让肝休息哦。', '这个点还这么用功，老师感动得想把茶换成莲子茶。'],
     },
-    quip: ['老师刚给自己把了脉，是“好学脉”，哈哈！', '药材不会自己煎，经络也不会自己疏通，所以我们来学习，嘿嘿！', '要是老师忘了教什么，你可别告诉别人，哈哈！', '今天老师带了半杯姜茶，还有一肚子知识，嘿嘿。', '学中医不笑一笑，肝气会郁结的，哈哈！', '今天的课老师精挑细选，保证比人参还“补”，嘿嘿。', '记得牢靠靠复习，就像吃药要吃够疗程，哈哈。', '老师保证今天不出太难的题……最多难一点点，嘿嘿。', '学完你要是忘了，老师就再考你一遍，哈哈！', '你学得勤，老师笑得勤，对两边的肝都好，哈哈。'],
+    quip: ['老师刚给自己把了脉，是“好学脉”！', '药材不会自己煎，经络也不会自己疏通，所以我们来学习！', '要是老师忘了教什么，你可别告诉别人！', '今天老师带了半杯姜茶，还有一肚子知识，嘿嘿。', '学中医不笑一笑，肝气会郁结的！', '今天的课老师精挑细选，保证比人参还“补”，嘿嘿。', '记得牢靠靠复习，就像吃药要吃够疗程，哈哈。', '老师保证今天不出太难的题……最多难一点点，嘿嘿。', '学完你要是忘了，老师就再考你一遍！', '你学得勤，老师笑得勤，对两边的肝都好，哈哈。'],
     lead: ['今天我们学这一条：', '老师给你挑的主题是：', '先热热身，来这一条：', '试试这一条：', '今天的开胃菜：'],
   },
   en: {
@@ -104,7 +104,7 @@ const OPEN_PARTS = {
       evening: ['Evening, yin rises — let us study at an easy pace.', 'A few terms tonight, then an early sleep so the Liver can rest.'],
       night: ['Still studying this late? Well done — but let the Liver sleep too.', 'So diligent at this hour that I am swapping my tea for lotus tea, ha!'],
     },
-    quip: ['I just took my own pulse: a "keen-to-learn" pulse, haha!', 'Herbs will not decoct themselves, and meridians will not unblock themselves — so let us study, hehe!', 'If I forget what to teach, keep it between us, haha!', 'Today I brought half a cup of ginger tea and a head full of knowledge, hehe.', 'Studying TCM without laughing makes Liver qi stagnate, haha!', 'Today\'s lesson is hand-picked — more "tonifying" than ginseng, hehe.', 'Memory comes from steady review, like finishing a full course of herbs, haha.', 'I promise not to quiz you too hard today… only a little, hehe.', 'If you forget it, I will simply quiz you again, haha!', 'You study often, I laugh often — good for both our Livers, haha.'],
+    quip: ['I just took my own pulse: a "keen-to-learn" pulse!', 'Herbs will not decoct themselves, and meridians will not unblock themselves — so let us study!', 'If I forget what to teach, keep it between us!', 'Today I brought half a cup of ginger tea and a head full of knowledge, hehe.', 'Studying TCM without laughing makes Liver qi stagnate!', 'Today\'s lesson is hand-picked — more "tonifying" than ginseng, hehe.', 'Memory comes from steady review, like finishing a full course of herbs, haha.', 'I promise not to quiz you too hard today… only a little, hehe.', 'If you forget it, I will simply quiz you again!', 'You study often, I laugh often — good for both our Livers, haha.'],
     lead: ['Today we will study this one:', 'I picked this topic for you:', 'Let us warm up with this:', 'Try your hand at this one:', 'Today\'s appetizer:'],
   },
 };
@@ -227,7 +227,7 @@ const TALK_PERSONA = `Bạn là "Lão Sư" (老师), thầy giáo Trung y đang 
 - Chỉ khi câu học trò có lỗi (sai ngữ pháp, sai từ, sai thanh điệu/âm đọc rõ ràng) mới sửa: mở đầu bằng một mệnh đề rất ngắn nêu cách nói đúng ("Nói cho đúng là: …"), tối đa MỘT lỗi mỗi lượt, rồi trả lời nội dung câu họ hỏi như bình thường. Câu đã đúng thì KHÔNG nhắc gì đến chuyện sửa.
 - KHÔNG viết pinyin trong lời nói (hệ thống hiển thị pinyin riêng và không đọc nó): chỉ viết chữ Hán khi cần nêu từ Trung văn.
 - Nếu học trò nói lẫn ngôn ngữ hoặc bí từ, đưa ngay cách nói đúng bằng ngôn ngữ luyện tập, kèm nghĩa ngắn gọn khi cần.
-- Giữ thân thiện, đôi khi đùa nhẹ, cười thật bằng chữ ("haha", "哈哈"). Không chẩn đoán/kê đơn cho tình huống bệnh thật.
+- Giữ thân thiện, đôi khi đùa nhẹ bằng lời; KHÔNG viết tiếng cười ("haha", "哈哈") hay biểu tượng cảm xúc. Không chẩn đoán/kê đơn cho tình huống bệnh thật.
 - Lời nhận dạng giọng nói có thể sai đồng âm: hiểu theo ngữ cảnh Trung y (学位→穴位…), đừng bắt lỗi chính tả.`;
 
 /** Trả lời một lượt. quiz (tuỳ chọn) là câu đố đang mở từ opening() để thầy chấm đúng đáp án. */
