@@ -176,3 +176,7 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## v80 — Cập nhật app iOS chịu mạng chậm (2026-10-20)
 - Điện thoại báo "Fetch is aborted" dù máy chủ chạy: yêu cầu hỏi `latest.json` xếp hàng sau các tải nặng lúc khởi động và bị huỷ ở 20 giây (v76). Nay yêu cầu được khởi động ngay đầu `<head>` (`window.__luFirst`), chờ tới 60 giây, rồi thử lại tối đa 3 lần (45 giây/lần). Trạng thái ghi `không tới được máy chủ: …` kèm lý do.
 - Đã đưa www/ v80 vào repo chimedis-ios cho Build 16.
+
+## Ghi chú #4 (2026-10-21) — Kính lúp = tra online
+- Nút kính lúp (`#searchBtn`) gọi `searchOnline()`: tra online (AI + Wiktionary bản web) cho từ đang gõ, luôn chạy lại kể cả khi kho đã có kết quả hoặc đã tra từ khác. Chưa đăng nhập → mở đăng nhập. Không trừ credit (hệ thống chịu, có giới hạn ngày); kết quả lưu `ai_lookup` dùng chung.
+- Y khoa kho chưa có → `learnTermDirect` ghi vào CSDL y khoa (đã có). Từ phổ thông → lưu ở `ai_lookup` (kho tra cứu chung); chưa đưa vào kết quả tìm kiếm thường.
