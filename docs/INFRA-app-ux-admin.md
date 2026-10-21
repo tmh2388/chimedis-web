@@ -176,3 +176,6 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## v80 — Cập nhật app iOS chịu mạng chậm (2026-10-20)
 - Điện thoại báo "Fetch is aborted" dù máy chủ chạy: yêu cầu hỏi `latest.json` xếp hàng sau các tải nặng lúc khởi động và bị huỷ ở 20 giây (v76). Nay yêu cầu được khởi động ngay đầu `<head>` (`window.__luFirst`), chờ tới 60 giây, rồi thử lại tối đa 3 lần (45 giây/lần). Trạng thái ghi `không tới được máy chủ: …` kèm lý do.
 - Đã đưa www/ v80 vào repo chimedis-ios cho Build 16.
+
+## Ghi chú #5 (2026-10-21) — Ghi âm bị ngắt khi khoá máy (phương án nhỏ)
+- `visibilitychange` (trước `loadTermsFromAPI`): khi app bị ẩn → Trò chuyện dừng nghe gọn (`talkInterrupt`), Lão Sư huỷ mic, Luyện nghe dừng và giữ phần đã ghi; khi hiện lại → rảnh tay tự nghe tiếp, còn lại báo "Ghi âm bị ngắt khi khoá máy. Chạm micro để ghi tiếp." và dọn trạng thái "đang ghi" bị hệ điều hành ngắt ngầm. Ghi âm khi khoá máy (nền) cần quyền âm thanh nền iOS + build lại — chưa làm.
