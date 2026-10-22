@@ -1,0 +1,45 @@
+{
+  "id": "ha-42901329",
+  "category": "hoc_thuat",
+  "level": "cao_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Mechanisms underlying the promotion of intestinal absorption of baohuoside I by Dipsacus asperoides saponin fractions and their synergistic anti‑osteoporosis efficacy in combination.",
+  "title_zh": "Dipsacus asperoides皂苷组分促进肠道吸收宝活苷I的机制及其联合抗骨质疏松的协同作用。",
+  "title_vi": "Các cơ chế làm cơ sở cho việc thúc đẩy sự hấp thụ baohuoside I trong ruột bằng các phân đoạn saponin của Dipsacus asperoides và kết hợp với hiệu quả chốngloãng xương hiệp đồng của chúng.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Baohuoside I (BA) is the key active ingredient in the compound anti-osteoporosis preparation Xianlinggubao; however, its poor solubility and permeability result in low oral bioavailability.",
+      "text_zh": "保活苷I （ BA ）是复方抗骨质疏松制剂仙灵骨宝的关键活性成分，但由于其溶解度和渗透性差，导致口服生物利用度低。",
+      "text_vi": "Baohuoside I (BA) là thành phần hoạt chất chính trong chế phẩm chống loãng xương hợp chất Xianlinggubao; tuy nhiên, độ hòa tan và tính thấm kém của nó dẫn đến sinh khả dụng qua đường miệng thấp.",
+      "text_pinyin": "bǎo huó gān I （ BA ） shì fù fāng kàng gǔ zhì shū sōng zhì jì xiān líng gǔ bǎo de guān jiàn huó xìng chéng fèn ， dàn yóu yú qí róng jiě dù hé shèn tòu xìng chà ， dǎo zhì kǒu fú shēng wù lì yòng dù dī 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "This study systematically investigated, from both pharmaceutical and pharmacological perspectives, the role of Dipsacus asperoides saponins fractions (DAS) in enhancing BA absorption and their synergistic anti-osteoporosis effects.",
+      "text_zh": "本研究从药物和药理学的角度系统地研究了续断皂苷组分（ DAS ）在增强BA吸收中的作用及其协同抗骨质疏松作用。",
+      "text_vi": "Nghiên cứu này được điều tra một cách có hệ thống, từ cả quan điểm dược lý và dược phẩm, vai trò của phân đoạn saponin asperoides Dipsacus (das) trong việc tăng cường sự hấp thụ BA và tác dụng chống loãng xương hiệp đồng của chúng.",
+      "text_pinyin": "běn yán jiū cóng yào wù huò yào lǐ xué de jiǎo dù xì tǒng dì yán jiū le xù duàn zào gān zǔ fèn （ DAS ） zài zēng qiáng BA xī shōu zhōng de zuò yòng jí qí xié tóng kàng gǔ zhì shū sōng zuò yòng 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "From a pharmaceutical perspective, DAS significantly improves BA's solubility, membrane permeability, and gastrointestinal stability, and forms nanocomposites with BA through noncovalent interactions (as verified by DSC, TEM, FT-IR, and molecular dynamics simulations).",
+      "text_zh": "从药物的角度来看， DAS显着提高了BA的溶解度、膜透性和胃肠道稳定性，并通过非共价相互作用与BA形成纳米复合材料（经DSC、TEM、FT-IR和分子动力学模拟验证）。",
+      "text_vi": "Từ góc độ dược phẩm, DAS cải thiện đáng kể độ hòa tan, tính thấm màng, và độ ổn định đường tiêu hóa của BA, và tạo thành các composit nano với BA thông qua các tương tác không cộng hóa trị (như được xác minh bằng các mô phỏng DSC, tem, FT-IR, và động lực học phân tử).",
+      "text_pinyin": "cóng yào wù de jiǎo dù lái kàn ， DAS xiǎn zhe tí gāo le BA de róng jiě dù 、 mó tòu xìng hé wèi cháng dào wěn dìng xìng ， bìng tōng guò fēi gòng jià xiāng hù zuò yòng yǔ BA xíng chéng nà mǐ fù hé cái liào （ jīng DSC、TEM、FT-IR hé fèn zǐ dòng lì xué mó nǐ yàn zhèng ）。"
+    },
+    {
+      "seq": 4,
+      "text_en": "In vivo intestinal perfusion experiments in rats confirmed that DAS enhances BA absorption in all intestinal segments; in a Caco-2 monolayer cell model, DAS inhibited MRP2/BCRP efflux and reversibly opened tight junctions, increasing the apparent permeability coefficient of BA from (1.62 ± 0.21) × 10⁻⁶ to (4.25 ± 0.45) × 10⁻⁶ cm/s; Oral pharmacokinetic studies in rats further confirmed that the AUC",
+      "text_zh": "大鼠体内肠道灌注实验证实， DAS可增强所有肠段对BA的吸收；在Caco-2单层细胞模型中， DAS抑制MRP2/BCRP外流并可逆性打开紧密连接，将BA的表观渗透系数从(1.62 ± 0.21) × 10 * *增加到(4.25 ± 0.45) × 10 * * * cm/s ；大鼠口服药代动力学研究进一步证实，",
+      "text_vi": "Các thử nghiệm tưới máu ruột in vivo ở chuột đã xác nhận rằng DAS làm tăng khả năng hấp thụ BA trong tất cả các phân đoạn ruột; trong mô hình tế bào đơn lớp Caco-2, DAS ức chế dòng chảy MRP2/BCRP và các mối nối chặt mở có thể đảo ngược, làm tăng hệ số thấm rõ ràng của BA từ (1,62 ± 0,21) × 10 (4,25 ± 0,45) × 10 (4,25 ± 0,45) × 10 (cm/s); Các nghiên cứu dược động học đường uống ở chuột còn xác nhận rằng AUC",
+      "text_pinyin": "dà shǔ tǐ nèi cháng dào guàn zhù shí yàn zhèng shí ， DAS kě zēng qiáng suǒ yǒu cháng duàn duì BA de xī shōu ； zài Caco-2 dān céng xì bāo mó xíng zhōng ， DAS yì zhì MRP2/BCRP wài liú bìng kě nì xìng dǎ kāi jǐn mì lián jiē ， jiāng BA de biǎo guān shèn tòu xì shù cóng (1.62 ± 0.21) × 10 * * zēng jiā dào (4.25 ± 0.45) × 10 * * * cm/s ； dà shǔ kǒu fú yào dài dòng lì xué yán jiū jìn yí bù zhèng shí ，"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42901329), International journal of pharmaceutics (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42901329/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42901329), International journal of pharmaceutics (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42901329/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42901329），International journal of pharmaceutics (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42901329/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-22T00:18:39Z",
+  "updated_at": "2026-10-22T00:18:39Z"
+}
