@@ -194,3 +194,7 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - Nút quả địa cầu (`#onlineBtn`) cố định cạnh kính lúp khi đã đăng nhập (ẩn khi chưa đăng nhập và trong app iOS). Mở màn riêng `#onlineScreen` (`openOnlineScreen`/`onlineRun`), gọi `GET /api/web-search` (`web-define.js › webSearch`): Wiktionary + Wikipedia (vi/en hoặc zh/en), cache 30 ngày trong `web_define_cache`, giới hạn 40 lượt/10 phút/người, kèm liên kết Baidu/Bing/Google. KHÔNG dùng AI, KHÔNG credit, không dùng chung trạng thái với thẻ Bác sĩ.
 - Thẻ Bác sĩ khi kho chưa có từ: gợi ý + nút "Hỏi Bác sĩ Trung Y (AI)" (chỉ chạy khi bấm); hộp Wiktionary cũ trong thẻ đã bỏ.
 - Google/Bing/Baidu Search API không dùng được miễn phí cho cả hệ thống (cần khoá + hạn mức/trả phí; Baidu không có API công khai) → chỉ mở liên kết sang trang tìm kiếm của họ.
+
+## v85 (2026-10-22) — Hộp ghi chú mở rộng + tô sáng trong thẻ từ
+- Ghi chú cho Claude: chạm vào ô nhập → bảng mở rộng toàn màn hình (cuộn được), nút "Xong" thu về bảng mặc định, giữ nguyên chữ đã gõ (`.ui-sheet-scrim.expanded`, `.ed-done`).
+- Thẻ chi tiết từ (`openPopup`): giữ tô sáng từ khoá đang tìm (`hlDom` quét các nút văn bản, bỏ qua nút bấm/ô nhập).
