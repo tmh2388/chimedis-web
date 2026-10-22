@@ -42,28 +42,56 @@ a{color:var(--tham-2)}
   </div>
 </header>
 <main>
-  <p class="updated">Cập nhật lần cuối: 14/08/2026</p>
+  <p class="updated">Cập nhật lần cuối: 22/10/2026 · Last updated: 22 Oct 2026</p>
+  <p style="margin-bottom:20px"><b>DỰ THẢO — cần chủ ứng dụng rà soát nội dung trước khi dùng cho App Store / Google Play.</b></p>
 
-  <h2>1. Chúng tôi không thu thập dữ liệu cá nhân</h2>
-  <p>Ứng dụng Chimedis (bản web tại dict.chimedis.vn và bản ứng dụng iOS) không yêu cầu đăng ký tài khoản, không thu thập tên, email, số điện thoại hay bất kỳ thông tin định danh cá nhân nào của người dùng.</p>
+  <h2>1. Chúng tôi là ai</h2>
+  <p>Chimedis (Hạ Vân Y Đạo) là ứng dụng tra cứu và học thuật ngữ Trung Y (Việt–Trung–Anh), có bản web tại dict.chimedis.vn và ứng dụng iOS/Android. Liên hệ: <a href="mailto:contact@chimedis.vn">contact@chimedis.vn</a>.</p>
 
-  <h2>2. Dữ liệu được truy cập</h2>
-  <p>Ứng dụng hoạt động bằng cách tải nội dung từ điển (thuật ngữ, giải nghĩa, hình ảnh) từ máy chủ dict.chimedis.vn để hiển thị cho người dùng. Không có dữ liệu nào từ thiết bị của người dùng được gửi lên máy chủ, ngoại trừ các thông tin kỹ thuật thông thường mà mọi trình duyệt/ứng dụng đều gửi khi kết nối internet (ví dụ: địa chỉ IP, loại thiết bị) — dùng cho mục đích vận hành máy chủ, không dùng để theo dõi cá nhân.</p>
+  <h2>2. Dữ liệu chúng tôi thu thập</h2>
+  <p>Bạn dùng được phần tra cứu cơ bản mà không cần tài khoản. Khi tạo tài khoản và dùng các tính năng nâng cao, chúng tôi xử lý:</p>
+  <ul>
+    <li><b>Tài khoản:</b> email, tên hiển thị và mã định danh đăng nhập (qua Firebase Authentication của Google: email/mật khẩu, Google, Apple, Facebook). Mật khẩu do Firebase quản lý, chúng tôi không đọc được.</li>
+    <li><b>Dữ liệu học tập gắn với tài khoản:</b> từ đã lưu, tiến độ học và ôn tập, tiến độ luyện nghe, cài đặt hiển thị, góp ý/báo sai thuật ngữ, số lượt dùng và số credit.</li>
+    <li><b>Nội dung bạn gửi:</b> câu hỏi và tin nhắn với Lão Sư/AI; từ khoá bạn tìm trong mục Tìm kiếm online; tài liệu riêng bạn thêm (Tự Thêm) và giọng đọc được tạo từ tài liệu đó.</li>
+    <li><b>Giọng nói:</b> khi bạn luyện nói, bản ghi âm được gửi lên máy chủ để nhận dạng giọng nói và chấm bài. Chúng tôi không lưu bản ghi âm lâu dài; bản chép chữ và kết quả phân tích được lưu tối đa 30–60 ngày để cải thiện chất lượng và tránh xử lý lặp.</li>
+    <li><b>Thanh toán (chỉ bản web):</b> mã đơn, số tiền, trạng thái. Ứng dụng iOS không bán hàng và không hiển thị giá.</li>
+    <li><b>Kỹ thuật:</b> địa chỉ IP, loại thiết bị/trình duyệt trong nhật ký máy chủ của nhà cung cấp lưu trữ, dùng để vận hành và chống lạm dụng.</li>
+  </ul>
 
-  <h2>3. Bộ nhớ trên thiết bị</h2>
-  <p>Ứng dụng có thể lưu một số tuỳ chọn hiển thị (ví dụ: ngôn ngữ, giao diện đã chọn) trực tiếp trên thiết bị của bạn để thuận tiện sử dụng lần sau. Dữ liệu này không được gửi đi đâu và bạn có thể xoá bất cứ lúc nào bằng cách xoá dữ liệu ứng dụng/trình duyệt.</p>
+  <h2>3. Mục đích sử dụng</h2>
+  <p>Cung cấp tính năng bạn yêu cầu (tra cứu, đồng bộ, trò chuyện với AI, luyện nghe–nói), giữ an toàn hệ thống, hỗ trợ và đối soát thanh toán. Chúng tôi <b>không bán dữ liệu</b>, <b>không dùng quảng cáo</b> và <b>không theo dõi hành vi</b> cho mục đích quảng cáo.</p>
 
-  <h2>4. Bên thứ ba</h2>
-  <p>Chimedis không chia sẻ, bán, hay trao đổi bất kỳ dữ liệu nào với bên thứ ba. Ứng dụng không tích hợp quảng cáo hay công cụ theo dõi hành vi người dùng.</p>
+  <h2>4. Bên xử lý dữ liệu (bên thứ ba)</h2>
+  <ul>
+    <li><b>Google Firebase</b> (đăng nhập) và nhà cung cấp đăng nhập bạn chọn (Google, Apple, Facebook).</li>
+    <li><b>OpenAI</b>: xử lý tin nhắn với Lão Sư/AI và nhận dạng giọng nói.</li>
+    <li><b>Google Cloud Text-to-Speech</b>: tạo giọng đọc từ văn bản.</li>
+    <li><b>Hostinger</b>: lưu trữ máy chủ và cơ sở dữ liệu.</li>
+    <li><b>Wikipedia/Wiktionary</b>: mục Tìm kiếm online gửi từ khoá của bạn từ máy chủ Chimedis (không gửi địa chỉ IP hay mã thiết bị của bạn). Liên kết sang Baidu, Bing, Google mở trong trình duyệt và tuân theo chính sách của các trang đó.</li>
+  </ul>
 
-  <h2>5. Trẻ em</h2>
-  <p>Chimedis là công cụ tra cứu học thuật, không nhắm đến hoặc thu thập dữ liệu từ trẻ em dưới 13 tuổi.</p>
+  <h2>5. Lưu giữ và xoá dữ liệu</h2>
+  <p>Bạn có thể <b>xoá tài khoản ngay trong ứng dụng</b>: mở Tài khoản → <i>Xoá tài khoản</i>. Việc xoá loại bỏ dữ liệu gắn với tài khoản nêu ở mục 2 và xoá tài khoản đăng nhập. Bản ghi thanh toán (nếu có) được giữ ở dạng ẩn danh theo yêu cầu kế toán. Mục từ điển do AI tạo và bộ đệm giọng đọc dùng chung không gắn với bạn sau khi xoá. Nếu không dùng được ứng dụng, xem <a href="/delete-account.html">hướng dẫn xoá tài khoản</a> hoặc gửi email tới contact@chimedis.vn.</p>
 
-  <h2>6. Thay đổi chính sách</h2>
-  <p>Nếu chính sách này thay đổi, bản cập nhật sẽ được đăng tại chính trang này với ngày cập nhật mới.</p>
+  <h2>6. Quyền của bạn</h2>
+  <p>Bạn có quyền truy cập, chỉnh sửa, xoá dữ liệu và rút lại sự đồng ý. Gửi yêu cầu tới contact@chimedis.vn; chúng tôi trả lời trong thời gian hợp lý.</p>
 
-  <h2>7. Liên hệ</h2>
-  <p>Mọi câu hỏi về chính sách bảo mật, vui lòng liên hệ: <a href="mailto:contact@chimedis.vn">contact@chimedis.vn</a></p>
+  <h2>7. Trẻ em</h2>
+  <p>Chimedis là công cụ học thuật, không nhắm đến trẻ em dưới 13 tuổi và không cố ý thu thập dữ liệu của trẻ em.</p>
+
+  <h2>8. Lưu ý về nội dung y khoa</h2>
+  <p>Nội dung chỉ để học tập và tham khảo, không thay thế chẩn đoán, điều trị hay tư vấn của chuyên gia y tế. Câu trả lời của AI có thể sai.</p>
+
+  <h2>9. Thay đổi chính sách</h2>
+  <p>Khi chính sách thay đổi, bản mới được đăng tại trang này kèm ngày cập nhật.</p>
+
+  <hr style="margin:36px 0;border:0;border-top:1px solid var(--vien)">
+
+  <h2>English summary</h2>
+  <p>Chimedis (Hạ Vân Y Đạo) is a Traditional Chinese Medicine terminology app (Vietnamese–Chinese–English). Basic lookup works without an account. If you create an account we process: your email, display name and sign-in identifier (Firebase Authentication; Google, Apple, Facebook or email/password); learning data (saved terms, progress, settings, feedback, usage and credits); content you send (AI chat messages, online-search keywords, personal documents); voice recordings you submit for speech practice (sent to our server for speech recognition and scoring; not stored long-term, transcripts and analysis are kept for up to 30–60 days); web payment records (the iOS app sells nothing); and technical logs (IP, device/browser type) held by our hosting provider.</p>
+  <p>We do not sell data, show ads or track you for advertising. Processors: Google Firebase, OpenAI (AI chat, speech recognition), Google Cloud Text-to-Speech, Hostinger (hosting), and Wikipedia/Wiktionary (online search keywords are sent from our server, not from your device). Links to Baidu, Bing and Google open in your browser.</p>
+  <p><b>Delete your account in the app:</b> Account → <i>Delete account</i>. This removes your account data and sign-in account; payment records, if any, are kept anonymised for accounting. See <a href="/delete-account.html">how to delete your account</a> or email contact@chimedis.vn. The app is a learning tool, not medical advice; AI answers can be wrong. The app is not directed to children under 13.</p>
 
   <a class="back" href="/">← Quay lại Chimedis</a>
 </main>

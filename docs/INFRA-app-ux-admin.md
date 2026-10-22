@@ -198,3 +198,8 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## v85 (2026-10-22) — Hộp ghi chú mở rộng + tô sáng trong thẻ từ
 - Ghi chú cho Claude: chạm vào ô nhập → bảng mở rộng toàn màn hình (cuộn được), nút "Xong" thu về bảng mặc định, giữ nguyên chữ đã gõ (`.ui-sheet-scrim.expanded`, `.ed-done`).
 - Thẻ chi tiết từ (`openPopup`): giữ tô sáng từ khoá đang tìm (`hlDom` quét các nút văn bản, bỏ qua nút bấm/ô nhập).
+
+## Xoá tài khoản + chính sách bảo mật (2026-10-22, v87)
+- `POST /api/account/delete` (`lib/account-delete.js`, `firebase-admin.deleteFirebaseUser`): cần `confirm:'DELETE'`, giới hạn 3 lần/giờ, từ chối tài khoản admin. Xoá: tài liệu riêng + giọng đọc, credit/ledger, bộ đếm dùng, phiếu sửa ASR, góp ý thuật ngữ, hồ sơ `users` (các bảng `user_*` xoá theo khoá ngoại CASCADE); gỡ liên kết người tạo ở `ai_lookup`, `laoshi_faq`, `redeem_codes`; `orders` giữ ẩn danh (bỏ email, mã người dùng → `deleted-<băm>`); rồi xoá user Firebase.
+- Giao diện: nút "Xoá tài khoản" trong khung Tài khoản (`doDeleteAccount`), xác nhận → xoá → đăng xuất + dọn `chimedis_*` trên máy. Trang web `/delete-account.html` (URL cho khai báo Google Play).
+- `privacy.html` viết lại (DỰ THẢO song ngữ Việt–Anh, cần chủ app rà soát trước khi nộp store). Việc còn lại: khai báo App Privacy (Apple) / Data safety (Google).

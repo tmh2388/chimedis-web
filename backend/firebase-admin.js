@@ -54,3 +54,9 @@ export async function verifyFirebaseToken(req, res, next) {
     res.status(401).json({ success: false, error: 'Token không hợp lệ hoặc đã hết hạn' });
   }
 }
+
+/** Xoá tài khoản Firebase Authentication của người dùng (dùng cho chức năng xoá tài khoản). Không có user → coi như đã xoá. */
+export async function deleteFirebaseUser(uid) {
+  if (!firebaseApp) throw new Error('firebase_not_configured');
+  try { await admin.auth().deleteUser(uid); } catch (err) { if (err && err.code === 'auth/user-not-found') return; throw err; }
+}
