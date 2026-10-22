@@ -8,7 +8,8 @@ import { fileURLToPath } from 'url';
 import { mysqlPool, onDbUp, dbStatus } from './lib/db.js';
 import { runImport } from './import-herbal-sheets.js';
 import { buildAPI } from './build-api.js';
-import { verifyFirebaseToken, isFirebaseConfigured } from './firebase-admin.js';
+import { verifyFirebaseToken, isFirebaseConfigured, deleteFirebaseUser } from './firebase-admin.js';
+import { deleteAccountData } from './lib/account-delete.js';
 import { analyzeInterpretation, buildVocabHint, normalize as normalizeInterp } from './lib/interpret-check.js';
 import { syncGeneralTerms } from './lib/general-terms-sync.js';
 import { resolvePlan, requirePlan, ensurePlanColumns, LIMITS, atLeast, planInfo, isAdmin } from './lib/plan.js';
@@ -1737,6 +1738,25 @@ app.get('/api/web-define', verifyFirebaseToken, async (req, res) => {
     const out = await webDefine.define(mysqlPool, String(req.query.q || ''));
     res.json({ success: true, data: out && out.entries && out.entries.length ? out : null });
   } catch (e) { res.status(502).json({ success: false, error: 'upstream' }); }
+});
+// ===== Xoá tài khoản (Apple 5.1.1(v) / Google Play) — người dùng tự xoá trong app: dữ liệu MySQL + tài khoản Firebase =====
+const accountDeleteHits = new Map();
+app.post('/api/account/delete', verifyFirebaseToken, requireDocsDb, async (req, res) => {
+  try {
+    const uid = req.firebaseUser.uid, now = Date.now();
+    if (!req.body || req.body.confirm !== 'DELETE') return res.status(400).json({ success: false, error: 'confirm_required' });
+    if (isAdmin(req.firebaseUser)) return res.status(403).json({ success: false, error: 'admin_cannot_delete' }); // tránh lỡ tay xoá tài khoản quản trị
+    const hits = (accountDeleteHits.get(uid) || []).filter((t) => now - t < 3600e3);
+    if (hits.length >= 3) return res.status(429).json({ success: false, error: 'rate_limited' });
+    hits.push(now); accountDeleteHits.set(uid, hits);
+    const summary = await deleteAccountData(mysqlPool, uid);
+    await deleteFirebaseUser(uid);
+    console.log('[account-delete] đã xoá tài khoản', uid.slice(0, 6) + '…', JSON.stringify(summary));
+    res.json({ success: true });
+  } catch (e) {
+    console.error('account delete:', e.message);
+    res.status(500).json({ success: false, error: 'delete_failed' });
+  }
 });
 // Tìm kiếm online (Wiktionary + Wikipedia): đăng nhập, không AI, không credit; giới hạn tần suất theo người dùng để không bị lạm dụng.
 const webSearchHits = new Map();
