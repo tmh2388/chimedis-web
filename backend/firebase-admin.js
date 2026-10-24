@@ -1,4 +1,6 @@
-import admin from 'firebase-admin';
+// firebase-admin ≥ 13/14: dùng API module (default export không còn có admin.credential/admin.auth)
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
 
 // Giống pattern mysqlPool trong server.js: Firebase Admin là TÙY CHỌN — nếu chưa cấu hình
 // env var, app vẫn chạy bình thường (chỉ các route cần đăng nhập trả lỗi 503 rõ ràng thay vì
@@ -13,8 +15,8 @@ if (process.env.FIREBASE_ADMIN_CREDENTIALS_JSON_B64) {
   try {
     const json = Buffer.from(process.env.FIREBASE_ADMIN_CREDENTIALS_JSON_B64, 'base64').toString('utf8');
     const credentials = JSON.parse(json);
-    firebaseApp = admin.initializeApp({
-      credential: admin.credential.cert(credentials),
+    firebaseApp = initializeApp({
+      credential: cert(credentials),
     });
   } catch (err) {
     console.error('⚠️  Không khởi tạo được Firebase Admin (kiểm tra FIREBASE_ADMIN_CREDENTIALS_JSON_B64):', err.message);
@@ -41,7 +43,7 @@ export async function verifyFirebaseToken(req, res, next) {
     return res.status(401).json({ success: false, error: 'Thiếu token đăng nhập' });
   }
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
+    const decoded = await getAuth(firebaseApp).verifyIdToken(token);
     req.firebaseUser = {
       uid: decoded.uid,
       email: decoded.email || null,
@@ -58,5 +60,5 @@ export async function verifyFirebaseToken(req, res, next) {
 /** Xoá tài khoản Firebase Authentication của người dùng (dùng cho chức năng xoá tài khoản). Không có user → coi như đã xoá. */
 export async function deleteFirebaseUser(uid) {
   if (!firebaseApp) throw new Error('firebase_not_configured');
-  try { await admin.auth().deleteUser(uid); } catch (err) { if (err && err.code === 'auth/user-not-found') return; throw err; }
+  try { await getAuth(firebaseApp).deleteUser(uid); } catch (err) { if (err && err.code === 'auth/user-not-found') return; throw err; }
 }
