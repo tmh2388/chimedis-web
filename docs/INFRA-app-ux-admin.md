@@ -212,3 +212,7 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## Hotfix 2026-10-27 — mất Thang phương sau khi nâng firebase-admin 14
 - Nguyên nhân: `optionalFirebaseUser()` (server.js) dùng `(await import('firebase-admin')).default.auth()` — API không còn ở firebase-admin ≥13 → luôn trả null (lỗi bị `catch` nuốt) → người dùng ĐÃ đăng nhập không còn nhận nhóm Thang phương (`/api/terms`) và bị 401 `login_required` ở `/api/csdl/lesson/:id` (bài Học Thuật không phải bài trong ngày). Do PR "firebase-admin 14" gây ra.
 - Sửa: `firebase-admin.js` export `verifyIdTokenValue(token)` và `optionalFirebaseUser` gọi hàm này. Bài học: sau khi nâng gói major phải tìm cả `import('...')` động, và các `catch` im lặng che lỗi.
+
+## Nút "AI bổ sung" cho thuật ngữ thiếu nội dung (ghi chú #21 — 2026-10-27, v90)
+- Chỉ ADMIN. Trong hộp ⭐ (góp ý thuật ngữ): "✨ AI bổ sung" gọi `POST /api/admin/term-ai-fill` (`lib/term-ai-fill.js`) → AI ĐỀ XUẤT tên Việt/Anh + định nghĩa Việt/Trung/Anh (hoặc một mục nội dung của dược liệu/huyệt), nối đất bằng bảng thuật ngữ bắt buộc + mục liên quan trong kho; KHÔNG ghi CSDL. Admin xem/sửa rồi bấm "Lưu vào CSDL" → `/api/admin/term-edit` (giao dịch + nhật ký trước/sau, ghi chú "AI bổ sung, admin duyệt").
+- Chi phí do hệ thống chịu (sổ uid=system, feature=term_ai_fill); tối đa 60 lượt/giờ/admin. Hộp góp ý của admin luôn hiện ô định nghĩa (kể cả thuật ngữ chưa có định nghĩa).

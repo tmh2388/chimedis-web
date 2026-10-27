@@ -22,6 +22,7 @@ import { pinyin } from 'pinyin';
 import * as laoshiFaq from './lib/laoshi-faq.js';
 import * as termLearn from './lib/term-learn.js';
 import * as aiLookup from './lib/ai-lookup.js';
+import * as termAiFill from './lib/term-ai-fill.js';
 import * as listeningDb from './lib/listening-db.js';
 import * as webDefine from './lib/web-define.js';
 import * as aiBudget from './lib/ai-budget.js';
@@ -1815,6 +1816,23 @@ app.post('/api/admin/term-feedback/:id', ...adminOnly, requireDocsDb, adminJson(
 // ---- Màn duyệt "từ vựng người dùng báo sai" ngay trong app (chỉ quản trị viên) ----
 app.get('/api/admin/term-reports', ...adminOnly, requireDocsDb, adminJson(() => termLearn.listReports(mysqlPool)));
 app.get('/api/admin/term-reports/count', ...adminOnly, requireDocsDb, adminJson(async () => ({ count: await termLearn.countReports(mysqlPool) })));
+// AI ĐỀ XUẤT bổ sung nội dung thuật ngữ (admin) — không ghi CSDL; chi phí do hệ thống chịu; tối đa 60 lượt/giờ/admin.
+const termFillHits = new Map();
+app.post('/api/admin/term-ai-fill', ...adminOnly, requireOpenAI, async (req, res) => {
+  try {
+    const uid = req.firebaseUser.uid, now = Date.now();
+    const hits = (termFillHits.get(uid) || []).filter((t) => now - t < 3600e3);
+    if (hits.length >= 60) return res.status(429).json({ success: false, error: 'rate_limited' });
+    hits.push(now); termFillHits.set(uid, hits);
+    const out = await termAiFill.suggestFill(req.body || {});
+    if (out.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'term_ai_fill', costUsd: out.costUsd });
+    delete out.costUsd;
+    res.json({ success: true, data: out });
+  } catch (e) {
+    console.error('term-ai-fill:', e.message);
+    res.status(e.code === 'bad_request' ? 400 : 502).json({ success: false, error: e.code === 'bad_request' ? 'bad_request' : 'upstream' });
+  }
+});
 app.post('/api/admin/term-edit', ...adminOnly, requireDocsDb, async (req, res) => {
   try {
     const r = await termLearn.editTerm(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, req.body || {});
