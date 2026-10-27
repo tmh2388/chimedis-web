@@ -46,7 +46,7 @@ export async function translateItems(items, hint = {}) {
   const list = (Array.isArray(items) ? items : []).slice(0, 12).map((it) => ({
     key: cut(it.key, 40), source: ['vi', 'zh', 'en'].includes(it.source) ? it.source : 'vi',
     text: { vi: cut(it.text && it.text.vi, 800), zh: cut(it.text && it.text.zh, 800), en: cut(it.text && it.text.en, 800) },
-    targets: (Array.isArray(it.targets) ? it.targets : []).filter((l) => ['vi', 'zh', 'en'].includes(l) && l !== it.source),
+    targets: (Array.isArray(it.targets) ? it.targets : []).filter((l) => ['vi', 'zh', 'en'].includes(l) && l !== it.source), ctx: cut(it.ctx, 120),
   })).filter((it) => it.key && it.text[it.source] && it.targets.length);
   if (!list.length) return { items: {}, costUsd: 0 };
   const all = list.flatMap((it) => [it.text.vi, it.text.zh, it.text.en]).concat([cut(hint.hz, 40), cut(hint.vi, 190), cut(hint.en, 190)]);
