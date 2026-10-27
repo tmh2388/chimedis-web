@@ -62,3 +62,9 @@ export async function deleteFirebaseUser(uid) {
   if (!firebaseApp) throw new Error('firebase_not_configured');
   try { await getAuth(firebaseApp).deleteUser(uid); } catch (err) { if (err && err.code === 'auth/user-not-found') return; throw err; }
 }
+
+/** Xác thực một ID token (không phải middleware): trả về token đã giải mã, hoặc ném lỗi. Dùng cho các route "đăng nhập tuỳ chọn". */
+export async function verifyIdTokenValue(token) {
+  if (!firebaseApp) throw new Error('firebase_not_configured');
+  return getAuth(firebaseApp).verifyIdToken(token);
+}

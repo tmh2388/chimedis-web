@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url';
 import { mysqlPool, onDbUp, dbStatus } from './lib/db.js';
 import { runImport } from './import-herbal-sheets.js';
 import { buildAPI } from './build-api.js';
-import { verifyFirebaseToken, isFirebaseConfigured, deleteFirebaseUser } from './firebase-admin.js';
+import { verifyFirebaseToken, isFirebaseConfigured, deleteFirebaseUser, verifyIdTokenValue } from './firebase-admin.js';
 import { deleteAccountData } from './lib/account-delete.js';
 import { analyzeInterpretation, buildVocabHint, normalize as normalizeInterp } from './lib/interpret-check.js';
 import { syncGeneralTerms } from './lib/general-terms-sync.js';
@@ -433,8 +433,7 @@ async function optionalFirebaseUser(req) {
   const token = h.startsWith('Bearer ') ? h.slice(7) : null;
   if (!token) return null;
   try {
-    const admin = (await import('firebase-admin')).default;
-    return await admin.auth().verifyIdToken(token);
+    return await verifyIdTokenValue(token); // (firebase-admin ≥13: không còn `import('firebase-admin').default.auth()`)
   } catch { return null; }
 }
 
