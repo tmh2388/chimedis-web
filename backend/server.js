@@ -1833,6 +1833,22 @@ app.post('/api/admin/term-ai-fill', ...adminOnly, requireOpenAI, async (req, res
     res.status(e.code === 'bad_request' ? 400 : 502).json({ success: false, error: e.code === 'bad_request' ? 'bad_request' : 'upstream' });
   }
 });
+// Dịch tự động các ngôn ngữ còn thiếu/lệch khi admin sửa thuật ngữ (admin chỉ duyệt trước khi lưu). Không ghi CSDL; chi phí do hệ thống chịu; dùng chung trần 60 lượt/giờ với AI bổ sung.
+app.post('/api/admin/term-ai-translate', ...adminOnly, requireOpenAI, async (req, res) => {
+  try {
+    const uid = req.firebaseUser.uid, now = Date.now();
+    const hits = (termFillHits.get(uid) || []).filter((t) => now - t < 3600e3);
+    if (hits.length >= 60) return res.status(429).json({ success: false, error: 'rate_limited' });
+    hits.push(now); termFillHits.set(uid, hits);
+    const b = req.body || {};
+    const out = await termAiFill.translateItems(b.items, { hz: b.hz, vi: b.vi, en: b.en });
+    if (out.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'term_ai_translate', costUsd: out.costUsd });
+    res.json({ success: true, data: out.items });
+  } catch (e) {
+    console.error('term-ai-translate:', e.message);
+    res.status(502).json({ success: false, error: 'upstream' });
+  }
+});
 app.post('/api/admin/term-edit', ...adminOnly, requireDocsDb, async (req, res) => {
   try {
     const r = await termLearn.editTerm(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, req.body || {});

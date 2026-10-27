@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'chimedis-v90';
+const CACHE_VERSION = 'chimedis-v91';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 // Hình/biểu tượng: bộ nhớ riêng KHÔNG gắn phiên bản — không bị xoá mỗi lần phát hành (trước đây mỗi lần cập nhật là phải tải lại toàn bộ hình huyệt).

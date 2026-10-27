@@ -37,3 +37,38 @@ export async function suggestFill(term) {
   const p = JSON.parse(txt);
   return { vi: cut(p.vi, 190), en: cut(p.en, 190), def_vi: cut(p.def_vi, 700), def_zh: cut(p.def_zh, 700), def_en: cut(p.def_en, 700), note: cut(p.note, 240), costUsd: costFromUsage(MODEL, j.usage) };
 }
+
+/**
+ * Dịch/BỔ SUNG các ngôn ngữ còn thiếu hoặc lệch của một thuật ngữ: items = [{ key, source:'vi'|'zh'|'en', text:{vi,zh,en}, targets:['vi'|'zh'|'en'...] }].
+ * Trả { items: { key: { <ngôn ngữ đích>: văn bản } }, costUsd }. Chỉ trả các ngôn ngữ đích; KHÔNG ghi CSDL (admin duyệt rồi mới lưu).
+ */
+export async function translateItems(items, hint = {}) {
+  const list = (Array.isArray(items) ? items : []).slice(0, 12).map((it) => ({
+    key: cut(it.key, 40), source: ['vi', 'zh', 'en'].includes(it.source) ? it.source : 'vi',
+    text: { vi: cut(it.text && it.text.vi, 800), zh: cut(it.text && it.text.zh, 800), en: cut(it.text && it.text.en, 800) },
+    targets: (Array.isArray(it.targets) ? it.targets : []).filter((l) => ['vi', 'zh', 'en'].includes(l) && l !== it.source),
+  })).filter((it) => it.key && it.text[it.source] && it.targets.length);
+  if (!list.length) return { items: {}, costUsd: 0 };
+  const all = list.flatMap((it) => [it.text.vi, it.text.zh, it.text.en]).concat([cut(hint.hz, 40), cut(hint.vi, 190), cut(hint.en, 190)]);
+  const sys = 'Bạn là biên tập viên từ điển Trung y – y khoa Việt/Trung/Anh của Chimedis. DỊCH các ngôn ngữ đích từ ngôn ngữ nguồn của từng mục, đúng nghĩa, văn phong từ điển, '
+    + 'thống nhất thuật ngữ với bảng bắt buộc (Trung giản thể). Không thêm ý mới, không bớt ý, không giải thích. Tên thuật ngữ giữ ngắn gọn như tên gọi chuẩn. Chỉ trả JSON.\n\n'
+    + styleBlock(all, { max: 25 });
+  const user = `Thuật ngữ: ${JSON.stringify({ hz: cut(hint.hz, 40), vi: cut(hint.vi, 190), en: cut(hint.en, 190) })}\nCác mục cần dịch: ${JSON.stringify(list)}\n`
+    + 'Trả JSON: {"items":{"<key>":{"<ngôn ngữ đích>":"<bản dịch>"}}} — chỉ gồm các ngôn ngữ đích đã nêu.';
+  const r = await fetch(`${OPENAI_BASE}/v1/chat/completions`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: MODEL, messages: [{ role: 'system', content: sys }, { role: 'user', content: user }],
+      response_format: { type: 'json_object' }, max_completion_tokens: 4000, reasoning_effort: 'low' }),
+  });
+  if (!r.ok) throw Object.assign(new Error(`termtr_llm ${r.status}`), { code: 'upstream' });
+  const j = await r.json();
+  const txt = String(j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || '');
+  if (!txt.trim()) throw Object.assign(new Error('termtr_empty'), { code: 'upstream' });
+  const p = JSON.parse(txt); const out = {};
+  for (const it of list) {
+    const got = (p.items && p.items[it.key]) || {}; out[it.key] = {};
+    for (const l of it.targets) { const v = cut(got[l], 800); if (v) out[it.key][l] = v; }
+  }
+  return { items: out, costUsd: costFromUsage(MODEL, j.usage) };
+}
