@@ -2011,11 +2011,9 @@ app.get('/api/terms', async (req, res) => {
     const acupointTerms = await getAcupointTerms();
     const autoTerms = await getApprovedCandidateTerms(); // GĐ2: cụm tự học đã duyệt
 
-    // Thang Phương là domain GATED: chỉ trả về khi request có Firebase token hợp lệ
-    // (user đã đăng nhập). Khách chưa đăng nhập KHÔNG nhận được dữ liệu này trong payload
-    // (không chỉ ẩn ở frontend — lọc luôn ở server để nội dung không bị crawl).
-    const authUser = await optionalFirebaseUser(req);
-    const formulaTerms = authUser ? await getFormulaTerms() : [];
+    // Thang Phương hiển thị cho MỌI người dùng cùng hệ thống, không cần đăng nhập (quyết định của admin 2026-10-27;
+    // trước đó là domain gated). Dạng JSON của endpoint này không đổi — chỉ có thêm các mục group1 'Thang phương'.
+    const formulaTerms = await getFormulaTerms();
 
     const baseTerms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms, ...formulaTerms];
     const generalTerms = dedupeGeneralTerms(await getGeneralTerms(), baseTerms);
