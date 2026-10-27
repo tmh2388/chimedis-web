@@ -212,3 +212,7 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## Hotfix 2026-10-27 — mất Thang phương sau khi nâng firebase-admin 14
 - Nguyên nhân: `optionalFirebaseUser()` (server.js) dùng `(await import('firebase-admin')).default.auth()` — API không còn ở firebase-admin ≥13 → luôn trả null (lỗi bị `catch` nuốt) → người dùng ĐÃ đăng nhập không còn nhận nhóm Thang phương (`/api/terms`) và bị 401 `login_required` ở `/api/csdl/lesson/:id` (bài Học Thuật không phải bài trong ngày). Do PR "firebase-admin 14" gây ra.
 - Sửa: `firebase-admin.js` export `verifyIdTokenValue(token)` và `optionalFirebaseUser` gọi hàm này. Bài học: sau khi nâng gói major phải tìm cả `import('...')` động, và các `catch` im lặng che lỗi.
+
+## Thang phương mở cho mọi người (2026-10-27, v88)
+- Quyết định của admin: nhóm "Thang phương" hiển thị cùng hệ thống cho MỌI người dùng, không cần đăng nhập (trước đó là domain gated). Server `/api/terms` luôn gồm `getFormulaTerms()`; giao diện bỏ các bộ lọc/màn chặn theo `state.user` cho nhóm này; không còn tải lại 6,5 MB kho khi đổi trạng thái đăng nhập.
+- Dạng JSON `/api/terms` KHÔNG đổi, chỉ có thêm các mục `group1: 'Thang phương'` (ConsultApp kéo endpoint này hằng ngày — đã báo).
