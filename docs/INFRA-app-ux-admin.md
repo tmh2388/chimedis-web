@@ -231,3 +231,6 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## Menu nổi + giữ nguyên tiến trình giữa 4 tab (2026-10-28, v94)
 - Điện thoại/app (<768px): `.mainnav` là viên thuốc nổi (cách đáy 10px, hai bên 12px, bo tròn, nền mờ, bóng), z-index 5500 → nổi trên MỌI màn kể cả Trò chuyện/Lão Sư; ẩn khi cuộn xuống/mở bàn phím. `#talkScreen/#laoshiScreen` chừa 86px đáy để không che ô nhập. iPad/web (≥768px): giữ thanh ngang; màn phủ bắt đầu ngay dưới thanh (`--ovTop`, `ovTopSync()`).
 - `navGo(k)`: rời tab chỉ tạm dừng + ẩn, không huỷ. `navMem` nhớ Từ điển (nhóm, ô tìm, vị trí cuộn) và Luyện nghe (bài đang mở); `talkHide()/laoshiHide()` ẩn màn, dừng micro/giọng, giữ hội thoại; `openTalk/openLaoshi` thấy màn đang ẩn thì chỉ hiện lại (`openLaoshi({rebuild:true})` để dựng lại khi đổi ngôn ngữ). `recInterruptAll()` (tách từ xử lý khoá máy) dùng chung khi rời tab. Bấm lại tab đang mở = về đầu tab (như cũ).
+
+## Tra từ dùng chung trong Trò chuyện / Lão Sư (2026-10-28, v95)
+- Nút 🔍 ở đầu màn Trò chuyện và Lão Sư (`ovSearchOpen()`) mở ô tìm riêng (`#ovSearch`) nằm trên màn phủ, dùng CHUNG khung kết quả `lookupSheet` với trang chủ/Luyện nghe (thêm lớp `.ov`, z-index 5400 dưới menu nổi 5500). Chạm một kết quả mở thẻ từ; "Quay lại" hoặc rời tab đóng ô tìm và trở về đúng màn đang làm, giữ nguyên hội thoại. Luyện nghe dùng ô tìm của trang chủ như trước.

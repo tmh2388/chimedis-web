@@ -959,6 +959,11 @@ header{transition:padding .2s ease}
 .vrow.long-hz .hz{grid-column:2;text-align:left;font-size:20px;line-height:1.25;word-break:break-word;overflow-wrap:anywhere}
 .vrow.long-hz .mid{grid-column:2;min-width:0}
 .vrow .mid{min-width:0;overflow-wrap:anywhere}
+.ov-search{position:absolute;left:0;right:0;top:0;z-index:5450;background:var(--thamthm,#0E3A3A);padding:calc(8px + env(safe-area-inset-top)) 12px 10px;display:flex;gap:8px;align-items:center}
+.ov-search input{flex:1;min-width:0;min-height:44px;border:0;border-radius:12px;padding:0 14px;font:inherit;font-size:16px;background:#fff;color:#1D2B2A}
+.ov-search button{flex:0 0 auto;min-width:44px;min-height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font:700 14px inherit;cursor:pointer}
+.lk-sheet.ov{z-index:5400}
+@media(max-width:767px){.lk-sheet.ov .lk-body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}}
 .lk-sheet{position:absolute;left:0;right:0;bottom:0;z-index:40;background:var(--ngua,#F6F0E2);display:flex;flex-direction:column;border-top:1px solid var(--vien,#e5ddcc);box-shadow:0 -6px 24px rgba(0,0,0,.12)}
 .lk-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--vien,#e5ddcc);font-size:13px}
 .lk-head span{color:var(--muc-mo,#6B6156)}
@@ -4496,6 +4501,7 @@ function openTalk(){
   document.getElementById('app').insertAdjacentHTML('beforeend',
     `<div id="talkScreen" class="mydoc-editor ls-screen talk-screen" role="dialog">` +
     `<div class="mde-head"><div class="ls-title"><b>${t('talk_title')}</b><small>${t('talk_sub')}</small></div>` +
+    `<button type="button" class="mde-btn" onclick="ovSearchOpen()" aria-label="${myDocEsc(t('lk_title'))}" title="${myDocEsc(t('lk_title'))}">🔍</button>` +
     `<button type="button" class="mde-btn" onclick="closeTalk()">${t('plans_close')}</button></div>` +
     `<div class="talk-langs"><span>${t('talk_lang')}</span>${opt('zh', '中文')}${opt('vi', 'Tiếng Việt')}${opt('en', 'English')}</div>` +
     `<div class="talk-stage"><div class="talk-micwrap"><button type="button" id="talkMic" class="talk-mic" data-s="idle" onclick="talkMicTap()" aria-label="${t('laoshi_mic')}">` +
@@ -4667,6 +4673,7 @@ function openLaoshi(opts){
   document.getElementById('app').insertAdjacentHTML('beforeend',
     `<div id="laoshiScreen" class="mydoc-editor ls-screen" role="dialog">` +
     `<div class="mde-head"><div class="ls-title"><b>${t('laoshi_title')}</b><small>${t('laoshi_sub')}</small></div>` +
+    `<button type="button" class="mde-btn" onclick="ovSearchOpen()" aria-label="${myDocEsc(t('lk_title'))}" title="${myDocEsc(t('lk_title'))}">🔍</button>` +
     `<button type="button" class="mde-btn" onclick="laoshiReset()">${t('laoshi_new')}</button>` +
     `<button type="button" class="mde-btn" onclick="closeLaoshi()">${t('plans_close')}</button></div>` +
     `<div class="ls-bar"><span class="ls-langs">${['vi','zh','en'].map((l) => `<button type="button" class="ls-lang${state.lang === l ? ' on' : ''}" onclick="setLang('${l}')">${l === 'zh' ? '中文' : l === 'vi' ? 'VI' : 'EN'}</button>`).join('')}</span><button type="button" id="lsTogSpeak" class="ls-tog" onclick="lsToggleAutoSpeak()">🔊 ${t('laoshi_autospeak')}</button>` +
@@ -7144,6 +7151,7 @@ function inNonDictContext(){
 }
 function lookupSheetClose(clearInput){
   document.getElementById('lookupSheet')?.remove(); lookupSheet.q = '';
+  document.getElementById('ovSearch')?.remove(); // (nếu mở từ màn Trò chuyện/Lão Sư: trở về đúng màn đó)
   if(clearInput){ searchInput.value = ''; document.getElementById('searchBox').classList.remove('hasval'); }
 }
 function lookupSheetRender(){
@@ -7151,7 +7159,8 @@ function lookupSheetRender(){
   let el = document.getElementById('lookupSheet');
   const app = document.getElementById('app'); const wrap = document.querySelector('.searchwrap');
   if(!el){ el = document.createElement('div'); el.id = 'lookupSheet'; el.className = 'lk-sheet'; app.appendChild(el); }
-  const ar = app.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+  const ar = app.getBoundingClientRect(), ovs = document.getElementById('ovSearch'), wr = (ovs || wrap).getBoundingClientRect();
+  el.classList.toggle('ov', !!ovs);
   el.style.top = Math.max(0, wr.bottom - ar.top) + 'px';
   const old = TERMS.length; // (không đổi) — chỉ để rõ ràng: kết quả luôn tìm trong TOÀN BỘ kho
   let all = TERMS;
@@ -7162,6 +7171,13 @@ function lookupSheetRender(){
   el.innerHTML = `<div class="lk-head"><div><b>${t('lk_title')}</b> <span>“${esc(q)}” — ${list.length} ${t('words')}</span></div>` +
     `<button type="button" class="lk-close" onclick="lookupSheetClose(true)">${t('lk_back')}</button></div><div class="lk-body">` +
     (list.length ? rows : (dataSource === 'seed' ? `<div class="empty">${t('data_fallback_note')}</div>` : aiLookupCardHtml(q))) + `</div>`;
+}
+// Tra từ NGAY TRONG Trò chuyện / Lão Sư (màn phủ che mất ô tìm kiếm trang chủ): nút kính lúp ở đầu màn mở một ô tìm riêng, dùng CHUNG khung kết quả với trang chủ;
+// đóng lại là về đúng màn đang làm, giữ nguyên hội thoại.
+function ovSearchOpen(){
+  if(document.getElementById('ovSearch')) { document.getElementById('ovSearchInput')?.focus(); return; }
+  document.getElementById('app').insertAdjacentHTML('beforeend', `<div id="ovSearch" class="ov-search"><input id="ovSearchInput" type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="${myDocEsc(t('search_ph'))}" oninput="lookupSheetUpdate(this.value)"><button type="button" onclick="lookupSheetClose(false)">${t('lk_back')}</button></div>`);
+  setTimeout(() => { try{ document.getElementById('ovSearchInput').focus(); }catch(e){} }, 60);
 }
 function lookupSheetUpdate(val){
   const q = String(val || '').trim();
@@ -9601,6 +9617,7 @@ window.addEventListener('resize', ovTopSync);
 function talkHide(){ const el = document.getElementById('talkScreen'); if(!el) return; try{ talkStop(); }catch(e){} el.style.display = 'none'; }
 function laoshiHide(){ const el = document.getElementById('laoshiScreen'); if(!el) return; try{ lsMicCancel(); lsStopSpeak(); }catch(e){} el.style.display = 'none'; }
 function navLeave(cur){
+  try{ if(document.getElementById('ovSearch')) lookupSheetClose(false); }catch(e){}
   if(cur === 'talk') talkHide(); else if(cur === 'laoshi') laoshiHide();
   else {
     try{ if(typeof recInterruptAll === 'function') recInterruptAll(); }catch(e){}
