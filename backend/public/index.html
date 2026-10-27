@@ -1813,23 +1813,23 @@ function hlDom(root, q){
     const span = document.createElement('span'); span.innerHTML = html; n.replaceWith(...span.childNodes);
   });
 }
+// Các bộ (Việt, Trung, Anh) cho phần tóm tắt, theo THỨ TỰ ưu tiên của từng loại thuật ngữ (đủ 3 ngôn ngữ cho mọi nhóm).
+function summaryTriples(term){
+  const T = (a, b, c) => [term[a] || '', term[b] || '', term[c] || ''];
+  if(term.category === 'herb') return [T('action_vi', 'action_zh', 'action_en'), T('indication_vi', 'indication_zh', 'indication_en')];
+  if(term.category === 'acupoint') return [T('indication_vi', 'indication_zh', 'indication_en'), T('location_vi', 'location_zh', 'location_en'), T('action_vi', 'action_zh', 'action_en')];
+  if(term.category === 'word_element') return [[term.meaning || '', '', term.meaning_en || '']];
+  if(term.category === 'formula') return [T('functions_vi', 'functions_zh', 'functions_en'), T('indications_vi', 'indications_zh', 'indications_en'), T('analysis_vi', 'analysis_zh', 'analysis_en')];
+  // Tổng hợp / Bệnh lý / Giải phẫu / Sinh lý: định nghĩa chính (vitri) → công năng → ghi chú Trung y → lâm sàng
+  return [T('vitri', 'vitri_cn', 'vitri_en'), T('congnang', 'congnang_cn', 'congnang_en'), T('tcm', 'tcm_cn', 'tcm_en'), T('lamsang', 'lamsang_cn', 'lamsang_en')];
+}
 function rowSummary(term, maxLen){
-  let text;
-  if(term.category === 'herb'){
-    text = pickLang3(term.action_vi, term.action_zh, term.action_en).text;
-  } else if(term.category === 'acupoint'){
-    // Chủ trị là thông tin người dùng quan tâm nhất khi lướt danh sách huyệt —
-    // ưu tiên hiện chủ trị, fallback vị trí nếu chủ trị trống.
-    text = pickLang3(term.indication_vi, term.indication_zh, term.indication_en).text || pickLang3(term.location_vi, term.location_zh, term.location_en).text;
-  } else if(term.category === 'word_element'){
-    text = term.meaning || term.meaning_en || '';
-  } else if(term.category === 'formula'){
-    text = pickLang3(term.functions_vi, term.functions_zh, term.functions_en).text || pickLang3(term.indications_vi, term.indications_zh, term.indications_en).text || '';
-  } else if(term.group1 === 'Tổng hợp'){
-    text = pickLang3(term.vitri, term.vitri_cn, term.vitri_en).text;
-  } else {
-    text = pickLang(term.congnang, term.congnang_cn).text || term.tcm || '';
-  }
+  const L = state.lang === 'zh' ? 1 : state.lang === 'en' ? 2 : 0;
+  const triples = summaryTriples(term);
+  let text = '';
+  // 1) ưu tiên bản ĐÚNG ngôn ngữ đang chọn (ở trường ưu tiên cao nhất có bản đó); 2) không có thì mới lùi sang ngôn ngữ khác
+  for(const tr of triples){ if(tr[L] && String(tr[L]).trim()){ text = tr[L]; break; } }
+  if(!text){ for(const tr of triples){ const p = pickLang3(tr[0], tr[1], tr[2]).text; if(p){ text = p; break; } } }
   return truncateText(text, maxLen || (state.lang === 'en' ? 65 : 60));
 }
 

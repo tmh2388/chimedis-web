@@ -227,3 +227,7 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## Tự dịch đủ Việt/Trung/Anh khi admin lưu thuật ngữ (2026-10-27, v91)
 - `POST /api/admin/term-ai-translate` (`term-ai-fill.js › translateItems`): nhận các mục {key, source, text{vi,zh,en}, targets}, trả bản dịch các ngôn ngữ đích. Không ghi CSDL; chi phí do hệ thống chịu; dùng chung trần 60 lượt/giờ/admin với "AI bổ sung".
 - Giao diện: khi bấm "Lưu vào CSDL" ở trình sửa thuật ngữ (`openTermEditor`, màn Từ báo sai) và hộp ⭐ của admin (`tfAdminSave`): ngôn ngữ vừa sửa là nguồn; ngôn ngữ trống hoặc chưa đổi theo được AI dịch và điền vào ô (tô vàng), rồi hiện xem trước TRƯỚC → SAU để admin duyệt. Tên thuật ngữ chỉ Việt ⇄ Anh (chữ Hán là khoá, admin quyết định). AI lỗi → hỏi admin có lưu tiếp phần đã sửa không.
+
+## Tóm tắt thuật ngữ đúng ngôn ngữ (2026-10-28, v92)
+- `rowSummary` (dòng kết quả + thẻ Bác sĩ) trước đây dùng chọn 2 ngôn ngữ (Việt/Trung) cho nhóm Bệnh lý/Giải phẫu/Sinh lý và bỏ qua trường định nghĩa chính `vitri` → tiếng Anh rơi về tiếng Việt, và ~2149/6215 mục không có tóm tắt. Nay `summaryTriples()` trả các bộ (Việt, Trung, Anh) theo thứ tự ưu tiên của từng loại; ưu tiên bản đúng ngôn ngữ đang chọn, thiếu mới lùi sang ngôn ngữ khác.
+- Đo trên 6215 thuật ngữ thật: mục không có tóm tắt 2149 → 4 (cả 3 ngôn ngữ). Còn lệch ngôn ngữ: tiếng Trung 1269 (hầu hết "Từ ghép Y Khoa" vốn không có nghĩa tiếng Trung), tiếng Anh 509 ("Từ ghép Y Khoa" thiếu `meaning_en`) → đưa vào hàng chờ rà soát bản dịch.
