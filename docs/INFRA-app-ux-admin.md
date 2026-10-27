@@ -239,3 +239,6 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## Tóm tắt thuật ngữ đúng ngôn ngữ (2026-10-28, v92)
 - `rowSummary` (dòng kết quả + thẻ Bác sĩ) trước đây dùng chọn 2 ngôn ngữ (Việt/Trung) cho nhóm Bệnh lý/Giải phẫu/Sinh lý và bỏ qua trường định nghĩa chính `vitri` → tiếng Anh rơi về tiếng Việt, và ~2149/6215 mục không có tóm tắt. Nay `summaryTriples()` trả các bộ (Việt, Trung, Anh) theo thứ tự ưu tiên của từng loại; ưu tiên bản đúng ngôn ngữ đang chọn, thiếu mới lùi sang ngôn ngữ khác.
 - Đo trên 6215 thuật ngữ thật: mục không có tóm tắt 2149 → 4 (cả 3 ngôn ngữ). Còn lệch ngôn ngữ: tiếng Trung 1269 (hầu hết "Từ ghép Y Khoa" vốn không có nghĩa tiếng Trung), tiếng Anh 509 ("Từ ghép Y Khoa" thiếu `meaning_en`) → đưa vào hàng chờ rà soát bản dịch.
+
+## Tra từ dùng chung trong Trò chuyện / Lão Sư (2026-10-28)
+- Nút 🔍 ở đầu màn Trò chuyện và Lão Sư (`ovSearchOpen()`) mở ô tìm riêng (`#ovSearch`) nằm trên màn phủ, dùng CHUNG khung kết quả `lookupSheet` với trang chủ/Luyện nghe (lớp `.ov`, z-index 5400 dưới menu nổi 5500). Chạm kết quả mở thẻ từ; "Quay lại" hoặc rời tab đóng ô tìm và về đúng màn đang làm, giữ nguyên hội thoại.
