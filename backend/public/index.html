@@ -2349,7 +2349,7 @@ window.chimedisAuthStateChanged = async function(user){
   } else { listenTicket = null; writeAuthHint(); }
   // Cần tải lại /api/terms KÈM token (nhận domain gated "Thang phương") khi trạng thái đăng nhập khác với lần tải gần nhất;
   // khi đã tải đúng trạng thái thì khỏi tải lại 6,5MB.
-  if(!!user !== !!state._termsAuthed){
+  if(false && !!user !== !!state._termsAuthed){ // (đã mở Thang phương cho mọi người: không cần tải lại kho khi đổi trạng thái đăng nhập)
     try{ await loadTermsFromAPI(); }catch(e){}
     render();
   }
@@ -6575,7 +6575,7 @@ function searchHasFullMatch(q){
   if(!q) return true;
   if(/[+,;，；]|\s-\s?/.test(q)) return true;
   if(_fmCache.q === q && _fmCache.n === TERMS.length) return _fmCache.v;
-  let all = TERMS; if(!state.user) all = all.filter((x) => x.group1 !== 'Thang phương');
+  let all = TERMS;
   const v = all.some((x) => matchRank(x, q, false) <= 4.5 && matchQuery(x, q));
   _fmCache = { q, n: TERMS.length, v };
   return v;
@@ -6593,9 +6593,6 @@ function getFiltered(){
   // Thang Phương là domain GATED: chưa đăng nhập -> loại khỏi mọi danh sách (kể cả "Toàn bộ"
   // và tìm kiếm). Server đã không trả dữ liệu này cho khách, nhưng nếu cache còn từ phiên đã
   // đăng nhập trước đó thì lọc thêm ở đây cho chắc (khớp với màn khoá ở renderVocabTab).
-  if(!state.user){
-    list = list.filter(t => t.group1 !== 'Thang phương');
-  }
   // "Từ đã lưu" (favorites) là 1 view riêng, không phải nhóm dữ liệu group1 thật — lọc theo
   // state.favorites (Set các term id đã lưu) thay vì group1, rồi để search phía dưới lọc tiếp
   // như bình thường nếu user gõ tìm kiếm trong lúc đang xem danh sách đã lưu.
@@ -6627,7 +6624,7 @@ function getFiltered(){
     state.searchWidened = false;
     // Không có trong nhóm đang chọn → tìm trong TOÀN BỘ kho (tìm kiếm là ưu tiên), báo rõ phạm vi.
     if(list.length === 0 && state.group1 !== 'all' && state.group1 !== FAVORITES_SENTINEL && state.group1 !== 'Ôn luyện'){
-      let all = TERMS; if(!state.user) all = all.filter(t => t.group1 !== 'Thang phương');
+      let all = TERMS;
       const wide = all.filter(t => matchQuery(t, state.searchQuery));
       if(wide.length){ list = wide; state.searchWidened = true; }
     }
@@ -6814,7 +6811,7 @@ function homeSugCount(){
   return cols * (cols >= 4 ? 2 : 4);
 }
 function homeSuggestions(){
-  const visible = TERMS.filter(x => x.group1 !== 'Thang phương' || state.user);
+  const visible = TERMS;
   const order = ['Dược liệu','Huyệt vị','Bệnh lý','Giải phẫu','Sinh lý','Tổng hợp','Thang phương','Từ ghép Y Khoa'];
   const rnd = _rng(_hash32(todayKey() + ':' + _homeShuffle));
   const target = homeSugCount();
@@ -6851,7 +6848,7 @@ function homeChip(term){
 function homeBlocks(){
   if(state.group1 !== 'all' || state.group2 || state.searchQuery || state.tab !== 'vocab') return '';
   const rec = loadRecent();
-  const recTerms = rec.t.map(id => TERMS.find(x => x.id === id)).filter(x => x && (x.group1 !== 'Thang phương' || state.user)).slice(0, 10);
+  const recTerms = rec.t.map(id => TERMS.find(x => x.id === id)).filter(x => x).slice(0, 10);
   let html = '<div class="home">';
   if(recTerms.length || rec.q.length){
     const qs = rec.q.map((q,i) => `<button type="button" class="chip q" onclick="recentSearch(${i})">🔍 ${escAttr(q)}</button>`).join('');
@@ -7074,7 +7071,7 @@ function lookupSheetRender(){
   const ar = app.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
   el.style.top = Math.max(0, wr.bottom - ar.top) + 'px';
   const old = TERMS.length; // (không đổi) — chỉ để rõ ràng: kết quả luôn tìm trong TOÀN BỘ kho
-  let all = TERMS; if(!state.user) all = all.filter((x) => x.group1 !== 'Thang phương');
+  let all = TERMS;
   let list = all.filter((x) => matchQuery(x, q));
   list = sortByRelevance(list, q, false).slice(0, 40);
   const esc = myDocEsc;
@@ -7092,7 +7089,7 @@ function lookupSheetUpdate(val){
 function renderVocabTab(){
   // Màn khoá cho Thang Phương khi chưa đăng nhập — nội dung chỉ mở sau khi có tài khoản
   // Chimedis (cơ chế quản lý người dùng). CTA phụ: theo dõi Fanpage Hạ Vân Y Đạo.
-  if(state.group1 === 'Thang phương' && !state.user){
+  if(false && state.group1 === 'Thang phương' && !state.user){ // (đã mở: Thang phương hiển thị cho mọi người, không cần đăng nhập)
     return `<div class="vocab"><div class="gate">
       <div class="gate-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
       <h3>${t('gate_form_title')}</h3>
