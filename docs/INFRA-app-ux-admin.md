@@ -212,3 +212,8 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## Hotfix 2026-10-27 — mất Thang phương sau khi nâng firebase-admin 14
 - Nguyên nhân: `optionalFirebaseUser()` (server.js) dùng `(await import('firebase-admin')).default.auth()` — API không còn ở firebase-admin ≥13 → luôn trả null (lỗi bị `catch` nuốt) → người dùng ĐÃ đăng nhập không còn nhận nhóm Thang phương (`/api/terms`) và bị 401 `login_required` ở `/api/csdl/lesson/:id` (bài Học Thuật không phải bài trong ngày). Do PR "firebase-admin 14" gây ra.
 - Sửa: `firebase-admin.js` export `verifyIdTokenValue(token)` và `optionalFirebaseUser` gọi hàm này. Bài học: sau khi nâng gói major phải tìm cả `import('...')` động, và các `catch` im lặng che lỗi.
+
+## Tìm chính xác lên đầu + Bác sĩ khi chưa có khớp chính xác (ghi chú #19, #20 — 2026-10-27, v89)
+- Phát hiện bằng bộ kiểm tra (`docs/search-benchmark-snippet.js`, 480 truy vấn = 120 từ × {Hán, Việt, Anh, pinyin}): trước khi sửa, top-1: Hán 97,5%, Việt 92,5%, Anh 92,5%, pinyin 99%. Lỗi thật: (a) bước "từ chỉ nhóm" (v71) cắt "Bệnh/huyệt…" khỏi truy vấn TRƯỚC khi xét khớp nguyên văn → "Bệnh bạch cầu" xếp thứ 14 sau "Bạch cầu"; "Hạ đường huyết ban đêm" xếp sau huyệt "Thạch Môn"; (b) pinyin bỏ dấu thanh làm "xīn jì" ngang "xīn jī".
+- Sửa `matchRank`: bậc −1 = khớp nguyên văn CÓ dấu/thanh, bậc 0 = khớp nguyên văn bỏ dấu, xét TRƯỚC tách từ chỉ nhóm. Sau sửa: Hán 98,3%, Việt 100%, Anh 94,2%, pinyin 100% (các ca còn lại là bản ghi trùng tên ở nhóm khác / viết tắt cùng tên Anh).
+- `searchHasExactMatch(q)`: kho chỉ có mục CHỨA từ (không khớp chính xác) → thẻ Bác sĩ hiện câu "Kho chưa có mục khớp chính xác…" và nút "Hỏi Bác sĩ Trung Y (AI)" nổi bật (chỉ chạy khi bấm — giữ quyết định không tự gọi AI).
