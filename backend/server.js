@@ -23,6 +23,7 @@ import * as laoshiFaq from './lib/laoshi-faq.js';
 import * as termLearn from './lib/term-learn.js';
 import * as aiLookup from './lib/ai-lookup.js';
 import * as termAiFill from './lib/term-ai-fill.js';
+import * as langAudit from './lib/lang-audit.js';
 import * as listeningDb from './lib/listening-db.js';
 import * as webDefine from './lib/web-define.js';
 import * as aiBudget from './lib/ai-budget.js';
@@ -1833,6 +1834,37 @@ app.post('/api/admin/term-ai-fill', ...adminOnly, requireOpenAI, async (req, res
     res.status(e.code === 'bad_request' ? 400 : 502).json({ success: false, error: e.code === 'bad_request' ? 'bad_request' : 'upstream' });
   }
 });
+// ===== Rà soát ngôn ngữ tự chủ động: quét ô thiếu/quá ngắn → AI dịch đề xuất → HÀNG CHỜ → admin duyệt (không tự ghi vào kho) =====
+async function loadTermsForAudit() { // đúng thứ tự ghép như /api/terms (đã áp dụng ghi đè) nhưng gồm cả Thang phương
+  const termsPath = path.join(__dirname, 'public', 'data', 'terms.json');
+  const sheetTerms = fs.existsSync(termsPath) ? JSON.parse(fs.readFileSync(termsPath, 'utf8')) : [];
+  const baseTerms = [...sheetTerms, ...(await getHerbTerms()), ...(await getAnatomyTerms()), ...(await getWordElementTerms()), ...(await getAcupointTerms()), ...(await getApprovedCandidateTerms()), ...(await getFormulaTerms())];
+  const generalTerms = dedupeGeneralTerms(await getGeneralTerms(), baseTerms);
+  return termLearn.applyOverrides([...baseTerms, ...generalTerms], await termLearn.getOverrides(mysqlPool));
+}
+onDbUp(() => langAudit.ensureTable(mysqlPool).catch((e) => console.error('[lang-audit] init:', e.message)));
+app.get('/api/admin/lang-audit', ...adminOnly, requireDocsDb, adminJson((req) => langAudit.list(mysqlPool, { status: ['todo', 'pending', 'applied', 'dismissed'].includes(req.query.status) ? req.query.status : 'pending', offset: req.query.offset })));
+app.post('/api/admin/lang-audit/scan', ...adminOnly, requireDocsDb, adminJson(async () => langAudit.scan(mysqlPool, await loadTermsForAudit())));
+app.post('/api/admin/lang-audit/run', ...adminOnly, requireDocsDb, requireOpenAI, adminJson(async (req) => {
+  const r = await langAudit.generate(mysqlPool, { limit: (req.body || {}).limit });
+  if (r.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'lang_audit', costUsd: r.costUsd });
+  return { done: r.done, tried: r.tried };
+}));
+app.post('/api/admin/lang-audit/apply', ...adminOnly, requireDocsDb, adminJson((req) => langAudit.apply(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, (req.body || {}).items)));
+app.post('/api/admin/lang-audit/dismiss', ...adminOnly, requireDocsDb, adminJson((req) => langAudit.dismiss(mysqlPool, (req.body || {}).ids)));
+// Công việc nền: mỗi 6 giờ — quét (không tốn AI) nếu quá 20 giờ chưa quét; rồi dịch đề xuất tối đa LANG_AUDIT_BATCH mục/lượt khi hàng chờ duyệt còn dưới 200. Tắt bằng LANG_AUDIT_JOB=off.
+if (process.env.LANG_AUDIT_JOB !== 'off') {
+  let lastScan = 0;
+  const tick = async () => {
+    if (!mysqlPool || !process.env.OPENAI_API_KEY) return;
+    try {
+      if (Date.now() - lastScan > 20 * 3600e3) { const r = await langAudit.scan(mysqlPool, await loadTermsForAudit()); lastScan = Date.now(); console.log('[lang-audit] quét', JSON.stringify(r)); }
+      const [[c]] = await mysqlPool.query("SELECT COUNT(*) AS n FROM term_lang_queue WHERE status = 'pending'");
+      if (Number(c.n) < 200) { const r = await langAudit.generate(mysqlPool, { limit: Number(process.env.LANG_AUDIT_BATCH) || 40 }); if (r.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'lang_audit', costUsd: r.costUsd }); if (r.done) console.log('[lang-audit] đề xuất', r.done); }
+    } catch (e) { console.error('[lang-audit] job:', e.message); }
+  };
+  setTimeout(() => { onDbUp(() => { tick(); setInterval(tick, 6 * 3600e3).unref?.(); }); }, 3 * 60e3).unref?.();
+}
 // Dịch tự động các ngôn ngữ còn thiếu/lệch khi admin sửa thuật ngữ (admin chỉ duyệt trước khi lưu). Không ghi CSDL; chi phí do hệ thống chịu; dùng chung trần 60 lượt/giờ với AI bổ sung.
 app.post('/api/admin/term-ai-translate', ...adminOnly, requireOpenAI, async (req, res) => {
   try {

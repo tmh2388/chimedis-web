@@ -302,7 +302,7 @@ export async function reviewAutoTerm(pool, termId, { action, vi, en, definition 
 // (chồng lên lúc trả /api/terms; chỉ đổi tên Việt/Anh, định nghĩa của các nhóm đó nằm ở trường khác nên KHÔNG sửa ở đây).
 const EDITABLE_TABLES = ['general_terms', 'anatomy_terms'];
 // Trường nội dung (ba ngôn ngữ) của Dược liệu / Huyệt vị / … được sửa qua bảng ghi đè — CHỈ các khoá trong danh sách này.
-export const OVERRIDE_FIELD_RE = /^(action|indication|dose_text|caution|location|anatomy|special_class)_(zh|vi|en)$|^(vitri|congnang|tcm|lamsang)(_cn|_en)?$/;
+export const OVERRIDE_FIELD_RE = /^(action|indication|dose_text|caution|location|anatomy|special_class|functions|indications|cautions|analysis)_(zh|vi|en)$|^(vitri|congnang|tcm|lamsang)(_cn|_en)?$|^meaning(_en)?$/;
 export function cleanFields(obj) {
   const out = {};
   if (obj && typeof obj === 'object') {
