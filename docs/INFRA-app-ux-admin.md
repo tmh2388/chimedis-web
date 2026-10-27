@@ -223,3 +223,7 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 ## Thang phương mở cho mọi người (2026-10-27, v88)
 - Quyết định của admin: nhóm "Thang phương" hiển thị cùng hệ thống cho MỌI người dùng, không cần đăng nhập (trước đó là domain gated). Server `/api/terms` luôn gồm `getFormulaTerms()`; giao diện bỏ các bộ lọc/màn chặn theo `state.user` cho nhóm này; không còn tải lại 6,5 MB kho khi đổi trạng thái đăng nhập.
 - Dạng JSON `/api/terms` KHÔNG đổi, chỉ có thêm các mục `group1: 'Thang phương'` (ConsultApp kéo endpoint này hằng ngày — đã báo).
+
+## Tự dịch đủ Việt/Trung/Anh khi admin lưu thuật ngữ (2026-10-27, v91)
+- `POST /api/admin/term-ai-translate` (`term-ai-fill.js › translateItems`): nhận các mục {key, source, text{vi,zh,en}, targets}, trả bản dịch các ngôn ngữ đích. Không ghi CSDL; chi phí do hệ thống chịu; dùng chung trần 60 lượt/giờ/admin với "AI bổ sung".
+- Giao diện: khi bấm "Lưu vào CSDL" ở trình sửa thuật ngữ (`openTermEditor`, màn Từ báo sai) và hộp ⭐ của admin (`tfAdminSave`): ngôn ngữ vừa sửa là nguồn; ngôn ngữ trống hoặc chưa đổi theo được AI dịch và điền vào ô (tô vàng), rồi hiện xem trước TRƯỚC → SAU để admin duyệt. Tên thuật ngữ chỉ Việt ⇄ Anh (chữ Hán là khoá, admin quyết định). AI lỗi → hỏi admin có lưu tiếp phần đã sửa không.
