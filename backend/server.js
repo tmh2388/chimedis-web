@@ -1211,9 +1211,9 @@ async function ensureLessonIndex() {
       }
       const termsPath = path.join(__dirname, 'public', 'data', 'terms.json');
       const sheetTerms = fs.existsSync(termsPath) ? JSON.parse(fs.readFileSync(termsPath, 'utf8')) : [];
-      // KHÔNG nạp Thang Phương (miền cần đăng nhập) — bài Học Thuật chỉ dùng dữ liệu công khai.
+      // Thang phương nay công khai cùng /api/terms → nạp để Bác sĩ/Lão Sư tra cứu và gợi ý được bài thuốc (ghi chú #36).
       const baseTerms = [
-        ...sheetTerms, ...(await getHerbTerms()), ...(await getAnatomyTerms()), ...(await getAcupointTerms()), ...(await getApprovedCandidateTerms()),
+        ...sheetTerms, ...(await getHerbTerms()), ...(await getAnatomyTerms()), ...(await getAcupointTerms()), ...(await getApprovedCandidateTerms()), ...(await getFormulaTerms()),
       ];
       const terms = [...baseTerms, ...dedupeGeneralTerms(await getGeneralTerms(), baseTerms)];
       csdl.buildIndex(terms);
