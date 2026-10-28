@@ -1903,6 +1903,7 @@ app.post('/api/admin/term-add', ...adminOnly, requireDocsDb, async (req, res) =>
     const l = await termLearn.learnTermDirect(mysqlPool, { hz: b.hz, py: b.py, vi: b.vi, en: b.en, def_vi: b.def_vi, def_zh: b.def_zh, def_en: b.def_en, group: b.group }, 'đề nghị người dùng (admin duyệt)');
     if (!l) return res.status(400).json({ success: false, error: 'invalid_term' });
     if (l.costUsd) aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'term_add', costUsd: l.costUsd });
+    if (l.inserted) mysqlPool.query('UPDATE ai_lookup SET term_id = ? WHERE hz = ? AND term_id IS NULL', [l.termId, String(b.hz || '').trim()]).catch(() => {}); // thẻ Bác sĩ trỏ về mục mới
     if (b.report_term_id) await termLearn.dismissReports(mysqlPool, String(b.report_term_id), `đã thêm vào kho (${l.termId})`);
     res.json({ success: true, data: { term_id: l.termId, inserted: l.inserted, filled: l.filled || [], incomplete: l.incomplete || [] } });
   } catch (e) { console.error('term-add:', e.message); res.status(500).json({ success: false, error: 'add_failed', detail: String(e.message || '').slice(0, 80) }); }

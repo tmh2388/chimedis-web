@@ -72,18 +72,22 @@ export async function getCached(pool, q) {
 
 async function askModel(q, ctxText) {
   const sys = 'Bạn là biên tập viên từ điển Trung y – y khoa Việt/Trung/Anh của Chimedis. Người dùng tra một cụm mà kho chưa có. '
-    + 'Phân loại cụm đó (kind): "tcm_term" = thuật ngữ Trung y/y khoa/giải phẫu/bệnh học; "general_word" = từ phổ thông không thuộc y khoa; '
+    + 'Phân loại cụm đó (kind): "tcm_term" = thuật ngữ Trung y (bệnh danh, chứng, huyệt, dược liệu, phương, pháp trị, lý luận); '
+    + '"medical_term" = thuật ngữ y khoa/Tây y/lâm sàng/giải phẫu/xét nghiệm/thủ thuật/thuốc (vd. 抽屉试验, 心电图), KỂ CẢ từ đơn hoặc cụm ngắn có nghĩa y khoa (vd. 损伤 = tổn thương); '
+    + '"general_word" = từ đời thường KHÔNG có nghĩa y khoa; '
     + '"symptom_or_topic" = cách nói đời thường về triệu chứng/cảm giác/vấn đề (vd. 心疼, mất ngủ, đau đầu) mà người học muốn biết LIÊN QUAN gì trong Trung y. '
-    + 'LUÔN cho nghĩa thông thường của cụm (meaning_*), không từ chối vì "không phải thuật ngữ". Nếu có liên hệ với Trung y, nêu ngắn trong tcm_context '
-    + 'và liệt kê thuật ngữ liên quan (related) kèm loại: huyet (huyệt vị), benh (bệnh/chứng/pháp trị), phuong (phương/bài thuốc), duoc (vị thuốc), thucduong (món ăn/thực dưỡng/dưỡng sinh), khac. '
+    + 'LUÔN cho nghĩa thông thường của cụm (meaning_*), không từ chối vì "không phải thuật ngữ". '
+    + 'def_* = ĐỊNH NGHĨA Y KHOA CHUẨN (như từ điển y học/WHO/giáo trình, 1–3 câu, trung tính) — điền cho tcm_term và medical_term; '
+    + 'tcm_context_* = GIẢI THÍCH THEO TRUNG Y (với thuật ngữ Tây y: nêu tương ứng hoặc liên hệ Trung y nếu có, không có thì để rỗng). '
+    + 'Liệt kê thuật ngữ liên quan (related) kèm loại: huyet (huyệt vị), benh (bệnh/chứng/pháp trị), phuong (phương/bài thuốc), duoc (vị thuốc), thucduong (món ăn/thực dưỡng/dưỡng sinh), khac. '
     + 'Khi nói về pháp trị/bệnh chứng, hãy ĐỦ các mặt: bài thuốc, vị thuốc, HUYỆT, và thực dưỡng/dưỡng sinh nếu có. '
     + 'Chỉ nêu những thuật ngữ BẠN CHẮC CHẮN có thật, ưu tiên đúng tên Hán chuẩn (giản thể). KHÔNG bịa; không chắc thì bỏ. '
     + 'Không chẩn đoán/kê đơn: chỉ là thông tin tra cứu học tập. BẮT BUỘC điền ĐỦ cả ba ngôn ngữ cho mọi trường *_vi, *_zh, *_en (không để trống): *_vi viết BẰNG TIẾNG VIỆT, *_zh bằng tiếng Trung giản thể, *_en bằng tiếng Anh; tên tiếng Anh KHÔNG kèm pinyin hay chữ Hán. Chỉ trả JSON.\n\n' + ctxText;
-  const user = `Cụm cần tra: "${q}"\nTrả JSON: {"kind":"tcm_term|general_word|symptom_or_topic","hz":"<chữ Hán giản thể của cụm hoặc tương đương, 1-12 chữ, nếu có>","py":"","vi":"<tên/nghĩa ngắn tiếng Việt (Hán-Việt nếu là thuật ngữ Trung y)>","en":"<English>",`
+  const user = `Cụm cần tra: "${q}"\nTrả JSON: {"kind":"tcm_term|medical_term|general_word|symptom_or_topic","hz":"<chữ Hán giản thể của cụm hoặc tương đương, 1-12 chữ, nếu có>","py":"","vi":"<tên/nghĩa ngắn tiếng Việt (Hán-Việt nếu là thuật ngữ Trung y)>","en":"<tên tiếng Anh chuẩn>",`
     + '"meaning_vi":"<nghĩa thông thường ≤ 200 ký tự>","meaning_zh":"<cùng nội dung bằng tiếng Trung giản thể>","meaning_en":"<same in English>",'
-    + '"tcm_context":"<liên hệ Trung y bằng tiếng Việt ≤ 260 ký tự, hoặc rỗng>","tcm_context_zh":"<cùng nội dung bằng tiếng Trung giản thể>","tcm_context_en":"<same in English>",'
-    + '"def_vi":"<định nghĩa thuật ngữ nếu kind=tcm_term>","def_zh":"<tiếng Trung giản thể>","def_en":"<English>",'
-    + '"group":"ly_luan|chan_doan|benh_chung|thuoc|cham_cuu|giai_phau|nghien_cuu|khac",'
+    + '"tcm_context":"<giải thích theo Trung y bằng tiếng Việt ≤ 260 ký tự, hoặc rỗng>","tcm_context_zh":"<cùng nội dung bằng tiếng Trung giản thể>","tcm_context_en":"<same in English>",'
+    + '"def_vi":"<định nghĩa y khoa chuẩn bằng tiếng Việt, nếu kind=tcm_term hoặc medical_term>","def_zh":"<tiếng Trung giản thể>","def_en":"<English>",'
+    + '"group":"ly_luan|chan_doan|benh_chung|thuoc|cham_cuu|giai_phau|nghien_cuu|tay_y|khac",'
     + '"related":[{"hz":"","vi":"","en":"","type":"huyet|benh|phuong|duoc|thucduong|khac"}],"confidence":0.0,"note":"<lưu ý ngắn nếu nhiều nghĩa>"}';
   const r = await fetch(`${OPENAI_BASE}/v1/chat/completions`, {
     method: 'POST',
@@ -124,8 +128,8 @@ export async function lookup(pool, { q, uid, plan = 'free', chargeSystem }) {
   const { parsed, costUsd } = await askModel(display, ctx);
   if (chargeSystem && costUsd) chargeSystem(costUsd);
 
-  const kind = ['tcm_term', 'general_word', 'symptom_or_topic'].includes(parsed.kind) ? parsed.kind : (parsed.is_medical ? 'tcm_term' : 'general_word');
-  const isMed = kind === 'tcm_term';
+  const kind = ['tcm_term', 'medical_term', 'general_word', 'symptom_or_topic'].includes(parsed.kind) ? parsed.kind : (parsed.is_medical ? 'tcm_term' : 'general_word');
+  const isMed = kind === 'tcm_term' || kind === 'medical_term'; // thuật ngữ Trung y HOẶC y khoa/Tây y (đều có thể học vào kho, chờ duyệt)
   const hz = String(parsed.hz || '').replace(/[^㐀-鿿]/g, '').slice(0, 24);
   let py = String(parsed.py || '').slice(0, 160);
   if (hz) { try { py = pinyin(hz, { style: 'tone' }).map((a) => a[0]).join(' '); } catch (_) { /* giữ bản của mô hình */ } }
@@ -168,7 +172,7 @@ export async function lookup(pool, { q, uid, plan = 'free', chargeSystem }) {
   } catch (e) { console.error('[ai-lookup] contract:', e.message); }
   let termId = (cached && cached.term_id) || null;
   if (!termId && isMed && conf >= 0.6 && hz && row.vi && row.en) {
-    try { const l = await learnTermDirect(pool, { ...row, group: parsed.group }, `tra cứu AI "${display}"`); termId = l ? l.termId : null; if (l && l.costUsd && chargeSystem) chargeSystem(l.costUsd); } catch (e) { console.error('[ai-lookup] learn:', e.message); }
+    try { const l = await learnTermDirect(pool, { ...row, group: kind === 'medical_term' && (!parsed.group || parsed.group === 'khac') ? 'tay_y' : parsed.group }, `tra cứu AI "${display}"`); termId = l ? l.termId : null; if (l && l.costUsd && chargeSystem) chargeSystem(l.costUsd); } catch (e) { console.error('[ai-lookup] learn:', e.message); }
   }
   const cols = '(qkey, q_display, is_medical, kind, hz, py, vi, en, def_vi, def_zh, def_en, meaning_vi, meaning_zh, meaning_en, tcm_context, related_json, confidence, note, term_id, created_by, tcm_context_zh, tcm_context_en, ml)';
   const vals = (k, d) => [k, d, row.is_medical, row.kind, row.hz, row.py, row.vi, row.en, row.def_vi, row.def_zh, row.def_en, row.meaning_vi, row.meaning_zh, row.meaning_en, row.tcm_context, row.related_json, row.confidence, row.note, termId, uid, row.tcm_context_zh, row.tcm_context_en, 1];
