@@ -32,6 +32,7 @@ const GROUPS = {
   cham_cuu: { zh: '针灸推拿', vi: 'Châm cứu & xoa bóp', en: 'Acupuncture & tuina' },
   giai_phau: { zh: '解剖生理', vi: 'Giải phẫu & sinh lý', en: 'Anatomy & physiology' },
   nghien_cuu: { zh: '研究方法', vi: 'Phương pháp nghiên cứu', en: 'Research methods' },
+  tay_y: { zh: '西医', vi: 'Tây y', en: 'Western medicine' },
   khac: { zh: '其他', vi: 'Khác', en: 'Other' },
 };
 export const termIdOf = (hz) => 'tq-' + crypto.createHash('sha1').update(hz).digest('hex').slice(0, 10);
@@ -117,7 +118,7 @@ async function askModel(items) {
   const user = `Cụm cần xử lý (JSON): ${JSON.stringify(items.map((x) => ({ id: x.id, term: x.term, en: x.en })))}\n`
     + 'Trả JSON dạng {"items":[{"id":<id>,"medical":true|false,"hz":"<chữ Hán giản thể, 1-12 chữ, nếu có>","py":"<pinyin có dấu thanh>",'
     + '"vi":"<tên tiếng Việt chuẩn y học (Hán-Việt nếu là thuật ngữ Trung y)>","en":"<tiếng Anh chuẩn PubMed/WHO, KHÔNG kèm pinyin hay chữ Hán>",'
-    + '"def_vi":"<định nghĩa BẰNG TIẾNG VIỆT ≤ 200 ký tự, trung tính, không chẩn đoán/kê đơn, không chèn chữ Hán>","group":"ly_luan|chan_doan|benh_chung|thuoc|cham_cuu|giai_phau|nghien_cuu|khac"}]}';
+    + '"def_vi":"<định nghĩa BẰNG TIẾNG VIỆT ≤ 200 ký tự, trung tính, không chẩn đoán/kê đơn, không chèn chữ Hán>","group":"ly_luan|chan_doan|benh_chung|thuoc|cham_cuu|giai_phau|nghien_cuu|tay_y|khac"}]}';
   const r = await fetch(`${OPENAI_BASE}/v1/chat/completions`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
