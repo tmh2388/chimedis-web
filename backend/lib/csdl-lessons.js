@@ -167,11 +167,14 @@ export function buildLesson(t, dayIso = null) {
 
 // ===== Chỉ mục trong bộ nhớ =====
 let index = null; // { byId: Map, byField: Map(group1 → [terms]), eligible: Map(group1 → [terms]) }
+/** Nhóm chỉ để TRA CỨU/GỢI Ý (Bác sĩ, Lão Sư, bảng thuật ngữ), chưa dựng thành bài học. */
+const REF_ONLY = new Set(['Thang phương']);
 export function buildIndex(terms) {
   const byId = new Map();
   const byField = new Map(FIELDS.map((f) => [f.key, []]));
   const segCount = new Map();
   for (const t of terms) {
+    if (t && t.id && REF_ONLY.has(t.group1)) { byId.set(t.id, t); segCount.set(t.id, 0); continue; } // tra cứu/gợi ý được, KHÔNG thành bài học
     if (!t || !t.id || !byField.has(t.group1)) continue;
     const lesson = buildLesson(t);
     if (!lesson) continue; // loại mục quá nghèo dữ liệu
@@ -305,6 +308,11 @@ export function searchTerms(query, k = 3, group = null) {
 }
 /** Tóm tắt dữ kiện của một mục (từ chính bài dựng) để đưa vào ngữ cảnh. */
 export function factsFor(t, maxSegs = 5) {
+  if (t && REF_ONLY.has(t.group1)) { // Thang phương: thành phần · công năng · chủ trị
+    const rows = [['Thành phần', t.composition_vi || t.composition_zh], ['Công năng', t.functions_vi || t.functions_zh], ['Chủ trị', t.indications_vi || t.indications_zh]]
+      .filter((r) => r[1]).slice(0, maxSegs).map((r) => `- ${r[0]}: ${String(r[1]).slice(0, 220)}`);
+    return `[${t.group1}] ${t.hz} (${t.py || ''}) — ${t.vi} / ${t.en}\n` + rows.join('\n');
+  }
   const l = buildLesson(t);
   if (!l) return '';
   return `[${t.group1}] ${t.hz} (${t.py || ''}) — ${t.vi} / ${t.en}\n` + l.segments.slice(0, maxSegs).map((s) => `- ${s.text_zh} | ${s.text_vi}`).join('\n');

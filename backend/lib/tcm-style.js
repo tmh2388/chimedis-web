@@ -76,10 +76,10 @@ export function termByHz(hz) {
   return a && a[0] ? a[0] : null;
 }
 
-const GROUP_TYPE = { 'Huyệt vị': 'huyet', 'Dược liệu': 'duoc', 'Bệnh lý': 'benh', 'Tổng hợp': 'khac', 'Sinh lý': 'khac', 'Giải phẫu': 'khac' };
+const GROUP_TYPE = { 'Huyệt vị': 'huyet', 'Dược liệu': 'duoc', 'Thang phương': 'phuong', 'Bệnh lý': 'benh', 'Tổng hợp': 'khac', 'Sinh lý': 'khac', 'Giải phẫu': 'khac' };
 /**
  * Làm giàu: từ một nhóm mục "hạt giống" của kho, quét NỘI DUNG của chúng (định nghĩa, công năng, lâm sàng…) để tìm các mục KHÁC của kho
- * được nhắc tới (huyệt, dược liệu, bệnh/chứng…). Trả { huyet:[...], duoc:[...], benh:[...], khac:[...] } mỗi loại tối đa `perType`.
+ * được nhắc tới (huyệt, dược liệu, bệnh/chứng…). Trả { huyet:[...], duoc:[...], phuong:[...], benh:[...], khac:[...] } mỗi loại tối đa `perType`.
  */
 export function relatedFromKho(seeds, { perType = 4 } = {}) {
   const { byHz } = build();
@@ -97,7 +97,7 @@ export function relatedFromKho(seeds, { perType = 4 } = {}) {
       }
     }
   }
-  const out = { huyet: [], duoc: [], benh: [], khac: [] };
+  const out = { huyet: [], duoc: [], phuong: [], benh: [], khac: [] };
   [...score.values()].sort((a, b) => b.n - a.n).forEach(({ t }) => {
     const ty = GROUP_TYPE[t.group1] || null; if (!ty || !out[ty] || out[ty].length >= perType) return;
     out[ty].push(t);
@@ -106,7 +106,7 @@ export function relatedFromKho(seeds, { perType = 4 } = {}) {
 }
 /** Truy xuất đa nhóm cho một câu/chủ đề: vài mục liên quan nhất ở MỖI nhóm chính (huyệt, dược liệu, bệnh lý, tổng hợp). */
 export function crossGroupRefs(query, perGroup = 2) {
-  const groups = ['Tổng hợp', 'Bệnh lý', 'Huyệt vị', 'Dược liệu'];
+  const groups = ['Tổng hợp', 'Bệnh lý', 'Huyệt vị', 'Dược liệu', 'Thang phương'];
   const seen = new Set(), out = [];
   for (const g of groups) for (const t of searchTerms(query, perGroup, g)) if (!seen.has(t.id)) { seen.add(t.id); out.push(t); }
   return out;
