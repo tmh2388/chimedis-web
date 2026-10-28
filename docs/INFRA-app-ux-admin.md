@@ -242,3 +242,9 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 
 ## Tra từ dùng chung trong Trò chuyện / Lão Sư (2026-10-28)
 - Nút 🔍 ở đầu màn Trò chuyện và Lão Sư (`ovSearchOpen()`) mở ô tìm riêng (`#ovSearch`) nằm trên màn phủ, dùng CHUNG khung kết quả `lookupSheet` với trang chủ/Luyện nghe (lớp `.ov`, z-index 5400 dưới menu nổi 5500). Chạm kết quả mở thẻ từ; "Quay lại" hoặc rời tab đóng ô tìm và về đúng màn đang làm, giữ nguyên hội thoại.
+
+## Hợp đồng thuật ngữ (2026-10-28, v96) — ghi chú #37, #39, #42
+- `lib/term-contract.js`: mọi đường tạo/ghi thuật ngữ mới đều đi qua `fixLangs()`. Quy tắc: ô Việt không chứa tiếng Trung, ô Trung phải có chữ Hán (≥40% ký tự), ô Anh không có tiếng Việt/chữ Hán; tên Anh bị bỏ pinyin trong ngoặc ("Blood stasis (yūxuè)" → "Blood stasis"). Thứ tự xử lý: (1) xếp lại nội dung đặt nhầm ô theo ngôn ngữ nhận ra (không tốn AI); (2) chỉ phần còn thiếu mới nhờ `translateItems` MỘT lần; (3) kiểm tra lại, ô vẫn sai thì BỎ (để trống) — không ghi nội dung sai ngôn ngữ vào kho.
+- Dùng ở: `learnTermDirect` (ghi đủ `position_vi/zh/en`; thiếu thì ghi chú "còn thiếu" trong `verify_note`), `promoteBatch`, tra cứu AI (`ai-lookup.js`, áp cho cả nghĩa thông thường + liên hệ Trung y), `POST /api/admin/term-add` (nhận thêm `def_zh`, `def_en`; chi phí dịch tính vào sổ admin, feature `term_add`).
+- Rà soát ngôn ngữ (`lang-audit.js`) thêm 2 lý do để dọn dữ liệu đã lưu sai: `misplaced` (nội dung đúng nhưng nằm nhầm ô — đề xuất đặt vào đúng ô, không tốn AI) và `pinyin_in_en` (tên Anh kèm pinyin — đề xuất bản đã bỏ, không tốn AI); ô bị đặt nhầm còn lại được tính `wrong_lang`. Đo trên 6226 thuật ngữ thật: 2 mục misplaced (瘀血, 甲钴胺), 1 pinyin_in_en, không báo nhầm mục nào khác.
+- Phía giao diện: "Thêm vào kho" từ màn Từ báo sai gửi kèm định nghĩa Việt/Trung/Anh người dùng đã đề xuất.

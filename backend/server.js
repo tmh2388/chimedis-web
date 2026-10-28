@@ -1900,10 +1900,11 @@ app.post('/api/admin/term-edit-batch', ...adminOnly, requireDocsDb, async (req, 
 app.post('/api/admin/term-add', ...adminOnly, requireDocsDb, async (req, res) => {
   try {
     const b = req.body || {};
-    const l = await termLearn.learnTermDirect(mysqlPool, { hz: b.hz, py: b.py, vi: b.vi, en: b.en, def_vi: b.def_vi, group: b.group }, 'đề nghị người dùng (admin duyệt)');
+    const l = await termLearn.learnTermDirect(mysqlPool, { hz: b.hz, py: b.py, vi: b.vi, en: b.en, def_vi: b.def_vi, def_zh: b.def_zh, def_en: b.def_en, group: b.group }, 'đề nghị người dùng (admin duyệt)');
     if (!l) return res.status(400).json({ success: false, error: 'invalid_term' });
+    if (l.costUsd) aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'term_add', costUsd: l.costUsd });
     if (b.report_term_id) await termLearn.dismissReports(mysqlPool, String(b.report_term_id), `đã thêm vào kho (${l.termId})`);
-    res.json({ success: true, data: { term_id: l.termId, inserted: l.inserted } });
+    res.json({ success: true, data: { term_id: l.termId, inserted: l.inserted, filled: l.filled || [], incomplete: l.incomplete || [] } });
   } catch (e) { console.error('term-add:', e.message); res.status(500).json({ success: false, error: 'add_failed', detail: String(e.message || '').slice(0, 80) }); }
 });
 app.post('/api/admin/term-reports/dismiss', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.dismissReports(mysqlPool, String((req.body || {}).term_id || ''), (req.body || {}).note)));

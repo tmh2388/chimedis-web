@@ -12,6 +12,7 @@ import { styleBlock, termByHz, relatedFromKho, crossGroupRefs } from './tcm-styl
 import { searchTerms, factsFor, termById } from './csdl-lessons.js';
 import { costFromUsage } from './ai-budget.js';
 import { learnTermDirect } from './term-learn.js';
+import { fixLangs, LOOKUP_SPECS } from './term-contract.js';
 
 const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
 const MODEL = process.env.AI_LOOKUP_MODEL || 'gpt-5-mini';
@@ -77,7 +78,7 @@ async function askModel(q, ctxText) {
     + 'và liệt kê thuật ngữ liên quan (related) kèm loại: huyet (huyệt vị), benh (bệnh/chứng/pháp trị), phuong (phương/bài thuốc), duoc (vị thuốc), thucduong (món ăn/thực dưỡng/dưỡng sinh), khac. '
     + 'Khi nói về pháp trị/bệnh chứng, hãy ĐỦ các mặt: bài thuốc, vị thuốc, HUYỆT, và thực dưỡng/dưỡng sinh nếu có. '
     + 'Chỉ nêu những thuật ngữ BẠN CHẮC CHẮN có thật, ưu tiên đúng tên Hán chuẩn (giản thể). KHÔNG bịa; không chắc thì bỏ. '
-    + 'Không chẩn đoán/kê đơn: chỉ là thông tin tra cứu học tập. BẮT BUỘC điền ĐỦ cả ba ngôn ngữ Việt/Trung/Anh cho mọi trường *_vi, *_zh, *_en (không để trống). Chỉ trả JSON.\n\n' + ctxText;
+    + 'Không chẩn đoán/kê đơn: chỉ là thông tin tra cứu học tập. BẮT BUỘC điền ĐỦ cả ba ngôn ngữ cho mọi trường *_vi, *_zh, *_en (không để trống): *_vi viết BẰNG TIẾNG VIỆT, *_zh bằng tiếng Trung giản thể, *_en bằng tiếng Anh; tên tiếng Anh KHÔNG kèm pinyin hay chữ Hán. Chỉ trả JSON.\n\n' + ctxText;
   const user = `Cụm cần tra: "${q}"\nTrả JSON: {"kind":"tcm_term|general_word|symptom_or_topic","hz":"<chữ Hán giản thể của cụm hoặc tương đương, 1-12 chữ, nếu có>","py":"","vi":"<tên/nghĩa ngắn tiếng Việt (Hán-Việt nếu là thuật ngữ Trung y)>","en":"<English>",`
     + '"meaning_vi":"<nghĩa thông thường ≤ 200 ký tự>","meaning_zh":"<cùng nội dung bằng tiếng Trung giản thể>","meaning_en":"<same in English>",'
     + '"tcm_context":"<liên hệ Trung y bằng tiếng Việt ≤ 260 ký tự, hoặc rỗng>","tcm_context_zh":"<cùng nội dung bằng tiếng Trung giản thể>","tcm_context_en":"<same in English>",'
@@ -158,9 +159,16 @@ export async function lookup(pool, { q, uid, plan = 'free', chargeSystem }) {
     tcm_context: String(parsed.tcm_context || '').slice(0, 800) || null, tcm_context_zh: String(parsed.tcm_context_zh || '').slice(0, 800) || null, tcm_context_en: String(parsed.tcm_context_en || '').slice(0, 800) || null,
     related_json: JSON.stringify(related), confidence: conf, note: String(parsed.note || '').slice(0, 250) || null,
   };
+  // HỢP ĐỒNG THUẬT NGỮ: mỗi ô đúng ngôn ngữ, đủ Việt/Trung/Anh (ô đặt nhầm được xếp lại, thiếu thì dịch một lần, sai không cứu được thì bỏ)
+  try {
+    const fx = await fixLangs(row, LOOKUP_SPECS, { hint: { hz } });
+    Object.assign(row, fx.rec);
+    if (chargeSystem && fx.costUsd) chargeSystem(fx.costUsd);
+    if (fx.incomplete.length) console.log('[ai-lookup] ô còn thiếu sau khi sửa:', fx.incomplete.join(','), 'cho', display);
+  } catch (e) { console.error('[ai-lookup] contract:', e.message); }
   let termId = (cached && cached.term_id) || null;
   if (!termId && isMed && conf >= 0.6 && hz && row.vi && row.en) {
-    try { const l = await learnTermDirect(pool, { ...row, group: parsed.group }, `tra cứu AI "${display}"`); termId = l ? l.termId : null; } catch (e) { console.error('[ai-lookup] learn:', e.message); }
+    try { const l = await learnTermDirect(pool, { ...row, group: parsed.group }, `tra cứu AI "${display}"`); termId = l ? l.termId : null; if (l && l.costUsd && chargeSystem) chargeSystem(l.costUsd); } catch (e) { console.error('[ai-lookup] learn:', e.message); }
   }
   const cols = '(qkey, q_display, is_medical, kind, hz, py, vi, en, def_vi, def_zh, def_en, meaning_vi, meaning_zh, meaning_en, tcm_context, related_json, confidence, note, term_id, created_by, tcm_context_zh, tcm_context_en, ml)';
   const vals = (k, d) => [k, d, row.is_medical, row.kind, row.hz, row.py, row.vi, row.en, row.def_vi, row.def_zh, row.def_en, row.meaning_vi, row.meaning_zh, row.meaning_en, row.tcm_context, row.related_json, row.confidence, row.note, termId, uid, row.tcm_context_zh, row.tcm_context_en, 1];

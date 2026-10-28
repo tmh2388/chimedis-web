@@ -4,6 +4,7 @@
  */
 import { translateItems } from './term-ai-fill.js';
 import { editTerm } from './term-learn.js';
+import { detectLang, cleanEnName } from './term-contract.js';
 
 const LANGS = ['vi', 'zh', 'en'];
 const VITRI_GROUPS = new Set(['Tổng hợp', 'Bệnh lý', 'Giải phẫu', 'Sinh lý']); // Dược liệu/Huyệt có `vitri` cũ trùng trường khác → bỏ qua
@@ -41,23 +42,35 @@ export function findGaps(terms) {
       if (def.key === 'meaning' && t.category !== 'word_element') continue;
       if (def.key !== 'meaning' && t.category === 'word_element') continue;
       const langs = def.langs || LANGS;
-      const val = {}; langs.forEach((l) => { val[l] = str(t[def.cols[l]]); });
+      // Xếp lại theo ngôn ngữ THỰC của chữ (vd. định nghĩa tiếng Trung nằm nhầm ô tiếng Việt)
+      const raw = {}; langs.forEach((l) => { raw[l] = str(t[def.cols[l]]); });
+      const val = {}; const moved = [];
+      for (const l of langs) {
+        if (!raw[l]) continue;
+        const real = detectLang(raw[l], l);
+        if (real !== l && langs.includes(real) && !raw[real]) { val[real] = raw[l]; moved.push({ from: l, to: real, text: raw[l] }); }
+        else val[l] = raw[l];
+      }
       const have = langs.filter((l) => val[l]);
       if (!have.length) continue;
       const src = have[0]; const srcText = val[src]; if (srcText.length > 800) continue;
+      for (const m of moved) if (m.text.length <= 800) // nội dung đúng nhưng nằm sai ô: đề xuất đặt vào đúng ô (không cần AI)
+        out.push({ ...base, field_key: def.key, lang_target: m.to, source_lang: m.to, source_text: m.text, current_text: raw[m.to] || null, reason: 'misplaced' });
       for (const l of langs) {
         if (l === src) continue;
         let reason = null;
-        if (!val[l]) reason = 'missing';
+        if (!val[l]) reason = raw[l] ? 'wrong_lang' : 'missing';
         else if (src === 'vi' && l === 'en' && srcText.length > 60 && val.en.length < srcText.length * 0.3) reason = 'short';
         else if (src === 'vi' && l === 'zh' && srcText.length > 80 && val.zh.length < srcText.length * 0.12) reason = 'short';
         else if (l === 'zh' && val.zh && !HAN.test(val.zh)) reason = 'wrong_lang';
-        if (reason) out.push({ ...base, field_key: def.key, lang_target: l, source_lang: src, source_text: srcText.slice(0, 800), current_text: val[l] || null, reason });
+        if (reason) out.push({ ...base, field_key: def.key, lang_target: l, source_lang: src, source_text: srcText.slice(0, 800), current_text: raw[l] || null, reason });
       }
     }
     // Tên tiếng Anh trùng nguyên văn tên Việt (chưa dịch?) — bỏ qua viết tắt ngắn
     const vn = str(t.vi), en = str(t.en);
-    if (en && vn && en.toLowerCase() === vn.toLowerCase() && vn.length > 8 && /[^\x00-\x7F]/.test(vn) && t.hz)
+    if (en && cleanEnName(en) && cleanEnName(en) !== en) // tên Anh kèm pinyin/chữ Hán trong ngoặc → đề xuất bản đã bỏ (không cần AI)
+      out.push({ ...base, field_key: 'name', lang_target: 'en', source_lang: 'vi', source_text: `${t.hz || ''} · ${vn}`.slice(0, 300), current_text: en, reason: 'pinyin_in_en' });
+    else if (en && vn && en.toLowerCase() === vn.toLowerCase() && vn.length > 8 && /[^\x00-\x7F]/.test(vn) && t.hz)
       out.push({ ...base, field_key: 'name', lang_target: 'en', source_lang: 'vi', source_text: `${t.hz} · ${vn}`.slice(0, 300), current_text: en, reason: 'same_as_vi' });
   }
   return out;
@@ -82,8 +95,16 @@ export async function scan(pool, terms) {
 /** Dịch đề xuất cho tối đa `limit` mục todo (mỗi lượt gọi AI ≤ 8 mục). Trả { done, costUsd }. */
 export async function generate(pool, { limit = 40 } = {}) {
   limit = Math.max(1, Math.min(120, Number(limit) || 40));
-  const [rows] = await pool.query("SELECT * FROM term_lang_queue WHERE status = 'todo' ORDER BY id LIMIT ?", [limit]);
+  const [all] = await pool.query("SELECT * FROM term_lang_queue WHERE status = 'todo' ORDER BY id LIMIT ?", [limit]);
   let done = 0, cost = 0;
+  // Hai loại sửa được ngay, không tốn AI: đặt đúng ô (misplaced) và bỏ pinyin khỏi tên Anh (pinyin_in_en)
+  const rows = [];
+  for (const r of all) {
+    const local = r.reason === 'misplaced' ? r.source_text : r.reason === 'pinyin_in_en' ? cleanEnName(r.current_text) : null;
+    if (r.reason === 'misplaced' || r.reason === 'pinyin_in_en') {
+      if (local) { await pool.query("UPDATE term_lang_queue SET proposed_text = ?, status = 'pending', proposed_at = NOW() WHERE id = ?", [local.slice(0, 800), r.id]); done++; }
+    } else rows.push(r);
+  }
   for (let i = 0; i < rows.length; i += 8) {
     const batch = rows.slice(i, i + 8);
     const items = batch.map((r) => ({ key: String(r.id), source: r.source_lang, text: { vi: r.source_lang === 'vi' ? r.source_text : '', zh: r.source_lang === 'zh' ? r.source_text : '', en: r.source_lang === 'en' ? r.source_text : '' },

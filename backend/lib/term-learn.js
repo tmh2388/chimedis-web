@@ -16,6 +16,7 @@ import { pinyin } from 'pinyin';
 import { styleBlock, STYLE_RULES } from './tcm-style.js';
 import { costFromUsage } from './ai-budget.js';
 import { CORE_TERMS } from './laoshi.js';
+import { fixLangs, TERM_SPECS } from './term-contract.js';
 
 const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
 const MODEL = process.env.TERM_PROMOTE_MODEL || 'gpt-5-mini';
@@ -115,8 +116,8 @@ async function askModel(items) {
     + styleBlock(items.map((x) => x.term), { max: 30 });
   const user = `Cụm cần xử lý (JSON): ${JSON.stringify(items.map((x) => ({ id: x.id, term: x.term, en: x.en })))}\n`
     + 'Trả JSON dạng {"items":[{"id":<id>,"medical":true|false,"hz":"<chữ Hán giản thể, 1-12 chữ, nếu có>","py":"<pinyin có dấu thanh>",'
-    + '"vi":"<tên tiếng Việt chuẩn y học (Hán-Việt nếu là thuật ngữ Trung y)>","en":"<tiếng Anh chuẩn PubMed/WHO>",'
-    + '"def_vi":"<định nghĩa tiếng Việt ≤ 200 ký tự, trung tính, không chẩn đoán/kê đơn>","group":"ly_luan|chan_doan|benh_chung|thuoc|cham_cuu|giai_phau|nghien_cuu|khac"}]}';
+    + '"vi":"<tên tiếng Việt chuẩn y học (Hán-Việt nếu là thuật ngữ Trung y)>","en":"<tiếng Anh chuẩn PubMed/WHO, KHÔNG kèm pinyin hay chữ Hán>",'
+    + '"def_vi":"<định nghĩa BẰNG TIẾNG VIỆT ≤ 200 ký tự, trung tính, không chẩn đoán/kê đơn, không chèn chữ Hán>","group":"ly_luan|chan_doan|benh_chung|thuoc|cham_cuu|giai_phau|nghien_cuu|khac"}]}';
   const r = await fetch(`${OPENAI_BASE}/v1/chat/completions`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
@@ -176,14 +177,12 @@ export async function promoteBatch(pool, { limit = BATCH } = {}) {
         await pool.query("UPDATE dict_candidates SET is_medical = 1, hz = ?, promoted_at = NOW(), enrich_note = 'đã có trong kho (theo chữ Hán)' WHERE id = ?", [hz, c.id]);
         continue;
       }
-      const g = GROUPS[it.group] || GROUPS.khac;
-      const termId = termIdOf(hz);
-      const note = `AI đề xuất ${new Date().toISOString().slice(0, 10)} từ cụm "${c.term}" (ứng viên #${c.id}) — chờ chuyên gia duyệt`;
-      await pool.query(
-        `INSERT IGNORE INTO general_terms (term_id, domain, organ_system_zh, organ_system_vi, organ_system_en, hz, py, vi, en, position_vi, source, verify, machine_translated, verify_note)
-         VALUES (?, 'Tổng hợp', ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, ?)`,
-        [termId, `新增·${g.zh}`, `Mới (tự học) · ${g.vi}`, `New (auto-learned) · ${g.en}`, hz, String(it.py || '').slice(0, 120) || null, vi, en,
-          String(it.def_vi || '').slice(0, 400) || null, SOURCE, note]);
+      const l = await learnTermDirect(pool, { hz, py: it.py, vi, en, def_vi: it.def_vi, def_zh: it.def_zh, def_en: it.def_en, group: it.group }, `cụm "${c.term}" (ứng viên #${c.id})`);
+      if (!l) {
+        await pool.query("UPDATE dict_candidates SET is_medical = 1, hz = ?, promoted_at = NOW(), enrich_note = 'tên Việt/Anh chưa đạt hợp đồng ngôn ngữ — cần người bổ sung' WHERE id = ?", [hz, c.id]);
+        continue;
+      }
+      const termId = l.termId;
       await pool.query(
         'UPDATE dict_candidates SET is_medical = 1, hz = ?, py = ?, vi_name = ?, definition_vi = ?, promoted_term_id = ?, promoted_at = NOW(), enrich_note = ? WHERE id = ?',
         [hz, String(it.py || '').slice(0, 120) || null, vi, String(it.def_vi || '').slice(0, 400) || null, termId, 'đã đưa vào Tổng hợp', c.id]);
@@ -202,23 +201,27 @@ export async function promoteBatch(pool, { limit = BATCH } = {}) {
  * Đưa MỘT thuật ngữ (do tra cứu AI sinh ra) vào kho "Tổng hợp" (chưa duyệt, đánh dấu máy dịch) để lần sau tìm thấy ngay, không gọi AI nữa.
  * @returns {{termId:string, inserted:boolean}|null} null nếu thiếu dữ liệu
  */
-export async function learnTermDirect(pool, it, noteSrc = 'tra cứu AI') {
+export async function learnTermDirect(pool, it, noteSrc = 'tra cứu AI', opts = {}) {
   const hz = String(it.hz || '').trim();
-  const vi = String(it.vi || '').trim().slice(0, 150), en = String(it.en || '').trim().slice(0, 150);
-  if (!HAN_TERM.test(hz) || !vi || !en) return null;
+  if (!HAN_TERM.test(hz)) return null;
   const names = await knownNameSet(pool);
   const termId = termIdOf(hz);
-  const exists = names.has(hz.toLowerCase());
-  if (exists) return { termId, inserted: false };
+  if (names.has(hz.toLowerCase())) return { termId, inserted: false, costUsd: 0 };
+  // HỢP ĐỒNG THUẬT NGỮ: đúng ngôn ngữ từng ô + đủ Việt/Anh cho tên, đủ Việt/Trung/Anh cho định nghĩa (xem lib/term-contract.js)
+  const fx = await fixLangs({ hz, vi: it.vi, en: it.en, def_vi: it.def_vi, def_zh: it.def_zh, def_en: it.def_en }, TERM_SPECS, { hint: { hz }, translate: opts.translate });
+  const vi = String(fx.rec.vi || '').slice(0, 150), en = String(fx.rec.en || '').slice(0, 150);
+  if (!vi || !en) return null;
   const g = GROUPS[it.group] || GROUPS.khac;
-  const note = `AI đề xuất ${new Date().toISOString().slice(0, 10)} từ ${noteSrc} — chờ chuyên gia duyệt`;
+  const miss = fx.incomplete.filter((c) => c.startsWith('def_'));
+  const note = `AI đề xuất ${new Date().toISOString().slice(0, 10)} từ ${noteSrc} — chờ chuyên gia duyệt` + (miss.length ? ` | còn thiếu: ${miss.join(', ')}` : '');
+  const cut = (v) => String(v || '').slice(0, 600) || null;
   await pool.query(
-    `INSERT IGNORE INTO general_terms (term_id, domain, organ_system_zh, organ_system_vi, organ_system_en, hz, py, vi, en, position_vi, source, verify, machine_translated, verify_note)
-     VALUES (?, 'Tổng hợp', ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, ?)`,
+    `INSERT IGNORE INTO general_terms (term_id, domain, organ_system_zh, organ_system_vi, organ_system_en, hz, py, vi, en, position_vi, position_zh, position_en, source, verify, machine_translated, verify_note)
+     VALUES (?, 'Tổng hợp', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, ?)`,
     [termId, `新增·${g.zh}`, `Mới (tự học) · ${g.vi}`, `New (auto-learned) · ${g.en}`, hz, String(it.py || '').slice(0, 120) || null, vi, en,
-      String(it.def_vi || '').slice(0, 400) || null, SOURCE, note]);
+      cut(fx.rec.def_vi), cut(fx.rec.def_zh), cut(fx.rec.def_en), SOURCE, note]);
   invalidateNames();
-  return { termId, inserted: true };
+  return { termId, inserted: true, costUsd: fx.costUsd, filled: fx.filled, incomplete: fx.incomplete };
 }
 
 let timer = null;
