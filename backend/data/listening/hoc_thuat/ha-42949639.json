@@ -1,0 +1,150 @@
+{
+  "id": "ha-42949639",
+  "category": "hoc_thuat",
+  "level": "so_cap",
+  "source_lang": "en",
+  "mt_translated": true,
+  "title_en": "Efficacy and Mechanism of Transcutaneous Auricular Vagus Nerve Stimulation in Patients With Poststroke Dysphagia: Protocol for a Randomized, Sham-Controlled Clinical Trial.",
+  "title_zh": "卒中后吞咽困难患者经皮耳迷走神经刺激的疗效和机制：一项随机、假对照临床试验的方案。",
+  "title_vi": "Hiệu quả và cơ chế kích thích thần kinh phế vị qua da ở bệnh nhân mắc chứng khó nuốt sau đột quỵ: Quy trình thử nghiệm lâm sàng ngẫu nhiên, có kiểm soát Sham.",
+  "segments": [
+    {
+      "seq": 1,
+      "text_en": "Dysphagia is a common complication following stroke.",
+      "text_zh": "吞咽困难是中风后常见的并发症。",
+      "text_vi": "Chứng khó nuốt là một biến chứng phổ biến sau đột quỵ.",
+      "text_pinyin": "tūn yàn kùn nán shì zhòng fēng hòu cháng jiàn de bìng fā zhèng 。"
+    },
+    {
+      "seq": 2,
+      "text_en": "While current management strategies for poststroke dysphagia (PSD) range from nutritional support to neurostimulation techniques, an optimal treatment regimen remains elusive.",
+      "text_zh": "虽然目前中风后吞咽困难（ PSD ）的治疗策略从营养支持到神经刺激技术不等，但最佳治疗方案仍然难以捉摸。",
+      "text_vi": "Mặc dù các chiến lược quản lý hiện tại đối với chứng khó nuốt sau đột quỵ (PSD) bao gồm từ hỗ trợ dinh dưỡng đến kỹ thuật kích thích thần kinh, chế độ điều trị tối ưu vẫn còn khó nắm bắt.",
+      "text_pinyin": "suī rán mù qián zhòng fēng hòu tūn yàn kùn nán （ PSD ） de zhì liáo cè lüè cóng yíng yǎng zhī chí dào shén jīng cì jī jì shù bù děng ， dàn zuì jiā zhì liáo fāng àn réng rán nán yǐ zhuō mō 。"
+    },
+    {
+      "seq": 3,
+      "text_en": "As a promising noninvasive neuromodulation approach, transcutaneous auricular vagus nerve stimulation (taVNS) requires further validation in rigorously designed trials to establish robust evidence of its efficacy and mechanisms of action.",
+      "text_zh": "作为一种有前途的非侵入性神经调节方法，经皮耳迷走神经刺激（ taVNS ）需要在严格设计的试验中进一步验证，以确定其疗效和作用机制的有力证据。",
+      "text_vi": "Là một phương pháp điều trị thần kinh không xâm lấn đầy hứa hẹn, kích thích thần kinh phế vị qua da (taVNS) đòi hỏi phải xác nhận thêm trong các thử nghiệm được thiết kế chặt chẽ để thiết lập bằng chứng mạnh mẽ về hiệu quả và cơ chế hoạt động của nó.",
+      "text_pinyin": "zuò wéi yī zhǒng yǒu qián tú de fēi qīn rù xìng shén jīng tiáo jié fāng fǎ ， jīng pí ěr mí zǒu shén jīng cì jī （ taVNS ） xū yào zài yán gé shè jì de shì yàn zhōng jìn yí bù yàn zhèng ， yǐ què dìng qí liáo xiào hé zuò yòng jī zhì de yǒu lì zhèng jù 。"
+    },
+    {
+      "seq": 4,
+      "text_en": "This study aims to validate the efficacy of taVNS in treating PSD and to elucidate its underlying mechanisms, thereby supporting the development of a novel, noninvasive therapeutic strategy for improving swallowing function in stroke survivors.",
+      "text_zh": "本研究旨在验证taVNS治疗PSD的疗效并阐明其潜在机制，从而支持开发一种改善中风幸存者吞咽功能的新型无创治疗策略。",
+      "text_vi": "Nghiên cứu này nhằm xác nhận hiệu quả của taVNS trong điều trị PSD và làm sáng tỏ các cơ chế cơ bản của nó, từ đó hỗ trợ phát triển một chiến lược điều trị mới, không xâm lấn để cải thiện chức năng nuốt ở những người sống sót sau đột quỵ.",
+      "text_pinyin": "běn yán jiū zhǐ zài yàn zhèng taVNS zhì liáo PSD de liáo xiào bìng chǎn míng qí qián zài jī zhì ， cóng ér zhī chí kāi fā yī zhǒng gǎi shàn zhòng fēng xìng cún zhě tūn yàn gōng néng de xīn xíng wú chuàng zhì liáo cè lüè 。"
+    },
+    {
+      "seq": 5,
+      "text_en": "This study will use a prospective, randomized, double-blind, controlled trial design.",
+      "text_zh": "本研究将采用前瞻性、随机、双盲、对照试验设计。",
+      "text_vi": "Nghiên cứu này sẽ sử dụng một thiết kế thử nghiệm tiến cứu, ngẫu nhiên, mù đôi, có đối chứng.",
+      "text_pinyin": "běn yán jiū jiāng cǎi yòng qián zhān xìng 、 suí jī 、 shuāng máng 、 duì zhào shì yàn shè jì 。"
+    },
+    {
+      "seq": 6,
+      "text_en": "A total of 40 patients with PSD will be enrolled and randomly allocated to either a taVNS group or a sham taVNS group.",
+      "text_zh": "总共40名PSD患者将被入组并随机分配到taVNS组或假taVNS组。",
+      "text_vi": "Tổng cộng 40 bệnh nhân mắc PSD sẽ được ghi danh và phân bổ ngẫu nhiên vào nhóm taVNS hoặc nhóm taVNS giả.",
+      "text_pinyin": "zǒng gòng 40 míng PSD huàn zhě jiāng bèi rù zǔ bìng suí jī fēn pèi dào taVNS zǔ huò jiǎ taVNS zǔ 。"
+    },
+    {
+      "seq": 7,
+      "text_en": "Both groups will receive conventional swallowing rehabilitation therapy as the baseline intervention.",
+      "text_zh": "两组都将接受常规吞咽康复治疗作为基线干预。",
+      "text_vi": "Cả hai nhóm sẽ nhận được liệu pháp phục hồi chức năng nuốt thông thường làm can thiệp ban đầu.",
+      "text_pinyin": "liǎng zǔ dōu jiāng jiē shòu cháng guī tūn yàn kāng fù zhì liáo zuò wéi jī xiàn gān yù 。"
+    },
+    {
+      "seq": 8,
+      "text_en": "The taVNS group will receive bilateral electrical stimulation at the cymba conchae and cavum conchae of the auricle.",
+      "text_zh": "TaVNS组将在耳廓的耳蜗和耳腔接受双侧电刺激。",
+      "text_vi": "Nhóm taVNS sẽ nhận được kích thích điện song phương tại cymba conchae và cavum conchae của cực quang.",
+      "text_pinyin": "TaVNS zǔ jiāng zài ěr kuò de ěr wō hé ěr qiāng jiē shòu shuāng cè diàn cì jī 。"
+    },
+    {
+      "seq": 9,
+      "text_en": "These sites correspond to the \"Heart\" and \"Kidney\" auricular acupoints, selected in accordance with traditional Chinese medicine theory.",
+      "text_zh": "这些部位对应于根据中医理论选择的“心”和“肾”耳穴。",
+      "text_vi": "Các vị trí này tương ứng với huyệt tai “Tim” và “Thận”, được lựa chọn theo lý thuyết y học cổ truyền Trung Quốc.",
+      "text_pinyin": "zhè xiē bù wèi duì yìng yú gēn jù zhōng yī lǐ lùn xuǎn zé de “ xīn ” hé “ shèn ” ěr xué 。"
+    },
+    {
+      "seq": 10,
+      "text_en": "In contrast, the sham taVNS group will receive stimulation at regions of the auricle not innervated by the vagus nerve.",
+      "text_zh": "相比之下，假性taVNS组将在不受迷走神经支配的耳廓区域接受刺激。",
+      "text_vi": "Ngược lại, nhóm sham taVNS sẽ nhận được sự kích thích tại các vùng của cực quang không được phân bố thần kinh phế vị.",
+      "text_pinyin": "xiāng bǐ zhī xià ， jiǎ xìng taVNS zǔ jiāng zài bù shòu mí zǒu shén jīng zhī pèi de ěr kuò qū yù jiē shòu cì jī 。"
+    },
+    {
+      "seq": 11,
+      "text_en": "The primary outcome measure will be the Penetration-Aspiration Scale score.",
+      "text_zh": "主要疗效指标是渗透-吸气量表评分。",
+      "text_vi": "Thước đo kết quả chính sẽ là thang điểm Thâm nhập-Khát vọng.",
+      "text_pinyin": "zhǔ yào liáo xiào zhǐ biāo shì shèn tòu - xī qì liàng biǎo píng fēn 。"
+    },
+    {
+      "seq": 12,
+      "text_en": "Secondary outcomes will include the Yale Pharyngeal Residue Severity Rating Scale, hyoid bone displacement and hyoid-thyroid approximation distance assessed via B-mode ultrasonography, and motor-evoked potentials of the suprahyoid muscles elicited by transcranial magnetic stimulation.",
+      "text_zh": "次要结局将包括通过B型超声评估的耶鲁咽残留严重程度评定量表、舌骨移位和舌甲甲状腺近似距离，以及经颅磁刺激引起的舌骨上肌的运动诱发电位。",
+      "text_vi": "Các kết quả thứ cấp sẽ bao gồm Thang đánh giá mức độ nghiêm trọng của dư lượng phế quản Yale, sự dịch chuyển xương hyoid và khoảng cách xấp xỉ hyoid-thyroid được đánh giá thông qua siêu âm chế độ B, và tiềm năng kích thích vận động của các cơ trên hydraoid được tạo ra bởi kích thích từ xuyên sọ.",
+      "text_pinyin": "cì yào jié jú jiāng bāo kuò tōng guò B xíng chāo shēng píng gū de yé lǔ yàn cán liú yán zhòng chéng dù píng dìng liàng biǎo 、 shé gǔ yí wèi hé shé jiǎ jiǎ zhuàng xiàn jìn sì jù lí ， yǐ jí jīng lú cí cì jī yǐn qǐ de shé gǔ shàng jī de yùn dòng yòu fā diàn wèi 。"
+    },
+    {
+      "seq": 13,
+      "text_en": "All outcome measures will be evaluated at baseline and after the 2-week intervention period.",
+      "text_zh": "所有结局指标将在基线和2周干预期后进行评估。",
+      "text_vi": "Tất cả các biện pháp đánh giá kết quả sẽ được đánh giá tại thời điểm ban đầu và sau giai đoạn can thiệp 2 tuần.",
+      "text_pinyin": "suǒ yǒu jié jú zhǐ biāo jiāng zài jī xiàn hé 2 zhōu gān yù qī hòu jìn xíng píng gū 。"
+    },
+    {
+      "seq": 14,
+      "text_en": "This paper describes the protocol for a study evaluating the efficacy and mechanisms of taVNS in patients with PSD.",
+      "text_zh": "本文描述了一项评估taVNS在PSD患者中的疗效和机制的研究方案。",
+      "text_vi": "Bài báo này mô tả quy trình cho nghiên cứu đánh giá hiệu quả và cơ chế của taVNS ở bệnh nhân mắc PSD.",
+      "text_pinyin": "běn wén miáo shù le yī xiàng píng gū taVNS zài PSD huàn zhě zhōng de liáo xiào hé jī zhì de yán jiū fāng àn 。"
+    },
+    {
+      "seq": 15,
+      "text_en": "The study was funded in January 2025.",
+      "text_zh": "该研究于2025年1月获得资助。",
+      "text_vi": "Nghiên cứu được tài trợ vào tháng 1 năm 2025.",
+      "text_pinyin": "gāi yán jiū yú 2025 nián 1 yuè huò dé zī zhù 。"
+    },
+    {
+      "seq": 16,
+      "text_en": "Participant recruitment began in March 2025 and is projected to conclude by October 2026.",
+      "text_zh": "参与者招募始于2025年3月，预计将于2026年10月完成。",
+      "text_vi": "Việc tuyển dụng người tham gia bắt đầu vào tháng 3 năm 2025 và dự kiến sẽ kết thúc vào tháng 10 năm 2026.",
+      "text_pinyin": "cān yù zhě zhāo mù shǐ yú 2025 nián 3 yuè ， yù jì jiāng yú 2026 nián 10 yuè wán chéng 。"
+    },
+    {
+      "seq": 17,
+      "text_en": "Data collection began in March 2025 and is projected to be completed by October 2026.",
+      "text_zh": "数据收集始于2025年3月，预计将于2026年10月完成。",
+      "text_vi": "Việc thu thập dữ liệu bắt đầu vào tháng 3 năm 2025 và dự kiến sẽ hoàn thành vào tháng 10 năm 2026.",
+      "text_pinyin": "shù jù shōu jí shǐ yú 2025 nián 3 yuè ， yù jì jiāng yú 2026 nián 10 yuè wán chéng 。"
+    },
+    {
+      "seq": 18,
+      "text_en": "Primary study results are expected to be submitted for publication in winter 2026.",
+      "text_zh": "主要研究结果预计将于2026年冬季提交发表。",
+      "text_vi": "Kết quả nghiên cứu sơ cấp dự kiến sẽ được công bố vào mùa đông năm 2026.",
+      "text_pinyin": "zhǔ yào yán jiū jié guǒ yù jì jiāng yú 2026 nián dōng jì tí jiāo fā biǎo 。"
+    },
+    {
+      "seq": 19,
+      "text_en": "This study aims to validate the efficacy of taVNS in treating PSD and to elucidate its underlying mechanisms, thereby supporting the development of a novel, noninvasive therapeutic strategy for improving swallowing function in stroke survivors.",
+      "text_zh": "本研究旨在验证taVNS治疗PSD的疗效并阐明其潜在机制，从而支持开发一种改善中风幸存者吞咽功能的新型无创治疗策略。",
+      "text_vi": "Nghiên cứu này nhằm xác nhận hiệu quả của taVNS trong điều trị PSD và làm sáng tỏ các cơ chế cơ bản của nó, từ đó hỗ trợ phát triển một chiến lược điều trị mới, không xâm lấn để cải thiện chức năng nuốt ở những người sống sót sau đột quỵ.",
+      "text_pinyin": "běn yán jiū zhǐ zài yàn zhèng taVNS zhì liáo PSD de liáo xiào bìng chǎn míng qí qián zài jī zhì ， cóng ér zhī chí kāi fā yī zhǒng gǎi shàn zhòng fēng xìng cún zhě tūn yàn gōng néng de xīn xíng wú chuàng zhì liáo cè lüè 。"
+    }
+  ],
+  "source_note_en": "Abstract from PubMed (PMID 42949639), JMIR research protocols (2026). Original: https://pubmed.ncbi.nlm.nih.gov/42949639/. Vi/Zh translation is machine-translated (MyMemory) and not yet human-reviewed.",
+  "source_note_vi": "Tóm tắt từ PubMed (PMID 42949639), JMIR research protocols (2026). Bản gốc: https://pubmed.ncbi.nlm.nih.gov/42949639/. Bản dịch tiếng Việt/Trung do máy dịch (MyMemory), chưa được người rà soát lại.",
+  "source_note_zh": "摘要来自 PubMed（PMID 42949639），JMIR research protocols (2026)。原文：https://pubmed.ncbi.nlm.nih.gov/42949639/。中文/越南语翻译为机器翻译（MyMemory），尚未经人工校对。",
+  "created_at": "2026-10-29T01:22:55Z",
+  "updated_at": "2026-10-29T01:22:55Z"
+}
