@@ -1,0 +1,27 @@
+name: deploy-vps
+# Đẩy lên main → đóng gói mã nguồn → gửi qua SSH tới VPS (khóa CI chỉ chạy được /opt/chimedis/deploy-service.sh, dịch vụ "dict").
+# VPS dựng ảnh mới, chờ khỏe, tự quay về bản trước nếu lỗi. Cần secret: SG_HOST, SG_USER, SG_SSH_KEY.
+on:
+  push: { branches: [main] }
+  schedule: [{ cron: "40 23 * * *" }]   # 06:40 giờ VN, sau khi bot tin tức/PubMed/YAAN commit (22:00–23:00 UTC); commit của bot dùng GITHUB_TOKEN nên không tự kích hoạt push
+  workflow_dispatch: {}
+permissions: { contents: read }
+concurrency: { group: deploy-vps-dict, cancel-in-progress: false }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gửi mã nguồn tới VPS
+        env:
+          HOST: ${{ secrets.SG_HOST }}
+          USER_: ${{ secrets.SG_USER }}
+          KEY: ${{ secrets.SG_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id && chmod 600 ~/.ssh/id
+          # Dấu vân tay máy chủ ghim sẵn (đã đối chiếu với /etc/ssh/ssh_host_ed25519_key.pub), chống giả mạo máy chủ
+          printf '%s %s\n' "$HOST" 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKvU9R5UJ/W6ZeiuLLht8+SVoysPWXWBC5ZIZ3ELh0uB' > ~/.ssh/known_hosts
+          tar -czf - --exclude=.git --exclude=node_modules --exclude=.github . \
+            | ssh -i ~/.ssh/id -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes "$USER_@$HOST" dict
