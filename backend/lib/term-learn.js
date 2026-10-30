@@ -219,7 +219,7 @@ export async function learnTermDirect(pool, it, noteSrc = 'tra cứu AI', opts =
   await pool.query(
     `INSERT IGNORE INTO general_terms (term_id, domain, organ_system_zh, organ_system_vi, organ_system_en, hz, py, vi, en, position_vi, position_zh, position_en, source, verify, machine_translated, verify_note)
      VALUES (?, 'Tổng hợp', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, ?)`,
-    [termId, `新增·${g.zh}`, `Mới (tự học) · ${g.vi}`, `New (auto-learned) · ${g.en}`, hz, String(it.py || '').slice(0, 120) || null, vi, en,
+    [termId, `新增·${g.zh}`, `Mới (tự học) · ${g.vi}`, `New (auto-learned) · ${g.en}`, hz, String(it.py || '').slice(0, 120) || (() => { try { return pinyin(hz, { style: 'tone' }).map((a) => a[0]).join(' '); } catch (_) { return null; } })(), vi, en,
       cut(fx.rec.def_vi), cut(fx.rec.def_zh), cut(fx.rec.def_en), SOURCE, note]);
   invalidateNames();
   return { termId, inserted: true, costUsd: fx.costUsd, filled: fx.filled, incomplete: fx.incomplete };
