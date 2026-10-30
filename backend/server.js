@@ -23,6 +23,7 @@ import * as laoshiFaq from './lib/laoshi-faq.js';
 import * as termLearn from './lib/term-learn.js';
 import * as aiLookup from './lib/ai-lookup.js';
 import * as termAiFill from './lib/term-ai-fill.js';
+import * as termIpa from './lib/term-ipa.js';
 import * as langAudit from './lib/lang-audit.js';
 import * as listeningDb from './lib/listening-db.js';
 import * as webDefine from './lib/web-define.js';
@@ -1843,6 +1844,14 @@ async function loadTermsForAudit() { // đúng thứ tự ghép như /api/terms 
   return termLearn.applyOverrides([...baseTerms, ...generalTerms], await termLearn.getOverrides(mysqlPool));
 }
 onDbUp(() => langAudit.ensureTable(mysqlPool).catch((e) => console.error('[lang-audit] init:', e.message)));
+onDbUp(() => termIpa.ensureTable(mysqlPool).catch((e) => console.error('[term-ipa] init:', e.message)));
+// IPA tên tiếng Anh (chỉ hiển thị, không đọc thành tiếng): admin bấm tạo theo lô; xem docs/INFRA-app-ux-admin.md
+app.get('/api/admin/term-ipa', ...adminOnly, requireDocsDb, adminJson(async () => ({ missing: termIpa.missing(await loadTermsForAudit(), await termIpa.getMap(mysqlPool)).length })));
+app.post('/api/admin/term-ipa/run', ...adminOnly, requireDocsDb, requireOpenAI, adminJson(async (req) => {
+  const r = await termIpa.generate(mysqlPool, await loadTermsForAudit(), { limit: Number((req.body || {}).limit) || 180 });
+  if (r.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'term_ipa', costUsd: r.costUsd });
+  return r;
+}));
 app.get('/api/admin/lang-audit', ...adminOnly, requireDocsDb, adminJson((req) => langAudit.list(mysqlPool, { status: ['todo', 'pending', 'applied', 'dismissed'].includes(req.query.status) ? req.query.status : 'pending', offset: req.query.offset })));
 app.post('/api/admin/lang-audit/scan', ...adminOnly, requireDocsDb, adminJson(async () => langAudit.scan(mysqlPool, await loadTermsForAudit())));
 app.post('/api/admin/lang-audit/run', ...adminOnly, requireDocsDb, requireOpenAI, adminJson(async (req) => {
@@ -1860,6 +1869,7 @@ if (process.env.LANG_AUDIT_JOB !== 'off') {
     try {
       if (Date.now() - lastScan > 20 * 3600e3) { const r = await langAudit.scan(mysqlPool, await loadTermsForAudit()); lastScan = Date.now(); console.log('[lang-audit] quét', JSON.stringify(r)); }
       const [[c]] = await mysqlPool.query("SELECT COUNT(*) AS n FROM term_lang_queue WHERE status = 'pending'");
+      try { const ri = await termIpa.generate(mysqlPool, await loadTermsForAudit(), { limit: 180 }); if (ri.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'term_ipa', costUsd: ri.costUsd }); if (ri.done) console.log('[term-ipa]', ri.done, 'còn', ri.remaining); } catch (e) { console.error('[term-ipa] job:', e.message); }
       if (Number(c.n) < 200) { const r = await langAudit.generate(mysqlPool, { limit: Number(process.env.LANG_AUDIT_BATCH) || 40 }); if (r.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'lang_audit', costUsd: r.costUsd }); if (r.done) console.log('[lang-audit] đề xuất', r.done); }
     } catch (e) { console.error('[lang-audit] job:', e.message); }
   };
@@ -1914,6 +1924,7 @@ app.post('/api/admin/term-add', ...adminOnly, requireDocsDb, async (req, res) =>
     if (!l) return res.status(400).json({ success: false, error: 'invalid_term' });
     aiCost += l.costUsd || 0;
     if (aiCost) aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'term_add', costUsd: aiCost });
+    if (l.inserted && rec.en && process.env.OPENAI_API_KEY) termIpa.generate(mysqlPool, [{ id: l.termId, en: rec.en }], { limit: 1 }).then((r) => { if (r.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'term_ipa', costUsd: r.costUsd }); }).catch(() => {}); // IPA tên Anh (chỉ hiển thị)
     if (l.inserted) mysqlPool.query('UPDATE ai_lookup SET term_id = ? WHERE hz = ? AND term_id IS NULL', [l.termId, String(b.hz || '').trim()]).catch(() => {}); // thẻ Bác sĩ trỏ về mục mới
     if (b.report_term_id) await termLearn.dismissReports(mysqlPool, String(b.report_term_id), `đã thêm vào kho (${l.termId})`);
     res.json({ success: true, data: { term_id: l.termId, inserted: l.inserted, filled: l.filled || [], incomplete: l.incomplete || [], ai_filled: aiFilled } });
@@ -2078,7 +2089,7 @@ app.get('/api/terms', async (req, res) => {
 
     const baseTerms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms, ...formulaTerms];
     const generalTerms = dedupeGeneralTerms(await getGeneralTerms(), baseTerms);
-    const terms = termLearn.applyOverrides([...baseTerms, ...generalTerms], await termLearn.getOverrides(mysqlPool));
+    const terms = termIpa.attach(termLearn.applyOverrides([...baseTerms, ...generalTerms], await termLearn.getOverrides(mysqlPool)), await termIpa.getMap(mysqlPool));
 
     if (terms.length === 0) {
       return res.status(404).json({
