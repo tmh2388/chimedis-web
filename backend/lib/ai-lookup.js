@@ -93,7 +93,7 @@ async function askModel(q, ctxText) {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: MODEL, messages: [{ role: 'system', content: sys }, { role: 'user', content: user }],
-      response_format: { type: 'json_object' }, max_completion_tokens: 4000, reasoning_effort: 'low' }),
+      response_format: { type: 'json_object' }, max_completion_tokens: 4000, reasoning_effort: process.env.AI_LOOKUP_EFFORT || 'low' }), // 'minimal' nhanh hơn nhiều (thử bằng biến môi trường, không cần sửa mã)
   });
   if (!r.ok) throw Object.assign(new Error(`lookup_llm ${r.status}`), { code: 'upstream' });
   const j = await r.json();
@@ -109,15 +109,19 @@ export async function lookup(pool, { q, uid, plan = 'free', chargeSystem }) {
   const display = String(q || '').trim().slice(0, 60);
   const key = normKey(display);
   if (!key || !isTermQuery(display)) return { ok: false, error: 'not_a_term' };
-  const cached = await getCached(pool, display);
-  if (cached && cached.ml === 1) return { ok: true, data: cached };
-  // bản cũ chỉ có tiếng Việt (ml=0): tra lại một lần để bổ sung đủ Việt/Trung/Anh rồi ghi đè
-
+  const T0 = Date.now(); const tm = {};
   const day = new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
   const lim = PER_USER_DAILY[plan] || PER_USER_DAILY.free;
-  const [[u]] = await pool.query('SELECT COALESCE(SUM(n),0) AS n FROM ai_lookup_usage WHERE firebase_uid = ? AND day = ?', [uid, day]);
+  // Ba truy vấn độc lập (bản đã lưu · hạn mức người dùng · hạn mức toàn hệ thống) chạy SONG SONG thay vì nối đuôi nhau.
+  const [cached, [[u]], [[g]]] = await Promise.all([
+    getCached(pool, display),
+    pool.query('SELECT COALESCE(SUM(n),0) AS n FROM ai_lookup_usage WHERE firebase_uid = ? AND day = ?', [uid, day]),
+    pool.query("SELECT COUNT(*) AS n FROM ai_lookup WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)"),
+  ]);
+  tm.db = Date.now() - T0;
+  if (cached && cached.ml === 1) return { ok: true, data: cached };
+  // bản cũ chỉ có tiếng Việt (ml=0): tra lại một lần để bổ sung đủ Việt/Trung/Anh rồi ghi đè
   if (Number(u.n) >= lim) return { ok: false, error: 'user_limit', limit: lim };
-  const [[g]] = await pool.query("SELECT COUNT(*) AS n FROM ai_lookup WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)");
   if (Number(g.n) >= GLOBAL_DAILY_CAP) return { ok: false, error: 'global_limit' };
   await pool.query('INSERT INTO ai_lookup_usage (firebase_uid, day, n) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE n = n + 1', [uid, day]);
 
@@ -125,7 +129,9 @@ export async function lookup(pool, { q, uid, plan = 'free', chargeSystem }) {
   const refs = [...searchTerms(display, 3), ...crossGroupRefs(display, 2)].filter((t, i, a) => a.findIndex((x) => x.id === t.id) === i).slice(0, 8);
   const refText = refs.length ? 'CÁC MỤC LIÊN QUAN TRONG KHO CHIMEDIS (dùng để đối chiếu Hán-Việt/Anh):\n' + refs.map((t) => factsFor(t, 2)).join('\n\n') : '';
   const ctx = [styleBlock([display], { max: 25 }), refText].filter(Boolean).join('\n\n');
+  const T1 = Date.now();
   const { parsed, costUsd } = await askModel(display, ctx);
+  tm.model = Date.now() - T1;
   if (chargeSystem && costUsd) chargeSystem(costUsd);
 
   const kind = ['tcm_term', 'medical_term', 'general_word', 'symptom_or_topic'].includes(parsed.kind) ? parsed.kind : (parsed.is_medical ? 'tcm_term' : 'general_word');
@@ -164,12 +170,15 @@ export async function lookup(pool, { q, uid, plan = 'free', chargeSystem }) {
     related_json: JSON.stringify(related), confidence: conf, note: String(parsed.note || '').slice(0, 250) || null,
   };
   // HỢP ĐỒNG THUẬT NGỮ: mỗi ô đúng ngôn ngữ, đủ Việt/Trung/Anh (ô đặt nhầm được xếp lại, thiếu thì dịch một lần, sai không cứu được thì bỏ)
+  const T2 = Date.now();
   try {
     const fx = await fixLangs(row, LOOKUP_SPECS, { hint: { hz } });
     Object.assign(row, fx.rec);
     if (chargeSystem && fx.costUsd) chargeSystem(fx.costUsd);
     if (fx.incomplete.length) console.log('[ai-lookup] ô còn thiếu sau khi sửa:', fx.incomplete.join(','), 'cho', display);
   } catch (e) { console.error('[ai-lookup] contract:', e.message); }
+  tm.contract = Date.now() - T2;
+  const T3 = Date.now();
   let termId = (cached && cached.term_id) || null;
   if (!termId && isMed && conf >= 0.6 && hz && row.vi && row.en) {
     try { const l = await learnTermDirect(pool, { ...row, group: kind === 'medical_term' && (!parsed.group || parsed.group === 'khac') ? 'tay_y' : parsed.group }, `tra cứu AI "${display}"`); termId = l ? l.termId : null; if (l && l.costUsd && chargeSystem) chargeSystem(l.costUsd); } catch (e) { console.error('[ai-lookup] learn:', e.message); }
@@ -181,5 +190,7 @@ export async function lookup(pool, { q, uid, plan = 'free', chargeSystem }) {
   if (hz && normKey(hz) !== key) {
     await pool.query(`INSERT IGNORE INTO ai_lookup ${cols} VALUES (${new Array(23).fill('?').join(',')})`, vals(normKey(hz), hz)).catch(() => {});
   }
+  tm.learn_save = Date.now() - T3; tm.total = Date.now() - T0;
+  console.log('[ai-lookup] ms', JSON.stringify(tm), 'effort=' + (process.env.AI_LOOKUP_EFFORT || 'low'), 'q=' + display.slice(0, 20)); // đo từng chặng: db · model · contract (dịch bù) · learn+lưu
   return { ok: true, data: { ...rowToData({ ...row, term_id: termId }, 'ai'), term_id: termId } };
 }
