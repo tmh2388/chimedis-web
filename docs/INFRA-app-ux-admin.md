@@ -275,3 +275,9 @@ Chưa làm (đề xuất): hàng chờ "Hồ sơ chưa đầy đủ" riêng; tr�
 ## Tìm chính xác khi bấm kính lúp / Enter (SW v101, 2026-10-30)
 - Sửa hồi quy của v99: bậc −0,5 ("chứa đúng từ", vd. "Fat embolism syndrome" cho "fat") bị tính là "khớp chính xác" → thẻ Bác sĩ ẩn nút hỏi AI. Nay `searchHasExactMatch` và mốc "Khớp chính xác" chỉ tính TRÙNG TÊN (bậc −1/0); mốc mới "Chứa đúng từ này" cho −0,5/0,8.
 - Kính lúp/Enter (`doSearch`) bật chế độ chính xác (`state.searchStrict`): có mục trùng tên → chỉ giữ chúng; không có → giữ mục chứa đúng từ; không có nữa → giữ nguyên. Nút "Hiện thêm N kết quả liên quan" bỏ chế độ. Đang gõ vẫn tìm rộng. Chip nhóm đếm theo đúng tập đang hiện.
+
+## IPA tên tiếng Anh — chỉ hiển thị, không đọc (SW v102, 2026-10-30)
+- Bảng riêng `term_ipa` (term_id, en, ipa); `lib/term-ipa.js`. KHÔNG ghi vào bảng nội dung kho. IPA chỉ hiện khi chuỗi Anh còn khớp lúc tạo (admin đổi tên Anh → IPA cũ ẩn tới khi tạo lại). Từ ghép Y Khoa giữ `ipa` soạn tay.
+- Tạo: admin bấm **Tạo IPA** ở màn Rà soát ngôn ngữ (`POST /api/admin/term-ipa/run`, ≤3 lượt×180 từ); từ mới thêm qua `term-add` tự tạo; tác vụ nền lang-audit (cùng cổng `LANG_AUDIT_JOB`) mỗi 6 giờ tạo thêm ≤180 từ. `GET /api/admin/term-ipa` trả số còn thiếu. `/api/terms` gắn trường `ipa`.
+- Hiển thị: nhỏ, sau tên Anh ở dòng kết quả, thẻ ôn và dưới tên Anh trong popup (`ipaTag()`); `aria-hidden`, `translate="no"`; không gắn nút loa, TTS chỉ đọc `term.en`.
+- Lưu ý chất lượng: IPA do AI sinh (General American), chưa có bước duyệt riêng — là phụ trợ phát âm; sai thì xoá dòng trong `term_ipa` hoặc đổi tên Anh để tạo lại.
