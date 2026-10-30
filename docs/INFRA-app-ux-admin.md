@@ -263,3 +263,11 @@ Tài liệu này là "bộ nhớ" của dự án trên GitHub — các phiên Cl
 - **Bản đã tra AI không hiện lại** (ví dụ "manipulation"): trước đây chỉ nạp bản đã lưu (máy + máy chủ) khi kho KHÔNG khớp gì (`!searchHasFullMatch`). Kho khớp mờ (từ nằm trong nội dung 8 mục khác) → bỏ qua mãi. Nay nạp bản đã lưu bất cứ khi nào KHÔNG có khớp chính xác (`searchHasExactMatch`), miễn phí, không gọi AI. Máy chủ vốn đã lưu mọi lần tra vào `ai_lookup`.
 - **Từ đơn**: `matchRank` thêm bậc −0,5 (đúng nguyên từ, có dấu: "đau" → "đau đầu") và 0,8 (đúng nguyên từ, khác dấu); khớp bỏ dấu ("đầu" ≠ "đau") và khớp tiền tố ("ho" → "hoá") xếp sau. Cùng bậc: tên ngắn hơn trước. Danh sách có mốc "Khớp chính xác ▸ Liên quan khác". Ngưỡng độ dài tra AI hạ từ 4/3 xuống 2 ký tự (front + `isTermQuery`).
 - **Dropdown là bộ lọc thật**: bỏ tự mở rộng ra mọi nhóm khi nhóm đang chọn không có kết quả. Thay bằng thanh chip "Toàn bộ N · Nhóm (n)…" (≥44px) từ `searchFacets()`; nhóm hiện tại 0 kết quả → báo rõ và chỉ các nhóm khác có.
+
+## Chuẩn hồ sơ thuật ngữ khi thêm / sửa (SW v100, 2026-10-30)
+Một thuật ngữ trong kho phải đủ: chữ Hán (pinyin tự sinh), tên Việt + Anh, định nghĩa Việt + Trung + Anh, nhóm. Luồng thống nhất mọi nguồn (Từ báo sai "miss-", thẻ Bác sĩ, admin):
+1. **Đề nghị/tra cứu** → mở `openTermAdder()` (trình soạn thêm mới) — KHÔNG ghi thẳng như trước.
+2. Chưa có định nghĩa nào → AI soạn nháp ngay (`/api/admin/term-ai-fill`); admin sửa tay hoặc bấm **✨ AI bổ sung** (nút này nay cũng có ở trình sửa `openTermEditor`).
+3. Chỉ báo "Còn thiếu: …" theo thời gian thực; thiếu mà bấm Lưu → hỏi AI bổ sung hay lưu luôn.
+4. Admin chốt → `/api/admin/term-add` (hợp đồng ngôn ngữ `fixLangs`, pinyin tự sinh, verify=0 chờ duyệt). Máy chủ cũng tự nhờ AI soạn định nghĩa nếu client gửi thiếu hoàn toàn (`ai:false` để tắt). AI không bao giờ tự ghi kho.
+Chưa làm (đề xuất): hàng chờ "Hồ sơ chưa đầy đủ" riêng; trường theo loại (bệnh → cách trị, thuốc → công năng) cho thuật ngữ mới.

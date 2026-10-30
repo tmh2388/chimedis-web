@@ -1900,12 +1900,23 @@ app.post('/api/admin/term-edit-batch', ...adminOnly, requireDocsDb, async (req, 
 app.post('/api/admin/term-add', ...adminOnly, requireDocsDb, async (req, res) => {
   try {
     const b = req.body || {};
-    const l = await termLearn.learnTermDirect(mysqlPool, { hz: b.hz, py: b.py, vi: b.vi, en: b.en, def_vi: b.def_vi, def_zh: b.def_zh, def_en: b.def_en, group: b.group }, 'đề nghị người dùng (admin duyệt)');
+    // CHUẨN HỒ SƠ: một thuật ngữ mới phải đủ tên Việt/Anh + định nghĩa Việt/Trung/Anh. Admin chưa điền định nghĩa nào → AI soạn nháp trước khi ghi (vẫn "chờ duyệt").
+    let rec = { hz: b.hz, py: b.py, vi: b.vi, en: b.en, def_vi: b.def_vi, def_zh: b.def_zh, def_en: b.def_en, group: b.group };
+    let aiCost = 0, aiFilled = false;
+    if (!rec.def_vi && !rec.def_zh && !rec.def_en && process.env.OPENAI_API_KEY && b.ai !== false) {
+      try {
+        const f = await termAiFill.suggestFill({ hz: rec.hz, vi: rec.vi, en: rec.en, group1: String(rec.group || '') });
+        aiCost += f.costUsd || 0; aiFilled = !!(f.def_vi || f.def_zh || f.def_en);
+        rec = { ...rec, vi: rec.vi || f.vi, en: rec.en || f.en, def_vi: f.def_vi, def_zh: f.def_zh, def_en: f.def_en };
+      } catch (e) { console.error('term-add ai-fill:', e.message); }
+    }
+    const l = await termLearn.learnTermDirect(mysqlPool, rec, 'đề nghị người dùng (admin duyệt)');
     if (!l) return res.status(400).json({ success: false, error: 'invalid_term' });
-    if (l.costUsd) aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'term_add', costUsd: l.costUsd });
+    aiCost += l.costUsd || 0;
+    if (aiCost) aiBudget.charge({ uid: req.firebaseUser.uid, app: 'dict', feature: 'term_add', costUsd: aiCost });
     if (l.inserted) mysqlPool.query('UPDATE ai_lookup SET term_id = ? WHERE hz = ? AND term_id IS NULL', [l.termId, String(b.hz || '').trim()]).catch(() => {}); // thẻ Bác sĩ trỏ về mục mới
     if (b.report_term_id) await termLearn.dismissReports(mysqlPool, String(b.report_term_id), `đã thêm vào kho (${l.termId})`);
-    res.json({ success: true, data: { term_id: l.termId, inserted: l.inserted, filled: l.filled || [], incomplete: l.incomplete || [] } });
+    res.json({ success: true, data: { term_id: l.termId, inserted: l.inserted, filled: l.filled || [], incomplete: l.incomplete || [], ai_filled: aiFilled } });
   } catch (e) { console.error('term-add:', e.message); res.status(500).json({ success: false, error: 'add_failed', detail: String(e.message || '').slice(0, 80) }); }
 });
 app.post('/api/admin/term-reports/dismiss', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.dismissReports(mysqlPool, String((req.body || {}).term_id || ''), (req.body || {}).note)));
