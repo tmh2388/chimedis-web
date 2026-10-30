@@ -31,7 +31,7 @@ export function isTermQuery(q) {
   const s = String(q || '').trim();
   const han = (s.match(HAN) || []).length;
   if (han) return han >= 1 && han <= 12 && s.length <= 20;
-  return s.length >= 3 && s.split(/\s+/).length <= 6 && s.length <= 48;
+  return s.length >= 2 && s.split(/\s+/).length <= 6 && s.length <= 48;
 }
 
 export async function ensureTables(pool) {
