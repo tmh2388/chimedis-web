@@ -1,0 +1,27 @@
+name: uptime
+# Kiểm tra từ BÊN NGOÀI VPS mỗi ~10 phút (GitHub có thể trễ 5–30 phút). Hỏng → job fail → GitHub tự gửi email cho chủ repo.
+# Bổ sung cho deploy/watchdog.sh (chạy trên VPS, không báo được khi cả máy chết). Repo public nên không tốn phút Actions;
+# bot tin tức commit hằng ngày nên lịch không bị GitHub tắt sau 60 ngày không hoạt động.
+on:
+  schedule: [{ cron: "*/10 * * * *" }]
+  workflow_dispatch: {}
+permissions: {}
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Gọi 6 địa chỉ công khai (thử lại 1 lần sau 20 giây nếu hỏng)
+        run: |
+          fail=0
+          for u in https://chimedis.vn/api/health https://admin.chimedis.vn/api/health https://dict.chimedis.vn/health \
+                   https://patient.havanydao.vn/ https://doctor.havanydao.vn/ https://havancraft.vn/; do
+            ok=0
+            for try in 1 2; do
+              c=$(curl -s -o /dev/null -m 20 -w '%{http_code}' "$u" || true)
+              case "$c" in 2??|3??) ok=1; break;; esac
+              [ $try = 1 ] && sleep 20
+            done
+            if [ $ok = 1 ]; then echo "OK   $c $u"; else echo "::error::HỎNG $c $u"; fail=1; fi
+          done
+          exit $fail
