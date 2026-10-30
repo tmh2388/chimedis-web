@@ -24,6 +24,7 @@ import * as termLearn from './lib/term-learn.js';
 import * as aiLookup from './lib/ai-lookup.js';
 import * as termAiFill from './lib/term-ai-fill.js';
 import * as termIpa from './lib/term-ipa.js';
+import * as textTranslate from './lib/text-translate.js';
 import * as langAudit from './lib/lang-audit.js';
 import * as listeningDb from './lib/listening-db.js';
 import * as webDefine from './lib/web-define.js';
@@ -1740,6 +1741,25 @@ app.get('/api/web-define', verifyFirebaseToken, async (req, res) => {
     const out = await webDefine.define(mysqlPool, String(req.query.q || ''));
     res.json({ success: true, data: out && out.entries && out.entries.length ? out : null });
   } catch (e) { res.status(502).json({ success: false, error: 'upstream' }); }
+});
+// Dịch đoạn bôi đen trong thẻ Bác sĩ (từ / cụm / câu): chỉ người dùng đăng nhập; hạn mức theo giờ để chống lạm dụng; chi phí do hệ thống chịu.
+const selTransHits = new Map();
+app.post('/api/translate-text', express.json({ limit: '4kb' }), verifyFirebaseToken, async (req, res) => {
+  try {
+    const uid = req.firebaseUser.uid, now = Date.now();
+    const b = req.body || {};
+    const hits = (selTransHits.get(uid) || []).filter((t) => now - t < 3600e3);
+    if (!isAdmin(req.firebaseUser) && hits.length >= 60) return res.status(429).json({ success: false, error: 'rate_limited' });
+    if (textTranslate.engine() === 'ai' && !process.env.OPENAI_API_KEY) return res.status(503).json({ success: false, error: 'translate_not_configured' });
+    hits.push(now); selTransHits.set(uid, hits);
+    const out = await textTranslate.translateText(b.text, b.target);
+    if (out.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'select_translate', costUsd: out.costUsd });
+    delete out.costUsd;
+    res.json({ success: true, data: out });
+  } catch (e) {
+    console.error('translate-text:', e.message);
+    res.status(e.code === 'bad_request' ? 400 : e.code === 'not_configured' ? 503 : 502).json({ success: false, error: e.code || 'upstream' });
+  }
 });
 // ===== Xoá tài khoản (Apple 5.1.1(v) / Google Play) — người dùng tự xoá trong app: dữ liệu MySQL + tài khoản Firebase =====
 const accountDeleteHits = new Map();
