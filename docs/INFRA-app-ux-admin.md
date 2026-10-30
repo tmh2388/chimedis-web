@@ -271,3 +271,7 @@ Một thuật ngữ trong kho phải đủ: chữ Hán (pinyin tự sinh), tên 
 3. Chỉ báo "Còn thiếu: …" theo thời gian thực; thiếu mà bấm Lưu → hỏi AI bổ sung hay lưu luôn.
 4. Admin chốt → `/api/admin/term-add` (hợp đồng ngôn ngữ `fixLangs`, pinyin tự sinh, verify=0 chờ duyệt). Máy chủ cũng tự nhờ AI soạn định nghĩa nếu client gửi thiếu hoàn toàn (`ai:false` để tắt). AI không bao giờ tự ghi kho.
 Chưa làm (đề xuất): hàng chờ "Hồ sơ chưa đầy đủ" riêng; trường theo loại (bệnh → cách trị, thuốc → công năng) cho thuật ngữ mới.
+
+## Tìm chính xác khi bấm kính lúp / Enter (SW v101, 2026-10-30)
+- Sửa hồi quy của v99: bậc −0,5 ("chứa đúng từ", vd. "Fat embolism syndrome" cho "fat") bị tính là "khớp chính xác" → thẻ Bác sĩ ẩn nút hỏi AI. Nay `searchHasExactMatch` và mốc "Khớp chính xác" chỉ tính TRÙNG TÊN (bậc −1/0); mốc mới "Chứa đúng từ này" cho −0,5/0,8.
+- Kính lúp/Enter (`doSearch`) bật chế độ chính xác (`state.searchStrict`): có mục trùng tên → chỉ giữ chúng; không có → giữ mục chứa đúng từ; không có nữa → giữ nguyên. Nút "Hiện thêm N kết quả liên quan" bỏ chế độ. Đang gõ vẫn tìm rộng. Chip nhóm đếm theo đúng tập đang hiện.
