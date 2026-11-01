@@ -1494,7 +1494,7 @@ mark.hl{background:#FFE9A8;color:inherit;font-weight:800;border-radius:3px;paddi
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/></svg><span data-i18n="dr_source">Nguồn học thuật</span><span class="soon" data-i18n="soon">Sắp có</span></div>
       <div class="drawer-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span data-i18n="dr_about">Giới thiệu Hạ Vân Y Đạo</span><span class="soon" data-i18n="soon">Sắp có</span></div>
     </div>
-    <div class="drawer-foot">夏雲醫道 — Hạ Vân Y Đạo<br>contact@chimedis.vn<div style="margin-top:6px;font-size:10px;opacity:.55">Chimedis web v80</div><div id="luStatus" onclick="checkLiveUpdate(true)" style="margin-top:8px;font-size:10px;opacity:.55;word-break:break-all"></div></div>
+    <div class="drawer-foot">夏雲醫道 — Hạ Vân Y Đạo<br>contact@chimedis.vn<div style="margin-top:6px;font-size:10px;opacity:.55"><span id="verLbl">Chimedis web</span></div><div id="luStatus" onclick="checkLiveUpdate(true)" style="margin-top:8px;font-size:10px;opacity:.55;word-break:break-all"></div></div>
   </aside>
 
   <!-- ĐĂNG NHẬP -->
@@ -6851,6 +6851,15 @@ function getFiltered(){
 }
 
 // ===== RENDER MAIN AREA =====
+// Nhãn phiên bản ở chân menu: lấy từ bộ nhớ đệm service worker ĐANG chạy (chimedis-v<số>) — trước đây là chữ cố định "v80" nên luôn sai.
+(async function showWebVersion(){
+  try{
+    const ks = await caches.keys(); let v = 0;
+    ks.forEach((k) => { const m = /^chimedis-v(\d+)/.exec(k); if(m) v = Math.max(v, Number(m[1])); });
+    if(!v){ const r = await fetch('/service-worker.js', { cache: 'no-store' }); const m = /CACHE_VERSION\s*=\s*'chimedis-v(\d+)'/.exec(await r.text()); if(m) v = Number(m[1]); }
+    const n = document.getElementById('verLbl'); if(n && v) n.textContent = 'Chimedis web v' + v;
+  }catch(e){}
+})();
 function syncZoneH(){ try{ const z = document.getElementById('scrollZone'); if(z && z.clientHeight) document.documentElement.style.setProperty('--zoneH', z.clientHeight + 'px'); }catch(e){} }
 window.addEventListener('resize', syncZoneH);
 function render(){
