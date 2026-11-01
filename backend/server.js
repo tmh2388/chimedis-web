@@ -1865,7 +1865,23 @@ async function loadTermsForAudit() { // đúng thứ tự ghép như /api/terms 
 }
 onDbUp(() => langAudit.ensureTable(mysqlPool).catch((e) => console.error('[lang-audit] init:', e.message)));
 onDbUp(() => termIpa.ensureTable(mysqlPool).catch((e) => console.error('[term-ipa] init:', e.message)));
-// IPA tên tiếng Anh (chỉ hiển thị, không đọc thành tiếng): admin bấm tạo theo lô; xem docs/INFRA-app-ux-admin.md
+// IPA tên tiếng Anh (chỉ hiển thị, không đọc thành tiếng). TỰ CHẠY NỀN, không cần admin bấm: sau ~90 s khi DB sẵn sàng, mỗi 15 phút tạo ≤180 từ còn thiếu cho tới khi hết, rồi kiểm lại mỗi 6 giờ.
+// Tắt bằng TERM_IPA_JOB=off (vd. khi chạy song song Hostinger + VPS). Nút "Tạo IPA" của admin vẫn dùng được. Xem docs/INFRA-app-ux-admin.md
+if (process.env.TERM_IPA_JOB !== 'off') {
+  const ipaTick = async () => {
+    let next = 6 * 3600e3;
+    try {
+      if (mysqlPool && process.env.OPENAI_API_KEY) {
+        const r = await termIpa.generate(mysqlPool, await loadTermsForAudit(), { limit: 180 });
+        if (r.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'term_ipa', costUsd: r.costUsd });
+        if (r.done) console.log('[term-ipa] đã tạo', r.done, '· còn', r.remaining);
+        if (r.remaining > 0 && r.done > 0) next = 15 * 60e3;
+      }
+    } catch (e) { console.error('[term-ipa] job:', e.message); next = 30 * 60e3; }
+    setTimeout(ipaTick, next).unref?.();
+  };
+  setTimeout(() => onDbUp(ipaTick), 90e3).unref?.();
+}
 app.get('/api/admin/term-ipa', ...adminOnly, requireDocsDb, adminJson(async () => ({ missing: termIpa.missing(await loadTermsForAudit(), await termIpa.getMap(mysqlPool)).length })));
 app.post('/api/admin/term-ipa/run', ...adminOnly, requireDocsDb, requireOpenAI, adminJson(async (req) => {
   const r = await termIpa.generate(mysqlPool, await loadTermsForAudit(), { limit: Number((req.body || {}).limit) || 180 });
@@ -1889,7 +1905,6 @@ if (process.env.LANG_AUDIT_JOB !== 'off') {
     try {
       if (Date.now() - lastScan > 20 * 3600e3) { const r = await langAudit.scan(mysqlPool, await loadTermsForAudit()); lastScan = Date.now(); console.log('[lang-audit] quét', JSON.stringify(r)); }
       const [[c]] = await mysqlPool.query("SELECT COUNT(*) AS n FROM term_lang_queue WHERE status = 'pending'");
-      try { const ri = await termIpa.generate(mysqlPool, await loadTermsForAudit(), { limit: 180 }); if (ri.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'term_ipa', costUsd: ri.costUsd }); if (ri.done) console.log('[term-ipa]', ri.done, 'còn', ri.remaining); } catch (e) { console.error('[term-ipa] job:', e.message); }
       if (Number(c.n) < 200) { const r = await langAudit.generate(mysqlPool, { limit: Number(process.env.LANG_AUDIT_BATCH) || 40 }); if (r.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'lang_audit', costUsd: r.costUsd }); if (r.done) console.log('[lang-audit] đề xuất', r.done); }
     } catch (e) { console.error('[lang-audit] job:', e.message); }
   };
