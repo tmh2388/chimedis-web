@@ -1865,6 +1865,17 @@ async function loadTermsForAudit() { // đúng thứ tự ghép như /api/terms 
 }
 onDbUp(() => langAudit.ensureTable(mysqlPool).catch((e) => console.error('[lang-audit] init:', e.message)));
 onDbUp(() => termIpa.ensureTable(mysqlPool).catch((e) => console.error('[term-ipa] init:', e.message)));
+// Hostinger có thể dừng tiến trình khi rảnh nên bộ hẹn giờ bên dưới không chắc chạy (đã thấy: web v105/v106 mà IPA vẫn trống). Vì vậy còn một đường THEO YÊU CẦU:
+// mỗi lần có người tải /api/terms (đang có tiến trình sống), nếu còn từ thiếu IPA và ≥4 phút kể từ lượt trước → tạo ≤180 từ ngầm (không chặn phản hồi).
+let _ipaLast = 0;
+function ipaKick(terms) {
+  if (process.env.TERM_IPA_JOB === 'off' || !mysqlPool || !process.env.OPENAI_API_KEY || Date.now() - _ipaLast < 4 * 60e3) return;
+  _ipaLast = Date.now();
+  termIpa.generate(mysqlPool, terms, { limit: 180 }).then((r) => {
+    if (r.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'term_ipa', costUsd: r.costUsd });
+    if (r.done || r.tried) console.log('[term-ipa] theo yêu cầu: tạo', r.done, '/', r.tried, '· còn', r.remaining);
+  }).catch((e) => console.error('[term-ipa] kick:', e.message));
+}
 // IPA tên tiếng Anh (chỉ hiển thị, không đọc thành tiếng). TỰ CHẠY NỀN, không cần admin bấm: sau ~90 s khi DB sẵn sàng, mỗi 15 phút tạo ≤180 từ còn thiếu cho tới khi hết, rồi kiểm lại mỗi 6 giờ.
 // Tắt bằng TERM_IPA_JOB=off (vd. khi chạy song song Hostinger + VPS). Nút "Tạo IPA" của admin vẫn dùng được. Xem docs/INFRA-app-ux-admin.md
 if (process.env.TERM_IPA_JOB !== 'off') {
@@ -1882,7 +1893,7 @@ if (process.env.TERM_IPA_JOB !== 'off') {
   };
   setTimeout(() => onDbUp(ipaTick), 90e3).unref?.();
 }
-app.get('/api/admin/term-ipa', ...adminOnly, requireDocsDb, adminJson(async () => ({ missing: termIpa.missing(await loadTermsForAudit(), await termIpa.getMap(mysqlPool)).length })));
+app.get('/api/admin/term-ipa', ...adminOnly, requireDocsDb, adminJson(async () => ({ missing: termIpa.missing(await loadTermsForAudit(), await termIpa.getMap(mysqlPool)).length, last: termIpa.status() })));
 app.post('/api/admin/term-ipa/run', ...adminOnly, requireDocsDb, requireOpenAI, adminJson(async (req) => {
   const r = await termIpa.generate(mysqlPool, await loadTermsForAudit(), { limit: Number((req.body || {}).limit) || 180 });
   if (r.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'term_ipa', costUsd: r.costUsd });
@@ -2125,6 +2136,7 @@ app.get('/api/terms', async (req, res) => {
     const baseTerms = [...sheetTerms, ...herbTerms, ...anatomyTerms, ...wordElementTerms, ...acupointTerms, ...autoTerms, ...formulaTerms];
     const generalTerms = dedupeGeneralTerms(await getGeneralTerms(), baseTerms);
     const terms = termIpa.attach(termLearn.applyOverrides([...baseTerms, ...generalTerms], await termLearn.getOverrides(mysqlPool)), await termIpa.getMap(mysqlPool));
+    ipaKick(terms);
 
     if (terms.length === 0) {
       return res.status(404).json({
