@@ -302,3 +302,6 @@ HTML được phục vụ theo "stale-while-revalidate": lần mở đầu sau p
 - **Hậu kiểm** `/api/terms` thật: 1/4.980 từ có IPA (chỉ "medical history", sinh lúc admin thêm từ) → đường AI + ghi DB chạy được, nhưng **tác vụ nền theo bộ hẹn giờ không chạy**: Hostinger dừng tiến trình khi rảnh nên `setTimeout(90 s)`/`setInterval` không kịp bắn (cùng lý do lang-audit/term-learn chưa chạy thật trên Hostinger; trên VPS Docker tiến trình sống nên chạy bình thường).
 - **Sửa**: thêm đường THEO YÊU CẦU `ipaKick()` — mỗi lần có người tải `/api/terms` (lúc đó tiến trình đang sống), nếu ≥4 phút kể từ lượt trước thì tạo ngầm ≤180 từ (không chặn phản hồi). `generate()` đơn luồng (nút admin/nền/yêu cầu không chạy chồng). Kết quả lượt gần nhất lưu ở `termIpa.status()` (trả trong `GET /api/admin/term-ipa`), nút "Tạo IPA" báo số bị loại và lỗi nếu có.
 - Nhãn phiên bản: khi chưa có cache SW (v=0) chỉ hiện số của máy chủ, không còn "v0 → v106".
+
+## IPA: hậu kiểm sau #56 & chuẩn hoá dấu phẩy (SW v108, 2026-11-01)
+Hậu kiểm web thật sau v107: 1 → 109 từ có IPA chỉ vài phút sau lần tải `/api/terms` đầu (đường theo yêu cầu chạy). Mẫu cho thấy mô hình chèn ", " giữa các từ của tên Latin ("Ephedra Herba" → "ˈɛfɪdrə, ˈhɜrbə"). Prompt nay yêu cầu cách nhau MỘT DẤU CÁCH; `fixCommas()` chuẩn hoá cả khi sinh mới lẫn khi gắn bản đã lưu (chỉ giữ dấu phẩy khi chính tên Anh có dấu phẩy).
