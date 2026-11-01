@@ -6856,10 +6856,23 @@ function getFiltered(){
   try{
     const ks = await caches.keys(); let v = 0;
     ks.forEach((k) => { const m = /^chimedis-v(\d+)/.exec(k); if(m) v = Math.max(v, Number(m[1])); });
-    if(!v){ const r = await fetch('/service-worker.js', { cache: 'no-store' }); const m = /CACHE_VERSION\s*=\s*'chimedis-v(\d+)'/.exec(await r.text()); if(m) v = Number(m[1]); }
-    const n = document.getElementById('verLbl'); if(n && v) n.textContent = 'Chimedis web v' + v;
+    let net = 0;
+    try{ const r = await fetch('/service-worker.js', { cache: 'no-store' }); const m = /CACHE_VERSION\s*=\s*'chimedis-v(\d+)'/.exec(await r.text()); if(m) net = Number(m[1]); }catch(e){}
+    const n = document.getElementById('verLbl'); if(!n) return;
+    if(net && net > v){ // máy chủ đã có bản mới hơn bản đang chạy → ép service worker cập nhật; tự tải lại khi xong (controllerchange)
+      n.textContent = 'Chimedis web v' + v + ' → v' + net + ' …'; n.style.cursor = 'pointer'; n.onclick = forceUpdateWeb;
+      try{ const reg = await navigator.serviceWorker.getRegistration(); if(reg) await reg.update(); }catch(e){}
+    } else if(v || net){ n.textContent = 'Chimedis web v' + Math.max(v, net); }
   }catch(e){}
 })();
+// Chạm vào nhãn phiên bản (khi đang chờ cập nhật) = cập nhật cưỡng bức: bỏ service worker + bộ nhớ đệm vỏ ứng dụng rồi tải lại (giữ hình/âm thanh đã tải).
+async function forceUpdateWeb(){
+  try{
+    const regs = await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map((r) => r.unregister()));
+    const ks = await caches.keys(); await Promise.all(ks.filter((k) => /^chimedis-v\d+-(shell|data)$/.test(k)).map((k) => caches.delete(k)));
+  }catch(e){}
+  location.reload();
+}
 function syncZoneH(){ try{ const z = document.getElementById('scrollZone'); if(z && z.clientHeight) document.documentElement.style.setProperty('--zoneH', z.clientHeight + 'px'); }catch(e){} }
 window.addEventListener('resize', syncZoneH);
 function render(){
