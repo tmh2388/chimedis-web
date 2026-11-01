@@ -62,21 +62,29 @@ async function ask(items) {
 }
 
 /** Tạo IPA cho tối đa `limit` thuật ngữ còn thiếu (60/lượt gọi AI). terms: mảng thuật ngữ đang hiển thị. → { done, tried, remaining, costUsd } */
+let lastRun = null;
+export const status = () => lastRun;
+let running = false; // một lượt tại một thời điểm (nhiều đường kích hoạt: nền, theo yêu cầu, nút admin)
 export async function generate(pool, terms, { limit = 180 } = {}) {
+  if (running) return { done: 0, tried: 0, remaining: -1, costUsd: 0, busy: true };
+  running = true;
+  try { return await run(pool, terms, limit); } finally { running = false; }
+}
+async function run(pool, terms, limit) {
   const map = await getMap(pool);
   const todo = missing(terms, map);
   const pick = todo.slice(0, Math.max(1, Math.min(600, Number(limit) || 180)));
-  let done = 0, cost = 0;
+  let done = 0, cost = 0, err = '', rejected = 0;
   for (let i = 0; i < pick.length; i += 60) {
     const batch = pick.slice(i, i + 60);
     let res;
-    try { res = await ask(batch.map((t) => ({ id: String(t.id), en: t.en.trim() }))); } catch (e) { console.error('[term-ipa]', e.message); break; }
+    try { res = await ask(batch.map((t) => ({ id: String(t.id), en: t.en.trim() }))); } catch (e) { console.error('[term-ipa]', e.message); err = String(e.message || e).slice(0, 80); break; }
     cost += res.costUsd || 0;
     const byId = new Map(batch.map((t) => [String(t.id), t]));
     const vals = [];
     for (const it of res.items) {
       const t = byId.get(String(it.id)); const ipa = cleanIpa(it.ipa);
-      if (t && ipa) vals.push([String(t.id), t.en.trim().slice(0, 190), ipa]);
+      if (t && ipa) vals.push([String(t.id), t.en.trim().slice(0, 190), ipa]); else if (t) rejected++;
     }
     if (vals.length) {
       await pool.query('INSERT INTO term_ipa (term_id, en, ipa) VALUES ? ON DUPLICATE KEY UPDATE en = VALUES(en), ipa = VALUES(ipa), source = \'ai\'', [vals]);
@@ -84,5 +92,7 @@ export async function generate(pool, terms, { limit = 180 } = {}) {
     }
   }
   if (done) cache.at = 0;
-  return { done, tried: pick.length, remaining: Math.max(0, todo.length - done), costUsd: cost };
+  const out = { done, tried: pick.length, remaining: Math.max(0, todo.length - done), costUsd: cost, rejected, err };
+  lastRun = { at: new Date().toISOString(), ...out }; // để admin/chẩn đoán xem lượt gần nhất
+  return out;
 }

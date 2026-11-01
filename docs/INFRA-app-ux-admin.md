@@ -297,3 +297,8 @@ Chưa làm (đề xuất): hàng chờ "Hồ sơ chưa đầy đủ" riêng; tr�
 
 ## Cập nhật web bị kẹt bản cũ (SW v106, 2026-11-01)
 HTML được phục vụ theo "stale-while-revalidate": lần mở đầu sau phát hành có thể còn bản cũ, service worker mới cài ngầm rồi tự tải lại. Trình duyệt/PWA không cập nhật kịp thì nhãn chân menu có thể báo số cũ. Nay nhãn so số trong bộ nhớ đệm (đang chạy) với số máy chủ (`/service-worker.js`, không cache); nếu máy chủ mới hơn → hiện "vA → vB …", tự gọi `registration.update()`, và chạm vào nhãn = cập nhật cưỡng bức (`forceUpdateWeb`: bỏ service worker + cache vỏ/dữ liệu, giữ cache hình, tải lại).
+
+## IPA vẫn trống sau v105/v106 — hậu kiểm & sửa (SW v107, 2026-11-01)
+- **Hậu kiểm** `/api/terms` thật: 1/4.980 từ có IPA (chỉ "medical history", sinh lúc admin thêm từ) → đường AI + ghi DB chạy được, nhưng **tác vụ nền theo bộ hẹn giờ không chạy**: Hostinger dừng tiến trình khi rảnh nên `setTimeout(90 s)`/`setInterval` không kịp bắn (cùng lý do lang-audit/term-learn chưa chạy thật trên Hostinger; trên VPS Docker tiến trình sống nên chạy bình thường).
+- **Sửa**: thêm đường THEO YÊU CẦU `ipaKick()` — mỗi lần có người tải `/api/terms` (lúc đó tiến trình đang sống), nếu ≥4 phút kể từ lượt trước thì tạo ngầm ≤180 từ (không chặn phản hồi). `generate()` đơn luồng (nút admin/nền/yêu cầu không chạy chồng). Kết quả lượt gần nhất lưu ở `termIpa.status()` (trả trong `GET /api/admin/term-ipa`), nút "Tạo IPA" báo số bị loại và lỗi nếu có.
+- Nhãn phiên bản: khi chưa có cache SW (v=0) chỉ hiện số của máy chủ, không còn "v0 → v106".
