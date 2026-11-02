@@ -24,6 +24,7 @@ import * as termLearn from './lib/term-learn.js';
 import * as aiLookup from './lib/ai-lookup.js';
 import * as termAiFill from './lib/term-ai-fill.js';
 import * as termIpa from './lib/term-ipa.js';
+import * as termAudio from './lib/term-audio.js';
 import * as textTranslate from './lib/text-translate.js';
 import * as langAudit from './lib/lang-audit.js';
 import * as listeningDb from './lib/listening-db.js';
@@ -1320,6 +1321,35 @@ app.get('/api/csdl/audio/:id/:seq', withLessonIndex(async (req, res) => {
   }
 }));
 
+// ===== Giọng đọc TÊN thuật ngữ từ máy chủ (Google Wavenet/Chirp, bộ đệm dùng chung) + rà soát/bổ sung âm thanh còn thiếu — xem lib/term-audio.js =====
+let _nameCache = { at: 0, terms: null, sets: null };
+async function nameSetsCached(force) {
+  if (!force && _nameCache.sets && Date.now() - _nameCache.at < 10 * 60e3) return _nameCache;
+  const terms = await loadTermsForAudit();
+  _nameCache = { at: Date.now(), terms, sets: termAudio.nameSets(terms) };
+  return _nameCache;
+}
+const termTtsHits = new Map();
+app.get('/api/term-tts', requireDocsDb, async (req, res) => {
+  try {
+    const tk = verifyTicket(req.query.t);
+    if (!tk) return res.status(401).json({ success: false, error: 'login_required' });
+    const lang = ['zh', 'vi', 'en'].includes(req.query.lang) ? req.query.lang : null;
+    const text = String(req.query.text || '').replace(/\s+/g, ' ').trim();
+    if (!lang || !text || text.length > 80) return res.status(400).json({ success: false, error: 'bad_request' });
+    const now = Date.now(); const hits = (termTtsHits.get(tk.uid) || []).filter((x) => now - x < 3600e3);
+    if (hits.length >= 600) return res.status(429).json({ success: false, error: 'rate_limited' });
+    hits.push(now); termTtsHits.set(tk.uid, hits);
+    const { sets } = await nameSetsCached(false);
+    if (!sets[lang].has(text)) return res.status(404).json({ success: false, error: 'not_a_term_name' }); // chỉ đọc TÊN có trong kho
+    const mp3 = await termAudio.getOrMake(mysqlPool, text, lang, String(req.query.voice || 'default'));
+    if (!mp3) return res.status(404).json({ success: false, error: 'not_speakable' });
+    res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, max-age=604800' }).send(mp3);
+  } catch (e) {
+    console.error('term-tts:', e.message);
+    res.status(502).json({ success: false, error: 'tts_failed' });
+  }
+});
 // ===== Ngân sách AI/TTS dùng chung dict + workbench (xem lib/ai-budget.js) =====
 // Trả null (và đã trả lời 429) nếu hết hạn mức giờ/ngày/tháng; ngược lại trả trạng thái để dùng tiếp.
 async function budgetGate(req, res, plan) {
@@ -1864,6 +1894,44 @@ async function loadTermsForAudit() { // đúng thứ tự ghép như /api/terms 
   return termLearn.applyOverrides([...baseTerms, ...generalTerms], await termLearn.getOverrides(mysqlPool));
 }
 onDbUp(() => langAudit.ensureTable(mysqlPool).catch((e) => console.error('[lang-audit] init:', e.message)));
+// Rà soát âm thanh: tên thuật ngữ (zh/vi/en × 2 giọng) · Học Thuật (từng câu × 2 giọng) · Luyện nghe (đủ giọng cho mọi câu?)
+async function audioAudit() {
+  const { terms } = await nameSetsCached(true);
+  const out = { terms: await termAudio.coverage(mysqlPool, terms), csdl: null, listening: { dialogues: 0, incomplete: [] } };
+  try {
+    await ensureLessonIndex();
+    const have = await csdlAudio.cachedSet(mysqlPool); let total = 0, cached = 0;
+    for (const t of csdl.allTerms()) { const l = csdl.lessonById('db-' + t.id); if (!l) continue; for (const sg of l.segments) for (const v of csdlAudio.AUDIO_VOICES) { total++; if (have.has(`${l.id}|${sg.seq}|${v}`)) cached++; } }
+    out.csdl = { total, cached, missing: total - cached };
+  } catch (e) { out.csdl = { error: String(e.message).slice(0, 80) }; }
+  for (const d of listListeningDialogues()) {
+    out.listening.dialogues++;
+    const full = findListeningDialogue(d.id);
+    if (full && availableVoices(full).length < 2) out.listening.incomplete.push({ id: d.id, voices: availableVoices(full) });
+  }
+  return out;
+}
+app.get('/api/admin/audio-audit', ...adminOnly, requireDocsDb, adminJson(audioAudit));
+// Bổ sung âm thanh còn thiếu (tối đa `limit` câu/lượt): tên thuật ngữ trước, rồi Học Thuật. Chi phí do hệ thống chịu (vài USD cho cả kho).
+app.post('/api/admin/audio-fill', ...adminOnly, requireDocsDb, adminJson(async (req) => {
+  let left = Math.max(1, Math.min(200, Number((req.body || {}).limit) || 80)); const res = { terms: 0, csdl: 0, chars: 0, err: '' };
+  const { terms } = await nameSetsCached(true);
+  for (const v of termAudio.VOICES) {
+    if (left <= 0 || res.err) break;
+    const r = await termAudio.fill(mysqlPool, terms, { voice: v, limit: left });
+    res.terms += r.done; res.chars += r.chars; left -= r.done; res.err = r.err || res.err;
+  }
+  if (left > 0 && !res.err) {
+    await ensureLessonIndex();
+    const have = await csdlAudio.cachedSet(mysqlPool); const todo = [];
+    for (const t of csdl.allTerms()) { const l = csdl.lessonById('db-' + t.id); if (!l) continue; for (const sg of l.segments) for (const v of csdlAudio.AUDIO_VOICES) if (!have.has(`${l.id}|${sg.seq}|${v}`)) todo.push({ lessonId: l.id, seq: sg.seq, text: sg.text_zh, voice: v }); if (todo.length >= left) break; }
+    for (let i = 0; i < Math.min(todo.length, left) && !res.err; i += 3) {
+      await Promise.all(todo.slice(i, Math.min(i + 3, left)).map(async (x) => { try { await csdlAudio.getAudio(mysqlPool, { ...x, uid: 'admin-fill', chargeUser: false, noLimit: true }); res.csdl++; res.chars += x.text.length; } catch (e) { res.err = String(e.message || e).slice(0, 80); } }));
+    }
+  }
+  if (res.chars) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'audio_fill', costUsd: (res.chars / 1e6) * 30 });
+  return res;
+}));
 onDbUp(() => termIpa.ensureTable(mysqlPool).catch((e) => console.error('[term-ipa] init:', e.message)));
 // Hostinger có thể dừng tiến trình khi rảnh nên bộ hẹn giờ bên dưới không chắc chạy (đã thấy: web v105/v106 mà IPA vẫn trống). Vì vậy còn một đường THEO YÊU CẦU:
 // mỗi lần có người tải /api/terms (đang có tiến trình sống), nếu còn từ thiếu IPA và ≥4 phút kể từ lượt trước → tạo ≤180 từ ngầm (không chặn phản hồi).

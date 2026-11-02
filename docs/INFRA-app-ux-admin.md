@@ -305,3 +305,8 @@ HTML được phục vụ theo "stale-while-revalidate": lần mở đầu sau p
 
 ## IPA: hậu kiểm sau #56 & chuẩn hoá dấu phẩy (SW v108, 2026-11-01)
 Hậu kiểm web thật sau v107: 1 → 109 từ có IPA chỉ vài phút sau lần tải `/api/terms` đầu (đường theo yêu cầu chạy). Mẫu cho thấy mô hình chèn ", " giữa các từ của tên Latin ("Ephedra Herba" → "ˈɛfɪdrə, ˈhɜrbə"). Prompt nay yêu cầu cách nhau MỘT DẤU CÁCH; `fixCommas()` chuẩn hoá cả khi sinh mới lẫn khi gắn bản đã lưu (chỉ giữ dấu phẩy khi chính tên Anh có dấu phẩy).
+
+## Giọng đọc máy chủ cho tên thuật ngữ + rà soát âm thanh (SW v109, 2026-11-02)
+- **Vấn đề**: nút loa ở tên thuật ngữ (Hán/Việt/Anh) dùng giọng THIẾT BỊ (speechSynthesis/iOS) → chất lượng không đều, có máy thiếu giọng Trung hoặc đọc im lặng một số từ (vd. 松果体); sửa âm chữ đa âm chỉ có bảng nhỏ ở client.
+- **Sửa**: `GET /api/term-tts?lang&text&voice&t=<vé>` đọc bằng Google (nam Wavenet = `default`, nữ Chirp 3 HD = `aoede`, theo lựa chọn giọng Luyện nghe), có `zhSpeechFix` (腧/俞/白术…), lưu vào `laoshi_tts_cache` DÙNG CHUNG (tạo một lần, ai cũng dùng). CHỈ đọc chuỗi là TÊN có trong kho (hz/vi/en + ví dụ từ ghép) → không lạm dụng được; chi phí hệ thống chịu (~240 nghìn ký tự ≈ vài USD cho cả kho, hai giọng). Client (`TTS._speakServer`) thử giọng máy chủ trước cho chuỗi ≤80 ký tự khi đã đăng nhập; lỗi/offline → giọng thiết bị như cũ.
+- **Rà soát/bổ sung** (màn Rà soát ngôn ngữ → "Rà soát âm thanh" / "Tạo âm thanh thiếu"; `GET /api/admin/audio-audit`, `POST /api/admin/audio-fill` ≤80 câu/lượt, tên thuật ngữ trước rồi Học Thuật): đếm đã có/tổng cho tên thuật ngữ (zh·vi·en × 2 giọng), Học Thuật (`csdl_audio`, câu × 2 giọng), Luyện nghe (bài đủ giọng). Kết quả 2026-11-02: Luyện nghe 64/64 bài đủ cả 2 giọng.
