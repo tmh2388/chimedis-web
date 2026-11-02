@@ -34,3 +34,4 @@ Chúng KHÔNG tự thấy nhau; **git + file này là nơi chung**. Quy tắc b�
 | 2026-10-13 | Ứng dụng luyện nghe Trung Y | Sửa 503 (tự hồi), `codemagic.yaml` số build tự động, `docs/SESSIONS.md` | Cảnh báo: `_work/chimedis-web` có sửa dở `isAdmin(mysqlPool, …)` sẽ khoá admin nếu push — cần `pull --rebase` |
 | 2026-10-12 | Ứng dụng luyện nghe Trung Y | Thanh toán/credit/Lão Sư/chấm nhanh; bộ đọc email VCB không duyệt biên lai chuyển đi | `billing.js`, `ai-budget.js`, `quick-score.js`, `laoshi.js` |
 | 2026-10-13 | Thiết lập thanh toán Sepay | (điền khi làm) | Cấu hình webhook SePay + `SEPAY_API_KEY` |
+| 2026-11-02 | Admin: hiển thị theo vùng | Menu "Nguồn học thuật" + "Giới thiệu Hạ Vân Y Đạo" (đang ghi "Sắp có") ẩn/hiện được từ admin.chimedis.vn → Hiển thị → Từ điển: `data-feature="dict:<khoá>"` + script đầu trang gọi `https://chimedis.vn/api/site-features` (lưu `ch_site_hidden_dict`; lỗi mạng = hiện như cũ). SW v110 | `frontend/index.html`, `frontend/service-worker.js` |
