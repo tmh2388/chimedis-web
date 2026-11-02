@@ -43,7 +43,7 @@ const inflight = new Map();
 let inserts = 0;
 
 /** @returns {Promise<Buffer>} mp3. Ném Error có .code = 'rate_limited' | 'db_unavailable' | lỗi TTS. */
-export async function getAudio(pool, { lessonId, seq, text, voice, uid, chargeUser = true, beforeGenerate = null }) {
+export async function getAudio(pool, { lessonId, seq, text, voice, uid, chargeUser = true, beforeGenerate = null, noLimit = false }) {
   if (!pool || !tableReady) throw Object.assign(new Error('db_unavailable'), { code: 'db_unavailable' });
   const v = VOICES.includes(voice) ? voice : 'default';
   const [rows] = await pool.query('SELECT mp3, fixv FROM csdl_audio WHERE lesson_id = ? AND seq = ? AND voice = ?', [lessonId, seq, v]);
@@ -51,7 +51,7 @@ export async function getAudio(pool, { lessonId, seq, text, voice, uid, chargeUs
   if (rows[0] && !needsFix) return rows[0].mp3;
   const key = `${lessonId}|${seq}|${v}`;
   if (inflight.has(key)) return inflight.get(key);
-  if (!allow(uid)) throw Object.assign(new Error('rate_limited'), { code: 'rate_limited' });
+  if (!noLimit && !allow(uid)) throw Object.assign(new Error('rate_limited'), { code: 'rate_limited' }); // noLimit: chỉ cho admin bổ sung hàng loạt
   if (beforeGenerate) await beforeGenerate(); // ngân sách người dùng (bài trong ngày thì miễn — nền tảng chịu)
   const p = (async () => {
     const mp3 = await synthesize(text, 'zh', v, { uid: chargeUser ? uid : null });
@@ -68,3 +68,10 @@ async function prune(pool) {
   if (c.n <= MAX_ROWS) return;
   await pool.query('DELETE FROM csdl_audio ORDER BY created_at ASC LIMIT ?', [Math.ceil(MAX_ROWS * 0.2)]);
 }
+
+/** Các (lessonId|seq|voice) ĐÃ có âm thanh (mp3 không tải về, chỉ khoá). */
+export async function cachedSet(pool) {
+  const [rows] = await pool.query('SELECT lesson_id, seq, voice FROM csdl_audio');
+  return new Set(rows.map((r) => `${r.lesson_id}|${r.seq}|${r.voice}`));
+}
+export const AUDIO_VOICES = VOICES;
