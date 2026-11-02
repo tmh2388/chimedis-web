@@ -35,6 +35,15 @@ const GROUPS = {
   tay_y: { zh: '西医', vi: 'Tây y', en: 'Western medicine' },
   khac: { zh: '其他', vi: 'Khác', en: 'Other' },
 };
+/** Trường nội dung THEO LOẠI (cột bảng ↔ khoá ba ngôn ngữ): congnang = function_*, tcm = tcm_note_*, lamsang = clinical_*. */
+export const EXTRA_COL = { congnang: 'function', tcm: 'tcm_note', lamsang: 'clinical' };
+export const KIND_EXTRA = { benh_chung: ['congnang', 'tcm', 'lamsang'], tay_y: ['congnang', 'tcm', 'lamsang'], thuoc: ['congnang', 'lamsang'], cham_cuu: ['congnang', 'lamsang'],
+  giai_phau: ['congnang', 'lamsang'], chan_doan: ['lamsang'], ly_luan: ['lamsang'], nghien_cuu: ['lamsang'], khac: ['lamsang'] };
+const DIS = { congnang: 'Nguyên nhân – bệnh cơ', tcm: 'Thể bệnh (biện chứng)', lamsang: 'Triệu chứng & cách trị (pháp trị)' };
+export const KIND_LABELS = { benh_chung: DIS, tay_y: DIS, thuoc: { congnang: 'Công năng', lamsang: 'Chủ trị / ứng dụng' }, cham_cuu: { congnang: 'Tác dụng', lamsang: 'Ứng dụng' },
+  giai_phau: { congnang: 'Chức năng', lamsang: 'Ý nghĩa lâm sàng' }, chan_doan: { lamsang: 'Ý nghĩa lâm sàng' }, ly_luan: { lamsang: 'Ứng dụng' }, nghien_cuu: { lamsang: 'Ứng dụng' }, khac: { lamsang: 'Ứng dụng' } };
+export const extraKeys = (base) => [`${base}_vi`, `${base}_zh`, `${base}_en`];
+const extraCol = (base, lg) => `${EXTRA_COL[base]}_${lg}`;
 export const termIdOf = (hz) => 'tq-' + crypto.createHash('sha1').update(hz).digest('hex').slice(0, 10);
 const HAN_TERM = /^[㐀-鿿]{1,24}$/;
 
@@ -209,18 +218,25 @@ export async function learnTermDirect(pool, it, noteSrc = 'tra cứu AI', opts =
   const termId = termIdOf(hz);
   if (names.has(hz.toLowerCase())) return { termId, inserted: false, costUsd: 0 };
   // HỢP ĐỒNG THUẬT NGỮ: đúng ngôn ngữ từng ô + đủ Việt/Anh cho tên, đủ Việt/Trung/Anh cho định nghĩa (xem lib/term-contract.js)
-  const fx = await fixLangs({ hz, vi: it.vi, en: it.en, def_vi: it.def_vi, def_zh: it.def_zh, def_en: it.def_en }, TERM_SPECS, { hint: { hz }, translate: opts.translate });
+  const bases = KIND_EXTRA[it.group] || KIND_EXTRA.khac;
+  const ex = it.extra && typeof it.extra === 'object' ? it.extra : {};
+  const extraSpecs = bases.map((b) => ({ key: b, cols: { vi: `${b}_vi`, zh: `${b}_zh`, en: `${b}_en` } }));
+  const fx = await fixLangs({ hz, vi: it.vi, en: it.en, def_vi: it.def_vi, def_zh: it.def_zh, def_en: it.def_en, ...Object.fromEntries(bases.flatMap((b) => extraKeys(b).map((k) => [k, ex[k]]))) }, [...TERM_SPECS, ...extraSpecs], { hint: { hz }, translate: opts.translate });
   const vi = String(fx.rec.vi || '').slice(0, 150), en = String(fx.rec.en || '').slice(0, 150);
   if (!vi || !en) return null;
   const g = GROUPS[it.group] || GROUPS.khac;
   const miss = fx.incomplete.filter((c) => c.startsWith('def_'));
   const note = `AI đề xuất ${new Date().toISOString().slice(0, 10)} từ ${noteSrc} — chờ chuyên gia duyệt` + (miss.length ? ` | còn thiếu: ${miss.join(', ')}` : '');
   const cut = (v) => String(v || '').slice(0, 600) || null;
+  // Trường theo loại: chỉ ghi vào cột có thật trong bảng (kho do repo khác quản lý cấu trúc)
+  const have = await columnsOf(pool, 'general_terms');
+  const xCols = [], xVals = [];
+  for (const b of bases) for (const lg of ['vi', 'zh', 'en']) { const col = extraCol(b, lg); const v = cut(fx.rec[`${b}_${lg}`]); if (v && have.has(col)) { xCols.push(col); xVals.push(v); } }
   await pool.query(
-    `INSERT IGNORE INTO general_terms (term_id, domain, organ_system_zh, organ_system_vi, organ_system_en, hz, py, vi, en, position_vi, position_zh, position_en, source, verify, machine_translated, verify_note)
-     VALUES (?, 'Tổng hợp', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, ?)`,
+    `INSERT IGNORE INTO general_terms (term_id, domain, organ_system_zh, organ_system_vi, organ_system_en, hz, py, vi, en, position_vi, position_zh, position_en, source, verify, machine_translated, verify_note${xCols.map((c) => ', ' + c).join('')})
+     VALUES (?, 'Tổng hợp', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, ?${xCols.map(() => ', ?').join('')})`,
     [termId, `新增·${g.zh}`, `Mới (tự học) · ${g.vi}`, `New (auto-learned) · ${g.en}`, hz, String(it.py || '').slice(0, 120) || (() => { try { return pinyin(hz, { style: 'tone' }).map((a) => a[0]).join(' '); } catch (_) { return null; } })(), vi, en,
-      cut(fx.rec.def_vi), cut(fx.rec.def_zh), cut(fx.rec.def_en), SOURCE, note]);
+      cut(fx.rec.def_vi), cut(fx.rec.def_zh), cut(fx.rec.def_en), SOURCE, note, ...xVals]);
   invalidateNames();
   return { termId, inserted: true, costUsd: fx.costUsd, filled: fx.filled, incomplete: fx.incomplete };
 }
@@ -389,7 +405,7 @@ export async function editTerm(pool, admin, edit) {
     let source = null, before = null, after = null, definitionIgnored = false;
     for (const table of EDITABLE_TABLES) {
       let rows;
-      try { [rows] = await conn.query(`SELECT term_id, hz, py, vi, en, position_vi, position_zh, position_en FROM ${table} WHERE term_id = ? FOR UPDATE`, [term_id]); }
+      try { [rows] = await conn.query(`SELECT * FROM ${table} WHERE term_id = ? FOR UPDATE`, [term_id]); }
       catch (_) { continue; } // bảng không có / khác cột
       if (!rows.length) continue;
       const cur = rows[0];
@@ -397,11 +413,20 @@ export async function editTerm(pool, admin, edit) {
       const nh = hz || before.hz;
       after = { hz: nh, py: hz ? (toPy(hz) || before.py) : before.py, vi: vi || before.vi, en: en || before.en,
         def_vi: defVi || before.def_vi, def_zh: defZh || before.def_zh, def_en: defEn || before.def_en };
+      // Trường theo loại (congnang/tcm/lamsang ↔ function_/tcm_note_/clinical_*): chỉ cột có thật trong dòng này, ghi vào nhật ký trước/sau
+      const xSets = [], xVals = [];
+      for (const [k, v] of Object.entries(fieldsIn)) {
+        const m = /^(congnang|tcm|lamsang)(_cn|_en)?$/.exec(k); if (!m) continue;
+        const col = `${EXTRA_COL[m[1]]}_${m[2] === '_cn' ? 'zh' : m[2] === '_en' ? 'en' : 'vi'}`;
+        if (!(col in cur)) continue;
+        before.fields = { ...(before.fields || {}), [k]: cur[col] }; after.fields = { ...(after.fields || {}), [k]: v };
+        xSets.push(`${col} = ?`); xVals.push(v);
+      }
       try {
         await conn.query(
-          `UPDATE ${table} SET hz = ?, py = ?, vi = ?, en = ?, position_vi = ?, position_zh = ?, position_en = ?, verify = 1, machine_translated = 0,
+          `UPDATE ${table} SET hz = ?, py = ?, vi = ?, en = ?, position_vi = ?, position_zh = ?, position_en = ?${xSets.map((x) => ', ' + x).join('')}, verify = 1, machine_translated = 0,
              verify_note = CONCAT(COALESCE(verify_note, ''), ' | Admin sửa ', CURDATE(), ' (', ?, ')') WHERE term_id = ?`,
-          [after.hz, after.py, after.vi, after.en, after.def_vi, after.def_zh, after.def_en, cleanText(admin && admin.email, 60) || 'admin', term_id]);
+          [after.hz, after.py, after.vi, after.en, after.def_vi, after.def_zh, after.def_en, ...xVals, cleanText(admin && admin.email, 60) || 'admin', term_id]);
       } catch (e) {
         await conn.rollback();
         if (e && e.errno === 1062) return { ok: false, error: 'hz_exists' }; // trùng chữ Hán với mục khác
