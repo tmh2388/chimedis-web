@@ -15,6 +15,10 @@ const cut = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000B\u
 export async function suggestFill(term) {
   const t = { hz: cut(term.hz, 40), vi: cut(term.vi, 190), en: cut(term.en, 190), group1: cut(term.group1, 48), field: cut(term.field, 60),
     def_vi: cut(term.def_vi, 700), def_zh: cut(term.def_zh, 700), def_en: cut(term.def_en, 700) };
+  // Mục nội dung THEO LOẠI cần soạn (congnang/tcm/lamsang): [{ key, label, cur: {vi,zh,en} }]
+  const EXKEYS = new Set(['congnang', 'tcm', 'lamsang']);
+  const extras = (Array.isArray(term.extras) ? term.extras : []).filter((x) => x && EXKEYS.has(x.key)).slice(0, 3)
+    .map((x) => ({ key: x.key, label: cut(x.label, 60), cur: { vi: cut(x.cur && x.cur.vi, 500), zh: cut(x.cur && x.cur.zh, 500), en: cut(x.cur && x.cur.en, 500) } }));
   if (!t.hz && !t.vi && !t.en) throw Object.assign(new Error('empty_term'), { code: 'bad_request' });
   const refs = [...searchTerms(t.hz || t.vi || t.en, 3)].slice(0, 4);
   const refText = refs.length ? 'CÁC MỤC LIÊN QUAN TRONG KHO (đối chiếu Hán-Việt/Anh, không chép nguyên):\n' + refs.map((x) => factsFor(x, 2)).join('\n\n') : '';
@@ -23,19 +27,22 @@ export async function suggestFill(term) {
     + 'Giữ nguyên các trường đã tốt (trả lại đúng nội dung cũ hoặc để rỗng). Định nghĩa 1–3 câu, văn phong từ điển, đủ ý: là gì, biểu hiện/vai trò, liên hệ Trung y (nếu có). '
     + 'Viết ĐỦ ba ngôn ngữ Việt/Trung (giản thể)/Anh, thống nhất thuật ngữ với bảng bắt buộc. Chỉ trả JSON.\n\n' + styleBlock([t.hz, t.vi, t.en], { max: 25 }) + (refText ? '\n\n' + refText : '');
   const user = `Thuật ngữ hiện có: ${JSON.stringify(t)}\nTrả JSON: {"vi":"<tên Việt, rỗng nếu đã đúng>","en":"<tên Anh, rỗng nếu đã đúng>","def_vi":"","def_zh":"","def_en":"","note":"<lưu ý ngắn>"}`
-    + (t.field ? `\nChỉ bổ sung mục nội dung: "${t.field}" (def_* là nội dung của mục này).` : '');
+    + (t.field ? `\nChỉ bổ sung mục nội dung: "${t.field}" (def_* là nội dung của mục này).` : '')
+    + (extras.length ? `\nNgoài ra soạn các MỤC THEO LOẠI sau (mỗi mục 1–3 câu, đủ Việt/Trung/Anh, chỉ điều chắc chắn đúng; không chắc thì để rỗng): ${JSON.stringify(extras)}\nThêm vào JSON khoá "extra": {${extras.map((x) => `"${x.key}_vi":"","${x.key}_zh":"","${x.key}_en":""`).join(',')}}.` : '');
   const r = await fetch(`${OPENAI_BASE}/v1/chat/completions`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: MODEL, messages: [{ role: 'system', content: sys }, { role: 'user', content: user }],
-      response_format: { type: 'json_object' }, max_completion_tokens: 3000, reasoning_effort: 'low' }),
+      response_format: { type: 'json_object' }, max_completion_tokens: 5000, reasoning_effort: 'low' }),
   });
   if (!r.ok) throw Object.assign(new Error(`termfill_llm ${r.status}`), { code: 'upstream' });
   const j = await r.json();
   const txt = String(j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || '');
   if (!txt.trim()) throw Object.assign(new Error('termfill_empty'), { code: 'upstream' });
   const p = JSON.parse(txt);
-  return { vi: cut(p.vi, 190), en: cut(p.en, 190), def_vi: cut(p.def_vi, 700), def_zh: cut(p.def_zh, 700), def_en: cut(p.def_en, 700), note: cut(p.note, 240), costUsd: costFromUsage(MODEL, j.usage) };
+  const extra = {};
+  for (const x of extras) for (const lg of ['vi', 'zh', 'en']) { const v = cut(p.extra && p.extra[`${x.key}_${lg}`], 700); if (v) extra[`${x.key}_${lg}`] = v; }
+  return { vi: cut(p.vi, 190), en: cut(p.en, 190), def_vi: cut(p.def_vi, 700), def_zh: cut(p.def_zh, 700), def_en: cut(p.def_en, 700), extra, note: cut(p.note, 240), costUsd: costFromUsage(MODEL, j.usage) };
 }
 
 /**

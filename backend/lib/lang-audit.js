@@ -2,7 +2,7 @@
  * lang-audit.js — RÀ SOÁT NGÔN NGỮ tự chủ động: quét kho tìm ô thiếu/quá ngắn/trùng ngôn ngữ khác → AI dịch đề xuất → HÀNG CHỜ → admin duyệt (áp dụng qua editTerm).
  * Không bao giờ tự ghi vào kho. Bảng `term_lang_queue` (term_id, field_key, lang_target) duy nhất; trạng thái: todo (chưa dịch) → pending (đã có bản đề xuất, chờ duyệt) → applied | dismissed.
  */
-import { translateItems } from './term-ai-fill.js';
+import { translateItems, suggestFill } from './term-ai-fill.js';
 import { editTerm } from './term-learn.js';
 import { detectLang, cleanEnName } from './term-contract.js';
 
@@ -52,7 +52,12 @@ export function findGaps(terms) {
         else val[l] = raw[l];
       }
       const have = langs.filter((l) => val[l]);
-      if (!have.length) continue;
+      if (!have.length) {
+        // HỒ SƠ TRỐNG: chưa có định nghĩa ở ngôn ngữ nào (nhóm có `vitri`) → xếp hàng để AI soạn nháp cả ba ngôn ngữ cho admin duyệt
+        if (def.key === 'vitri' && (t.hz || t.vi) && t.category !== 'word_element')
+          for (const l of LANGS) out.push({ ...base, field_key: 'vitri', lang_target: l, source_lang: 'vi', source_text: [t.hz, t.vi, t.en].filter(Boolean).join(' · ').slice(0, 300), current_text: null, reason: 'empty' });
+        continue;
+      }
       const src = have[0]; const srcText = val[src]; if (srcText.length > 800) continue;
       for (const m of moved) if (m.text.length <= 800) // nội dung đúng nhưng nằm sai ô: đề xuất đặt vào đúng ô (không cần AI)
         out.push({ ...base, field_key: def.key, lang_target: m.to, source_lang: m.to, source_text: m.text, current_text: raw[m.to] || null, reason: 'misplaced' });
@@ -99,7 +104,19 @@ export async function generate(pool, { limit = 40 } = {}) {
   let done = 0, cost = 0;
   // Hai loại sửa được ngay, không tốn AI: đặt đúng ô (misplaced) và bỏ pinyin khỏi tên Anh (pinyin_in_en)
   const rows = [];
+  // Hồ sơ trống: một lượt AI soạn định nghĩa Việt/Trung/Anh cho mỗi thuật ngữ (đề xuất → hàng chờ, không ghi kho)
+  const emptyBy = new Map();
+  for (const r of all) if (r.reason === 'empty') { (emptyBy.get(r.term_id) || emptyBy.set(r.term_id, []).get(r.term_id)).push(r); }
+  for (const [, grp] of emptyBy) {
+    const a = grp[0]; const parts = String(a.source_text || '').split(' · ');
+    try {
+      const f = await suggestFill({ hz: a.hz, vi: a.vi_name || '', en: parts.length > 2 ? parts[parts.length - 1] : '', group1: a.group1 });
+      cost += f.costUsd || 0;
+      for (const r of grp) { const v = r.lang_target === 'vi' ? f.def_vi : r.lang_target === 'zh' ? f.def_zh : f.def_en; if (v) { await pool.query("UPDATE term_lang_queue SET proposed_text = ?, status = 'pending', proposed_at = NOW() WHERE id = ?", [v.slice(0, 800), r.id]); done++; } }
+    } catch (e) { console.error('[lang-audit] empty:', e.message); break; }
+  }
   for (const r of all) {
+    if (r.reason === 'empty') continue;
     const local = r.reason === 'misplaced' ? r.source_text : r.reason === 'pinyin_in_en' ? cleanEnName(r.current_text) : null;
     if (r.reason === 'misplaced' || r.reason === 'pinyin_in_en') {
       if (local) { await pool.query("UPDATE term_lang_queue SET proposed_text = ?, status = 'pending', proposed_at = NOW() WHERE id = ?", [local.slice(0, 800), r.id]); done++; }

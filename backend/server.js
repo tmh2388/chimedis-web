@@ -2025,11 +2025,13 @@ app.post('/api/admin/term-add', ...adminOnly, requireDocsDb, async (req, res) =>
   try {
     const b = req.body || {};
     // CHUẨN HỒ SƠ: một thuật ngữ mới phải đủ tên Việt/Anh + định nghĩa Việt/Trung/Anh. Admin chưa điền định nghĩa nào → AI soạn nháp trước khi ghi (vẫn "chờ duyệt").
-    let rec = { hz: b.hz, py: b.py, vi: b.vi, en: b.en, def_vi: b.def_vi, def_zh: b.def_zh, def_en: b.def_en, group: b.group };
+    let rec = { hz: b.hz, py: b.py, vi: b.vi, en: b.en, def_vi: b.def_vi, def_zh: b.def_zh, def_en: b.def_en, group: b.group, extra: b.extra && typeof b.extra === 'object' ? b.extra : {} };
     let aiCost = 0, aiFilled = false;
     if (!rec.def_vi && !rec.def_zh && !rec.def_en && process.env.OPENAI_API_KEY && b.ai !== false) {
       try {
-        const f = await termAiFill.suggestFill({ hz: rec.hz, vi: rec.vi, en: rec.en, group1: String(rec.group || '') });
+        const kl = termLearn.KIND_LABELS[rec.group] || termLearn.KIND_LABELS.khac;
+        const f = await termAiFill.suggestFill({ hz: rec.hz, vi: rec.vi, en: rec.en, group1: String(rec.group || ''), extras: Object.keys(kl).map((k) => ({ key: k, label: kl[k] })) });
+        rec.extra = { ...(f.extra || {}), ...rec.extra };
         aiCost += f.costUsd || 0; aiFilled = !!(f.def_vi || f.def_zh || f.def_en);
         rec = { ...rec, vi: rec.vi || f.vi, en: rec.en || f.en, def_vi: f.def_vi, def_zh: f.def_zh, def_en: f.def_en };
       } catch (e) { console.error('term-add ai-fill:', e.message); }
