@@ -35,12 +35,14 @@ export function attach(terms, map) {
   for (const t of terms) {
     if (t.ipa || t.category === 'word_element') continue;
     const m = map.get(String(t.id));
-    if (m && m.en === norm(t.en)) t.ipa = m.ipa;
+    if (m && m.en === norm(t.en)) t.ipa = fixCommas(m.ipa, t.en); // chuẩn hoá cả bản đã lưu trước đó
   }
   return terms;
 }
 export const missing = (terms, map) => terms.filter((t) => eligible(t) && !(map.get(String(t.id)) && map.get(String(t.id)).en === norm(t.en)));
 
+// Phiên âm cụm không có dấu phẩy trong chữ Anh thì giữa các từ chỉ là dấu cách (mô hình đôi khi chèn ", ").
+const fixCommas = (ipa, en) => (/[,，;]/.test(String(en || '')) ? ipa : String(ipa || '').replace(/\s*,\s*/g, ' '));
 const cleanIpa = (v) => {
   const s = String(v || '').trim().replace(/^\/+|\/+$/g, '').replace(/\s+/g, ' ');
   return s && s.length <= 190 && !HAN.test(s) && /[^\x00-\x7F]|[ˈˌ]/.test(s) ? s : ''; // phải có ký tự IPA thật, không phải chữ Latin trần
@@ -48,7 +50,7 @@ const cleanIpa = (v) => {
 
 async function ask(items) {
   const sys = 'Bạn là chuyên gia ngữ âm. Với MỖI cụm tiếng Anh (thuật ngữ y khoa), viết phiên âm IPA kiểu General American (có dấu trọng âm ˈ ˌ), KHÔNG kèm dấu gạch chéo / /. '
-    + 'Cụm nhiều từ: phiên âm cả cụm. Danh sách ngăn bởi dấu phẩy: phiên âm từng phần, cách nhau ", ". Viết tắt (vd. GSH): đọc từng chữ cái. '
+    + 'Cụm nhiều từ: phiên âm cả cụm, các từ cách nhau MỘT DẤU CÁCH (KHÔNG dùng dấu phẩy). CHỈ khi chính cụm tiếng Anh có dấu phẩy mới giữ dấu phẩy tương ứng. Tên khoa học/Latin (vd. Ephedra Herba): đọc theo cách đọc Latin y dược thông dụng. Viết tắt (vd. GSH): đọc từng chữ cái. '
     + 'Không chắc cách đọc thì để rỗng — KHÔNG bịa. Chỉ trả JSON.';
   const user = `Danh sách: ${JSON.stringify(items.map((x) => ({ id: x.id, en: x.en })))}\nTrả JSON {"items":[{"id":"<id>","ipa":"<IPA hoặc rỗng>"}]}`;
   const r = await fetch(`${OPENAI_BASE}/v1/chat/completions`, {
@@ -83,7 +85,7 @@ async function run(pool, terms, limit) {
     const byId = new Map(batch.map((t) => [String(t.id), t]));
     const vals = [];
     for (const it of res.items) {
-      const t = byId.get(String(it.id)); const ipa = cleanIpa(it.ipa);
+      const t = byId.get(String(it.id)); const ipa = t ? fixCommas(cleanIpa(it.ipa), t.en) : '';
       if (t && ipa) vals.push([String(t.id), t.en.trim().slice(0, 190), ipa]); else if (t) rejected++;
     }
     if (vals.length) {
