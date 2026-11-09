@@ -1990,6 +1990,27 @@ if (process.env.LANG_AUDIT_JOB !== 'off') {
   setTimeout(() => { onDbUp(() => { tick(); setInterval(tick, 6 * 3600e3).unref?.(); }); }, 3 * 60e3).unref?.();
 }
 // Dịch tự động các ngôn ngữ còn thiếu/lệch khi admin sửa thuật ngữ (admin chỉ duyệt trước khi lưu). Không ghi CSDL; chi phí do hệ thống chịu; dùng chung trần 60 lượt/giờ với AI bổ sung.
+// Soạn NHÁP đầy đủ cho một từ chưa có trong kho (tự phân loại nhóm + định nghĩa + mục theo loại). Không ghi CSDL; admin duyệt rồi mới "Lưu vào kho".
+const termDraftHits = new Map();
+app.post('/api/admin/term-draft', ...adminOnly, requireOpenAI, async (req, res) => {
+  try {
+    const uid = req.firebaseUser.uid, now = Date.now();
+    const hits = (termDraftHits.get(uid) || []).filter((t) => now - t < 3600e3);
+    if (hits.length >= 200) return res.status(429).json({ success: false, error: 'rate_limited' });
+    hits.push(now); termDraftHits.set(uid, hits);
+    const b = req.body || {};
+    const out = await termAiFill.suggestFill({ hz: b.hz, vi: b.vi, en: b.en, def_vi: b.def_vi, def_zh: b.def_zh, def_en: b.def_en, classify: true });
+    if (out.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'term_draft', costUsd: out.costUsd });
+    delete out.costUsd;
+    const group = out.group || 'khac';
+    const keep = new Set(termLearn.KIND_EXTRA[group] || termLearn.KIND_EXTRA.khac);
+    const extra = {}; for (const [k, v] of Object.entries(out.extra || {})) if (keep.has(k.replace(/_(vi|zh|en)$/, ''))) extra[k] = v;
+    res.json({ success: true, data: { ...out, group, extra } });
+  } catch (e) {
+    console.error('term-draft:', e.message);
+    res.status(e.code === 'bad_request' ? 400 : 502).json({ success: false, error: e.code === 'bad_request' ? 'bad_request' : 'upstream' });
+  }
+});
 app.post('/api/admin/term-ai-translate', ...adminOnly, requireOpenAI, async (req, res) => {
   try {
     const uid = req.firebaseUser.uid, now = Date.now();

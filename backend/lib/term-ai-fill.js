@@ -17,7 +17,14 @@ export async function suggestFill(term) {
     def_vi: cut(term.def_vi, 700), def_zh: cut(term.def_zh, 700), def_en: cut(term.def_en, 700) };
   // Mục nội dung THEO LOẠI cần soạn (congnang/tcm/lamsang): [{ key, label, cur: {vi,zh,en} }]
   const EXKEYS = new Set(['congnang', 'tcm', 'lamsang']);
-  const extras = (Array.isArray(term.extras) ? term.extras : []).filter((x) => x && EXKEYS.has(x.key)).slice(0, 3)
+  const GROUP_KEYS = ['ly_luan', 'chan_doan', 'benh_chung', 'thuoc', 'cham_cuu', 'giai_phau', 'nghien_cuu', 'tay_y', 'khac'];
+  // classify: AI tự PHÂN LOẠI nhóm rồi soạn định nghĩa + các mục theo loại (một lượt) — dùng khi soạn nháp hàng loạt cho từ chưa có trong kho.
+  const extrasIn = term.classify ? [
+    { key: 'congnang', label: 'bệnh chứng/Tây y: Nguyên nhân–bệnh cơ; thuốc/phương: Công năng; châm cứu: Tác dụng; giải phẫu/sinh lý: Chức năng', cur: {} },
+    { key: 'tcm', label: 'CHỈ bệnh chứng/Tây y: Thể bệnh (biện chứng); loại khác để rỗng', cur: {} },
+    { key: 'lamsang', label: 'bệnh chứng: Triệu chứng & cách trị; thuốc: Chủ trị; châm cứu/giải phẫu/chẩn đoán/lý luận/khác: Ứng dụng hoặc ý nghĩa lâm sàng', cur: {} },
+  ] : term.extras;
+  const extras = (Array.isArray(extrasIn) ? extrasIn : []).filter((x) => x && EXKEYS.has(x.key)).slice(0, 3)
     .map((x) => ({ key: x.key, label: cut(x.label, 60), cur: { vi: cut(x.cur && x.cur.vi, 500), zh: cut(x.cur && x.cur.zh, 500), en: cut(x.cur && x.cur.en, 500) } }));
   if (!t.hz && !t.vi && !t.en) throw Object.assign(new Error('empty_term'), { code: 'bad_request' });
   const refs = [...searchTerms(t.hz || t.vi || t.en, 3)].slice(0, 4);
@@ -26,7 +33,7 @@ export async function suggestFill(term) {
     + 'Chỉ viết những điều bạn CHẮC CHẮN đúng; không bịa; không chắc thì để chuỗi rỗng và ghi lý do ở "note". Không chẩn đoán/kê đơn. '
     + 'Giữ nguyên các trường đã tốt (trả lại đúng nội dung cũ hoặc để rỗng). Định nghĩa 1–3 câu, văn phong từ điển, đủ ý: là gì, biểu hiện/vai trò, liên hệ Trung y (nếu có). '
     + 'Viết ĐỦ ba ngôn ngữ Việt/Trung (giản thể)/Anh, thống nhất thuật ngữ với bảng bắt buộc. Chỉ trả JSON.\n\n' + styleBlock([t.hz, t.vi, t.en], { max: 25 }) + (refText ? '\n\n' + refText : '');
-  const user = `Thuật ngữ hiện có: ${JSON.stringify(t)}\nTrả JSON: {"vi":"<tên Việt, rỗng nếu đã đúng>","en":"<tên Anh, rỗng nếu đã đúng>","def_vi":"","def_zh":"","def_en":"","note":"<lưu ý ngắn>"}`
+  const user = `Thuật ngữ hiện có: ${JSON.stringify(t)}${term.classify ? `\nTRƯỚC HẾT phân loại nhóm ("group": ${GROUP_KEYS.join('|')}) rồi soạn nội dung theo nhóm đó.` : ''}\nTrả JSON: {${term.classify ? '"group":"",' : ''}"vi":"<tên Việt, rỗng nếu đã đúng>","en":"<tên Anh, rỗng nếu đã đúng>","def_vi":"","def_zh":"","def_en":"","note":"<lưu ý ngắn>"}`
     + (t.field ? `\nChỉ bổ sung mục nội dung: "${t.field}" (def_* là nội dung của mục này).` : '')
     + (extras.length ? `\nNgoài ra soạn các MỤC THEO LOẠI sau (mỗi mục 1–3 câu, đủ Việt/Trung/Anh, chỉ điều chắc chắn đúng; không chắc thì để rỗng): ${JSON.stringify(extras)}\nThêm vào JSON khoá "extra": {${extras.map((x) => `"${x.key}_vi":"","${x.key}_zh":"","${x.key}_en":""`).join(',')}}.` : '');
   const r = await fetch(`${OPENAI_BASE}/v1/chat/completions`, {
@@ -42,7 +49,8 @@ export async function suggestFill(term) {
   const p = JSON.parse(txt);
   const extra = {};
   for (const x of extras) for (const lg of ['vi', 'zh', 'en']) { const v = cut(p.extra && p.extra[`${x.key}_${lg}`], 700); if (v) extra[`${x.key}_${lg}`] = v; }
-  return { vi: cut(p.vi, 190), en: cut(p.en, 190), def_vi: cut(p.def_vi, 700), def_zh: cut(p.def_zh, 700), def_en: cut(p.def_en, 700), extra, note: cut(p.note, 240), costUsd: costFromUsage(MODEL, j.usage) };
+  const group = GROUP_KEYS.includes(p.group) ? p.group : '';
+  return { group, vi: cut(p.vi, 190), en: cut(p.en, 190), def_vi: cut(p.def_vi, 700), def_zh: cut(p.def_zh, 700), def_en: cut(p.def_en, 700), extra, note: cut(p.note, 240), costUsd: costFromUsage(MODEL, j.usage) };
 }
 
 /**
