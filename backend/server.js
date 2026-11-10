@@ -1655,7 +1655,7 @@ onDbUp(() => aiBudget.ensureTables(mysqlPool).catch((e) => console.error('[ai-bu
 const adminOnly = [verifyFirebaseToken, (req, res, next) => (isAdmin(req.firebaseUser) ? next() : res.status(403).json({ success: false, error: 'admin_required' }))];
 const orderView = (o) => o && {
   code: o.code, plan: o.plan, period: o.plan_period, amount: o.amount, status: o.status, method: o.method, note: o.note,
-  kind: o.kind || 'plan', credits: o.credits || null,
+  kind: o.kind || 'plan', credits: o.credits || null, app_id: o.app_id || null, plan_id: o.plan_id || null,
   created_at: o.created_at, expires_at: o.expires_at, paid_at: o.paid_at, qr_url: billing.qrUrl(o),
 };
 
@@ -1667,9 +1667,11 @@ app.get('/api/billing/config', (req, res) => {
 app.post('/api/orders', verifyFirebaseToken, requireDocsDb, async (req, res) => {
   if (!billing.bankConfig().configured) return res.status(503).json({ success: false, error: 'payments_not_configured' });
   try {
-    const { plan, period, kind, pack } = req.body || {};
+    const { plan, period, kind, pack, planId } = req.body || {};
     const u = { uid: req.firebaseUser.uid, email: req.firebaseUser.email };
-    const o = kind === 'topup'
+    const o = planId
+      ? await billing.createCatalogOrder(mysqlPool, u, String(planId))
+      : kind === 'topup'
       ? await billing.createTopupOrder(mysqlPool, u, String(pack))
       : await billing.createOrder(mysqlPool, u, String(plan), String(period));
     res.status(201).json({ success: true, data: orderView(o) });

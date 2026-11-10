@@ -145,6 +145,28 @@ export async function createTopupOrder(pool, user, packKey) {
   throw new Error('order_code_collision');
 }
 
+/** Đơn theo DANH MỤC: giá lấy từ bảng plans (không tin số tiền từ client). plan='catalog' để không trùng gói pro/max cũ. */
+export async function createCatalogOrder(pool, user, planId) {
+  const [[pl]] = await pool.query('SELECT * FROM plans WHERE id = ? AND enabled = 1', [String(planId)]);
+  if (!pl) throw Object.assign(new Error('bad_plan'), { code: 'bad_plan' });
+  const [[ex]] = await pool.query("SELECT * FROM orders WHERE firebase_uid = ? AND plan_id = ? AND status = 'pending' AND expires_at > NOW() ORDER BY created_at DESC LIMIT 1", [user.uid, pl.id]);
+  if (ex) return ex;
+  await pool.query("UPDATE orders SET status = 'cancelled', note = 'Thay bằng đơn mới' WHERE firebase_uid = ? AND status = 'pending'", [user.uid]);
+  const kind = pl.kind === 'topup' ? 'topup' : 'plan';
+  const credits = kind === 'topup' ? pl.credits_included : null;
+  for (let i = 0; i < 5; i++) {
+    const code = 'CHM' + rnd(6);
+    try {
+      await pool.query(
+        "INSERT INTO orders (code, firebase_uid, email, plan, plan_period, amount, kind, credits, app_id, plan_id, expires_at) VALUES (?,?,?,?,?,?,?,?,?,?, DATE_ADD(NOW(), INTERVAL ? HOUR))",
+        [code, user.uid, user.email || null, 'catalog', kind === 'topup' ? 'once' : (pl.period_days ? 'p' + pl.period_days : 'life'), pl.price_vnd, kind, credits, pl.app_id || null, pl.id, ORDER_TTL_HOURS]);
+      const [[row]] = await pool.query('SELECT * FROM orders WHERE code = ?', [code]);
+      return row;
+    } catch (e) { if (e.errno !== 1062) throw e; }
+  }
+  throw new Error('order_code_collision');
+}
+
 export async function getOrder(pool, code) {
   const [[row]] = await pool.query('SELECT * FROM orders WHERE code = ?', [String(code).toUpperCase()]);
   return row || null;

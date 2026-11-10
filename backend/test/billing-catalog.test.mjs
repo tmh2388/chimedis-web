@@ -33,5 +33,12 @@ const [[o]] = await pool.query('SELECT status, note FROM orders WHERE code=?', [
 await pool.query("INSERT INTO orders (code, firebase_uid, plan, plan_period, amount, expires_at) VALUES ('CHMTESTSG',?,'max','month',249000, DATE_ADD(NOW(), INTERVAL 1 DAY))", [U]);
 r = await billing.handleIncomingTransfer(pool, { content: 'CHMTESTSG', amount: 249000, ref: 'bank-c2-6' }); assert.equal(r.status, 'approved');
 const [[u2]] = await pool.query('SELECT plan FROM users WHERE firebase_uid=?', [U]); assert.equal(u2.plan, 'max');
+// 8. createCatalogOrder: giá lấy từ bảng plans, tái sử dụng đơn chờ cùng gói, plan lạ bị từ chối
+await pool.query("DELETE FROM orders WHERE plan_id LIKE 'c2t_%' AND status='pending'");
+let o8 = await billing.createCatalogOrder(pool, { uid: U, email: 'c2@t.vn' }, 'c2t_ielts_pro'); assert.equal(o8.amount, 99000); assert.equal(o8.plan_id, 'c2t_ielts_pro'); assert.equal(o8.app_id, 'ielts'); assert.match(o8.code, /^CHM[A-HJKMNP-Z2-9]{6}$/);
+assert.equal((await billing.createCatalogOrder(pool, { uid: U }, 'c2t_ielts_pro')).code, o8.code);
+await assert.rejects(() => billing.createCatalogOrder(pool, { uid: U }, 'khong_co'), { code: 'bad_plan' });
+r = await billing.handleIncomingTransfer(pool, { content: o8.code, amount: 99000, ref: 'bank-c2-8' }); assert.equal(r.status, 'approved'); assert.equal((await ent('ielts')).tier, 'pro');
+await pool.query("DELETE FROM orders WHERE plan_id LIKE 'c2t_%'");
 await pool.query("DELETE FROM orders WHERE code LIKE 'CHMTESTS%'"); await pool.query('DELETE FROM entitlements WHERE firebase_uid=?', [U]); await pool.query('DELETE FROM ai_credits WHERE firebase_uid=?', [U]); await pool.query('DELETE FROM ai_credit_txn WHERE firebase_uid=?', [U]); await pool.query('DELETE FROM users WHERE firebase_uid=?', [U]); await pool.query("DELETE FROM plan_grants WHERE plan_id LIKE 'c2t_%'"); await pool.query("DELETE FROM plans WHERE id LIKE 'c2t_%'");
 console.log('ALL OK'); process.exit(0);
