@@ -1836,7 +1836,9 @@ app.post('/api/admin/dev-note', ...adminOnly, async (req, res) => {
     const ctx = b.context && typeof b.context === 'object' ? b.context : {};
     const lines = Object.entries(ctx).slice(0, 14).map(([k, v]) => `- **${String(k).slice(0, 30)}**: ${String(v).slice(0, 200)}`);
     const body = `${note}\n\n---\n_Ghi bởi ${req.firebaseUser.email || req.firebaseUser.uid} qua Chimedis (admin)._\n${lines.join('\n')}`;
-    const repo = process.env.GITHUB_NOTES_REPO || 'tmh2388/chimedis-web';
+    const NOTE_REPOS = { dict: process.env.GITHUB_NOTES_REPO || 'tmh2388/chimedis-web', workbench: 'tmh2388/chimedis-home', consultapp: 'tmh2388/hvyd-consultapp' }; // chỉ cho phép các repo trong danh sách
+    const project = NOTE_REPOS[b.project] ? b.project : 'dict';
+    const repo = NOTE_REPOS[project];
     const title = String(b.title || note.split('\n')[0]).slice(0, 90);
     const r = await fetch(`https://api.github.com/repos/${repo}/issues`, {
       method: 'POST',

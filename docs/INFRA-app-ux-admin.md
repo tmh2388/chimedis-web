@@ -322,3 +322,8 @@ Hậu kiểm web thật sau v107: 1 → 109 từ có IPA chỉ vài phút sau l�
 - Bản nháp hiện ngay trong thẻ, **mở rộng "Xem đầy đủ"** để kiểm tra đủ tên, Định nghĩa, Ứng dụng…; **Sửa** mở trình soạn đã điền sẵn (có nút **Giữ bản nháp** để sửa mà chưa ghi); **Soạn lại** gọi AI lần nữa.
 - Thanh trên cùng: **AI soạn (n)** cho mọi dòng đang chọn (3 dòng song song, thẻ nào xong hiện luôn) → **Lưu đã soạn (m)** ghi CẢ LOẠT vào kho (tuần tự, mỗi từ một giao dịch qua `term-add`, `ai:false`, đóng báo cáo tương ứng, báo số thành công/thất bại). Lựa chọn dòng được giữ qua các lần vẽ lại. AI không bao giờ tự ghi kho: luôn cần admin bấm Lưu.
 - Từ đã có trong kho (báo sai nội dung): nút **Xem từ** vẫn như cũ.
+
+## Web máy tính có menu trái + bảng thành phần bài thuốc + ghi chú theo dự án (SW v115, 2026-11-10)
+- **Bố cục ≥1100px**: `.app` thành lưới 3 cột (menu trái 232px nền #0E3A3A với logo/CHIMEDIS, ô tìm kiếm + ngôn ngữ/tài khoản ở thanh trên, nội dung tối đa 1240px). `header`/`.topbar` dùng `display:contents`; `#mainNav` thành menu dọc (mục chọn: nền #12504C + vạch son). Lão Sư/Trò chuyện phủ phần nội dung (left:232px). Thẻ Bác sĩ cột phải 400px. <1100px (iPad dọc, điện thoại) KHÔNG đổi. Khối CSS nằm CUỐI stylesheet (phải đứng sau các luật `.mainnav` cũ).
+- **Bảng thành phần (#63)**: `ftTable(term)` tách `composition_*` theo `；`, đọc vai trò trong ngoặc (君臣佐使 / quân thần tá sứ / chief–deputy–assistant–envoy), nhóm theo vai trò, bấm 1 vị để mở chi tiết (công năng/chủ trị) + nút mở đầy đủ. Không có phân vai → giữ cách hiển thị cũ.
+- **Ghi chú admin**: có ô chọn dự án (dict/workbench/consultapp); server `NOTE_REPOS` (allowlist) tạo Issue ở repo tương ứng — token `GITHUB_NOTES_TOKEN` phải có quyền Issues cho cả 3 repo.
