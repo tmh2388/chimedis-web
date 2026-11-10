@@ -333,3 +333,6 @@ Hậu kiểm web thật sau v107: 1 → 109 từ có IPA chỉ vài phút sau l�
 - **Lịch sử popup**: `state.ppStack`; `ppGo` đẩy từ hiện tại vào ngăn xếp, popup hiện nút "‹ Quay lại: <tên>"; nút ✕ đóng hẳn và xoá ngăn xếp. Mở từ danh sách/mũi tên không giữ ngăn xếp.
 - **Hai chiều**: popup vị thuốc có mục "Bài thuốc dùng vị này" (quét `composition_zh` của các Thang phương, tối đa 40 chip). Bảng thành phần: bấm vị → popup ngay (không còn mở rộng tại chỗ).
 - **Menu trái (≥1100px)**: `#mainNav` + `#drawer` nằm trong `.sbcol` (`display:contents` ở màn nhỏ); ngăn kéo cá nhân gắn cố định dưới menu chính (ẩn đầu ngăn kéo, nút ☰, các mục trùng menu chính); `dockSync()` giữ các ô cài đặt đồng bộ. Ô tìm kiếm trắng + viền teal.
+
+## Bảng thành phần cho MỌI Thang phương (SW v117, 2026-11-10)
+- `ftTable` nay hiện bảng "Vị thuốc | Liều lượng" cho cả 451 bài (trước chỉ bài có phân vai). Có 君臣佐使 (180 bài) → nhóm theo vai; không có (271 bài) → danh sách phẳng. Liều hiện đại ở cột phải, liều cổ (三两…) dòng nhỏ dưới; liều theo cỡ (大/中/小剂) tách từng dòng. Dữ liệu zh là chuẩn (tách `；`), vi/en ghép theo thứ tự khi cùng số mục. Kích thước nhỏ gọn (hàng 40px, chữ Hán 15px). Kiểm tra: 3118 dòng, không sót bài nào có dữ liệu; còn 1 tên lạ hợp lệ (两头尖 – tên vị thuốc).

@@ -1387,16 +1387,16 @@ mark.hl{background:#FFE9A8;color:inherit;font-weight:800;border-radius:3px;paddi
 .practice-score-num{font-weight:700;color:var(--son,#C8452F)}
 .practice-score-fb{font-size:12.5px;color:var(--muc-mo,#5c5346);margin-top:4px;line-height:1.5}
 .ft-wrap{border:1px solid var(--vien);border-radius:12px;background:#fff;overflow:hidden}
-.ft-head{display:flex;justify-content:space-between;padding:7px 12px;background:var(--ngua-am);font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muc-mo)}
-.ft-gh{display:flex;align-items:center;gap:8px;padding:7px 12px;background:var(--ngoc-mo);color:var(--thamthm);font-size:12px;border-top:1px solid var(--vien)}
-.ft-badge{display:inline-block;min-width:44px;text-align:center;padding:2px 9px;border-radius:999px;background:var(--thamthm);color:#fff;font-size:12px;font-weight:800}
+.ft-head{display:flex;justify-content:space-between;padding:5px 10px;background:var(--ngua-am);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muc-mo)}
+.ft-gh{display:flex;align-items:center;gap:8px;padding:4px 10px;background:var(--ngoc-mo);color:var(--thamthm);font-size:11px;border-top:1px solid var(--vien)}
+.ft-badge{display:inline-block;min-width:38px;text-align:center;padding:1px 8px;border-radius:999px;background:var(--thamthm);color:#fff;font-size:11px;font-weight:800}
 .ft-badge.ft-q{background:var(--son)}.ft-badge.ft-ta{background:var(--tham-2)}.ft-badge.ft-s{background:var(--dong)}
 .ft-row{border-top:1px solid var(--ngua-am)}
-.ft-main{width:100%;min-height:44px;display:flex;align-items:center;gap:10px;padding:8px 12px;border:0;background:none;font:inherit;text-align:left;color:var(--muc);cursor:pointer}
+.ft-main{width:100%;min-height:40px;display:flex;align-items:center;gap:8px;padding:5px 10px;border:0;background:none;font:inherit;font-size:13px;text-align:left;color:var(--muc);cursor:pointer}
 .ft-main:disabled{cursor:default}
-.ft-name{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px}
-.ft-zh{font-size:17px;color:var(--thamthm)}.ft-vi{font-weight:700}.ft-en{font-size:12px;color:var(--muc-mo)}
-.ft-dose{flex:none;font-weight:700;color:var(--dong);white-space:nowrap}
+.ft-name{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:0 8px}
+.ft-zh{font-size:15px;color:var(--thamthm)}.ft-vi{font-weight:700}.ft-en{font-size:11px;color:var(--muc-mo)}
+.ft-dose{flex:none;min-width:58px;max-width:44%;white-space:pre-line;text-align:right;font-weight:700;color:var(--dong);font-size:13px}.ft-anc{display:block;font-size:10px;font-weight:400;color:var(--muc-mo)}
 .ft-chev{flex:none;color:var(--muc-mo);transition:transform .15s}.ft-row.open .ft-chev{transform:rotate(180deg)}
 .ft-det{display:none;padding:2px 12px 12px;background:var(--ngua)}.ft-row.open .ft-det{display:block}
 .ft-det p{font-size:13px;line-height:1.55;margin:6px 0}
@@ -1407,7 +1407,7 @@ a.tl:hover{background:var(--ngoc-mo)}
 .pp-chips{display:flex;flex-wrap:wrap;gap:8px}
 .pp-chip{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border:1px solid var(--vien);border-radius:999px;background:#fff;color:var(--thamthm);font-weight:700;font-size:13.5px;text-decoration:none}
 .pp-chip.more{color:var(--muc-mo);font-weight:400}
-.ft-chev{font-size:20px;font-style:normal}
+.ft-chev{font-size:16px;font-style:normal;width:10px;flex:none;color:var(--muc-mo)}
 /* ===== WEB MÁY TÍNH (>=1100px): menu trái + thanh trên + nội dung (2026-11-10). Điện thoại/iPad dọc KHÔNG đổi. ===== */
 @media(min-width:1100px){
   :root{--sbw:232px}
@@ -8077,52 +8077,65 @@ function gsViewList(merKey){
   state.group2 = merKey; state.vocabVisible = VOCAB_PAGE_SIZE; render(); scrollToTop();
 }
 
-// ===== Thành phần bài thuốc dạng bảng: nhóm Quân – Thần – Tá – Sứ, bấm vào vị để xem chi tiết (#63) =====
+// ===== Thành phần bài thuốc dạng bảng (mọi Thang phương): Vị thuốc | Liều lượng; có phân vai Quân–Thần–Tá–Sứ thì nhóm theo vai (#63) =====
 const FT_ROLES = [
   { k: 'q', zh: ['君'], vi: ['quân'], en: ['chief', 'sovereign', 'monarch', 'emperor'], lab: { vi: 'Quân', zh: '君', en: 'Chief' }, sub: { vi: 'vị chủ trị chính', zh: '主药', en: 'principal herb' } },
   { k: 't', zh: ['臣'], vi: ['thần'], en: ['deputy', 'minister'], lab: { vi: 'Thần', zh: '臣', en: 'Deputy' }, sub: { vi: 'phụ trợ quân', zh: '辅助', en: 'assists the chief' } },
   { k: 'ta', zh: ['佐'], vi: ['tá'], en: ['assistant', 'adjuvant'], lab: { vi: 'Tá', zh: '佐', en: 'Assistant' }, sub: { vi: 'hỗ trợ, giảm độc', zh: '佐助', en: 'supports, moderates' } },
   { k: 's', zh: ['使'], vi: ['sứ'], en: ['envoy', 'guide', 'messenger'], lab: { vi: 'Sứ', zh: '使', en: 'Envoy' }, sub: { vi: 'dẫn thuốc, điều hoà', zh: '引经调和', en: 'guides, harmonises' } },
 ];
-function ftSplit(txt){ return String(txt || '').split(/[；;]\s*/).map((x) => x.trim()).filter(Boolean); }
-function ftParseItem(x){
-  let role = '', body = x;
-  const m = x.match(/[（(]\s*([^（）()]+?)\s*[）)]\s*$/);
-  if(m){ role = m[1].trim().toLowerCase(); body = x.slice(0, m.index).trim(); }
-  const d = body.match(/^(.*?)[\s:：]*([0-9]+(?:\.[0-9]+)?\s*(?:[-~–]\s*[0-9]+(?:\.[0-9]+)?)?\s*(?:g|kg|mg|ml|克|钱|两|枚|片|个|粒)?)\s*$/i);
-  const name = d ? d[1].trim() : body, dose = d ? d[2].trim() : '';
-  const R = FT_ROLES.find((r) => r.zh.includes(role) || r.vi.includes(role) || r.en.some((e) => role.startsWith(e)));
-  return { name, dose, role: R ? R.k : '' };
+const FT_UNIT = '(?:g|克|kg|ml|mg|枚|个|片|粒|条|只)?';
+function ftSplit(txt){ // gộp các đoạn 大剂/中剂/小剂 (liều theo cỡ) vào vị thuốc đứng trước
+  const out = [];
+  for(const x of String(txt || '').split(/[；;]\s*/).map((y) => y.trim()).filter(Boolean)){
+    if(/^[大中小]剂/.test(x) && out.length) out[out.length - 1] += '；' + x; else out.push(x);
+  }
+  return out;
+}
+function ftRole(r){ r = String(r || '').trim().toLowerCase(); const R = FT_ROLES.find((x) => x.zh.includes(r) || x.vi.includes(r) || x.en.some((e) => r.startsWith(e))); return R ? R.k : ''; }
+function ftParseItem(x, zhMode){
+  let role = '', body = String(x || '').trim(), dose = '';
+  if(/[大中小]剂/.test(body)){ // liều theo cỡ: 大/中/小 → "大 180～240g · 中 60～120g · 小 24～36g"
+    const rr = body.match(/[（(]\s*([君臣佐使])\s*[）)]\s*$/); if(rr) role = ftRole(rr[1]);
+    const nm = body.match(/^(\S+)/); const tiers = [...body.matchAll(/([大中小])剂[^（；]*?[（(]([^）)]+)[）)]/g)].map((m) => m[1] + ' ' + m[2]);
+    return { name: nm ? nm[1] : body, dose: tiers.join('\n'), anc: '', role };
+  }
+  const rm = body.match(/[（(]\s*([^（）()]+?)\s*[）)]\s*$/);
+  if(rm && ftRole(rm[1])){ role = ftRole(rm[1]); body = body.slice(0, rm.index).trim(); }
+  const pm = body.match(/[（(]\s*([^（）()]*[0-9][^（）()]*?)\s*[）)]\s*$/);
+  if(pm){ dose = pm[1].replace(/^各/, '').trim(); body = body.slice(0, pm.index).trim(); }
+  if(!dose){
+    const tm = body.match(new RegExp('^(.*?)\\s*([0-9][0-9.,～〜~\\-–]*\\s*' + FT_UNIT + ')\\s*$', 'i'));
+    if(tm && tm[1]){ dose = tm[2].trim(); body = tm[1].trim(); }
+  }
+  let name = body, anc = '';
+  if(zhMode){ const sp = body.match(/^(\S+)\s+(.+)$/); if(sp){ name = sp[1]; anc = sp[2].replace(/[（(].*$/, '').trim(); if(/^各[0-9]/.test(anc)) anc = ''; } }
+  return { name, dose, anc, role };
 }
 function ftFindHerb(zhName){
   if(!zhName) return null;
   return TERMS.find((x) => x.category === 'herb' && x.hz === zhName) || TERMS.find((x) => x.category === 'herb' && x.hz && (x.hz.startsWith(zhName) || zhName.startsWith(x.hz)));
 }
-function ftToggle(btn){
-  const row = btn.closest('.ft-row'); if(!row) return;
-  const open = row.classList.toggle('open'); btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-}
 function ftTable(term){
   const zh = ftSplit(term.composition_zh), vi = ftSplit(term.composition_vi), en = ftSplit(term.composition_en);
-  const base = zh.length ? zh : vi.length ? vi : en; if(base.length < 2) return '';
-  const items = base.map((x, i) => ({ z: zh.length ? ftParseItem(zh[i]) : null, v: vi.length === base.length ? ftParseItem(vi[i]) : null, e: en.length === base.length ? ftParseItem(en[i]) : null, raw: x }));
+  const base = zh.length ? zh : vi.length ? vi : en; if(!base.length) return '';
+  const items = base.map((x, i) => ({ z: zh.length ? ftParseItem(zh[i], true) : null, v: vi.length === base.length ? ftParseItem(vi[i]) : null, e: en.length === base.length ? ftParseItem(en[i]) : null, raw: x }));
   const role = (it) => (it.z && it.z.role) || (it.v && it.v.role) || (it.e && it.e.role) || '';
-  if(!items.some((it) => role(it))) return ''; // không có phân vai → dùng cách hiển thị cũ
-  const L = state.contentLangs, ul = state.lang;
-  const esc = myDocEsc;
-  const groups = FT_ROLES.concat([{ k: '', lab: { vi: 'Khác', zh: '其他', en: 'Other' }, sub: {} }]);
-  let html = `<div class="ft-wrap" role="table"><div class="ft-head" role="row"><span role="columnheader">${t('ft_herb')}</span><span role="columnheader">${t('ft_dose')}</span></div>`;
+  const hasRole = items.some((it) => role(it));
+  const L = state.contentLangs, ul = state.lang, esc = myDocEsc;
+  const groups = hasRole ? FT_ROLES.concat([{ k: '', lab: { vi: 'Khác', zh: '其他', en: 'Other' }, sub: {} }]) : [{ k: '*', lab: null }];
+  let html = `<div class="ft-wrap" role="table"><div class="ft-head" role="row"><span role="columnheader">${t('ft_herb')} (${items.length})</span><span role="columnheader">${t('ft_dose')}</span></div>`;
   for(const g of groups){
-    const rows = items.filter((it) => role(it) === g.k); if(!rows.length) continue;
-    html += `<div class="ft-grp" role="rowgroup"><div class="ft-gh"><b class="ft-badge ft-${g.k || 'x'}">${esc(g.lab[ul] || g.lab.vi)}</b><span>${esc(g.lab.zh)} · ${esc(g.sub[ul] || '')}</span></div>`;
+    const rows = g.k === '*' ? items : items.filter((it) => role(it) === g.k); if(!rows.length) continue;
+    html += `<div class="ft-grp" role="rowgroup">` + (g.lab ? `<div class="ft-gh"><b class="ft-badge ft-${g.k || 'x'}">${esc(g.lab[ul] || g.lab.vi)}</b><span>${esc(g.lab.zh)}${g.sub[ul] ? ' · ' + esc(g.sub[ul]) : ''}</span></div>` : '');
     for(const it of rows){
       const zn = it.z ? it.z.name : '', vn = it.v ? it.v.name : '', en2 = it.e ? it.e.name : '';
-      const dose = (it.z && it.z.dose) || (it.v && it.v.dose) || (it.e && it.e.dose) || '';
+      const dose = (it.z && it.z.dose) || (it.v && it.v.dose) || (it.e && it.e.dose) || '', anc = it.z ? it.z.anc : '';
       const herb = ftFindHerb(zn);
       const lines = [L.zh && zn ? `<span class="han ft-zh">${esc(zn)}</span>` : '', L.vi && vn ? `<span class="ft-vi">${esc(vn)}</span>` : '', L.en && en2 ? `<span class="ft-en">${esc(en2)}</span>` : ''].filter(Boolean);
-      const main = lines.length ? lines.join('') : `<span>${esc(it.raw)}</span>`;
+      const main = lines.length ? lines.join('') : `<span class="ft-vi">${esc(it.raw)}</span>`;
       const go = herb ? `onclick="ppGo('${herb.id}',event)"` : 'disabled';
-      html += `<div class="ft-row" role="row"><button type="button" class="ft-main" ${go}><span class="ft-name" role="cell">${main}</span><span class="ft-dose" role="cell">${esc(dose)}</span>${herb ? '<i class="ft-chev" aria-hidden="true">›</i>' : ''}</button></div>`;
+      html += `<div class="ft-row" role="row"><button type="button" class="ft-main" ${go}><span class="ft-name" role="cell">${main}</span><span class="ft-dose" role="cell">${esc(dose) || '—'}${anc ? `<small class="ft-anc">${esc(anc)}</small>` : ''}</span>${herb ? '<i class="ft-chev" aria-hidden="true">›</i>' : '<i class="ft-chev" aria-hidden="true"></i>'}</button></div>`;
     }
     html += `</div>`;
   }
