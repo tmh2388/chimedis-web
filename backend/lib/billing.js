@@ -166,6 +166,41 @@ export async function listAdmin(pool, status = 'pending', limit = 100) {
   return rows;
 }
 
+/**
+ * Đơn theo DANH MỤC (docs/PLAN-catalog-entitlements.md, chimedis-home): đơn có plan_id → cấp quyền lợi từng app theo bảng plans/plan_grants.
+ * Gói có app_id → 1 dòng (app_id, tier); bundle → mọi dòng plan_grants. period_days NULL = vĩnh viễn. Cùng tier còn hạn → cộng dồn.
+ * Riêng app 'dict' đồng bộ users.plan/plan_expires_at để mã dict cũ vẫn chạy.
+ */
+export async function grantCatalogPlan(pool, order) {
+  const [[pl]] = await pool.query('SELECT * FROM plans WHERE id = ?', [order.plan_id]);
+  if (!pl) throw new Error('unknown_plan');
+  if (pl.kind === 'topup') {
+    await aiBudget.addCredits({ uid: order.firebase_uid, credits: pl.credits_included, reason: 'topup', ref: `order-${order.code}`, pool });
+    return { order, expires: null };
+  }
+  let grants = [];
+  if (pl.kind === 'bundle') { const [g] = await pool.query('SELECT app_id, tier FROM plan_grants WHERE plan_id = ?', [pl.id]); grants = g; }
+  else if (pl.app_id) grants = [{ app_id: pl.app_id, tier: pl.tier || 'pro' }];
+  if (!grants.length) throw new Error('plan_without_grants');
+  await pool.query('INSERT IGNORE INTO users (firebase_uid, email) VALUES (?, ?)', [order.firebase_uid, order.email]);
+  let last = null;
+  for (const g of grants) {
+    let exp = null;
+    if (pl.period_days) {
+      const [[cur]] = await pool.query('SELECT tier, expires_at FROM entitlements WHERE firebase_uid = ? AND app_id = ?', [order.firebase_uid, g.app_id]);
+      const now = new Date(), curExp = cur && cur.expires_at ? new Date(cur.expires_at) : null;
+      const base = cur && cur.tier === g.tier && curExp && curExp > now ? curExp : now;
+      exp = new Date(base.getTime() + pl.period_days * 86400000);
+    }
+    await pool.query(
+      'INSERT INTO entitlements (firebase_uid, app_id, tier, expires_at, source_order) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE tier = VALUES(tier), expires_at = VALUES(expires_at), source_order = VALUES(source_order)',
+      [order.firebase_uid, g.app_id, g.tier, exp, order.code]);
+    if (g.app_id === 'dict' && ['pro', 'max'].includes(g.tier)) await pool.query('UPDATE users SET plan = ?, plan_expires_at = ? WHERE firebase_uid = ?', [g.tier, exp, order.firebase_uid]);
+    last = exp;
+  }
+  return { order, expires: last };
+}
+
 /** Duyệt đơn (idempotent): chỉ đơn pending mới được kích hoạt; trả { order, expires } hoặc null nếu không áp dụng. */
 export async function approveOrder(pool, code, { method, bankRef = null, paidAmount = null, note = null }) {
   const [res] = await pool.query(
@@ -176,6 +211,7 @@ export async function approveOrder(pool, code, { method, bankRef = null, paidAmo
   const order = await getOrder(pool, code);
   const months = PERIOD_MONTHS[order.plan_period] || 1;
   try {
+    if (order.plan_id) return await grantCatalogPlan(pool, order); // đơn theo danh mục (C2)
     if (order.kind === 'topup') {
       await aiBudget.addCredits({ uid: order.firebase_uid, credits: order.credits, reason: 'topup', ref: `order-${order.code}`, pool });
       return { order, expires: null };
