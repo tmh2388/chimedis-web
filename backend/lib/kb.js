@@ -142,3 +142,39 @@ export async function publicEntries(pool, node = '') {
   const [rows] = await pool.query(`SELECT id, node_code, title_vi, title_zh, title_en, body_vi, body_zh, body_en FROM kb_entries WHERE ${w.join(' AND ')} ORDER BY node_code, id LIMIT 500`, p);
   return rows;
 }
+
+/** Cây cho người dùng: chỉ các nhánh có mục ĐÃ DUYỆT (kèm số mục). */
+export async function publicTree(pool) {
+  await ensureTables(pool);
+  const [nodes] = await pool.query('SELECT code, parent_code, kind, title_vi, title_zh, title_en, sort FROM kb_nodes ORDER BY sort');
+  const [cnt] = await pool.query("SELECT node_code, COUNT(*) AS n FROM kb_entries WHERE status = 'approved' GROUP BY node_code");
+  const own = new Map(cnt.map((c) => [c.node_code, Number(c.n)]));
+  const total = new Map(nodes.map((n) => [n.code, own.get(n.code) || 0]));
+  for (const n of nodes) if (n.parent_code && own.get(n.code)) total.set(n.parent_code, (total.get(n.parent_code) || 0) + own.get(n.code));
+  return nodes.filter((n) => total.get(n.code) > 0).map((n) => ({ ...n, count: total.get(n.code) }));
+}
+/** Gộp tay: chuyển nguồn của mục `fromId` sang `intoId`, cộng n_sources, lưu trữ mục cũ. */
+export async function mergeEntries(pool, admin, fromId, intoId) {
+  if (!fromId || !intoId || fromId === intoId) return false;
+  const [[a]] = await pool.query('SELECT n_sources FROM kb_entries WHERE id = ?', [fromId]);
+  const [[b]] = await pool.query('SELECT id FROM kb_entries WHERE id = ?', [intoId]);
+  if (!a || !b) return false;
+  await pool.query('UPDATE kb_entry_sources SET entry_id = ?, merged = 1 WHERE entry_id = ?', [intoId, fromId]);
+  await pool.query('UPDATE kb_entries SET n_sources = n_sources + ? WHERE id = ?', [Number(a.n_sources) || 1, intoId]);
+  await pool.query("UPDATE kb_entries SET status = 'archived', reviewed_by = ?, reviewed_at = NOW() WHERE id = ?", [String(admin.email || admin.uid || '').slice(0, 128), fromId]);
+  return true;
+}
+/** Thêm/sửa nút Chương/Tiết (hoặc Môn mới) của cây. */
+export async function upsertNode(pool, b) {
+  const code = String(b.code || '').trim().toUpperCase().replace(/[^A-Z0-9.]/g, '').slice(0, 32);
+  const parent = String(b.parent_code || '').trim().toUpperCase().replace(/[^A-Z0-9.]/g, '').slice(0, 32) || null;
+  const title_vi = String(b.title_vi || '').trim().slice(0, 200);
+  if (!code || !title_vi) return false;
+  let kind = 'module';
+  if (parent) { const [[p]] = await pool.query('SELECT kind FROM kb_nodes WHERE code = ?', [parent]); if (!p) return false; kind = { module: 'subject', subject: 'chapter', chapter: 'section' }[p.kind] || 'section'; }
+  const [[mx]] = await pool.query('SELECT COALESCE(MAX(sort),0) AS m FROM kb_nodes');
+  await pool.query(
+    'INSERT INTO kb_nodes (code, parent_code, kind, title_vi, title_zh, title_en, sort) VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE title_vi = VALUES(title_vi), title_zh = VALUES(title_zh), title_en = VALUES(title_en)',
+    [code, parent, kind, title_vi, String(b.title_zh || '').slice(0, 200) || null, String(b.title_en || '').slice(0, 200) || null, Number(mx.m) + 1]);
+  return true;
+}
