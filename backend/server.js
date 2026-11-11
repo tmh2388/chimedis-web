@@ -21,6 +21,7 @@ import { quickEval, dominantLang, isMixed as isMixedText } from './lib/quick-eva
 import { pinyin } from 'pinyin';
 import * as laoshiFaq from './lib/laoshi-faq.js';
 import * as herbGaps from './lib/herb-gaps.js';
+import * as kb from './lib/kb.js';
 import * as termLearn from './lib/term-learn.js';
 import * as aiLookup from './lib/ai-lookup.js';
 import * as termAiFill from './lib/term-ai-fill.js';
@@ -1448,6 +1449,7 @@ app.post('/api/quick-check', verifyFirebaseToken, express.json({ limit: '25mb' }
 
 // ===== Lão Sư Trung Y: thầy giáo AI (gói Max) — xem lib/laoshi.js =====
 onDbUp(() => laoshi.ensureTable(mysqlPool).catch((e) => console.error('[laoshi] init:', e.message)));
+onDbUp(() => kb.ensureTables(mysqlPool).catch((e) => console.error('[kb] init:', e.message)));
 onDbUp(() => laoshiFaq.ensureTable(mysqlPool).catch((e) => console.error('[laoshi-faq] init:', e.message)));
 onDbUp(() => termLearn.ensureTables(mysqlPool).then(() => termLearn.startPromoteJob(mysqlPool)).catch((e) => console.error('[term-learn] init:', e.message)));
 onDbUp(() => webDefine.ensureTables(mysqlPool).catch((e) => console.error('[web-define] init:', e.message)));
@@ -2106,6 +2108,26 @@ app.post('/api/admin/term-restyle/resolve', ...adminOnly, requireDocsDb, adminJs
 app.get('/api/admin/auto-terms', ...adminOnly, requireDocsDb, adminJson(() => termLearn.listAutoTerms(mysqlPool)));
 app.post('/api/admin/auto-terms/:id', ...adminOnly, requireDocsDb, adminJson((req) => termLearn.reviewAutoTerm(mysqlPool, String(req.params.id), req.body || {})));
 app.post('/api/admin/term-promote/run', ...adminOnly, requireDocsDb, adminJson(() => termLearn.promoteBatch(mysqlPool)));
+// ===== Kho tri thức (giai đoạn 1): cây Module→Môn→Chương→Tiết + mục chuẩn 3 ngôn ngữ, gom từ hỏi–đáp ĐÃ DUYỆT của Lão Sư; AI chỉ soạn nháp, admin duyệt =====
+const kbIngestHits = new Map();
+app.get('/api/admin/kb/tree', ...adminOnly, requireDocsDb, adminJson(() => kb.tree(mysqlPool)));
+app.get('/api/admin/kb/entries', ...adminOnly, requireDocsDb, adminJson((req) => kb.listEntries(mysqlPool, { status: String(req.query.status || 'draft'), node: String(req.query.node || '') })));
+app.post('/api/admin/kb/ingest', ...adminOnly, requireDocsDb, requireOpenAI, async (req, res) => {
+  try {
+    const uid = req.firebaseUser.uid, now = Date.now();
+    const hits = (kbIngestHits.get(uid) || []).filter((t) => now - t < 3600e3);
+    if (hits.length >= 20) return res.status(429).json({ success: false, error: 'rate_limited' });
+    hits.push(now); kbIngestHits.set(uid, hits);
+    const out = await kb.ingestFromFaq(mysqlPool, Number((req.body || {}).limit) || 10);
+    if (out.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'kb_ingest', costUsd: out.costUsd });
+    delete out.costUsd;
+    res.json({ success: true, data: out });
+  } catch (e) { console.error('kb-ingest:', e.message); res.status(502).json({ success: false, error: 'upstream' }); }
+});
+app.post('/api/admin/kb/entry/:id', ...adminOnly, requireDocsDb, adminJson(async (req) => ({ ok: await kb.updateEntry(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, Number(req.params.id), req.body || {}) })));
+app.get('/api/kb', verifyFirebaseToken, requireDocsDb, async (req, res) => { // người dùng đăng nhập: chỉ mục đã duyệt
+  try { res.json({ success: true, data: await kb.publicEntries(mysqlPool, String(req.query.node || '')) }); } catch (e) { res.status(500).json({ success: false, error: 'kb_failed' }); }
+});
 app.get('/api/admin/laoshi-faq', ...adminOnly, requireDocsDb, adminJson((req) => laoshiFaq.list(mysqlPool, String(req.query.status || 'pending'), req.query.auto === '1')));
 app.post('/api/admin/laoshi-faq/:id', ...adminOnly, requireDocsDb, adminJson(async (req) => ({ ok: await laoshiFaq.review(mysqlPool, Number(req.params.id), req.body || {}) })));
 
