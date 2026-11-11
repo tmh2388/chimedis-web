@@ -20,6 +20,7 @@ import * as speech from './lib/speech.js';
 import { quickEval, dominantLang, isMixed as isMixedText } from './lib/quick-eval.js';
 import { pinyin } from 'pinyin';
 import * as laoshiFaq from './lib/laoshi-faq.js';
+import * as herbGaps from './lib/herb-gaps.js';
 import * as termLearn from './lib/term-learn.js';
 import * as aiLookup from './lib/ai-lookup.js';
 import * as termAiFill from './lib/term-ai-fill.js';
@@ -2007,13 +2008,32 @@ app.post('/api/admin/term-draft', ...adminOnly, requireOpenAI, async (req, res) 
     if (out.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'term_draft', costUsd: out.costUsd });
     delete out.costUsd;
     const group = out.group || 'khac';
+    let verify = null; // vị thuốc: KIỂM CHÉO lượt thứ hai (mô hình đối chiếu độc lập + liều trong các bài của kho) trước khi admin duyệt
+    if (group === 'thuoc' && b.hz) {
+      try {
+        if (!herbGaps.contextFor(b.hz)) herbGaps.cacheScan(herbGaps.scan(await loadTermsForAudit()));
+        verify = await herbGaps.verifyDraft(b.hz, { vi: out.vi, en: out.en, def_vi: out.def_vi, def_zh: out.def_zh, def_en: out.def_en, extra: out.extra });
+        if (verify.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'herb_verify', costUsd: verify.costUsd });
+        delete verify.costUsd;
+      } catch (e) { verify = { verdict: 'uncertain', issues: ['Không kiểm chéo được'], notes: '' }; }
+    }
     const keep = new Set(termLearn.KIND_EXTRA[group] || termLearn.KIND_EXTRA.khac);
     const extra = {}; for (const [k, v] of Object.entries(out.extra || {})) if (keep.has(k.replace(/_(vi|zh|en)$/, ''))) extra[k] = v;
-    res.json({ success: true, data: { ...out, group, extra } });
+    res.json({ success: true, data: { ...out, group, extra, verify } });
   } catch (e) {
     console.error('term-draft:', e.message);
     res.status(e.code === 'bad_request' ? 400 : 502).json({ success: false, error: e.code === 'bad_request' ? 'bad_request' : 'upstream' });
   }
+});
+// Quét vị thuốc có trong Thang phương nhưng chưa nối được tới kho (đã trừ tên gọi khác trong herb-aliases.json). enqueue=true → đưa vào hàng chờ "Từ báo sai".
+app.post('/api/admin/herb-gaps', ...adminOnly, requireDocsDb, async (req, res) => {
+  try {
+    const list = herbGaps.scan(await loadTermsForAudit());
+    herbGaps.cacheScan(list);
+    let q = { enqueued: 0, skipped: 0 };
+    if ((req.body || {}).enqueue) q = await termLearn.enqueueMissingHerbs(mysqlPool, { uid: req.firebaseUser.uid }, list);
+    res.json({ success: true, data: { total: list.length, rows: list.slice(0, 60).map((d) => ({ name: d.name, count: d.count, vi: d.vi, en: d.en })), ...q } });
+  } catch (e) { console.error('herb-gaps:', e.message); res.status(500).json({ success: false, error: 'scan_failed' }); }
 });
 app.post('/api/admin/term-ai-translate', ...adminOnly, requireOpenAI, async (req, res) => {
   try {
