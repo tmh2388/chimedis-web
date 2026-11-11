@@ -15,7 +15,7 @@ import { styleBlock, crossGroupRefs } from './tcm-style.js';
 const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
 const MODEL = process.env.LAOSHI_MODEL || 'gpt-5-mini';
 const MAX_HISTORY = 12;          // số lượt gần nhất gửi lên mô hình
-const MAX_MSG_CHARS = 1200;      // độ dài tối đa mỗi tin của người dùng
+const MAX_MSG_CHARS = 4000;      // độ dài tối đa mỗi tin của người dùng (nới từ 1200: không cắt cụt đoạn dán dài)
 
 function pickIndex(n, seed) { return Math.abs(seed | 0) % n; }
 
@@ -37,6 +37,13 @@ const LANG_RULE = {
   en: 'LANGUAGE: Reply entirely in English (refer to yourself as "the teacher"/"I", address the learner as "you"), even if the learner writes in another language; give terms with Hanzi and pinyin. Do NOT reply in Vietnamese.',
 };
 const LANG_NAME = { vi: 'tiếng Việt', zh: '简体中文', en: 'English' };
+const LANG_REMIND = { vi: 'Nhắc: trả lời hoàn toàn bằng tiếng Việt; thuật ngữ/tên riêng kèm chữ Hán', zh: '提醒：全程使用简体中文回答；专业名词/专名写完整汉字', en: 'Reminder: answer entirely in English; technical terms and proper names with full Hanzi' };
+// Quy tắc NGÔN NGỮ NHẤT QUÁN + HÁN TỰ (chỉ chế độ chat chữ): toàn bộ lời giải thích bằng MỘT ngôn ngữ; danh từ chuyên môn/tên riêng kèm chữ Hán đầy đủ.
+const LANG_STRICT = {
+  vi: 'NHẤT QUÁN NGÔN NGỮ: TOÀN BỘ câu trả lời (kể cả giải thích, ví dụ, câu hỏi cuối) bằng TIẾNG VIỆT — tuyệt đối không xen câu tiếng Anh hay tiếng Trung, kể cả khi lịch sử hội thoại hoặc NGỮ LIỆU THAM CHIẾU viết bằng ngôn ngữ khác (hãy dịch ý sang tiếng Việt). Mọi danh từ chuyên môn, tên vị thuốc, bài thuốc, huyệt, bệnh/chứng, kinh mạch, tên sách/người: viết "tên Việt (汉字, pinyin)" đầy đủ chữ Hán giản thể, ví dụ Ma hoàng (麻黄, má huáng); từ nhắc lại sau đó có thể bỏ chữ Hán.',
+  zh: '语言一致：全部回答（解释、举例、结尾提问）只用简体中文，不夹杂越南语或英语，即使对话历史或参考资料是其他语言（请转译成中文）。所有专业名词、药名、方名、穴位、病证、经脉、书名/人名都写完整汉字；必要时括号内附越南语名称。',
+  en: 'LANGUAGE CONSISTENCY: write the ENTIRE answer (explanations, examples, closing question) in ENGLISH only — never mix in Vietnamese or Chinese sentences, even if the chat history or the REFERENCE CORPUS is in another language (translate the meaning into English). Every technical noun, herb, formula, acupoint, disease/pattern, meridian, book or person name: give the English name followed by full Simplified Hanzi and pinyin, e.g. Ephedra (麻黄, má huáng); after the first mention you may omit the Hanzi.',
+};
 
 const PERSONA = `Bạn là "Lão Sư" (老师) — thầy giáo Trung y của ứng dụng Chimedis, dạy cho sinh viên/bác sĩ/người yêu Trung y.
 
@@ -55,7 +62,7 @@ CÁCH DẠY
 - Ưu tiên gợi mở: hỏi lại để em tự suy nghĩ trước khi đưa đáp án đầy đủ, nhưng nếu em hỏi thẳng thì trả lời trực tiếp trước rồi mới hỏi thêm.
 - ĐỦ NỘI DUNG: khi giải đáp về chứng/pháp trị/triệu chứng, nêu ĐỦ các mặt có căn cứ: pháp trị, phương/bài thuốc, vị thuốc, HUYỆT VỊ, thực dưỡng/dưỡng sinh. Mục nào kho chưa có thì nói rõ "kho chưa có, chỉ để tham khảo" thay vì bỏ qua hay bịa.
 - Mỗi thuật ngữ quan trọng viết kèm chữ Hán và pinyin, ví dụ: Ma hoàng (麻黄, má huáng).
-- Trả lời gọn: thường 60–140 từ; chỉ dài hơn khi em yêu cầu giải thích sâu. Không dùng bảng; được dùng gạch đầu dòng ngắn và **in đậm** cho từ khoá.
+- ĐỘ DÀI: đủ ý, KHÔNG cắt xén và KHÔNG giới hạn số từ. Câu hỏi đơn giản/chào hỏi thì ngắn gọn; câu hỏi về chứng, pháp trị, phương, huyệt, so sánh, hay yêu cầu giải thích thì trình bày ĐẦY ĐỦ, có cấu trúc (gạch đầu dòng ngắn, **in đậm** cho từ khoá). Không dùng bảng.
 - Nếu em viết tiếng Trung, sửa lỗi nhẹ nhàng và khen điều làm đúng.
 - Có thể đùa nhẹ bằng lời, nhưng KHÔNG viết tiếng cười ("haha", "hì hì", "哈哈") và không dùng biểu tượng cảm xúc — giọng đọc không đọc chúng.
 - LUÔN ĐI TIẾP, KHÔNG BAO GIỜ KẾT THÚC CỤT: sau khi chấm câu đố (đúng/sai + một dữ kiện dễ nhớ 1–2 câu), ĐƯA NGAY câu đố tiếp theo (trắc nghiệm A/B/C) dựa trên mục "GỢI Ý CÂU TIẾP THEO" nếu có; trừ khi em xin dừng. Với câu hỏi thường, trả lời xong luôn kết bằng một câu hỏi/đề xuất tiếp.
@@ -196,7 +203,7 @@ function sanitizeMessages(messages) {
   const out = [];
   for (const m of Array.isArray(messages) ? messages.slice(-MAX_HISTORY) : []) {
     const role = m && m.role === 'assistant' ? 'assistant' : 'user';
-    const content = String((m && m.content) || '').slice(0, role === 'user' ? MAX_MSG_CHARS : 2400).trim();
+    const content = String((m && m.content) || '').slice(0, role === 'user' ? MAX_MSG_CHARS : 8000).trim();
     if (content) out.push({ role, content });
   }
   // Phải kết thúc bằng lượt của người dùng.
@@ -257,12 +264,13 @@ export async function reply({ messages, quiz = null, lang = 'vi', corrections = 
     quiz && quiz.answer ? `CÂU ĐỐ ĐANG MỞ: "${String(quiz.question).slice(0, 200)}" — đáp án đúng là ${quiz.answer} (${String(quiz.answer_text).slice(0, 80)}). Nếu em vừa trả lời câu đố, chấm đúng/sai, giải thích ngắn gọn dựa trên dữ kiện: ${String(quiz.fact || '').slice(0, 500)}` : '',
     // Đặt CUỐI cùng để mô hình không bị kéo về tiếng Việt bởi phần tính cách viết bằng tiếng Việt ở trên.
     LANG_RULE[L(lang)],
+    talk ? '' : LANG_STRICT[L(lang)],
   ].filter(Boolean).join('\n\n');
 
   const body = {
     model: MODEL,
-    messages: [{ role: 'system', content: sys }, ...msgs],
-    max_completion_tokens: talk ? 1800 : 3000, // gồm cả token suy luận của mô hình (trả rỗng khi suy luận ăn hết trần → lỗi "卡壳")
+    messages: [{ role: 'system', content: sys }, ...(talk ? msgs : msgs.map((m, i) => (i === msgs.length - 1 ? { ...m, content: `${m.content}\n\n[${LANG_REMIND[L(lang)]}]` } : m)))],
+    max_completion_tokens: talk ? 1800 : 6000, // gồm cả token suy luận của mô hình (trả rỗng khi suy luận ăn hết trần → lỗi "卡壳")
     reasoning_effort: 'low',
   };
   let lastErr = '';

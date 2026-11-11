@@ -336,3 +336,9 @@ Hậu kiểm web thật sau v107: 1 → 109 từ có IPA chỉ vài phút sau l�
 
 ## Bảng thành phần cho MỌI Thang phương (SW v117, 2026-11-10)
 - `ftTable` nay hiện bảng "Vị thuốc | Liều lượng" cho cả 451 bài (trước chỉ bài có phân vai). Có 君臣佐使 (180 bài) → nhóm theo vai; không có (271 bài) → danh sách phẳng. Liều hiện đại ở cột phải, liều cổ (三两…) dòng nhỏ dưới; liều theo cỡ (大/中/小剂) tách từng dòng. Dữ liệu zh là chuẩn (tách `；`), vi/en ghép theo thứ tự khi cùng số mục. Kích thước nhỏ gọn (hàng 40px, chữ Hán 15px). Kiểm tra: 3118 dòng, không sót bài nào có dữ liệu; còn 1 tên lạ hợp lệ (两头尖 – tên vị thuốc).
+
+## Lão Sư: không cắt nội dung, nhất quán ngôn ngữ, nút dịch (SW v118, 2026-11-11)
+- **Độ dài**: bỏ giới hạn "60–140 từ" trong prompt; `max_completion_tokens` 3000→6000 (chat chữ; chế độ nói giữ 1800); tin người dùng 1200→4000 ký tự, lời thầy trong lịch sử 2400→8000 ký tự gửi lại mô hình.
+- **Nhất quán ngôn ngữ**: thêm `LANG_STRICT` (cuối system prompt) + nhắc `LANG_REMIND` gắn vào tin người dùng cuối (chỉ trong request): toàn bộ lời đáp một ngôn ngữ giao diện, ngữ liệu tham chiếu khác ngôn ngữ phải dịch ý; danh từ chuyên môn/tên riêng kèm chữ Hán giản thể đầy đủ ("Ma hoàng (麻黄, má huáng)"). Không áp dụng cho chế độ nói (talk).
+- **Dịch**: mỗi lời thầy có nút 🌐 Dịch → chọn Việt/中文/English, dịch cả đoạn qua `/api/translate-text` với `full:true` (tối đa 4000 ký tự, body 24kb; chung hạn mức 60 lượt/giờ). Bôi đen một từ/cụm trong lời thầy → khung nổi `selPop` (kho + dịch) có chọn ngôn ngữ đích VI/中/EN.
+- **Kho FAQ của thầy (hiện trạng)**: `laoshi_faq` — câu hỏi/đáp đủ điều kiện được ghi 'observed' tự động; ≥PENDING_ASKS người khác nhau → 'pending'; ≥AUTO_ASKS và có nối đất kho → 'approved' tự động; chỉ bản approved được trả lại không gọi AI. Chưa có phân module/môn/chương, chưa gộp trùng đa ngôn ngữ.

@@ -1776,7 +1776,7 @@ app.get('/api/web-define', verifyFirebaseToken, async (req, res) => {
 });
 // Dịch đoạn bôi đen trong thẻ Bác sĩ (từ / cụm / câu): chỉ người dùng đăng nhập; hạn mức theo giờ để chống lạm dụng; chi phí do hệ thống chịu.
 const selTransHits = new Map();
-app.post('/api/translate-text', express.json({ limit: '4kb' }), verifyFirebaseToken, async (req, res) => {
+app.post('/api/translate-text', express.json({ limit: '24kb' }), verifyFirebaseToken, async (req, res) => {
   try {
     const uid = req.firebaseUser.uid, now = Date.now();
     const b = req.body || {};
@@ -1784,7 +1784,7 @@ app.post('/api/translate-text', express.json({ limit: '4kb' }), verifyFirebaseTo
     if (!isAdmin(req.firebaseUser) && hits.length >= 60) return res.status(429).json({ success: false, error: 'rate_limited' });
     if (textTranslate.engine() === 'ai' && !process.env.OPENAI_API_KEY) return res.status(503).json({ success: false, error: 'translate_not_configured' });
     hits.push(now); selTransHits.set(uid, hits);
-    const out = await textTranslate.translateText(b.text, b.target);
+    const out = await textTranslate.translateText(b.text, b.target, !!b.full);
     if (out.costUsd) aiBudget.charge({ uid: 'system', app: 'dict', feature: 'select_translate', costUsd: out.costUsd });
     delete out.costUsd;
     res.json({ success: true, data: out });
