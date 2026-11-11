@@ -1418,6 +1418,13 @@ a.tl:hover{background:var(--ngoc-mo)}
 .rd-verify b{display:block}.rd-verify.consistent b{color:#2F6B2F}.rd-verify.check{border-color:var(--son);background:var(--son-mo)}.rd-verify.check b{color:var(--son)}
 .rd-verify ul{margin:4px 0 0 18px}.rd-verify small{display:block;color:var(--muc-mo);margin-top:3px}
 .ft-pick{display:flex;flex-wrap:wrap;gap:8px;padding:2px 10px 10px;background:var(--ngua)}
+/* Trang con (Cài đặt hệ thống, Từ báo sai, Quản trị, Ghi chú…) trên web máy tính: hộp thoại nổi ở giữa, KHÔNG phủ kín màn hình; nền mờ tạo bằng bóng đổ lan rộng. */
+@media(min-width:1100px){
+  .sys-screen,.mydoc-editor:not(#talkScreen):not(#laoshiScreen),.ol-screen{position:fixed;inset:5vh calc((100vw - min(1040px, 92vw)) / 2);border-radius:20px;overflow:hidden;box-shadow:0 0 0 200vmax rgba(14,58,58,.5), 0 20px 60px rgba(0,0,0,.35)}
+  .sys-screen{z-index:5000}.ol-screen{z-index:5600}
+  .sys-head{padding-top:10px;border-radius:20px 20px 0 0}
+  .sys-body{padding-bottom:30px}
+}
 /* ===== WEB MÁY TÍNH (>=1100px): menu trái + thanh trên + nội dung (2026-11-10). Điện thoại/iPad dọc KHÔNG đổi. ===== */
 @media(min-width:1100px){
   :root{--sbw:232px}
@@ -8114,7 +8121,7 @@ function gsViewList(merKey){
 }
 
 let HERB_ALIASES = {};
-try{ fetch('/data/herb-aliases.json').then((r) => r.ok ? r.json() : null).then((j) => { if(j && j.aliases) HERB_ALIASES = j.aliases; try{ _tlIdx = null; }catch(e){} }).catch(() => {}); }catch(e){}
+try{ fetch('/api/herb-aliases').then((r) => r.ok ? r.json() : null).then((j) => { if(j && j.aliases) HERB_ALIASES = j.aliases; try{ _tlIdx = null; }catch(e){} }).catch(() => {}); }catch(e){}
 // ===== Thành phần bài thuốc dạng bảng (mọi Thang phương): Vị thuốc | Liều lượng; có phân vai Quân–Thần–Tá–Sứ thì nhóm theo vai (#63) =====
 const FT_ROLES = [
   { k: 'q', zh: ['君'], vi: ['quân'], en: ['chief', 'sovereign', 'monarch', 'emperor'], lab: { vi: 'Quân', zh: '君', en: 'Chief' }, sub: { vi: 'vị chủ trị chính', zh: '主药', en: 'principal herb' } },
@@ -9556,7 +9563,7 @@ async function trRefresh(){
 }
 function trPaint(box){
   const esc = myDocEsc;
-  if(!trList.length){ box.innerHTML = `<div class="sys-card"><div class="sys-empty" style="text-align:center;padding:26px 8px">✓ ${t('rev_empty')}</div></div>`; return; }
+  if(!trList.length){ box.innerHTML = `<div class="sys-card"><div class="sys-empty" style="text-align:center;padding:26px 8px">✓ ${t('rev_empty')}</div><div style="text-align:center;padding-bottom:12px"><button type="button" class="ui-btn ghost sm" onclick="trScanHerbs()">🌿 ${t('hg_scan')}</button></div></div>`; return; }
   const fmt = (d) => { try{ return new Date(d).toLocaleDateString(state.lang === 'zh' ? 'zh-CN' : state.lang === 'en' ? 'en-GB' : 'vi-VN'); }catch(e){ return ''; } };
   box.innerHTML = `<div class="rev-sum">${t('rev_count').replace('{n}', trList.length)}</div>` +
     `<div class="bulk-bar"><label><input type="checkbox" id="revAll" onchange="trRevSelAll(this.checked)"> ${t('bulk_all')}</label>` +

@@ -2027,6 +2027,8 @@ app.post('/api/admin/term-draft', ...adminOnly, requireOpenAI, async (req, res) 
     res.status(e.code === 'bad_request' ? 400 : 502).json({ success: false, error: e.code === 'bad_request' ? 'bad_request' : 'upstream' });
   }
 });
+// Bảng tên gọi khác của vị thuốc (giao diện dùng để nối link trong thành phần bài thuốc). Công khai, cho phép đệm.
+app.get('/api/herb-aliases', (req, res) => { res.setHeader('Cache-Control', 'public, max-age=3600'); res.json({ success: true, aliases: herbGaps.loadAliases() }); });
 // Quét vị thuốc có trong Thang phương nhưng chưa nối được tới kho (đã trừ tên gọi khác trong herb-aliases.json). enqueue=true → đưa vào hàng chờ "Từ báo sai".
 app.post('/api/admin/herb-gaps', ...adminOnly, requireDocsDb, async (req, res) => {
   try {
