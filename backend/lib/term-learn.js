@@ -259,6 +259,22 @@ export async function addFeedback(pool, { uid, email, term_id, hz, vi, en, group
     [cut(term_id, 64), cut(hz, 64), cut(vi, 190), cut(en, 190), cut(group1, 48), uid, cut(email, 255), cut(comment, 1000), cut(suggested_vi, 190), cut(suggested_en, 190), cut(suggested_def, 1000), cut(suggested_hz, 64), cut(suggested_def_zh, 1000), cut(suggested_def_en, 1000), /^[a-z_]{2,24}$/.test(String(field_key || '')) ? String(field_key) : null]);
   return { ok: true };
 }
+/** Đưa vị thuốc còn THIẾU trong kho (quét từ các Thang phương) vào hàng chờ "Từ báo sai" để admin dùng AI soạn nháp + duyệt. Không ghi vào kho. */
+export async function enqueueMissingHerbs(pool, admin, items) {
+  let enq = 0, skipped = 0;
+  for (const it of items || []) {
+    const term_id = ('miss-herb-' + String(it.name || '').trim()).slice(0, 64);
+    if (!it.name || term_id.length < 11) continue;
+    const [[ex]] = await pool.query("SELECT COUNT(*) AS n FROM term_feedback WHERE term_id = ? AND status = 'new'", [term_id]);
+    if (Number(ex.n) > 0) { skipped++; continue; }
+    const comment = `Dược liệu có trong ${it.count} bài thuốc nhưng chưa có trong kho: ` + (it.formulas || []).map((f) => `${f.hz}${f.dose ? ' ' + f.dose : ''}`).join('、');
+    await pool.query(
+      'INSERT INTO term_feedback (term_id, hz, vi, en, group1, firebase_uid, email, comment, suggested_vi, suggested_en) VALUES (?,?,?,?,?,?,?,?,?,?)',
+      [term_id, String(it.name).slice(0, 64), String(it.vi || '').slice(0, 190) || null, String(it.en || '').slice(0, 190) || null, 'Dược liệu', admin.uid, 'hệ thống · quét bài thuốc', comment.slice(0, 1000), String(it.vi || '').slice(0, 190) || null, String(it.en || '').slice(0, 190) || null]);
+    enq++;
+  }
+  return { enqueued: enq, skipped };
+}
 export async function listFeedback(pool, status = 'new') {
   const [rows] = await pool.query('SELECT * FROM term_feedback WHERE status = ? ORDER BY created_at DESC LIMIT 200', [status]);
   return rows;

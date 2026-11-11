@@ -343,6 +343,11 @@ Hậu kiểm web thật sau v107: 1 → 109 từ có IPA chỉ vài phút sau l�
 - **Dịch**: mỗi lời thầy có nút 🌐 Dịch → chọn Việt/中文/English, dịch cả đoạn qua `/api/translate-text` với `full:true` (tối đa 4000 ký tự, body 24kb; chung hạn mức 60 lượt/giờ). Bôi đen một từ/cụm trong lời thầy → khung nổi `selPop` (kho + dịch) có chọn ngôn ngữ đích VI/中/EN.
 - **Kho FAQ của thầy (hiện trạng)**: `laoshi_faq` — câu hỏi/đáp đủ điều kiện được ghi 'observed' tự động; ≥PENDING_ASKS người khác nhau → 'pending'; ≥AUTO_ASKS và có nối đất kho → 'approved' tự động; chỉ bản approved được trả lại không gọi AI. Chưa có phân module/môn/chương, chưa gộp trùng đa ngôn ngữ.
 
+## Dược liệu trong bài thuốc: tên gọi khác + quét thiếu + kiểm chéo (SW v119, 2026-11-11)
+- **Đo (451 bài, 3118 dòng thuốc)**: trước 88% nối được; sau bảng tên gọi khác 95,5% (2922 nối thẳng + 55 có nhiều ứng viên → ô chọn; 141 dòng/119 tên còn thiếu thật như 粳米, 鸡子黄, 白酒…). Nguyên nhân chính là TÊN GỌI KHÁC (芍药=白芍/赤芍, 杏仁=苦杏仁, 橘皮=陈皮, 银花=金银花…), không phải lỗi.
+- **Bảng tên** `backend/public/data/herb-aliases.json` (52 cặp; mọi tên chuẩn phải có trong kho). Chỉ nối link, KHÔNG sửa nội dung kho; tên mơ hồ hiện ô chọn; bài thuốc con (五苓散) nối sang Thang phương. Admin rà soát/bổ sung bằng PR.
+- **Quét thiếu**: `lib/herb-gaps.js` `scan()` + `POST /api/admin/herb-gaps {enqueue}` → đưa các vị thiếu vào hàng chờ "Từ báo sai" (`miss-herb-<hz>`, điền sẵn tên Việt/Anh lấy từ chính các bài thuốc trong kho); nút 🌿 trong màn Từ báo sai.
+- **AI soạn + KIỂM CHÉO**: `/api/admin/term-draft` với nhóm 'thuoc' chạy thêm `verifyDraft` (lượt AI thẩm định độc lập theo Dược điển/《中药学》 + liều trong các bài của kho) → huy hiệu khớp/cần xem lại/chưa chắc. Bản "cần xem lại" KHÔNG nằm trong "Lưu đã soạn" hàng loạt. Admin vẫn là người duyệt cuối; AI không tự ghi kho.
 ## Kho tri thức — giai đoạn 1 (backend, 2026-11-11)
 - **Mục tiêu**: biến hỏi–đáp ĐÃ DUYỆT của Lão Sư (`laoshi_faq`) thành mục tri thức chuẩn, lọc trùng, xếp theo Module → Môn → Chương → Tiết, ba ngôn ngữ đồng nghĩa.
 - **Bảng** (tự tạo, `lib/kb.js`): `kb_nodes` (cây, mã ổn định; khung ban đầu 8 module/17 môn, sửa bằng SQL/API sau), `kb_entries` (draft→review→approved→archived; một bản chuẩn/khái niệm, `concept_key` = tập thuật ngữ Hán đã sắp xếp), `kb_entry_sources` (FAQ nào đã vào mục nào, có gộp hay không).
