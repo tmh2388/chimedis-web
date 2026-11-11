@@ -2127,6 +2127,9 @@ app.post('/api/admin/kb/ingest', ...adminOnly, requireDocsDb, requireOpenAI, asy
   } catch (e) { console.error('kb-ingest:', e.message); res.status(502).json({ success: false, error: 'upstream' }); }
 });
 app.post('/api/admin/kb/entry/:id', ...adminOnly, requireDocsDb, adminJson(async (req) => ({ ok: await kb.updateEntry(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, Number(req.params.id), req.body || {}) })));
+app.post('/api/admin/kb/merge', ...adminOnly, requireDocsDb, adminJson(async (req) => ({ ok: await kb.mergeEntries(mysqlPool, { uid: req.firebaseUser.uid, email: req.firebaseUser.email }, Number((req.body || {}).from), Number((req.body || {}).into)) })));
+app.post('/api/admin/kb/node', ...adminOnly, requireDocsDb, adminJson(async (req) => ({ ok: await kb.upsertNode(mysqlPool, req.body || {}) })));
+app.get('/api/kb/tree', verifyFirebaseToken, requireDocsDb, async (req, res) => { try { res.json({ success: true, data: await kb.publicTree(mysqlPool) }); } catch (e) { res.status(500).json({ success: false, error: 'kb_failed' }); } });
 app.get('/api/kb', verifyFirebaseToken, requireDocsDb, async (req, res) => { // người dùng đăng nhập: chỉ mục đã duyệt
   try { res.json({ success: true, data: await kb.publicEntries(mysqlPool, String(req.query.node || '')) }); } catch (e) { res.status(500).json({ success: false, error: 'kb_failed' }); }
 });
