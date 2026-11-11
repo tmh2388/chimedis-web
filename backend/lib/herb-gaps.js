@@ -14,7 +14,7 @@ const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
 const MODEL = process.env.HERB_VERIFY_MODEL || 'gpt-5-mini';
 
 export function loadAliases() {
-  try { return JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'public', 'data', 'herb-aliases.json'), 'utf8')).aliases || {}; } catch (_) { return {}; }
+  try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'herb-aliases.json'), 'utf8')).aliases || {}; } catch (_) { return {}; }
 }
 const split = (s) => String(s || '').split(/[；;]\s*/).map((x) => x.trim()).filter(Boolean);
 const roleTail = /[（(]\s*(?:君|臣|佐|使|chief|deputy|assistant|envoy|quân|thần|tá|sứ)[^（）()]*[）)]\s*$/i;
