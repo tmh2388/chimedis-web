@@ -376,3 +376,11 @@ Hậu kiểm web thật sau v107: 1 → 109 từ có IPA chỉ vài phút sau l�
 - **Cắt ngập ngừng** `turnComputeKeep`: lấy năng lượng micro mỗi 50 ms lúc quay (AnalyserNode), ngưỡng thích nghi (3× nền ồn, tối thiểu 0,015), bỏ im lặng đầu/cuối, khoảng lặng > 0,9 s bị cắt (giữ ~0,5 s đệm mỗi phía). Chưa cắt từ đệm ("ừ", "嗯") — cần ASR.
 - **Lưu cả bài** `turnExportAll` (cách A): phát lại các khoảng "giữ" lên canvas + âm qua WebAudio và ghi bằng MediaRecorder thành MỘT video (≤640px, 1,5 Mbps), thời gian thực, tuỳ chọn phụ đề (chữ nguồn + dịch theo tỉ lệ ký tự), tạm dừng recorder khi tua/tải, hẹn giờ dừng chính xác từng khoảng. Lưu qua `listenSaveBlob` (chia sẻ trên iOS / tải về).
 - **Đo thử** (camera/mic giả, Chromium): đoạn thô 5,2 s → giữ 3,1 s → video ghép 3,07 s, có phụ đề. Chưa thử iPhone thật (MediaRecorder mp4, WebAudio từ phần tử video).
+
+## Nghe dài: "Chương" 5–10 phút dựng từ CSDL (SW v125, 2026-11-26)
+- **Mục "Nghe dài"** (tab đầu tiên, mặc định) trong Luyện nghe: 136 chương ≈ 14,9 giờ (Dược liệu 41 · 3,9h, Thang phương 24 · 2,4h, Huyệt vị 17 · 1,8h, Bệnh lý 54 · 6,8h); trung bình 6,4 phút, 81 chương 6–8 phút, tối đa ~10 phút (đo trên 6253 mục, giả định 4,5 chữ Hán/giây).
+- **Cách dựng** (`lib/csdl-lessons.js` `buildChapters`): gom mục theo (lĩnh vực, nhóm giáo trình) → chia phần ~2000 chữ Hán (tối đa 2700, không cắt giữa một mục) → mỗi chương có câu mở đầu + các câu của từng mục theo khuôn câu có sẵn (KHÔNG AI viết lại). Nhóm quá nhỏ (<800 chữ) được gộp theo thứ tự ("A … B"). Thang phương chỉ đọc TÊN vị (không liều). id `db-ch-<sha1[:10]>`, nối `next_id` sang phần kế.
+- **API**: `GET /api/csdl/chapters` (danh sách + chương miễn phí hôm nay); `/api/csdl/lesson/:id` & `/audio` dùng chung đường cũ. Một chương/ngày miễn phí (`dailyChapter`), còn lại cần Pro như bài Học Thuật.
+- **Giọng đọc**: câu của chương dùng CHUNG khoá bộ đệm với bài của từng mục (`chapterAudioKey`) → không sinh lại giọng đã có; mở chương → máy chủ sinh sẵn nền toàn bộ câu (3 luồng, không tính hạn mức người dùng) để nghe liền mạch.
+- **Nghe liên tục**: hết một phần → `listenAutoNext` mở và phát phần kế (iOS có thể chặn tự phát; khi đó bấm phát).
+- **Việc sau**: tập ghép bài báo (2A), y án dài (2C), hội thoại; 1B file ghép từng bài chạy được khi khoá màn hình.

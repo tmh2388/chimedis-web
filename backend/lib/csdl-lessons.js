@@ -29,7 +29,9 @@ const stripEnd = (s) => clean(s).replace(/\s+([.,;:。，；：])/g, '$1').repla
 const NOT_INFORMATIVE = /(来源未记载|Nguồn không ghi nhận|source does not document)/i;
 
 // "第一节 发散风寒药" → "发散风寒药"
-const zhGroup = (s) => clean(s).replace(/^第[一二三四五六七八九十百]+[节章]\s*/u, '');
+const zhGroup = (s) => clean(s).replace(/^(?:第[一二三四五六七八九十百]+[节章]|全章)\s*/u, '');
+// "Toàn chương — Thuốc tiêu thực" / "Tiết 3 — …" → bỏ tiền tố số thứ tự chương/tiết trong tên nhóm hiển thị
+const viGroup = (s) => clean(s).replace(/^(?:Toàn chương|Tiết\s*(?:thứ\s*)?[\wÀ-ỹ]+|Chương\s*[\wÀ-ỹ]+)\s*[—–-]\s*/iu, '');
 // Bỏ chỉ dẫn hình "(图9-2-5)" / "(Figure 9-2-5)" — người nghe không nhìn thấy hình.
 const noFig = (s) => clean(s).replace(/[（(]\s*图[^）)]*[）)]/gu, '').replace(/\(\s*Figure[^)]*\)/gi, '').replace(/\s+([。，；])/g, '$1');
 const lc = (s) => { const t = clean(s); return t ? t.charAt(0).toLowerCase() + t.slice(1) : ''; };
@@ -66,10 +68,30 @@ function splitLong(s) {
 }
 const addSeg = (arr, zh, vi, en) => { const s = seg(zh, vi, en); if (s) arr.push(...splitLong(s)); };
 
+/** Thang phương → câu nghe (chỉ dùng trong bài dài/chương): tên · nhóm · thành phần (tên vị, KHÔNG liều) · công dụng · chủ trị · lưu ý. */
+function buildFormulaSegments(t) {
+  const out = [];
+  const grp = { zh: clean(t.group2), vi: clean(t.group2_vi), en: clean(t.group2_en) };
+  addSeg(out, `${t.hz}，属${grp.zh}。`, `${t.vi}, thuộc nhóm ${lc(grp.vi)}.`, `${t.en}. Group: ${grp.en}.`);
+  const split = (x) => clean(x).split(/[；;]\s*/).map((y) => y.trim()).filter(Boolean);
+  const dropRole = (y) => y.replace(/[（(][^）)]*[）)]\s*$/u, '').trim();
+  const zn = split(t.composition_zh).map((y) => dropRole(y).split(/\s+/)[0]);
+  const dose = /\s*[0-9][0-9.,～〜~\-–]*\s*(?:g|克|枚|个|片|粒)?\s*$/i;
+  const vn = split(t.composition_vi).map((y) => dropRole(y).replace(dose, '').trim()), en = split(t.composition_en).map((y) => dropRole(y).replace(dose, '').trim());
+  if (zn.length >= 2 && zn.length === vn.length && vn.length === en.length && !zn.some((x) => /[大中小]剂/.test(x))) {
+    addSeg(out, `组成：${zn.join('、')}。`, `Thành phần: ${vn.join(', ')}.`, `Composition: ${en.join(', ')}.`);
+  }
+  addSeg(out, t.functions_zh && `功用：${stripEnd(t.functions_zh)}。`, t.functions_vi && `Công dụng: ${stripEnd(t.functions_vi)}.`, t.functions_en && `Functions: ${stripEnd(t.functions_en)}.`);
+  addSeg(out, t.indications_zh && `主治：${stripEnd(t.indications_zh)}。`, t.indications_vi && `Chủ trị: ${stripEnd(t.indications_vi)}.`, t.indications_en && `Indications: ${stripEnd(t.indications_en)}.`);
+  if (t.cautions_zh && t.cautions_vi && t.cautions_en && !NOT_INFORMATIVE.test(t.cautions_zh)) addSeg(out, `使用注意：${stripEnd(t.cautions_zh)}。`, `Lưu ý: ${stripEnd(t.cautions_vi)}.`, `Cautions: ${stripEnd(t.cautions_en)}.`);
+  return out;
+}
+
 function buildSegments(t) {
   const out = [];
   const g = t.group1;
-  const grp = { zh: zhGroup(t.group2), vi: clean(t.group2_vi), en: clean(t.group2_en) };
+  if (g === 'Thang phương') return buildFormulaSegments(t);
+  const grp = { zh: zhGroup(t.group2), vi: viGroup(t.group2_vi), en: viGroup(t.group2_en) };
 
   if (g === 'Dược liệu') {
     addSeg(out, `${t.hz}，属${grp.zh}。`, `${t.vi}, thuộc nhóm ${lc(grp.vi)}.`, `${t.en}. Group: ${grp.en}.`);
@@ -165,6 +187,113 @@ export function buildLesson(t, dayIso = null) {
   };
 }
 
+// ===== BÀI DÀI ("Chương"): ghép các mục cùng nhóm giáo trình thành bài nghe liền mạch 5–10 phút, nội dung 100% lấy từ CSDL =====
+const CHAPTER_FIELDS = [
+  { key: 'Dược liệu', vi: 'Dược liệu', zh: '中药', en: 'Herbs' },
+  { key: 'Thang phương', vi: 'Thang phương', zh: '方剂', en: 'Formulas' },
+  { key: 'Huyệt vị', vi: 'Huyệt vị', zh: '腧穴', en: 'Acupoints' },
+  { key: 'Bệnh lý', vi: 'Bệnh lý', zh: '病证', en: 'Disorders' },
+];
+const CH_PREFIX = 'db-ch-';
+const CH_TARGET = 2000;  // ~7 phút (≈ 4,5 chữ Hán/giây); bài dài nhất ~ 2600 chữ ≈ 9–10 phút
+const CH_MAX = 2700, CH_MIN = 800;
+const chOf = (key) => CHAPTER_FIELDS.find((f) => f.key === key);
+let chapters = null; // { list: [meta], byId: Map(id → { meta, items: [term], segs: [{zh,vi,en,ck}] }) }
+const zhLen = (segs) => segs.reduce((n, x) => n + x.zh.length, 0);
+
+function buildChapters(byId) {
+  const groups = new Map(); // `${group1}|${group2}` → [terms]
+  for (const t of byId.values()) {
+    if (!t || !chOf(t.group1) || !t.group2) continue;
+    const k = `${t.group1}|${t.group2}`; const a = groups.get(k) || []; a.push(t); groups.set(k, a);
+  }
+  const list = [];
+  const pool = new Map(); // field → các mục thuộc nhóm quá nhỏ để thành chương riêng (gộp theo thứ tự nhóm)
+  const buckets = [];     // { k, field, gv, gz, ge, items }
+  for (const [k, terms] of [...groups].sort((x, y) => x[0].localeCompare(y[0]))) {
+    terms.sort((x, y) => String(x.id).localeCompare(String(y.id), undefined, { numeric: true }));
+    const items = [];
+    for (const t of terms) {
+      const segs = buildSegments(t);
+      if (segs.length < 2) continue;
+      items.push({ t, segs, ck: t.group1 === 'Thang phương' ? null : ID_PREFIX + t.id });
+    }
+    const total = items.reduce((n, it) => n + zhLen(it.segs), 0), t0 = terms[0];
+    if (!items.length) continue;
+    if (total < CH_MIN) { const a2 = pool.get(t0.group1) || []; a2.push(...items); pool.set(t0.group1, a2); continue; }
+    buckets.push({ k, field: t0.group1, gv: viGroup(t0.group2_vi) || t0.group2, gz: zhGroup(t0.group2), ge: viGroup(t0.group2_en) || t0.group2, items, group2: t0.group2 });
+  }
+  for (const [field, items] of pool) { // gộp nhóm nhỏ: "tên nhóm đầu … tên nhóm cuối"
+    items.sort((x, y) => String(x.t.group2).localeCompare(String(y.t.group2)) || String(x.t.id).localeCompare(String(y.t.id), undefined, { numeric: true }));
+    const total = items.reduce((n, it) => n + zhLen(it.segs), 0); if (total < CH_MIN) continue;
+    const f0 = items[0].t, f1 = items[items.length - 1].t;
+    const nm = (x, y, z) => (clean(x) === clean(y) ? clean(x) : `${clean(x)} … ${clean(y)}`);
+    buckets.push({ k: `${field}|~gop`, field, group2: '~gop', gv: nm(viGroup(f0.group2_vi) || f0.group2, viGroup(f1.group2_vi) || f1.group2), gz: nm(zhGroup(f0.group2), zhGroup(f1.group2)), ge: nm(f0.group2_en || f0.group2, f1.group2_en || f1.group2), items });
+  }
+  for (let bk of buckets) {
+    const { items } = bk, f = chOf(bk.field);
+    // Chia thành các phần ~CH_TARGET chữ (không cắt giữa một mục); phần cuối quá ngắn thì dồn vào phần trước.
+    const parts = []; let cur = { items: [], n: 0 };
+    for (const it of items) {
+      const n = zhLen(it.segs);
+      if (cur.items.length && cur.n + n > CH_MAX) { parts.push(cur); cur = { items: [], n: 0 }; }
+      cur.items.push(it); cur.n += n;
+      if (cur.n >= CH_TARGET) { parts.push(cur); cur = { items: [], n: 0 }; }
+    }
+    if (cur.items.length) { if (parts.length && cur.n < CH_MIN) { const last = parts[parts.length - 1]; last.items.push(...cur.items); last.n += cur.n; } else parts.push(cur); }
+    parts.forEach((part, pi) => {
+      const id = CH_PREFIX + crypto.createHash('sha1').update(`${bk.k}|${pi + 1}`).digest('hex').slice(0, 10);
+      const np = parts.length, ptxt = (lang) => (np > 1 ? (lang === 'zh' ? `（${pi + 1}/${np}）` : ` (${pi + 1}/${np})`) : '');
+      if (bk.group2 === '~gop') { // chương gộp: mỗi phần ghi tên nhóm đầu … nhóm cuối của CHÍNH phần đó
+        const a0 = part.items[0].t, a1 = part.items[part.items.length - 1].t, nm2 = (x, y) => (clean(x) === clean(y) ? clean(x) : `${clean(x)} … ${clean(y)}`);
+        bk = { ...bk, gv: nm2(viGroup(a0.group2_vi) || a0.group2, viGroup(a1.group2_vi) || a1.group2), gz: nm2(zhGroup(a0.group2), zhGroup(a1.group2)), ge: nm2(a0.group2_en || a0.group2, a1.group2_en || a1.group2) };
+      }
+      const spk = (x, to) => String(x).replace(/ … /g, to); // đọc to: "A … B" → "A 至 B"
+      const intro = seg(`${f.zh}，${spk(bk.gz, '至')}${np > 1 ? `，第${pi + 1}部分，共${np}部分` : ''}。本部分共${part.items.length}条。`,
+        `${f.vi}: ${spk(bk.gv, ' đến ')}${np > 1 ? `, phần ${pi + 1}/${np}` : ''}. Phần này gồm ${part.items.length} mục.`, `${f.en}: ${spk(bk.ge, ' to ')}${np > 1 ? `, part ${pi + 1} of ${np}` : ''}. This part has ${part.items.length} entries.`);
+      const segs = [{ ...intro, ck: `${id}|1` }];
+      part.items.forEach((it) => it.segs.forEach((x, xi) => segs.push({ ...x, ck: it.ck ? `${it.ck}|${xi + 1}` : `${id}|${segs.length + 1}` })));
+      const chars = zhLen(segs), avg = chars / segs.length;
+      list.push({ id, kind: 'chapter', category: CATEGORY, field: bk.field, group2: bk.group2, part: pi + 1, parts: np, items: part.items.length,
+        minutes: Math.max(1, Math.round(chars / 4.5 / 60)), segs_n: segs.length, level: avg < 20 ? 'so_cap' : avg < 38 ? 'trung_cap' : 'cao_cap',
+        title_vi: `${f.vi}: ${bk.gv}${ptxt('vi')}`, title_zh: `${f.zh}：${bk.gz}${ptxt('zh')}`, title_en: `${f.en}: ${bk.ge}${ptxt('en')}`, _segs: segs });
+    });
+  }
+  // Nối "phần tiếp theo" trong cùng chương.
+  const fo = (k) => CHAPTER_FIELDS.findIndex((f) => f.key === k);
+  list.sort((a, b) => fo(a.field) - fo(b.field) || String(a.group2).localeCompare(String(b.group2)) || a.part - b.part);
+  list.forEach((c, i) => { const nx = list[i + 1]; c.next_id = nx && nx.field === c.field && nx.group2 === c.group2 ? nx.id : null; });
+  chapters = { list, byId: new Map(list.map((c) => [c.id, c])) };
+}
+const chPublic = (c) => { const { _segs, ...m } = c; return { ...m, seqs: Array.from({ length: m.segs_n }, (_, i) => i + 1) }; };
+export const chapterList = (field) => (chapters ? chapters.list.filter((c) => !field || c.field === field).map(chPublic) : []);
+export const chapterFields = () => (chapters ? CHAPTER_FIELDS.map((f) => ({ ...f, count: chapters.list.filter((c) => c.field === f.key).length, minutes: chapters.list.filter((c) => c.field === f.key).reduce((n, c) => n + c.minutes, 0) })).filter((f) => f.count) : []);
+/** Một chương miễn phí mỗi ngày (như bài trong ngày): chọn tất định theo ngày, ưu tiên phần 1 dài vừa. */
+export function dailyChapter(now = Date.now()) {
+  if (!chapters || !chapters.list.length) return null;
+  const pool = chapters.list.filter((c) => c.part === 1 && c.minutes >= 4);
+  const arr = pool.length ? pool : chapters.list;
+  return arr[(dayNumber(now) * 7 + 3) % arr.length];
+}
+export const isChapterId = (id) => String(id).startsWith(CH_PREFIX);
+export function chapterLesson(id, now = Date.now()) {
+  const c = chapters && chapters.byId.get(String(id)); if (!c) return null;
+  const iso = dayIso(now);
+  const note = {
+    vi: 'Bài dài dựng tự động từ CSDL Chimedis: các mục cùng nhóm giáo trình nối liền theo khuôn câu cố định, không do AI viết lại. Chỉ tên vị thuốc trong Thang phương, không đọc liều.',
+    zh: '长篇听力由 Chimedis 数据库按教材分组自动连成，句式固定，非 AI 改写。方剂只读药名，不读剂量。',
+    en: 'Long listening assembled automatically from the Chimedis database: entries of the same textbook group joined by fixed sentence templates, not rewritten by AI. Formulas list herb names only, no doses.',
+  };
+  return { id: c.id, category: CATEGORY, kind: 'chapter', level: c.level, field: c.field, group2: c.group2, part: c.part, parts: c.parts, minutes: c.minutes, next_id: c.next_id,
+    title_vi: c.title_vi, title_zh: c.title_zh, title_en: c.title_en, source_note_vi: note.vi, source_note_zh: note.zh, source_note_en: note.en, created_at: iso, updated_at: iso,
+    segments: c._segs.map((x, i) => ({ seq: i + 1, text_zh: x.zh, text_pinyin: pinyinLine(x.zh), text_vi: x.vi, text_en: x.en })) };
+}
+/** Khoá bộ đệm âm thanh của một câu trong chương: dùng chung với bài của từng mục (không sinh lại giọng đã có). */
+export function chapterAudioKey(id, seq) {
+  const c = chapters && chapters.byId.get(String(id)); const x = c && c._segs[Number(seq) - 1]; if (!x) return null;
+  const [lessonId, sq] = x.ck.split('|'); return { lessonId, seq: Number(sq), text: x.zh };
+}
+
 // ===== Chỉ mục trong bộ nhớ =====
 let index = null; // { byId: Map, byField: Map(group1 → [terms]), eligible: Map(group1 → [terms]) }
 /** Nhóm chỉ để TRA CỨU/GỢI Ý (Bác sĩ, Lão Sư, bảng thuật ngữ), chưa dựng thành bài học. */
@@ -184,6 +313,7 @@ export function buildIndex(terms) {
   }
   for (const arr of byField.values()) arr.sort((a, b) => String(a.id).localeCompare(String(b.id)));
   index = { byId, byField, segCount, builtAt: Date.now() };
+  try { buildChapters(byId); } catch (e) { console.error('[csdl] chapters:', e.message); chapters = { list: [], byId: new Map() }; }
   return index;
 }
 export const hasIndex = () => !!index;
@@ -234,7 +364,7 @@ export function dailyPicks(now = Date.now(), perField = 1) {
   }
   return out;
 }
-export function dailyIds(now = Date.now()) { return new Set(dailyPicks(now).map((t) => ID_PREFIX + t.id)); }
+export function dailyIds(now = Date.now()) { const s = new Set(dailyPicks(now).map((t) => ID_PREFIX + t.id)); const dc = dailyChapter(now); if (dc) s.add(dc.id); return s; }
 
 export function meta(t, now = Date.now()) {
   const l = buildLesson(t, dayIso(now));
@@ -247,6 +377,7 @@ export function meta(t, now = Date.now()) {
 
 export function lessonById(id, now = Date.now()) {
   if (!index || !String(id).startsWith(ID_PREFIX)) return null;
+  if (isChapterId(id)) return chapterLesson(id, now);
   const t = index.byId.get(String(id).slice(ID_PREFIX.length));
   return t ? buildLesson(t, dayIso(now)) : null;
 }
