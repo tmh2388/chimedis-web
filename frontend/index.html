@@ -3830,6 +3830,7 @@ function listenSetActiveLine(seq){
 function listenStopPlayback(){
   listenPlayToken++;
   if(listenAudioEl){ listenAudioEl.pause(); listenAudioEl = null; }
+  listenPreClear();
   listenPlayState = null;
   listenIsPlaying = false;
   listenClearActiveLine();
@@ -5602,10 +5603,24 @@ function listenNewAudio(url){
 
 function listenStartSequence(seqs, startIdx){
   listenPlayToken++;
+  listenPreClear();
   const token = listenPlayToken;
   listenPlayState = { seqs, idx: startIdx || 0 };
   listenIsPlaying = true;
   listenPlayStep(token);
+}
+// NGHE LIỀN MẠCH: nạp trước 2 câu kế tiếp (tải + giải mã xong khi câu hiện tại còn đang phát) → chuyển câu gần như không có khoảng lặng,
+// thay vì mỗi câu mới bắt đầu tải mạng (xin vé + tải file) lúc câu trước vừa hết.
+const listenPre = new Map(); // seq → Audio đã nạp trước
+const LISTEN_PRELOAD = 2;
+function listenPreClear(){ listenPre.forEach((a) => { try{ a.onended = null; a.removeAttribute('src'); a.load(); }catch(e){} }); listenPre.clear(); }
+function listenPreloadAhead(ps){
+  const want = ps.seqs.slice(ps.idx + 1, ps.idx + 1 + LISTEN_PRELOAD);
+  for(const [sq, a] of [...listenPre]){ if(!want.includes(sq)){ try{ a.removeAttribute('src'); a.load(); }catch(e){} listenPre.delete(sq); } }
+  for(const sq of want){
+    if(listenPre.has(sq)) continue;
+    try{ const a = listenNewAudio(listenAudioUrl(listenCurrentDialogue, sq, listenSourceField(listenCurrentDialogue))); a.preload = 'auto'; a.load(); listenPre.set(sq, a); }catch(e){}
+  }
 }
 function listenPlayStep(token){
   if(token !== listenPlayToken || !listenPlayState) return; // đã rời màn/bắt đầu chuỗi khác
@@ -5613,10 +5628,27 @@ function listenPlayStep(token){
   if(ps.idx >= ps.seqs.length){ listenStopPlayback(); return; }
   const seq = ps.seqs[ps.idx];
   listenSetActiveLine(seq);
-  listenAudioEl = listenNewAudio(listenAudioUrl(listenCurrentDialogue, seq, listenSourceField(listenCurrentDialogue)));
-  listenAudioEl.play();
+  const pre = listenPre.get(seq); listenPre.delete(seq);
+  listenAudioEl = pre || listenNewAudio(listenAudioUrl(listenCurrentDialogue, seq, listenSourceField(listenCurrentDialogue)));
+  listenAudioEl.playbackRate = loadListenSpeed();
+  const pr = listenAudioEl.play(); if(pr && pr.catch) pr.catch(() => {});
   listenAudioEl.onended = () => { if(token === listenPlayToken && listenIsPlaying){ ps.idx++; listenPlayStep(token); } };
+  listenPreloadAhead(ps);
+  listenMediaSession(seq);
   listenUpdateIcons();
+}
+// Điều khiển ở màn hình khoá / tai nghe (Media Session): tên bài + câu đang phát, nút phát/dừng, câu trước/sau.
+function listenMediaSession(seq){
+  try{
+    if(!('mediaSession' in navigator) || !listenCurrentDialogue) return;
+    const d = listenCurrentDialogue, seg = (d.segments || []).find((x) => x.seq === seq);
+    navigator.mediaSession.metadata = new MediaMetadata({ title: (seg && (seg.text_zh || seg.text_en)) || listenTitle(d), artist: listenTitle(d), album: 'Chimedis', artwork: [{ src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' }] });
+    const h = (n, fn) => { try{ navigator.mediaSession.setActionHandler(n, fn); }catch(e){} };
+    h('play', () => { if(listenAudioEl && listenAudioEl.paused){ listenAudioEl.play().catch(() => {}); listenIsPlaying = true; listenUpdateIcons(); } });
+    h('pause', () => { if(listenAudioEl){ listenAudioEl.pause(); listenIsPlaying = false; listenUpdateIcons(); } });
+    h('nexttrack', () => { const ps = listenPlayState; if(ps && ps.idx + 1 < ps.seqs.length){ ps.idx++; listenPlayStep(listenPlayToken); } });
+    h('previoustrack', () => { const ps = listenPlayState; if(ps && ps.idx > 0){ ps.idx--; listenPlayStep(listenPlayToken); } });
+  }catch(e){}
 }
 // Bấm play/pause chung (nút lớn trên cùng = phát cả bài, hoặc truyền seqs riêng cho 1 câu).
 async function listenTogglePlay(seqs){
