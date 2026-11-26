@@ -1238,6 +1238,12 @@ app.get('/api/csdl/fields', withLessonIndex((req, res) => {
   res.json({ success: true, data: { fields: csdl.stats(), day: csdl.dayIso() } });
 }));
 
+// BÀI DÀI ("Chương", 5–10 phút): danh sách + một chương miễn phí mỗi ngày; còn lại cần gói Pro như các bài Học Thuật khác.
+app.get('/api/csdl/chapters', withLessonIndex((req, res) => {
+  res.set('Cache-Control', 'public, max-age=300');
+  const dc = csdl.dailyChapter();
+  res.json({ success: true, data: { fields: csdl.chapterFields(), chapters: csdl.chapterList(String(req.query.field || '')), daily: dc ? dc.id : null } });
+}));
 app.get('/api/csdl/daily', withLessonIndex((req, res) => {
   res.set('Cache-Control', 'public, max-age=300');
   res.json({ success: true, data: csdl.dailyPicks().map((t) => csdl.meta(t)) });
@@ -1259,8 +1265,27 @@ app.get('/api/csdl/lesson/:id', withLessonIndex(async (req, res) => {
   }
   const lesson = csdl.lessonById(id);
   if (!lesson) return res.status(404).json({ success: false, error: 'not_found' });
+  if (csdl.isChapterId(id)) csdlWarmChapter(lesson, userDocs.VOICE_KEYS.includes(req.query.voice) ? req.query.voice : 'default'); // sinh sẵn giọng cả chương nền → nghe liền mạch
   res.json({ success: true, data: lesson });
 }));
+// Sinh trước (nền, 3 luồng, không tính hạn mức người dùng) giọng đọc mọi câu của một chương; dùng chung bộ đệm với bài của từng mục.
+const warmedChapters = new Set();
+function csdlWarmChapter(lesson, voice) {
+  const key = `${lesson.id}|${voice}`;
+  if (!mysqlPool || warmedChapters.has(key)) return;
+  warmedChapters.add(key); if (warmedChapters.size > 2000) warmedChapters.clear();
+  (async () => {
+    let i = 0; const segs = lesson.segments;
+    const work = async () => {
+      while (i < segs.length) {
+        const k = csdl.chapterAudioKey(lesson.id, segs[i++].seq); if (!k) continue;
+        try { await csdlAudio.getAudio(mysqlPool, { lessonId: k.lessonId, seq: k.seq, text: k.text, voice, uid: 'system', chargeUser: false, noLimit: true }); }
+        catch (e) { if (e.code === 'budget' || e.code === 'db_unavailable') { warmedChapters.delete(key); return; } }
+      }
+    };
+    await Promise.all([work(), work(), work()]);
+  })().catch(() => warmedChapters.delete(key));
+}
 
 // Nghe bài theo ngôn ngữ khác (vi/en) — tổng hợp giọng đọc cho câu đó, đệm dùng chung trong MySQL (cùng bảng tts của Lão Sư).
 app.get('/api/listen-tts', withLessonIndex(async (req, res) => {
@@ -1306,12 +1331,14 @@ app.get('/api/csdl/audio/:id/:seq', withLessonIndex(async (req, res) => {
   const lesson = csdl.lessonById(id);
   const text = csdl.segmentText(lesson, req.params.seq);
   if (!text) return res.status(404).json({ success: false, error: 'not_found' });
+  const ak = csdl.isChapterId(id) ? csdl.chapterAudioKey(id, req.params.seq) : { lessonId: id, seq: Number(req.params.seq), text };
+  if (!ak) return res.status(404).json({ success: false, error: 'not_found' });
   try {
     // Kho Học Thuật là tài sản của nền tảng: người dùng KHÔNG bị trừ ngân sách khi nghe (cả bài trong ngày lẫn bài Pro duyệt).
     // Toàn kho chỉ ~237 nghìn ký tự (~$11 nếu sinh hết cả hai giọng, một lần), mỗi câu sinh một lần rồi dùng chung → chi phí
     // nhỏ và có trần; chống lạm dụng bằng giới hạn tần suất sinh mới theo người dùng/toàn hệ thống (lib/csdl-audio.js).
     const mp3 = await csdlAudio.getAudio(mysqlPool, {
-      lessonId: id, seq: Number(req.params.seq), text, voice: String(req.query.voice || 'default'), uid: tk.uid, chargeUser: false,
+      lessonId: ak.lessonId, seq: ak.seq, text: ak.text, voice: String(req.query.voice || 'default'), uid: tk.uid, chargeUser: false,
     });
     res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, max-age=86400' });
     res.send(mp3);

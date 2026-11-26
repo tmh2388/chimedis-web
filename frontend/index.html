@@ -1440,6 +1440,8 @@ a.tl:hover{background:var(--ngoc-mo)}
 .tv-card video{width:100%;max-height:260px;border-radius:12px;background:#000;margin-top:6px}
 .tv-export{display:flex;flex-direction:column;gap:10px}.tv-export label{display:flex;gap:8px;align-items:center;min-height:36px}
 .tv-prog{font-size:13px;color:var(--thamthm);font-weight:700}
+.listen-card.ch-card{flex-wrap:wrap;row-gap:8px}.ch-card .lc-tx{flex:1 1 100%}.ch-card .lc-ctl{margin-left:auto}
+.ch-min{background:var(--ngoc-mo);color:var(--thamthm)}.ch-badge{background:var(--son);color:#fff}
 /* ===== WEB MÁY TÍNH (>=1100px): menu trái + thanh trên + nội dung (2026-11-10). Điện thoại/iPad dọc KHÔNG đổi. ===== */
 @media(min-width:1100px){
   :root{--sbw:232px}
@@ -2793,6 +2795,7 @@ Object.assign(I18N.en, {
 // ===================================================================
 Object.assign(I18N.vi, {
   dr_listen: 'Luyện nghe', listen_home: 'Luyện nghe', listen_back: 'Luyện nghe',
+  listen_cat_long: 'Nghe dài', ch_minutes: 'phút', ch_items: 'mục', ch_today: 'Miễn phí hôm nay', ch_free_hint: 'Mỗi ngày một chương nghe miễn phí; các chương khác cần gói Pro.',
   listen_cat_y_an: 'Y Án', listen_cat_bao_chi: 'Báo Chí', listen_cat_tu_them: 'Tự Thêm', listen_cat_hoc_thuat: 'Bài Báo Quốc Tế', listen_cat_csdl: 'Học Thuật',
   listen_empty: 'Chưa có hội thoại nào trong mục này.',
   listen_level_all: 'Tất cả', listen_level_so_cap: 'Sơ cấp', listen_level_trung_cap: 'Trung cấp', listen_level_cao_cap: 'Cao cấp',
@@ -2838,6 +2841,7 @@ Object.assign(I18N.vi, {
 });
 Object.assign(I18N.zh, {
   dr_listen: '听力练习', listen_home: '听力练习', listen_back: '听力练习',
+  listen_cat_long: '长篇', ch_minutes: '分钟', ch_items: '条', ch_today: '今日免费', ch_free_hint: '每天一章免费，其余章节需 Pro。',
   listen_cat_y_an: '医案', listen_cat_bao_chi: '新闻', listen_cat_tu_them: '自建内容', listen_cat_hoc_thuat: '国际论文', listen_cat_csdl: '学术',
   listen_empty: '此分类暂无对话。',
   listen_level_all: '全部', listen_level_so_cap: '初级', listen_level_trung_cap: '中级', listen_level_cao_cap: '高级',
@@ -2883,6 +2887,7 @@ Object.assign(I18N.zh, {
 });
 Object.assign(I18N.en, {
   dr_listen: 'Listening Practice', listen_home: 'Listening Practice', listen_back: 'Listening Practice',
+  listen_cat_long: 'Long listening', ch_minutes: 'min', ch_items: 'entries', ch_today: 'Free today', ch_free_hint: 'One chapter a day is free; the others need Pro.',
   listen_cat_y_an: 'Case Studies', listen_cat_bao_chi: 'News', listen_cat_tu_them: 'Custom', listen_cat_hoc_thuat: 'International Papers', listen_cat_csdl: 'Academic',
   listen_empty: 'No dialogues in this category yet.',
   listen_level_all: 'All', listen_level_so_cap: 'Beginner', listen_level_trung_cap: 'Intermediate', listen_level_cao_cap: 'Advanced',
@@ -3458,6 +3463,7 @@ function renderStudyHome(){
 // ===================================================================
 const LISTEN_SENTINEL = '__listen__';
 const LISTEN_CATEGORIES = [
+  { key: 'chuong', label_key: 'listen_cat_long' },
   { key: 'bao_chi', label_key: 'listen_cat_bao_chi' },
   { key: 'y_an', label_key: 'listen_cat_y_an' },
   { key: 'csdl', label_key: 'listen_cat_csdl' },
@@ -3502,7 +3508,7 @@ function openListenView(){
   state.group1 = LISTEN_SENTINEL;
   state.group2 = null;
   state.tab = 'listenhome';
-  state._listenCategory = state._listenCategory || 'bao_chi';
+  state._listenCategory = state._listenCategory || 'chuong';
   listenCurrentDialogue = null;
   render();
   scrollToTop();
@@ -3519,6 +3525,7 @@ async function loadListenCategory(cat){
   state._listenLevel = 'all';
   if(cat === 'tu_them'){ render(); return; }
   if(cat === 'csdl'){ render(); loadCsdlHome(); return; }
+  if(cat === 'chuong'){ render(); loadChaptersHome(); return; }
   // Bản đã lưu trên máy (IndexedDB) hiện NGAY, mạng chỉ cập nhật ngầm — mở lại không phải chờ tải từ đầu.
   let had = !!listenDialoguesCache[cat];
   if(!had){
@@ -3562,7 +3569,7 @@ async function openListenDialogueInner(id){
     const res = isMine
       ? await authFetch(`/api/my-docs/${encodeURIComponent(String(id).slice(3))}`)
       : isDb
-        ? await authFetch(`/api/csdl/lesson/${encodeURIComponent(id)}`)
+        ? await authFetch(`/api/csdl/lesson/${encodeURIComponent(id)}?voice=${loadListenVoice()}`)
         : await fetch(`${API_BASE}/api/listening/dialogues/${encodeURIComponent(id)}`);
     if(isDb && res.status === 401){ if(_bz) busyHide(); listenNeedLogin('listen'); return; }
     if(isDb && res.status === 403){ if(_bz) busyHide(); state.plan = 'free'; openUpgradeModal('csdl'); return; }
@@ -3695,8 +3702,10 @@ async function csdlFetch(reset){
   const b2 = document.getElementById('csdlResults'); if(b2) b2.innerHTML = csdlResultsHtml();
 }
 function listenCardHtml(d){
-  return `<div class="listen-card" role="button" tabindex="0" data-id="${d.id}" onclick="openListenDialogue('${d.id}')" onkeydown="if(event.key==='Enter')openListenDialogue('${d.id}')">
+  return `<div class="listen-card${d.minutes ? ' ch-card' : ''}" role="button" tabindex="0" data-id="${d.id}" onclick="openListenDialogue('${d.id}')" onkeydown="if(event.key==='Enter')openListenDialogue('${d.id}')">
         <span class="lc-tx"><strong>${listenTitle(d)}</strong>${d.updated_at ? `<span class="listen-card-date">${t('listen_updated')} ${listenFmtDate(d.updated_at)}</span>` : ''}</span>
+        ${d.minutes ? `<span class="listen-level-badge ch-min">≈ ${d.minutes} ${t('ch_minutes')}${d.items ? ' · ' + d.items + ' ' + t('ch_items') : ''}</span>` : ''}
+        ${d._badge ? `<span class="listen-level-badge ch-badge">${d._badge}</span>` : ''}
         ${d.level ? `<span class="listen-level-badge">${t('listen_level_'+d.level)}</span>` : ''}
         ${(d.seqs && d.seqs.length) ? `<span class="lc-ctl">
           <button type="button" class="lc-btn play" aria-label="${t('listen_play_full')}" onclick="event.stopPropagation();listenCardToggle('${d.id}')">${LISTEN_PLAY_ICON}</button>
@@ -3705,13 +3714,45 @@ function listenCardHtml(d){
         </span>` : ''}
       </div>`;
 }
+// ===== NGHE DÀI: các "chương" 5–10 phút dựng từ CSDL (dược liệu · thang phương · huyệt vị · bệnh lý) — nghe liền mạch, tự sang phần kế =====
+const chapState = { loaded: false, loading: false, fields: [], list: [], daily: null, field: '' };
+async function loadChaptersHome(){
+  if(chapState.loading) return;
+  chapState.loading = true;
+  if(!chapState.loaded){ try{ const c = await OFF.get('csdl:chapters'); if(c && Array.isArray(c.list)){ Object.assign(chapState, { fields: c.fields || [], list: c.list, daily: c.daily || null, loaded: true }); if(state.tab === 'listenhome' && state._listenCategory === 'chuong') render(); } }catch(e){} }
+  try{
+    const j = await fetch(`${API_BASE}/api/csdl/chapters`).then((r) => r.json());
+    if(j && j.data){ Object.assign(chapState, { fields: j.data.fields || [], list: j.data.chapters || [], daily: j.data.daily || null, loaded: true }); OFF.set('csdl:chapters', { fields: chapState.fields, list: chapState.list, daily: chapState.daily }); }
+  }catch(e){}
+  chapState.loading = false;
+  if(state.tab === 'listenhome' && state._listenCategory === 'chuong') render();
+}
+function chapPickField(k){ chapState.field = chapState.field === k ? '' : k; render(); }
+function renderChaptersHome(tabsHtml){
+  const pro = planAtLeast('pro'), fl = (f) => (state.lang === 'zh' ? f.zh : state.lang === 'en' ? f.en : f.vi);
+  const chips = chapState.fields.map((f) => `<span class="listen-level-pill ${chapState.field === f.key ? 'on' : ''}" onclick="chapPickField('${f.key}')">${myDocEsc(fl(f))} <small>${f.count} · ${Math.round(f.minutes / 60 * 10) / 10}h</small></span>`).join('');
+  const rows = chapState.list.filter((c) => !chapState.field || c.field === chapState.field);
+  const hint = pro ? '' : `<div class="empty" style="padding:8px 12px">${t('ch_free_hint')}</div>`;
+  const cards = rows.length ? rows.map((c) => { const free = c.id === chapState.daily; return listenCardHtml(Object.assign({}, c, { _badge: free ? t('ch_today') : (pro ? '' : '🔒 Pro') })); }).join('')
+    : `<div class="empty">${chapState.loaded ? t('listen_empty') : t('csdl_loading')}</div>`;
+  return `<div class="listen-screen"><div class="listen-sticky"><div class="study-top"><h2>${t('listen_home')}</h2></div><div class="tabs">${tabsHtml}</div>` +
+    `<div class="listen-levelrow">${chips}</div></div>${hint}<div class="listen-grid">${cards}</div></div>`;
+}
+// Hết một phần của bài dài → mở và phát tiếp phần kế tiếp (nghe liên tục).
+async function listenAutoNext(nextId){
+  try{
+    await openListenDialogue(nextId);
+    if(listenCurrentDialogue && String(listenCurrentDialogue.id) === String(nextId)){ await offAudioPreload(listenCurrentDialogue).catch(() => {}); _listenTogglePlayCore(); }
+  }catch(e){}
+}
 function renderListenHome(){
-  const cat = state._listenCategory || 'bao_chi';
+  const cat = state._listenCategory || 'chuong';
   const tabsHtml = LISTEN_CATEGORIES.map(c =>
     `<span class="tab ${cat===c.key?'active':''}" onclick="loadListenCategory('${c.key}')">${t(c.label_key)}</span>`
   ).join('');
   if(cat === 'tu_them'){ setTimeout(loadMyDocs, 0); return renderMyDocsHome(tabsHtml); }
   if(cat === 'csdl'){ setTimeout(listenUpdateIcons, 0); return renderCsdlHome(tabsHtml); }
+  if(cat === 'chuong'){ setTimeout(listenUpdateIcons, 0); if(!chapState.loaded && !chapState.loading) setTimeout(loadChaptersHome, 0); return renderChaptersHome(tabsHtml); }
   setTimeout(listenUpdateIcons, 0);
   const allItems = listenDialoguesCache[cat] || [];
   const levelsPresent = Array.from(new Set(allItems.map(d => d.level).filter(Boolean)));
@@ -5632,7 +5673,12 @@ function listenPreloadAhead(ps){
 function listenPlayStep(token){
   if(token !== listenPlayToken || !listenPlayState) return; // đã rời màn/bắt đầu chuỗi khác
   const ps = listenPlayState;
-  if(ps.idx >= ps.seqs.length){ listenStopPlayback(); return; }
+  if(ps.idx >= ps.seqs.length){
+    const nx = listenCurrentDialogue && listenCurrentDialogue.next_id, whole = ps.seqs.length > 1;
+    listenStopPlayback();
+    if(nx && whole) listenAutoNext(nx); // nghe liên tục: sang phần kế của chương
+    return;
+  }
   const seq = ps.seqs[ps.idx];
   listenSetActiveLine(seq);
   const pre = listenPre.get(seq); listenPre.delete(seq);
