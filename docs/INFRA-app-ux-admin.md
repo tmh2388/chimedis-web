@@ -369,3 +369,10 @@ Hậu kiểm web thật sau v107: 1 → 109 từ có IPA chỉ vài phút sau l�
 - **Nguyên nhân đứt quãng**: `listenPlayStep` tạo `Audio` mới cho từng câu và chỉ tải khi câu trước vừa hết (xin vé + tải mạng) → mỗi chỗ nối khựng một lần; chuỗi dựa vào `ended` (không đáng tin khi khoá màn hình trên iOS — WebKit 173332/220879).
 - **Sửa 1A**: nạp trước 2 câu kế (`listenPreloadAhead`, `listenPre`), dùng lại phần tử đã nạp; thêm Media Session (tên câu, phát/dừng, câu trước/sau). Đo thử với độ trễ mạng giả lập 400 ms: khoảng lặng giữa câu 410–475 ms → ~1 ms.
 - **Việc kế tiếp**: 1B file ghép từng bài + bảng thời điểm (ghép byte mp3 phía máy chủ, không bắt buộc ffmpeg; image Docker `node:22-slim` hiện KHÔNG có ffmpeg, Hostinger chưa xác minh), 1C hàng đợi/nghe liên tục; 2B chương từ CSDL (Dược liệu theo 节: 47 chương; Thang phương theo 剂: 70 chương; 10–26 phút).
+
+## Quay video theo ĐOẠN (lượt nói) + cắt ngập ngừng + lưu cả bài (SW v124, 2026-11-26)
+- **Trước**: mỗi câu một `MediaRecorder` video. **Nay**: video chỉ quay theo ĐOẠN (cờ `LISTEN_LINE_VIDEO=false`; ghi âm từng câu để chấm điểm giữ nguyên). Nút 🎬 (`listenTurnFab`) xuất hiện khi bật camera → màn `#turnScreen` (hộp thoại).
+- **Chia đoạn** `listenBuildTurns`: nếu câu có `speaker` → gom theo lượt nói liên tiếp; bài độc thoại (kho hiện chưa có trường `speaker`) → gom đến ~70 chữ Hán (170 từ Anh) hoặc tối đa 4 câu.
+- **Cắt ngập ngừng** `turnComputeKeep`: lấy năng lượng micro mỗi 50 ms lúc quay (AnalyserNode), ngưỡng thích nghi (3× nền ồn, tối thiểu 0,015), bỏ im lặng đầu/cuối, khoảng lặng > 0,9 s bị cắt (giữ ~0,5 s đệm mỗi phía). Chưa cắt từ đệm ("ừ", "嗯") — cần ASR.
+- **Lưu cả bài** `turnExportAll` (cách A): phát lại các khoảng "giữ" lên canvas + âm qua WebAudio và ghi bằng MediaRecorder thành MỘT video (≤640px, 1,5 Mbps), thời gian thực, tuỳ chọn phụ đề (chữ nguồn + dịch theo tỉ lệ ký tự), tạm dừng recorder khi tua/tải, hẹn giờ dừng chính xác từng khoảng. Lưu qua `listenSaveBlob` (chia sẻ trên iOS / tải về).
+- **Đo thử** (camera/mic giả, Chromium): đoạn thô 5,2 s → giữ 3,1 s → video ghép 3,07 s, có phụ đề. Chưa thử iPhone thật (MediaRecorder mp4, WebAudio từ phần tử video).
